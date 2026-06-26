@@ -1,0 +1,93 @@
+/* Custom Styles for QuizMagic */
+
+:root {
+    --primary: #a855f7;
+    --primary-dark: #7e22ce;
+    --bg-dark: #0f172a;
+    --card-bg: #1e293b;
+}
+
+body {
+    background-color: var(--bg-dark);
+    scroll-behavior: smooth;
+}
+
+/* Custom Animations */
+@keyframes pulse-slow {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.05); }
+}
+
+.animate-spin-slow {
+    animation: spin 6s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Glassmorphism effects */
+.glass {
+    background: rgba(30, 41, 59, 0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Card Hover Effects */
+.quiz-card {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.quiz-card:hover {
+    transform: translateY(-12px);
+    box-shadow: 0 25px 50px -12px rgba(168, 85, 247, 0.25);
+    border-color: rgba(168, 85, 247, 0.4);
+}
+
+/* Result Card Glow */
+.result-glow {
+    box-shadow: 0 0 60px -15px rgba(168, 85, 247, 0.4);
+}
+
+/* CPA Locker Button Pulse */
+@keyframes pulse-btn {
+    0% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.6); transform: scale(1); }
+    70% { box-shadow: 0 0 0 15px rgba(168, 85, 247, 0); transform: scale(1.02); }
+    100% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0); transform: scale(1); }
+}
+
+.pulse-button {
+    animation: pulse-btn 2s infinite;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #0f172a;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #334155;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #475569;
+}
+
+/* RTL Adjustments */
+[dir="rtl"] .fa-chevron-left, [dir="rtl"] .fa-chevron-right {
+    transform: rotate(180deg);
+}
+
+[dir="rtl"] .text-start {
+    text-align: right;
+}
+[dir="ltr"] .text-start {
+    text-align: left;
+}
