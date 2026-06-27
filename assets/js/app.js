@@ -316,17 +316,65 @@ function toggleArticle() {
     function callCPALocker() {
         if (isReportUnlocked) return; // Prevent multiple unlocks
 
-        // Placeholder for AdBlueMedia CPA Locker
-        // In a real scenario, you'd integrate the CPA locker script here.
-        // The CPA locker would then call a callback function (e.g., onCpaLockerSuccess) upon successful completion.
-
-        // For now, we simulate success after a short delay
-        alert(currentLang === 'ar' ? 'سيتم تفعيل قفل المحتوى هنا لعرض العروض! (محاكاة للفتح)' : 'Content locker will be activated here! (Simulating unlock)');
+        const unlockButton = document.getElementById('unlock-button');
+        const lockOverlay = unlockButton.closest('.absolute.inset-0');
         
-        // Simulate CPA locker success after a delay
-        setTimeout(() => {
-            onCpaLockerSuccess();
-        }, 1500); // Simulate a 1.5 second delay for the locker
+        // 1. إخفاء الزر الحالي وإظهار شريط التقدم الوهمي
+        lockOverlay.innerHTML = `
+            <div class="w-full max-w-sm mx-auto text-center">
+                <div class="mb-4">
+                    <i class="fas fa-cog fa-spin text-4xl text-purple-500 mb-3"></i>
+                    <h3 id="loading-text" class="text-xl font-bold text-white">
+                        ${currentLang === 'ar' ? 'جاري الاتصال بقاعدة البيانات...' : 'Connecting to database...'}
+                    </h3>
+                </div>
+                <div class="w-full bg-slate-800 rounded-full h-4 mb-2 border border-slate-600 overflow-hidden">
+                    <div id="fake-progress-bar" class="bg-gradient-to-r from-purple-600 to-pink-600 h-4 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+                <p id="progress-percentage" class="text-slate-400 text-sm font-bold">0%</p>
+            </div>
+        `;
+
+        const progressBar = document.getElementById('fake-progress-bar');
+        const progressText = document.getElementById('progress-percentage');
+        const loadingText = document.getElementById('loading-text');
+        
+        let progress = 0;
+        
+        // 2. محاكاة تقدم الشريط وتغيير النصوص
+        const interval = setInterval(() => {
+            // زيادة التقدم بشكل عشوائي ليبدو حقيقياً
+            progress += Math.floor(Math.random() * 15) + 5; 
+            
+            if (progress >= 100) {
+                progress = 100;
+                clearInterval(interval);
+                
+                // 3. عند اكتمال الشريط، نظهر قفل المحتوى (CPA Locker)
+                setTimeout(() => {
+                    // Placeholder for AdBlueMedia CPA Locker
+                    // In a real scenario, you'd integrate the CPA locker script here.
+                    alert(currentLang === 'ar' ? 'سيتم تفعيل قفل المحتوى هنا لعرض العروض! (محاكاة للفتح)' : 'Content locker will be activated here! (Simulating unlock)');
+                    
+                    // Simulate CPA locker success after a delay
+                    setTimeout(() => {
+                        onCpaLockerSuccess();
+                    }, 1500);
+                }, 500);
+            }
+
+            // تحديث عرض الشريط والنسبة
+            progressBar.style.width = `${progress}%`;
+            progressText.innerText = `${progress}%`;
+
+            // تغيير النص بناءً على نسبة التقدم
+            if (progress > 30 && progress < 70) {
+                loadingText.innerText = currentLang === 'ar' ? 'جاري فك تشفير التقرير السري...' : 'Decrypting secret report...';
+            } else if (progress >= 70) {
+                loadingText.innerText = currentLang === 'ar' ? 'جاري تجهيز العروض المتاحة...' : 'Preparing available offers...';
+            }
+
+        }, 600); // تحديث كل 600 ملي ثانية
     }
 
     function onCpaLockerSuccess() {
