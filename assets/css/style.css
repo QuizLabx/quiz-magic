@@ -91,3 +91,69 @@ body {
 [dir="ltr"] .text-start {
     text-align: left;
 }
+
+/* Secret Report Unlock Animation */
+@keyframes reveal-report {
+    0% {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+#secret-report-actual-content {
+    animation: reveal-report 0.6s ease-out forwards;
+}
+
+/* Lock Overlay Fade Out */
+@keyframes fade-out-overlay {
+    0% {
+        opacity: 1;
+        backdrop-filter: blur(8px);
+    }
+    100% {
+        opacity: 0;
+        backdrop-filter: blur(0px);
+        pointer-events: none;
+    }
+}
+
+.lock-overlay-hidden {
+    animation: fade-out-overlay 0.5s ease-out forwards;
+}
+
+/* Unlock Button Success State */
+@keyframes button-success {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.button-success {
+    animation: button-success 0.6s ease-out;
+}
+
+/* Glow Effect for Secret Content */
+.secret-content-glow {
+    box-shadow: 0 0 30px -5px rgba(168, 85, 247, 0.3);
+    border: 1px solid rgba(168, 85, 247, 0.2);
+}
+
+/* Smooth Transition for Report Content */
+#secret-report-actual-content p {
+    transition: all 0.3s ease-out;
+}
+
+#secret-report-actual-content p:hover {
+    color: rgba(168, 85, 247, 0.8);
+    text-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
+}
