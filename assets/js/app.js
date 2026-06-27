@@ -262,14 +262,17 @@ function showResult() {
                             <p class="text-slate-300 mb-8 max-w-md mx-auto text-lg leading-relaxed">
                                 ${currentLang === 'ar' ? 'لقد كشفنا عن جوانب مخفية في عقلك الباطن. افتح التقرير الكامل لمعرفة نقاط قوتك المطلقة وتحدياتك القادمة.' : 'We have uncovered hidden aspects of your subconscious. Unlock the full report to see your absolute strengths and upcoming challenges.'}
                             </p>
-                            <button onclick="callCPALocker()" class="pulse-button bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white px-12 py-5 rounded-full font-black text-xl transition-all transform hover:scale-105 shadow-2xl shadow-purple-600/40 border border-white/20">
+                            <button id="unlock-button" onclick="callCPALocker()" class="pulse-button bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white px-12 py-5 rounded-full font-black text-xl transition-all transform hover:scale-105 shadow-2xl shadow-purple-600/40 border border-white/20">
                                 <i class="fas fa-unlock-alt mr-2"></i> ${currentLang === 'ar' ? 'افتح التقرير الكامل (مجاناً)' : 'Unlock Full Report (Free)'}
                             </button>
                         </div>
-                        <div class="opacity-5 select-none blur-md text-start space-y-6">
-                            <p class="font-bold text-2xl">Subconscious Mapping Data:</p>
-                            <p>Based on your 30-point assessment, your neural pathways show a significant alignment with ancient archetypes. Your dominance in specific traits indicates a rare personality matrix found in only 2% of the population.</p>
-                            <p>Psychological Profile: High resilience, adaptive intelligence, and a unique emotional signature that resonates with the mythical realm.</p>
+                        <div id="secret-report-content-placeholder" class="opacity-5 select-none blur-md text-start space-y-6">
+                            <p class="font-bold text-2xl">${currentLang === 'ar' ? 'بيانات تحليل العقل الباطن:' : 'Subconscious Mapping Data:'}</p>
+                            <p>${currentLang === 'ar' ? 'بناءً على تقييمك المكون من 30 نقطة، تظهر مساراتك العصبية توافقاً كبيراً مع النماذج الأصلية القديمة. يشير هيمنتك في سمات محددة إلى مصفوفة شخصية نادرة توجد في 2% فقط من السكان.' : 'Based on your 30-point assessment, your neural pathways show a significant alignment with ancient archetypes. Your dominance in specific traits indicates a rare personality matrix found in only 2% of the population.'}</p>
+                            <p>${currentLang === 'ar' ? 'الملف النفسي: مرونة عالية، ذكاء تكيفي، وتوقيع عاطفي فريد يتردد صداه مع العالم الأسطوري.' : 'Psychological Profile: High resilience, adaptive intelligence, and a unique emotional signature that resonates with the mythical realm.'}</p>
+                        </div>
+                        <div id="secret-report-actual-content" class="hidden text-start space-y-6">
+                            <!-- Secret report content will be injected here -->
                         </div>
                     </div>
                 </div>
@@ -308,14 +311,62 @@ function toggleArticle() {
     icon.classList.toggle('rotate-180');
 }
 
-function callCPALocker() {
-    // This will be replaced by the actual AdBlueMedia script call
-    if (typeof _CPALOCKER_FUNCTION === 'function') {
-        _CPALOCKER_FUNCTION();
-    } else {
-        alert(currentLang === 'ar' ? 'سيتم تفعيل قفل المحتوى هنا لعرض العروض!' : 'Content locker will be activated here!');
+    let isReportUnlocked = false;
+
+    function callCPALocker() {
+        if (isReportUnlocked) return; // Prevent multiple unlocks
+
+        // Placeholder for AdBlueMedia CPA Locker
+        // In a real scenario, you'd integrate the CPA locker script here.
+        // The CPA locker would then call a callback function (e.g., onCpaLockerSuccess) upon successful completion.
+
+        // For now, we simulate success after a short delay
+        alert(currentLang === 'ar' ? 'سيتم تفعيل قفل المحتوى هنا لعرض العروض! (محاكاة للفتح)' : 'Content locker will be activated here! (Simulating unlock)');
+        
+        // Simulate CPA locker success after a delay
+        setTimeout(() => {
+            onCpaLockerSuccess();
+        }, 1500); // Simulate a 1.5 second delay for the locker
     }
-}
+
+    function onCpaLockerSuccess() {
+        isReportUnlocked = true;
+        const result = calculateResult();
+        const secretReportContent = document.getElementById('secret-report-actual-content');
+        const secretReportPlaceholder = document.getElementById('secret-report-content-placeholder');
+        const unlockButton = document.getElementById('unlock-button');
+        const lockOverlay = unlockButton.closest('.absolute.inset-0'); // Get the overlay div
+
+        if (result && result.secretReport) {
+            const strengths = currentLang === 'ar' ? result.secretReport.strengths : result.secretReport.strengths_en;
+            const challenges = currentLang === 'ar' ? result.secretReport.challenges : result.secretReport.challenges_en;
+            const insight = currentLang === 'ar' ? result.secretReport.insight : result.secretReport.insight_en;
+
+            secretReportContent.innerHTML = `
+                <p class="font-bold text-2xl">${currentLang === 'ar' ? 'نقاط القوة المطلقة:' : 'Absolute Strengths:'}</p>
+                <p class="text-slate-300 leading-relaxed">${strengths}</p>
+                <p class="font-bold text-2xl mt-6">${currentLang === 'ar' ? 'التحديات القادمة:' : 'Upcoming Challenges:'}</p>
+                <p class="text-slate-300 leading-relaxed">${challenges}</p>
+                <p class="font-bold text-2xl mt-6">${currentLang === 'ar' ? 'بصيرة خفية:' : 'Hidden Insight:'}</p>
+                <p class="text-slate-300 leading-relaxed">${insight}</p>
+            `;
+            secretReportContent.classList.remove('hidden');
+            secretReportPlaceholder.classList.add('hidden');
+            
+            // Hide the lock overlay and update button text
+            if (lockOverlay) {
+                lockOverlay.classList.add('hidden');
+            }
+            if (unlockButton) {
+                unlockButton.innerHTML = `<i class="fas fa-check-circle mr-2"></i> ${currentLang === 'ar' ? 'تم فتح التقرير!' : 'Report Unlocked!'}`;
+                unlockButton.classList.remove('pulse-button', 'bg-gradient-to-r', 'from-purple-600', 'to-pink-600', 'hover:from-purple-500', 'hover:to-pink-500', 'shadow-purple-600/40');
+                unlockButton.classList.add('bg-green-600', 'hover:bg-green-700', 'shadow-green-600/40');
+                unlockButton.onclick = null; // Disable further clicks
+            }
+        } else {
+            alert(currentLang === 'ar' ? 'عذراً، لا يوجد تقرير سري لهذا الكائن.' : 'Sorry, no secret report available for this creature.');
+        }
+    }
 
 function shareResult() {
     const result = calculateResult();
