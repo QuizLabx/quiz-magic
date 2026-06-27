@@ -382,8 +382,9 @@ function toggleArticle() {
         const result = calculateResult();
         const secretReportContent = document.getElementById('secret-report-actual-content');
         const secretReportPlaceholder = document.getElementById('secret-report-content-placeholder');
-        const unlockButton = document.getElementById('unlock-button');
-        const lockOverlay = unlockButton.closest('.absolute.inset-0'); // Get the overlay div
+        
+        // التعديل هنا: البحث عن شاشة القفل/التحميل بطريقة صحيحة لإخفائها
+        const lockOverlay = secretReportPlaceholder.previousElementSibling;
 
         if (result && result.secretReport) {
             const strengths = currentLang === 'ar' ? result.secretReport.strengths : result.secretReport.strengths_en;
@@ -401,15 +402,9 @@ function toggleArticle() {
             secretReportContent.classList.remove('hidden');
             secretReportPlaceholder.classList.add('hidden');
             
-            // Hide the lock overlay and update button text
+            // إخفاء شاشة التحميل وإظهار التقرير
             if (lockOverlay) {
                 lockOverlay.classList.add('hidden');
-            }
-            if (unlockButton) {
-                unlockButton.innerHTML = `<i class="fas fa-check-circle mr-2"></i> ${currentLang === 'ar' ? 'تم فتح التقرير!' : 'Report Unlocked!'}`;
-                unlockButton.classList.remove('pulse-button', 'bg-gradient-to-r', 'from-purple-600', 'to-pink-600', 'hover:from-purple-500', 'hover:to-pink-500', 'shadow-purple-600/40');
-                unlockButton.classList.add('bg-green-600', 'hover:bg-green-700', 'shadow-green-600/40');
-                unlockButton.onclick = null; // Disable further clicks
             }
         } else {
             alert(currentLang === 'ar' ? 'عذراً، لا يوجد تقرير سري لهذا الكائن.' : 'Sorry, no secret report available for this creature.');
