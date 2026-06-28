@@ -241,11 +241,29 @@ function calculateResult() {
         }
     }
 
-    return currentQuiz.results.find(r => r.id === winnerId) || currentQuiz.results[0];
+    // Calculate Radar Chart Data
+    const radarData = {
+        power: (traitScores['power'] || 0) + (traitScores['intensity'] || 0) + (traitScores['leadership'] || 0),
+        wisdom: (traitScores['wisdom'] || 0) + (traitScores['knowledge'] || 0) + (traitScores['analysis'] || 0),
+        mystery: (traitScores['mystery'] || 0) + (traitScores['intuition'] || 0) + (traitScores['curiosity'] || 0),
+        purity: (traitScores['purity'] || 0) + (traitScores['altruism'] || 0) + (traitScores['nature'] || 0),
+        leadership: (traitScores['leadership'] || 0) + (traitScores['strategy'] || 0) + (traitScores['honesty'] || 0),
+        adaptation: (traitScores['adaptation'] || 0) + (traitScores['energy'] || 0) + (traitScores['exploration'] || 0)
+    };
+
+    // Normalize to 0-100
+    for (let key in radarData) {
+        radarData[key] = Math.min(100, Math.max(20, (radarData[key] / 15) * 100));
+    }
+
+    return {
+        creature: currentQuiz.results.find(r => r.id === winnerId) || currentQuiz.results[0],
+        radar: radarData
+    };
 }
 
 function showResult() {
-    const result = calculateResult();
+    const { creature, radar } = calculateResult();
     document.getElementById('quiz-container').classList.add('hidden');
     const container = document.getElementById('result-container');
     container.classList.remove('hidden');
@@ -253,15 +271,26 @@ function showResult() {
     container.innerHTML = `
         <div class="bg-slate-800/80 rounded-[2.5rem] overflow-hidden border border-slate-700/50 shadow-2xl result-glow mb-12">
             <div class="relative h-80 md:h-[30rem]">
-                <img src="${result.image}" class="w-full h-full object-cover">
+                <img src="${creature.image}" class="w-full h-full object-cover">
                 <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent"></div>
                 <div class="absolute bottom-10 left-0 right-0 px-8 text-center">
-                    <span class="bg-purple-600/90 backdrop-blur-md text-white px-5 py-2 rounded-full text-sm font-bold mb-4 inline-block shadow-lg uppercase tracking-widest border border-white/20">${result.rarity}</span>
-                    <h2 class="text-5xl md:text-7xl font-black text-white drop-shadow-2xl mb-2">${result.name}</h2>
+                    <span class="bg-purple-600/90 backdrop-blur-md text-white px-5 py-2 rounded-full text-sm font-bold mb-4 inline-block shadow-lg uppercase tracking-widest border border-white/20">${creature.rarity}</span>
+                    <h2 class="text-5xl md:text-7xl font-black text-white drop-shadow-2xl mb-2">${creature.name}</h2>
                     <p class="text-purple-300 font-bold text-xl">${currentLang === 'ar' ? 'هذا هو كائنك الأسطوري الحقيقي' : 'This is your true mythical essence'}</p>
                 </div>
             </div>
+            
             <div class="p-8 md:p-14">
+                <!-- Radar Chart Section -->
+                <div class="mb-16">
+                    <h3 class="text-3xl font-bold text-white mb-10 text-center">
+                        ${currentLang === 'ar' ? 'خارطة القوى الروحية' : 'Spiritual Power Map'}
+                    </h3>
+                    <div class="max-w-md mx-auto bg-slate-900/40 p-6 rounded-[2rem] border border-slate-700/30 shadow-inner">
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                </div>
+
                 <div class="mb-12">
                     <div class="inline-block p-3 bg-purple-600/10 rounded-2xl mb-6">
                         <i class="fas fa-fingerprint text-3xl text-purple-500"></i>
@@ -269,7 +298,7 @@ function showResult() {
                     <h3 class="text-3xl font-bold text-white mb-6">
                         ${currentLang === 'ar' ? 'التحليل النفسي العميق' : 'Deep Psychological Analysis'}
                     </h3>
-                    <p class="text-xl text-slate-300 leading-relaxed text-center italic">"${result.description}"</p>
+                    <p class="text-xl text-slate-300 leading-relaxed text-center italic">"${creature.description}"</p>
                 </div>
                 
                 <div class="relative p-1 bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 rounded-[2rem] overflow-hidden shadow-2xl">
@@ -288,153 +317,117 @@ function showResult() {
                         </div>
                         <div id="secret-report-content-placeholder" class="opacity-5 select-none blur-md text-start space-y-6">
                             <p class="font-bold text-2xl">${currentLang === 'ar' ? 'بيانات تحليل العقل الباطن:' : 'Subconscious Mapping Data:'}</p>
-                            <p>${currentLang === 'ar' ? 'بناءً على تقييمك المكون من 30 نقطة، تظهر مساراتك العصبية توافقاً كبيراً مع النماذج الأصلية القديمة. يشير هيمنتك في سمات محددة إلى مصفوفة شخصية نادرة توجد في 2% فقط من السكان.' : 'Based on your 30-point assessment, your neural pathways show a significant alignment with ancient archetypes. Your dominance in specific traits indicates a rare personality matrix found in only 2% of the population.'}</p>
-                            <p>${currentLang === 'ar' ? 'الملف النفسي: مرونة عالية، ذكاء تكيفي، وتوقيع عاطفي فريد يتردد صداه مع العالم الأسطوري.' : 'Psychological Profile: High resilience, adaptive intelligence, and a unique emotional signature that resonates with the mythical realm.'}</p>
-                        </div>
-                        <div id="secret-report-actual-content" class="hidden text-start space-y-6">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mt-12">
-                    <button onclick="toggleArticle()" class="w-full py-5 bg-slate-700/20 hover:bg-slate-700/40 border border-slate-600/30 rounded-2xl transition-all flex items-center justify-center gap-4 font-bold text-xl group">
-                        <i class="fas fa-scroll text-purple-400 group-hover:scale-110 transition-transform"></i> 
-                        <span>${currentLang === 'ar' ? 'أساطير وحقائق عن كائنك' : 'Myths & Facts About Your Creature'}</span>
-                        <i id="article-icon" class="fas fa-chevron-down text-sm transition-transform"></i>
-                    </button>
-                    <div id="article-content" class="hidden mt-8 p-8 bg-slate-900/60 rounded-[2rem] border border-slate-700/50 text-slate-300 leading-relaxed text-start text-lg">
-                        <div class="prose prose-invert max-w-none">
-                            ${result.article}
+                            <p>${currentLang === 'ar' ? 'بناءً على تقييمك المكون من 40 نقطة، تظهر مساراتك العصبية توافقاً كبيراً مع النماذج الأصلية القديمة.' : 'Based on your 40-point assessment, your neural pathways show significant alignment with ancient archetypes.'}</p>
+                            <div class="h-4 bg-slate-800 rounded w-3/4"></div>
+                            <div class="h-4 bg-slate-800 rounded w-1/2"></div>
+                            <div class="h-4 bg-slate-800 rounded w-5/6"></div>
                         </div>
                     </div>
-                </div>
-                
-                <div class="mt-16 flex flex-col sm:flex-row gap-6 justify-center">
-                    <button onclick="location.reload()" class="bg-slate-700/40 hover:bg-slate-700 text-white px-10 py-4 rounded-2xl transition-all border border-slate-600/50 flex items-center justify-center gap-3 font-bold text-lg">
-                        <i class="fas fa-undo-alt text-sm"></i> ${currentLang === 'ar' ? 'إعادة الاختبار' : 'Retake Quiz'}
-                    </button>
-                    <button onclick="shareResult()" class="bg-green-600 hover:bg-green-700 text-white px-10 py-4 rounded-2xl transition-all flex items-center justify-center gap-3 font-bold text-lg shadow-xl shadow-green-600/30">
-                        <i class="fab fa-whatsapp text-2xl"></i> ${currentLang === 'ar' ? 'شارك النتيجة' : 'Share Result'}
-                    </button>
                 </div>
             </div>
         </div>
+        <div class="flex justify-center mb-20">
+            <button onclick="location.reload()" class="bg-slate-800 hover:bg-slate-700 text-white px-10 py-4 rounded-2xl font-bold transition-all border border-slate-700 shadow-xl">
+                <i class="fas fa-redo-alt mr-2"></i> ${currentLang === 'ar' ? 'إعادة الاختبار' : 'Retake Quiz'}
+            </button>
+        </div>
     `;
+
+    renderRadarChart(radar);
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function toggleArticle() {
-    const content = document.getElementById('article-content');
-    const icon = document.getElementById('article-icon');
-    content.classList.toggle('hidden');
-    icon.classList.toggle('rotate-180');
+function renderRadarChart(data) {
+    const ctx = document.getElementById('radarChart').getContext('2d');
+    
+    const labels = currentLang === 'ar' 
+        ? ['القوة', 'الحكمة', 'الغموض', 'النقاء', 'القيادة', 'التكيف']
+        : ['Power', 'Wisdom', 'Mystery', 'Purity', 'Leadership', 'Adaptation'];
+
+    new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: currentLang === 'ar' ? 'نسبة القوى' : 'Power Levels',
+                data: [data.power, data.wisdom, data.mystery, data.purity, data.leadership, data.adaptation],
+                backgroundColor: 'rgba(147, 51, 234, 0.2)',
+                borderColor: 'rgba(168, 85, 247, 1)',
+                borderWidth: 3,
+                pointBackgroundColor: 'rgba(236, 72, 153, 1)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(236, 72, 153, 1)',
+                pointRadius: 4
+            }]
+        },
+        options: {
+            scales: {
+                r: {
+                    angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                    pointLabels: {
+                        color: '#cbd5e1',
+                        font: { size: 14, family: 'Cairo' }
+                    },
+                    ticks: { display: false, stepSize: 20 },
+                    suggestedMin: 0,
+                    suggestedMax: 100
+                }
+            },
+            plugins: {
+                legend: { display: false }
+            },
+            animation: {
+                duration: 2000,
+                easing: 'easeOutQuart'
+            }
+        }
+    });
 }
 
-let isReportUnlocked = false;
-
 function callCPALocker() {
-    if (isReportUnlocked) return;
-    const unlockButton = document.getElementById('unlock-button');
-    const lockOverlay = unlockButton.closest('.absolute.inset-0');
+    // Fake loading for effect
+    const btn = document.getElementById('unlock-button');
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = `<i class="fas fa-spinner animate-spin"></i> ${currentLang === 'ar' ? 'جاري التحميل...' : 'Loading...'}`;
     
-    lockOverlay.innerHTML = `
-        <div class="w-full max-w-sm mx-auto text-center">
-            <div class="mb-4">
-                <i class="fas fa-cog fa-spin text-4xl text-purple-500 mb-3"></i>
-                <h3 id="loading-text" class="text-xl font-bold text-white">
-                    ${currentLang === 'ar' ? 'جاري الاتصال بقاعدة البيانات...' : 'Connecting to database...'}
-                </h3>
-            </div>
-            <div class="w-full bg-slate-800 rounded-full h-4 mb-2 border border-slate-600 overflow-hidden">
-                <div id="fake-progress-bar" class="bg-gradient-to-r from-purple-600 to-pink-600 h-4 rounded-full transition-all duration-300" style="width: 0%"></div>
-            </div>
-            <p id="progress-percentage" class="text-slate-400 text-sm font-bold">0%</p>
-        </div>
-    `;
-
-    const progressBar = document.getElementById('fake-progress-bar');
-    const progressText = document.getElementById('progress-percentage');
-    const loadingText = document.getElementById('loading-text');
-    let progress = 0;
-    
-    const interval = setInterval(() => {
-        progress += Math.floor(Math.random() * 15) + 5; 
-        if (progress >= 100) {
-            progress = 100;
-            clearInterval(interval);
-            setTimeout(() => {
-                alert(currentLang === 'ar' ? 'سيتم تفعيل قفل المحتوى هنا لعرض العروض! (محاكاة للفتح)' : 'Content locker will be activated here! (Simulating unlock)');
-                setTimeout(() => { onCpaLockerSuccess(); }, 1500);
-            }, 500);
-        }
-        progressBar.style.width = `${progress}%`;
-        progressText.innerText = `${progress}%`;
-        if (progress > 30 && progress < 70) {
-            loadingText.innerText = currentLang === 'ar' ? 'جاري فك تشفير التقرير السري...' : 'Decrypting secret report...';
-        } else if (progress >= 70) {
-            loadingText.innerText = currentLang === 'ar' ? 'جاري تجهيز العروض المتاحة...' : 'Preparing available offers...';
-        }
-    }, 600);
+    setTimeout(() => {
+        alert(currentLang === 'ar' ? 'سيتم تفعيل قفل المحتوى هنا لعرض العروض! (محاكاة للفتح)' : 'CPA Locker will be triggered here! (Simulation)');
+        onCpaLockerSuccess();
+    }, 2000);
 }
 
 function onCpaLockerSuccess() {
-    isReportUnlocked = true;
-    const result = calculateResult();
-    const secretReportContent = document.getElementById('secret-report-actual-content');
-    const secretReportPlaceholder = document.getElementById('secret-report-content-placeholder');
-    const lockOverlay = secretReportPlaceholder.previousElementSibling;
-
-    if (result && result.secretReport) {
-        const strengths = currentLang === 'ar' ? result.secretReport.strengths : result.secretReport.strengths_en;
-        const challenges = currentLang === 'ar' ? result.secretReport.challenges : result.secretReport.challenges_en;
-        const insight = currentLang === 'ar' ? result.secretReport.insight : result.secretReport.insight_en;
-
-        secretReportContent.innerHTML = `
-            <p class="font-bold text-2xl">${currentLang === 'ar' ? 'نقاط القوة المطلقة:' : 'Absolute Strengths:'}</p>
-            <p class="text-slate-300 leading-relaxed">${strengths}</p>
-            <p class="font-bold text-2xl mt-6">${currentLang === 'ar' ? 'التحديات القادمة:' : 'Upcoming Challenges:'}</p>
-            <p class="text-slate-300 leading-relaxed">${challenges}</p>
-            <p class="font-bold text-2xl mt-6">${currentLang === 'ar' ? 'بصيرة خفية:' : 'Hidden Insight:'}</p>
-            <p class="text-slate-300 leading-relaxed">${insight}</p>
-        `;
-        secretReportContent.classList.remove('hidden');
-        secretReportPlaceholder.classList.add('hidden');
-        if (lockOverlay) lockOverlay.classList.add('hidden');
-    }
-}
-
-function shareResult() {
-    const result = calculateResult();
-    const creatureName = result.name;
-    const url = window.location.href;
-    const modal = document.createElement('div');
-    modal.className = 'fixed inset-0 bg-black/60 flex items-center justify-center z-50 backdrop-blur-sm';
-    modal.innerHTML = `
-        <div class="bg-slate-800 rounded-3xl p-8 max-w-md w-full mx-4 border border-slate-700 shadow-2xl">
-            <h3 class="text-2xl font-bold text-white mb-6 text-center">${currentLang === 'ar' ? 'شارك النتيجة' : 'Share Your Result'}</h3>
-            <p class="text-slate-300 text-center mb-8">${currentLang === 'ar' ? 'أنت كائن أسطوري:' : 'You are a mythical creature:'} <strong class="text-purple-400">${creatureName}</strong></p>
-            <div class="space-y-4">
-                <button onclick="shareOnWhatsApp('${creatureName}', '${url}')" class="w-full bg-green-600 hover:bg-green-700 text-white py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-3 text-lg"><i class="fab fa-whatsapp"></i> WhatsApp</button>
-                <button onclick="shareOnFacebook('${url}')" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-3 text-lg"><i class="fab fa-facebook"></i> Facebook</button>
-                <button onclick="shareOnTwitter('${creatureName}', '${url}')" class="w-full bg-sky-500 hover:bg-sky-600 text-white py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-3 text-lg"><i class="fab fa-twitter"></i> Twitter</button>
-                <button onclick="this.closest('.fixed').remove()" class="w-full bg-slate-700 hover:bg-slate-600 text-white py-4 rounded-xl font-bold transition-all">${currentLang === 'ar' ? 'إغلاق' : 'Close'}</button>
+    // This will be called when the CPA offer is completed
+    const result = calculateResult().creature;
+    const placeholder = document.getElementById('secret-report-content-placeholder');
+    const unlockOverlay = placeholder.previousElementSibling;
+    
+    unlockOverlay.style.display = 'none';
+    placeholder.classList.remove('opacity-5', 'select-none', 'blur-md');
+    placeholder.classList.add('opacity-100');
+    
+    placeholder.innerHTML = `
+        <div class="space-y-8 animate-fade-in">
+            <div class="border-l-4 border-purple-500 pl-6 py-2 bg-purple-500/5 rounded-r-xl">
+                <h4 class="text-purple-400 font-bold text-xl mb-3">${currentLang === 'ar' ? 'نقاط القوة المطلقة' : 'Absolute Strengths'}</h4>
+                <p class="text-slate-200 text-lg leading-relaxed">${result.secretReport.strengths}</p>
+            </div>
+            
+            <div class="border-l-4 border-pink-500 pl-6 py-2 bg-pink-500/5 rounded-r-xl">
+                <h4 class="text-pink-400 font-bold text-xl mb-3">${currentLang === 'ar' ? 'التحديات الكبرى' : 'Major Challenges'}</h4>
+                <p class="text-slate-200 text-lg leading-relaxed">${result.secretReport.challenges}</p>
+            </div>
+            
+            <div class="bg-gradient-to-r from-slate-800 to-slate-800/50 p-8 rounded-3xl border border-slate-700/50">
+                <h4 class="text-white font-bold text-xl mb-4 flex items-center">
+                    <i class="fas fa-lightbulb text-yellow-400 mr-3"></i>
+                    ${currentLang === 'ar' ? 'نصيحة روحية لك' : 'Spiritual Insight for You'}
+                </h4>
+                <p class="text-slate-300 text-lg italic leading-relaxed">"${result.secretReport.insight}"</p>
             </div>
         </div>
     `;
-    document.body.appendChild(modal);
-    modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
-}
-
-function shareOnWhatsApp(creatureName, url) {
-    const text = currentLang === 'ar' ? `🐉 اكتشفت كائني الأسطوري الحقيقي! أنا كائن: ${creatureName}\n\nهل تريد معرفة كائنك الأسطوري؟ جرب الاختبار الآن:` : `🐉 I discovered my true mythical creature! I am: ${creatureName}\n\nWant to find out your mythical creature? Take the test now:`;
-    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text + " " + url)}`, '_blank');
-}
-
-function shareOnFacebook(url) {
-    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank', 'width=600,height=400');
-}
-
-function shareOnTwitter(creatureName, url) {
-    const text = currentLang === 'ar' ? `🐉 اكتشفت كائني الأسطوري الحقيقي! أنا كائن: ${creatureName}. جرب الاختبار لتعرف كائنك الأسطوري!` : `🐉 I discovered my true mythical creature! I am: ${creatureName}. Take the test to find your mythical creature!`;
-    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
 }
