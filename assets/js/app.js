@@ -185,52 +185,86 @@ function showLoading() {
     setTimeout(showResult, 3500);
 }
 
+/**
+ * نظام الأوزان الذكي (Weighted Scoring System)
+ * كل صفة تساهم بنسب مختلفة في كائنات متعددة لزيادة دقة التحليل
+ */
 function calculateResult() {
+    // خطوة 1: حساب مجموع نقاط كل صفة (Trait)
     const traitScores = {};
     userResponses.forEach(resp => {
         traitScores[resp.trait] = (traitScores[resp.trait] || 0) + resp.value;
     });
 
-    const traitToCreature = {
-        leadership: 'dragon',
-        protection: 'cerberus',
-        analysis: 'kraken',
-        knowledge: 'owl_of_athena',
-        wisdom: 'owl_of_athena',
-        ambition: 'simurgh',
-        perfection: 'simurgh',
-        mystery: 'sphinx',
-        curiosity: 'sphinx',
-        stability: 'golem',
-        tradition: 'golem',
-        social: 'kitsune',
-        adaptation: 'kitsune',
-        purity: 'unicorn',
-        altruism: 'unicorn',
-        exploration: 'pegasus',
-        energy: 'pegasus',
-        honesty: 'valkyrie',
-        potential: 'valkyrie',
-        nature: 'faun',
-        composure: 'faun',
-        potential: 'phoenix',
-        intensity: 'phoenix',
-        elegance: 'siren',
-        intuition: 'siren',
-        persistence: 'hydra',
-        power: 'hydra',
-        strategy: 'centaur',
-        logic: 'centaur'
+    // خطوة 2: نظام الأوزان - كل صفة تؤثر في عدة كائنات بنسب مختلفة
+    const weightedTraitToCreature = {
+        // القيادة والقوة
+        leadership: { dragon: 1.5, valkyrie: 1.0, simurgh: 0.8, centaur: 0.6 },
+        power: { dragon: 1.3, hydra: 1.0, valkyrie: 0.9, cerberus: 0.7 },
+        intensity: { phoenix: 1.2, dragon: 1.0, hydra: 0.8, siren: 0.6 },
+        
+        // الحكمة والمعرفة
+        knowledge: { owl_of_athena: 1.5, simurgh: 1.2, sphinx: 1.0, centaur: 0.7 },
+        wisdom: { owl_of_athena: 1.4, simurgh: 1.3, sphinx: 0.9, kraken: 0.6 },
+        analysis: { sphinx: 1.3, kraken: 1.1, owl_of_athena: 1.0, centaur: 0.7 },
+        
+        // الغموض والحدس
+        mystery: { sphinx: 1.4, kraken: 1.2, siren: 1.0, kitsune: 0.9 },
+        intuition: { siren: 1.3, sphinx: 0.9, kitsune: 0.8, phoenix: 0.7 },
+        curiosity: { sphinx: 0.8, pegasus: 1.1, kraken: 0.7, simurgh: 0.9 },
+        
+        // النقاء والخير
+        purity: { unicorn: 1.5, phoenix: 0.9, valkyrie: 0.8, pegasus: 0.7 },
+        altruism: { unicorn: 1.4, phoenix: 1.0, faun: 0.8, valkyrie: 0.7 },
+        
+        // الاستقرار والتقاليد
+        stability: { golem: 1.5, centaur: 0.8, faun: 0.6, kraken: 0.5 },
+        tradition: { golem: 1.3, centaur: 0.9, valkyrie: 0.7, simurgh: 0.6 },
+        
+        // الاجتماعية والتكيف
+        social: { kitsune: 1.3, faun: 1.1, unicorn: 0.9, pegasus: 0.7 },
+        adaptation: { kitsune: 1.4, phoenix: 1.1, faun: 1.0, pegasus: 0.8 },
+        
+        // الاستكشاف والحرية
+        exploration: { pegasus: 1.4, kraken: 0.8, kitsune: 0.9, simurgh: 0.7 },
+        energy: { pegasus: 1.2, phoenix: 1.0, dragon: 0.8, faun: 0.9 },
+        
+        // الشرف والنزاهة
+        honesty: { valkyrie: 1.4, unicorn: 1.0, dragon: 0.8, centaur: 0.7 },
+        potential: { valkyrie: 1.2, simurgh: 1.0, phoenix: 0.9, pegasus: 0.8 },
+        
+        // الطبيعة والراحة
+        nature: { faun: 1.5, unicorn: 1.0, golem: 0.8, pegasus: 0.7 },
+        composure: { faun: 1.1, golem: 1.2, sphinx: 0.9, siren: 0.8 },
+        
+        // الحماية والولاء
+        protection: { cerberus: 1.5, dragon: 1.0, valkyrie: 0.9, golem: 0.7 },
+        
+        // الاستراتيجية والمنطق
+        strategy: { centaur: 1.3, kraken: 1.1, sphinx: 0.9, kitsune: 0.8 },
+        logic: { centaur: 1.2, owl_of_athena: 1.0, sphinx: 0.9, golem: 0.7 },
+        
+        // الجمال والأناقة
+        elegance: { siren: 1.4, unicorn: 1.0, phoenix: 0.8, kitsune: 0.9 },
+        
+        // الكمال والإصرار
+        perfection: { simurgh: 1.3, phoenix: 0.9, valkyrie: 0.8, centaur: 0.7 },
+        persistence: { hydra: 1.5, phoenix: 1.0, valkyrie: 0.9, golem: 0.8 }
     };
 
+    // خطوة 3: تطبيق الأوزان وحساب نقاط كل كائن
     const creatureScores = {};
     for (const trait in traitScores) {
-        const creatureId = traitToCreature[trait];
-        if (creatureId) {
-            creatureScores[creatureId] = (creatureScores[creatureId] || 0) + traitScores[trait];
+        const weights = weightedTraitToCreature[trait];
+        if (weights) {
+            for (const creatureId in weights) {
+                const weight = weights[creatureId];
+                creatureScores[creatureId] = (creatureScores[creatureId] || 0) + (traitScores[trait] * weight);
+            }
         }
     }
 
+    // خطوة 4: إيجاد الكائن الذي حصل على أعلى نقاط
     let maxScore = -1;
     let winnerId = 'dragon';
 
@@ -241,23 +275,35 @@ function calculateResult() {
         }
     }
 
-    // Calculate Radar Chart Data
+    // خطوة 5: حساب بيانات الرادار (Radar Chart)
     const radarData = {
-        power: (traitScores['power'] || 0) + (traitScores['intensity'] || 0) + (traitScores['leadership'] || 0),
-        wisdom: (traitScores['wisdom'] || 0) + (traitScores['knowledge'] || 0) + (traitScores['analysis'] || 0),
-        mystery: (traitScores['mystery'] || 0) + (traitScores['intuition'] || 0) + (traitScores['curiosity'] || 0),
-        purity: (traitScores['purity'] || 0) + (traitScores['altruism'] || 0) + (traitScores['nature'] || 0),
-        leadership: (traitScores['leadership'] || 0) + (traitScores['strategy'] || 0) + (traitScores['honesty'] || 0),
-        adaptation: (traitScores['adaptation'] || 0) + (traitScores['energy'] || 0) + (traitScores['exploration'] || 0)
+        power: ((traitScores['power'] || 0) + (traitScores['intensity'] || 0) + (traitScores['leadership'] || 0)) * 1.2,
+        wisdom: ((traitScores['wisdom'] || 0) + (traitScores['knowledge'] || 0) + (traitScores['analysis'] || 0)) * 1.2,
+        mystery: ((traitScores['mystery'] || 0) + (traitScores['intuition'] || 0) + (traitScores['curiosity'] || 0)) * 1.2,
+        purity: ((traitScores['purity'] || 0) + (traitScores['altruism'] || 0) + (traitScores['nature'] || 0)) * 1.2,
+        leadership: ((traitScores['leadership'] || 0) + (traitScores['strategy'] || 0) + (traitScores['honesty'] || 0)) * 1.2,
+        adaptation: ((traitScores['adaptation'] || 0) + (traitScores['energy'] || 0) + (traitScores['exploration'] || 0)) * 1.2
     };
 
-    // Normalize to 0-100
+    // تطبيع البيانات بين 0-100
     for (let key in radarData) {
-        radarData[key] = Math.min(100, Math.max(20, (radarData[key] / 15) * 100));
+        radarData[key] = Math.min(100, Math.max(20, (radarData[key] / 18) * 100));
+    }
+
+    // البحث عن الكائن في قائمة النتائج
+    const result = currentQuiz.results.find(r => r.id === winnerId);
+    
+    // التعامل مع الحالة النادرة جداً حيث قد لا يكون الكائن موجوداً
+    if (!result) {
+        console.warn(`Warning: Creature with ID "${winnerId}" not found. Using default dragon.`);
+        return {
+            creature: currentQuiz.results[0],
+            radar: radarData
+        };
     }
 
     return {
-        creature: currentQuiz.results.find(r => r.id === winnerId) || currentQuiz.results[0],
+        creature: result,
         radar: radarData
     };
 }
@@ -303,131 +349,128 @@ function showResult() {
                 
                 <div class="relative p-1 bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 rounded-[2rem] overflow-hidden shadow-2xl">
                     <div class="relative p-10 bg-slate-900/95 rounded-[1.8rem] overflow-hidden">
-                        <div class="absolute inset-0 backdrop-blur-sm flex flex-col items-center justify-center p-8 text-center z-10">
+                        <div class="absolute inset-0 backdrop-blur-sm flex flex-col items-center justify-center p-8 text-center z-10" id="lock-overlay">
                             <div class="w-20 h-20 bg-gradient-to-tr from-purple-600 to-pink-600 rounded-full flex items-center justify-center mb-6 border-4 border-white/10 shadow-inner">
                                 <i class="fas fa-lock text-3xl text-white"></i>
                             </div>
                             <h3 class="text-3xl font-bold mb-4 text-white">${currentLang === 'ar' ? 'التقرير السري المتقدم' : 'Advanced Secret Report'}</h3>
-                            <p class="text-slate-300 mb-8 max-w-md mx-auto text-lg leading-relaxed">
-                                ${currentLang === 'ar' ? 'لقد كشفنا عن جوانب مخفية في عقلك الباطن. افتح التقرير الكامل لمعرفة نقاط قوتك المطلقة وتحدياتك القادمة.' : 'We have uncovered hidden aspects of your subconscious. Unlock the full report to see your absolute strengths and upcoming challenges.'}
-                            </p>
-                            <button id="unlock-button" onclick="callCPALocker()" class="pulse-button bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white px-12 py-5 rounded-full font-black text-xl transition-all transform hover:scale-105 shadow-2xl shadow-purple-600/40 border border-white/20">
-                                <i class="fas fa-unlock-alt mr-2"></i> ${currentLang === 'ar' ? 'افتح التقرير الكامل (مجاناً)' : 'Unlock Full Report (Free)'}
+                            <p class="text-slate-300 mb-8 text-lg">${currentLang === 'ar' ? 'اكتشف الحقائق المخفية عن شخصيتك' : 'Discover hidden truths about your personality'}</p>
+                            <button onclick="unlockSecretReport()" class="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold rounded-full transition-all transform hover:scale-105 active:scale-95 shadow-lg pulse-button">
+                                ${currentLang === 'ar' ? '🔓 فتح التقرير السري' : '🔓 Unlock Secret Report'}
                             </button>
                         </div>
-                        <div id="secret-report-content-placeholder" class="opacity-5 select-none blur-md text-start space-y-6">
-                            <p class="font-bold text-2xl">${currentLang === 'ar' ? 'بيانات تحليل العقل الباطن:' : 'Subconscious Mapping Data:'}</p>
-                            <p>${currentLang === 'ar' ? 'بناءً على تقييمك المكون من 40 نقطة، تظهر مساراتك العصبية توافقاً كبيراً مع النماذج الأصلية القديمة.' : 'Based on your 40-point assessment, your neural pathways show significant alignment with ancient archetypes.'}</p>
-                            <div class="h-4 bg-slate-800 rounded w-3/4"></div>
-                            <div class="h-4 bg-slate-800 rounded w-1/2"></div>
-                            <div class="h-4 bg-slate-800 rounded w-5/6"></div>
+                        <div class="relative z-0 hidden" id="secret-report-actual-content">
+                            <h4 class="text-2xl font-bold text-purple-400 mb-6 text-center">${currentLang === 'ar' ? 'نقاط قوتك' : 'Your Strengths'}</h4>
+                            <p class="text-slate-200 mb-8 text-lg leading-relaxed text-center">${creature.secretReport.strengths}</p>
+                            
+                            <h4 class="text-2xl font-bold text-pink-400 mb-6 text-center">${currentLang === 'ar' ? 'التحديات التي تواجهها' : 'Challenges You Face'}</h4>
+                            <p class="text-slate-200 mb-8 text-lg leading-relaxed text-center">${creature.secretReport.challenges}</p>
+                            
+                            <h4 class="text-2xl font-bold text-blue-400 mb-6 text-center">${currentLang === 'ar' ? 'الرؤية الحكيمة' : 'Wise Insight'}</h4>
+                            <p class="text-slate-200 text-lg leading-relaxed text-center italic">"${creature.secretReport.insight}"</p>
                         </div>
                     </div>
                 </div>
+
+                <div class="mt-12 p-8 bg-slate-800/50 rounded-2xl border border-slate-700/30">
+                    <h3 class="text-2xl font-bold text-white mb-6">${currentLang === 'ar' ? 'المقالة الكاملة' : 'Full Article'}</h3>
+                    <p class="text-slate-300 leading-relaxed text-lg">${creature.article}</p>
+                </div>
+
+                <div class="mt-12 flex gap-4 justify-center flex-wrap">
+                    <button onclick="location.reload()" class="px-8 py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-full transition-all transform hover:scale-105 active:scale-95">
+                        ${currentLang === 'ar' ? '🔄 اختبار آخر' : '🔄 Another Quiz'}
+                    </button>
+                    <button onclick="shareResult()" class="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-full transition-all transform hover:scale-105 active:scale-95">
+                        ${currentLang === 'ar' ? '📤 شارك النتيجة' : '📤 Share Result'}
+                    </button>
+                </div>
             </div>
-        </div>
-        <div class="flex justify-center mb-20">
-            <button onclick="location.reload()" class="bg-slate-800 hover:bg-slate-700 text-white px-10 py-4 rounded-2xl font-bold transition-all border border-slate-700 shadow-xl">
-                <i class="fas fa-redo-alt mr-2"></i> ${currentLang === 'ar' ? 'إعادة الاختبار' : 'Retake Quiz'}
-            </button>
         </div>
     `;
 
+    // رسم الرادار
     renderRadarChart(radar);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function unlockSecretReport() {
+    const lockOverlay = document.getElementById('lock-overlay');
+    const secretContent = document.getElementById('secret-report-actual-content');
+    
+    lockOverlay.classList.add('lock-overlay-hidden');
+    setTimeout(() => {
+        lockOverlay.classList.add('hidden');
+        secretContent.classList.remove('hidden');
+    }, 500);
 }
 
 function renderRadarChart(data) {
     const ctx = document.getElementById('radarChart').getContext('2d');
     
-    const labels = currentLang === 'ar' 
-        ? ['القوة', 'الحكمة', 'الغموض', 'النقاء', 'القيادة', 'التكيف']
-        : ['Power', 'Wisdom', 'Mystery', 'Purity', 'Leadership', 'Adaptation'];
-
     new Chart(ctx, {
         type: 'radar',
         data: {
-            labels: labels,
+            labels: [
+                currentLang === 'ar' ? 'القوة' : 'Power',
+                currentLang === 'ar' ? 'الحكمة' : 'Wisdom',
+                currentLang === 'ar' ? 'الغموض' : 'Mystery',
+                currentLang === 'ar' ? 'النقاء' : 'Purity',
+                currentLang === 'ar' ? 'القيادة' : 'Leadership',
+                currentLang === 'ar' ? 'التكيف' : 'Adaptation'
+            ],
             datasets: [{
-                label: currentLang === 'ar' ? 'نسبة القوى' : 'Power Levels',
+                label: currentLang === 'ar' ? 'ملفك الروحي' : 'Your Spiritual Profile',
                 data: [data.power, data.wisdom, data.mystery, data.purity, data.leadership, data.adaptation],
-                backgroundColor: 'rgba(147, 51, 234, 0.2)',
-                borderColor: 'rgba(168, 85, 247, 1)',
-                borderWidth: 3,
-                pointBackgroundColor: 'rgba(236, 72, 153, 1)',
+                borderColor: 'rgba(168, 85, 247, 0.8)',
+                backgroundColor: 'rgba(168, 85, 247, 0.2)',
+                borderWidth: 2,
+                pointBackgroundColor: 'rgba(168, 85, 247, 1)',
                 pointBorderColor: '#fff',
-                pointHoverBackgroundColor: '#fff',
-                pointHoverBorderColor: 'rgba(236, 72, 153, 1)',
-                pointRadius: 4
+                pointBorderWidth: 2,
+                pointRadius: 5,
+                pointHoverRadius: 7
             }]
         },
         options: {
-            scales: {
-                r: {
-                    angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
-                    grid: { color: 'rgba(255, 255, 255, 0.1)' },
-                    pointLabels: {
-                        color: '#cbd5e1',
-                        font: { size: 14, family: 'Cairo' }
-                    },
-                    ticks: { display: false, stepSize: 20 },
-                    suggestedMin: 0,
-                    suggestedMax: 100
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: 'rgba(226, 232, 240, 0.8)',
+                        font: { size: 12, weight: 'bold' }
+                    }
                 }
             },
-            plugins: {
-                legend: { display: false }
-            },
-            animation: {
-                duration: 2000,
-                easing: 'easeOutQuart'
+            scales: {
+                r: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: {
+                        color: 'rgba(148, 163, 184, 0.6)',
+                        font: { size: 10 }
+                    },
+                    grid: {
+                        color: 'rgba(100, 116, 139, 0.2)'
+                    }
+                }
             }
         }
     });
 }
 
-function callCPALocker() {
-    // Fake loading for effect
-    const btn = document.getElementById('unlock-button');
-    const originalText = btn.innerHTML;
-    btn.disabled = true;
-    btn.innerHTML = `<i class="fas fa-spinner animate-spin"></i> ${currentLang === 'ar' ? 'جاري التحميل...' : 'Loading...'}`;
+function shareResult() {
+    const text = currentLang === 'ar' 
+        ? `لقد اكتشفت أنني ${document.querySelector('h2').innerText}! جرب اختبار QuizMagic الآن واكتشف كائنك الأسطوري الحقيقي 🐉`
+        : `I discovered I'm a ${document.querySelector('h2').innerText}! Try QuizMagic now and discover your true mythical creature 🐉`;
     
-    setTimeout(() => {
-        alert(currentLang === 'ar' ? 'سيتم تفعيل قفل المحتوى هنا لعرض العروض! (محاكاة للفتح)' : 'CPA Locker will be triggered here! (Simulation)');
-        onCpaLockerSuccess();
-    }, 2000);
-}
-
-function onCpaLockerSuccess() {
-    // This will be called when the CPA offer is completed
-    const result = calculateResult().creature;
-    const placeholder = document.getElementById('secret-report-content-placeholder');
-    const unlockOverlay = placeholder.previousElementSibling;
-    
-    unlockOverlay.style.display = 'none';
-    placeholder.classList.remove('opacity-5', 'select-none', 'blur-md');
-    placeholder.classList.add('opacity-100');
-    
-    placeholder.innerHTML = `
-        <div class="space-y-8 animate-fade-in">
-            <div class="border-l-4 border-purple-500 pl-6 py-2 bg-purple-500/5 rounded-r-xl">
-                <h4 class="text-purple-400 font-bold text-xl mb-3">${currentLang === 'ar' ? 'نقاط القوة المطلقة' : 'Absolute Strengths'}</h4>
-                <p class="text-slate-200 text-lg leading-relaxed">${result.secretReport.strengths}</p>
-            </div>
-            
-            <div class="border-l-4 border-pink-500 pl-6 py-2 bg-pink-500/5 rounded-r-xl">
-                <h4 class="text-pink-400 font-bold text-xl mb-3">${currentLang === 'ar' ? 'التحديات الكبرى' : 'Major Challenges'}</h4>
-                <p class="text-slate-200 text-lg leading-relaxed">${result.secretReport.challenges}</p>
-            </div>
-            
-            <div class="bg-gradient-to-r from-slate-800 to-slate-800/50 p-8 rounded-3xl border border-slate-700/50">
-                <h4 class="text-white font-bold text-xl mb-4 flex items-center">
-                    <i class="fas fa-lightbulb text-yellow-400 mr-3"></i>
-                    ${currentLang === 'ar' ? 'نصيحة روحية لك' : 'Spiritual Insight for You'}
-                </h4>
-                <p class="text-slate-300 text-lg italic leading-relaxed">"${result.secretReport.insight}"</p>
-            </div>
-        </div>
-    `;
+    if (navigator.share) {
+        navigator.share({
+            title: 'QuizMagic',
+            text: text,
+            url: window.location.href
+        });
+    } else {
+        alert(text);
+    }
 }
