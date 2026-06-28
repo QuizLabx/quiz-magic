@@ -340,7 +340,7 @@ function showResult() {
     container.classList.remove('hidden');
 
     container.innerHTML = `
-        <div class="bg-slate-800/80 rounded-[2.5rem] overflow-hidden border border-slate-700/50 shadow-2xl result-glow mb-12 animate-fade-in">
+        <div id="result-card-to-download" class="bg-slate-800/80 rounded-[2.5rem] overflow-hidden border border-slate-700/50 shadow-2xl result-glow mb-12 animate-fade-in">
             <div class="relative h-80 md:h-[30rem]">
                 <img src="${creature.image}" class="w-full h-full object-cover">
                 <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent"></div>
@@ -400,20 +400,46 @@ function showResult() {
                     <h3 class="text-2xl font-bold text-white mb-6">${currentLang === 'ar' ? 'المقالة الكاملة' : 'Full Article'}</h3>
                     <p class="text-slate-300 leading-relaxed text-lg">${creature.article}</p>
                 </div>
-
-                <div class="mt-12 flex gap-4 justify-center flex-wrap">
-                    <button onclick="location.reload()" class="px-8 py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-full transition-all transform hover:scale-105 active:scale-95">
-                        ${currentLang === 'ar' ? '🔄 اختبار آخر' : '🔄 Another Quiz'}
-                    </button>
-                    <button onclick="shareResult()" class="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-full transition-all transform hover:scale-105 active:scale-95">
-                        ${currentLang === 'ar' ? '📤 شارك النتيجة' : '📤 Share Result'}
-                    </button>
-                </div>
             </div>
+        </div>
+
+        <div class="mt-12 flex gap-4 justify-center flex-wrap pb-12">
+            <button onclick="location.reload()" class="px-8 py-3 bg-slate-700 hover:bg-slate-600 text-white font-bold rounded-full transition-all transform hover:scale-105 active:scale-95">
+                ${currentLang === 'ar' ? '🔄 اختبار آخر' : '🔄 Another Quiz'}
+            </button>
+            <button onclick="downloadResultAsImage()" class="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold rounded-full transition-all transform hover:scale-105 active:scale-95 shadow-lg">
+                ${currentLang === 'ar' ? '🖼️ تحميل النتيجة كصورة' : '🖼️ Download as Image'}
+            </button>
+            <button onclick="shareResult()" class="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-full transition-all transform hover:scale-105 active:scale-95">
+                ${currentLang === 'ar' ? '📤 شارك الرابط' : '📤 Share Link'}
+            </button>
         </div>
     `;
 
     renderRadarChart(radar);
+}
+
+function downloadResultAsImage() {
+    const element = document.getElementById('result-card-to-download');
+    const isAr = currentLang === 'ar';
+    
+    // إخفاء القفل مؤقتاً إذا لم يتم فتحه لكي لا يظهر في الصورة بشكل سيء
+    const lockOverlay = document.getElementById('lock-overlay');
+    const wasHidden = lockOverlay.classList.contains('hidden');
+    
+    html2canvas(element, {
+        backgroundColor: '#0f172a',
+        scale: 2, // جودة أعلى
+        logging: false,
+        useCORS: true
+    }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = `QuizMagic-Result-${Date.now()}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        
+        alert(isAr ? 'تم تجهيز صورتك! جاري التحميل...' : 'Your image is ready! Downloading...');
+    });
 }
 
 function unlockSecretReport() {
@@ -514,6 +540,6 @@ function shareResult() {
 
 function copyToClipboard(text) {
     navigator.clipboard.writeText(text).then(() => {
-        alert(currentLang === 'ar' ? 'تم نسخ النتيجة! يمكنك مشاركتها الآن.' : 'Result copied! You can share it now.');
+        alert(currentLang === 'ar' ? 'تم نسخ الرابط! يمكنك مشاركته الآن.' : 'Link copied! You can share it now.');
     });
 }
