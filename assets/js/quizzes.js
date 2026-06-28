@@ -9,7 +9,7 @@ const quizzesData = {
                 id: "mythical-creature",
                 title: "اختبار الكائن الأسطوري",
                 badge: "الأكثر دقة",
-                image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&q=80&w=800",
+                image: "assets/images/dragon.jpg",
                 description: "تحليل نفسي متقدم يربط سماتك الشخصية بأساطير الكائنات القديمة.",
                 questions: [
                     { id: 1, text: "أشعر بالراحة أكثر عندما أكون وحيداً مع أفكاري.", trait: "mystery", type: "likert" },
@@ -158,7 +158,7 @@ const quizzesData = {
                         id: "dragon",
                         name: "التنين العظيم",
                         rarity: "أسطوري",
-                        image: "https://images.unsplash.com/photo-1577493322601-3ae7ee26f8b9?auto=format&fit=crop&q=80&w=800",
+                        image: "assets/images/dragon.jpg",
                         description: "أنت تجسيد للقوة والقيادة. تمتلك روحاً نارية لا تقهر وطموحاً يتجاوز السحاب.",
                         article: "يُعتبر التنين في جميع الثقافات رمزاً للقوة المطلقة والحكمة القديمة. أصحاب هذه الشخصية هم قادة طبيعيون، يمتلكون رؤية بعيدة المدى وقدرة على مواجهة أصعب التحديات دون خوف.",
                         secretReport: {
@@ -171,7 +171,7 @@ const quizzesData = {
                         id: "phoenix",
                         name: "طائر العنقاء",
                         rarity: "نادر جداً",
-                        image: "https://images.unsplash.com/photo-1635273051937-603094060871?auto=format&fit=crop&q=80&w=800",
+                        image: "assets/images/phoenix.jpg",
                         description: "أنت رمز للتجدد والأمل. تمتلك قدرة مذهلة على النهوض من الرماد أقوى من ذي قبل.",
                         article: "العنقاء لا تموت أبداً، بل تولد من جديد. أصحاب هذه الشخصية يمتلكون مرونة نفسية مذهلة، وهم قادرون على تحويل الألم إلى وقود للإبداع والنجاح.",
                         secretReport: {
@@ -184,7 +184,7 @@ const quizzesData = {
                         id: "unicorn",
                         name: "وحيد القرن النقي",
                         rarity: "نادر",
-                        image: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&q=80&w=800",
+                        image: "assets/images/unicorn.jpg",
                         description: "أنت تجسيد للنقاء واللطف. تمتلك روحاً بريئة تهدف دائماً لنشر الخير والجمال.",
                         article: "وحيد القرن هو رمز الطهارة والشفاء. أصحاب هذه الشخصية هم بلسم لجروح الآخرين، يمتلكون حدساً نقياً وقدرة على رؤية الجمال في أبسط الأشياء.",
                         secretReport: {
@@ -197,7 +197,7 @@ const quizzesData = {
                         id: "sphinx",
                         name: "أبو الهول الغامض",
                         rarity: "أسطوري",
-                        image: "https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?auto=format&fit=crop&q=80&w=800",
+                        image: "assets/images/sphinx.jpg",
                         description: "أنت حارس الأسرار والحكمة. تمتلك عقلاً تحليلياً يرى ما وراء الستار ويحل أعقد الألغاز.",
                         article: "أبو الهول يمثل التوازن بين القوة الجسدية والذكاء الحاد. أصحاب هذه الشخصية هم مفكرون صامتون، يراقبون العالم بدقة ولا يتحدثون إلا عندما يملكون الحقيقة.",
                         secretReport: {
@@ -210,7 +210,7 @@ const quizzesData = {
                         id: "kraken",
                         name: "الكراكن العظيم",
                         rarity: "نادر جداً",
-                        image: "https://images.unsplash.com/photo-1551244072-5d12893278ab?auto=format&fit=crop&q=80&w=800",
+                        image: "assets/images/kraken.jpg",
                         description: "أنت قوة الأعماق الغامضة. تمتلك نفوذاً واسعاً وقدرة على التحكم في الأمور من خلف الكواليس.",
                         article: "الكراكن هو سيد المحيطات المظلمة. أصحاب هذه الشخصية يمتلكون شخصية معقدة وعميقة، يفضلون العمل في صمت وتأثيرهم يظهر فجأة وبقوة هائلة.",
                         secretReport: {
@@ -223,13 +223,143 @@ const quizzesData = {
                         id: "owl_of_athena",
                         name: "بومة أثينا",
                         rarity: "نادر",
-                        image: "https://images.unsplash.com/photo-1543531331-1f4f62ad354a?auto=format&fit=crop&q=80&w=800",
+                        image: "assets/images/owl_of_athena.jpg",
                         description: "أنت رمز الحكمة والمعرفة. ترى في الظلام ما يعجز الآخرون عن رؤيته في وضح النهار.",
                         article: "بومة أثينا كانت ترافق آلهة الحكمة دائماً. أصحاب هذه الشخصية هم باحثون عن الحقيقة، يقدرون العلم والمنطق ويمتلكون بصيرة نافذة.",
                         secretReport: {
                             strengths: "تركيز عالٍ، قدرة على التعلم السريع، وحكمة تسبق سنك بكثير.",
                             challenges: "ميلك للمنطق الجاف قد يجعلك تهمل الجانب العاطفي في علاقاتك.",
                             insight: "الحكمة الحقيقية هي التي تجمع بين ذكاء العقل ورحمة القلب."
+                        }
+                    },
+                    {
+                        id: "centaur",
+                        name: "القنطور الحكيم",
+                        rarity: "نادر",
+                        image: "assets/images/centaur.jpg",
+                        description: "أنت رمز للتوازن بين العقل والقوة البدنية. تمتلك حكمة فطرية وروحاً حرة.",
+                        article: "القنطور يمثل الجانب البري والحكيم في الطبيعة البشرية. أصحاب هذه الشخصية هم استراتيجيون بالفطرة، يقدرون الحرية والمنطق.",
+                        secretReport: {
+                            strengths: "تفكير منطقي، قدرة على التحمل، ورؤية فلسفية للحياة.",
+                            challenges: "قد تجد صعوبة في الالتزام بالقواعد الصارمة التي تحد من حريتك.",
+                            insight: "توازنك هو سر قوتك، لا تترك جانباً يطغى على الآخر."
+                        }
+                    },
+                    {
+                        id: "cerberus",
+                        name: "سيربيروس الحارس",
+                        rarity: "نادر جداً",
+                        image: "assets/images/cerberus.jpg",
+                        description: "أنت الحامي الوفي والدرع المنيع. تمتلك يقظة دائمة وقدرة على حماية ما هو ثمين.",
+                        article: "سيربيروس هو حارس البوابات العظيم. أصحاب هذه الشخصية يمتلكون ولاءً لا يتزعزع وقدرة على رصد الأخطار قبل وقوعها.",
+                        secretReport: {
+                            strengths: "ولاء مطلق، يقظة عالية، وقدرة على حماية من تحب.",
+                            challenges: "قد تكون مفرطاً في الحماية أو تجد صعوبة في الثقة بالغرباء.",
+                            insight: "الحماية لا تعني دائماً القسوة؛ أحياناً يكون اللين هو أقوى دفاع."
+                        }
+                    },
+                    {
+                        id: "faun",
+                        name: "الفون الطبيعي",
+                        rarity: "شائع",
+                        image: "assets/images/faun.jpg",
+                        description: "أنت روح الطبيعة والمرح. تمتلك قدرة على الاستمتاع بالحياة ونشر البهجة من حولك.",
+                        article: "الفون يمثل الجانب المبهج والمرتبط بالطبيعة. أصحاب هذه الشخصية هم أشخاص اجتماعيون، يحبون الموسيقى والفن والعيش في اللحظة.",
+                        secretReport: {
+                            strengths: "روح مرحة، ارتباط عميق بالطبيعة، وقدرة على التكيف الاجتماعي.",
+                            challenges: "قد تميل للعفوية الزائدة التي قد تؤدي لإهمال المسؤوليات الجدية.",
+                            insight: "المرح ضروري، لكن القليل من الجدية يساعدك على تحقيق أحلامك الكبرى."
+                        }
+                    },
+                    {
+                        id: "golem",
+                        name: "الجولم الصخري",
+                        rarity: "نادر",
+                        image: "assets/images/golem.jpg",
+                        description: "أنت رمز للاستقرار والصلابة. تمتلك إرادة من حجر وقدرة على تحمل أصعب الظروف.",
+                        article: "الجولم هو الكائن المصنوع من الأرض، وهو يمثل الثبات. أصحاب هذه الشخصية هم أشخاص يعتمد عليهم، صبورون وهادئون.",
+                        secretReport: {
+                            strengths: "صبر أيوب، صلابة نفسية، ووفاء بالوعود مهما كلف الأمر.",
+                            challenges: "قد تجد صعوبة في التعبير عن مشاعرك أو التكيف مع التغييرات السريعة.",
+                            insight: "حتى الصخر يمكن أن ينبت منه الزهر؛ لا تخشَ إظهار جانبك اللين."
+                        }
+                    },
+                    {
+                        id: "hydra",
+                        name: "الهيدرا المتجددة",
+                        rarity: "أسطوري",
+                        image: "assets/images/hydra.jpg",
+                        description: "أنت رمز للإصرار والتعددية. كلما واجهت تحدياً، خرجت منه بأفكار وحلول أكثر.",
+                        article: "الهيدرا كائن ينمو له رأسان كلما قطع واحد. أصحاب هذه الشخصية هم أشخاص مثابرون جداً، لا يعرفون الاستسلام أبداً.",
+                        secretReport: {
+                            strengths: "إصرار لا يلين، تعدد المواهب، وقدرة على التعافي السريع من الفشل.",
+                            challenges: "قد تشتت نفسك في الكثير من الاتجاهات في وقت واحد.",
+                            insight: "تركيز كل رؤوسك على هدف واحد سيجعلك لا تقهر."
+                        }
+                    },
+                    {
+                        id: "kitsune",
+                        name: "الكيتسوني الماكر",
+                        rarity: "نادر جداً",
+                        image: "assets/images/kitsune.jpg",
+                        description: "أنت رمز للذكاء التكيفي والسحر. تمتلك قدرة على تغيير شكلك وأسلوبك حسب الموقف.",
+                        article: "الكيتسوني هو الثعلب الأسطوري الياباني. أصحاب هذه الشخصية هم أذكياء جداً، يمتلكون جاذبية غامضة وقدرة على الإقناع.",
+                        secretReport: {
+                            strengths: "ذكاء اجتماعي، قدرة على الإقناع، ومرونة عالية في التفكير.",
+                            challenges: "قد يجد الآخرون صعوبة في معرفة وجهك الحقيقي أو نواياك الصادقة.",
+                            insight: "الذكاء موهبة، استخدمها لبناء الجسور وليس فقط لخداع العابرين."
+                        }
+                    },
+                    {
+                        id: "pegasus",
+                        name: "بيجاسوس المجنح",
+                        rarity: "نادر",
+                        image: "assets/images/pegasus.jpg",
+                        description: "أنت رمز للحرية والإلهام. تمتلك روحاً تحلق فوق المصاعب وتسعى دائماً للأفق البعيد.",
+                        article: "بيجاسوس هو الحصان المجنح الذي يمثل الخيال. أصحاب هذه الشخصية هم حالمون، يمتلكون طاقة إيجابية ورغبة في الاستكشاف.",
+                        secretReport: {
+                            strengths: "خيال واسع، طاقة إيجابية، ورغبة مستمرة في التطور والحرية.",
+                            challenges: "قد تجد صعوبة في التعامل مع الواقع المادي والقيود اليومية.",
+                            insight: "جناحاك يحملانك للسماء، لكن حوافرك هي التي تثبتك على الأرض؛ اعتني بكليهما."
+                        }
+                    },
+                    {
+                        id: "simurgh",
+                        name: "السيمرغ الحكيم",
+                        rarity: "أسطوري",
+                        image: "assets/images/simurgh.jpg",
+                        description: "أنت رمز للكمال والمعرفة الشاملة. تمتلك رؤية شاملة للكون وتفهم ترابط الأشياء.",
+                        article: "السيمرغ هو الطائر الأسطوري الفارسي الذي يملك علم كل العصور. أصحاب هذه الشخصية هم حكماء، يسعون للكمال الروحي والمعرفي.",
+                        secretReport: {
+                            strengths: "معرفة واسعة، هدوء نفسي، وقدرة على تقديم النصيحة الحكيمة.",
+                            challenges: "قد تميل للمثالية الزائدة التي قد تجعلك تشعر بخيبة أمل من الواقع.",
+                            insight: "الكمال رحلة وليس محطة وصول؛ استمتع بالطريق بكل ما فيه."
+                        }
+                    },
+                    {
+                        id: "siren",
+                        name: "السيرين الساحرة",
+                        rarity: "نادر جداً",
+                        image: "assets/images/siren.jpg",
+                        description: "أنت رمز للجاذبية والحدس العميق. تمتلك تأثيراً ساحراً على من حولك وقدرة على فهم المشاعر.",
+                        article: "السيرين هي كائن البحار الذي يملك صوتاً لا يقاوم. أصحاب هذه الشخصية هم أشخاص جذابون، يمتلكون حدساً قوياً وفهماً عميقاً للنفس البشرية.",
+                        secretReport: {
+                            strengths: "جاذبية طبيعية، حدس قوي، وفهم عميق للمشاعر.",
+                            challenges: "قد تستخدم تأثيرك للسيطرة على الآخرين عاطفياً دون قصد.",
+                            insight: "سحرك أمانة، استخدمه لرفع معنويات الآخرين وإرشادهم."
+                        }
+                    },
+                    {
+                        id: "valkyrie",
+                        name: "الفالكيري المحاربة",
+                        rarity: "أسطوري",
+                        image: "assets/images/valkyrie.jpg",
+                        description: "أنت رمز للشرف والاختيار. تمتلك شجاعة المحاربين وقدرة على اتخاذ القرارات المصيرية.",
+                        article: "الفالكيري هن مختارات الأبطال في الأساطير الإسكندنافية. أصحاب هذه الشخصية هم أشخاص شجعان، يقدرون الشرف والعدالة.",
+                        secretReport: {
+                            strengths: "شجاعة منقطعة النظير، نزاهة، وقدرة على قيادة الآخرين نحو النصر.",
+                            challenges: "قد تكون صارماً جداً مع نفسك ومع الآخرين في تطبيق معاييرك.",
+                            insight: "البطل الحقيقي يعرف متى يضع سيفه ويظهر الرحمة."
                         }
                     }
                 ]
@@ -246,7 +376,7 @@ const quizzesData = {
                 id: "mythical-creature",
                 title: "Mythical Creature Test",
                 badge: "Most Accurate",
-                image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&q=80&w=800",
+                image: "assets/images/dragon.jpg",
                 description: "An advanced psychological analysis linking your traits to ancient creature legends.",
                 questions: [
                     { id: 1, text: "I feel more comfortable when I am alone with my thoughts.", trait: "mystery", type: "likert" },
@@ -291,7 +421,7 @@ const quizzesData = {
                             { label: "Deserted Beach", image: "assets/images/quiz/q12_opt4.jpg", trait: "mystery", value: 5 }
                         ]
                     },
-                    { id: 13, text: "I enjoy discussing philosophical and complex ideas.", trait: "analysis", type: "likert" },
+                    { id: 13, text: "I enjoy discussing philosophical and complex ideas.", trait: "analysis", type: "analysis", type: "likert" },
                     { id: 14, text: "I am a very patient person when dealing with long-term problems.", trait: "persistence", type: "likert" },
                     { id: 15, text: "I care a lot about my reputation and how others perceive me.", trait: "potential", type: "likert" },
                     { 
@@ -395,7 +525,7 @@ const quizzesData = {
                         id: "dragon",
                         name: "Great Dragon",
                         rarity: "Mythical",
-                        image: "https://images.unsplash.com/photo-1577493322601-3ae7ee26f8b9?auto=format&fit=crop&q=80&w=800",
+                        image: "assets/images/dragon.jpg",
                         description: "You are the embodiment of power and leadership. You possess an invincible fiery spirit and ambition that exceeds the clouds.",
                         article: "The dragon is considered in all cultures a symbol of absolute power and ancient wisdom. Owners of this personality are natural leaders, possessing a long-term vision and the ability to face the most difficult challenges without fear.",
                         secretReport: {
@@ -408,7 +538,7 @@ const quizzesData = {
                         id: "phoenix",
                         name: "Phoenix",
                         rarity: "Very Rare",
-                        image: "https://images.unsplash.com/photo-1635273051937-603094060871?auto=format&fit=crop&q=80&w=800",
+                        image: "assets/images/phoenix.jpg",
                         description: "You are a symbol of renewal and hope. You have an amazing ability to rise from the ashes stronger than before.",
                         article: "The Phoenix never dies, but is born anew. Owners of this personality possess amazing psychological resilience, and are able to turn pain into fuel for creativity and success.",
                         secretReport: {
@@ -421,7 +551,7 @@ const quizzesData = {
                         id: "unicorn",
                         name: "Pure Unicorn",
                         rarity: "Rare",
-                        image: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&q=80&w=800",
+                        image: "assets/images/unicorn.jpg",
                         description: "You are the embodiment of purity and kindness. You possess an innocent spirit that always aims to spread goodness and beauty.",
                         article: "The unicorn is a symbol of purity and healing. Owners of this personality are a balm for the wounds of others, possessing a pure intuition and the ability to see beauty in the simplest things.",
                         secretReport: {
@@ -434,7 +564,7 @@ const quizzesData = {
                         id: "sphinx",
                         name: "Mysterious Sphinx",
                         rarity: "Mythical",
-                        image: "https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?auto=format&fit=crop&q=80&w=800",
+                        image: "assets/images/sphinx.jpg",
                         description: "You are the guardian of secrets and wisdom. You possess an analytical mind that sees behind the curtain and solves the most complex riddles.",
                         article: "The Sphinx represents the balance between physical strength and sharp intelligence. Owners of this personality are silent thinkers, observing the world accurately and only speaking when they possess the truth.",
                         secretReport: {
@@ -447,7 +577,7 @@ const quizzesData = {
                         id: "kraken",
                         name: "Great Kraken",
                         rarity: "Very Rare",
-                        image: "https://images.unsplash.com/photo-1551244072-5d12893278ab?auto=format&fit=crop&q=80&w=800",
+                        image: "assets/images/kraken.jpg",
                         description: "You are the power of the mysterious depths. You possess wide influence and the ability to control things from behind the scenes.",
                         article: "The Kraken is the master of the dark oceans. Owners of this personality possess a complex and deep personality, preferring to work in silence and their impact appears suddenly and with enormous power.",
                         secretReport: {
@@ -460,7 +590,7 @@ const quizzesData = {
                         id: "owl_of_athena",
                         name: "Owl of Athena",
                         rarity: "Rare",
-                        image: "https://images.unsplash.com/photo-1543531331-1f4f62ad354a?auto=format&fit=crop&q=80&w=800",
+                        image: "assets/images/owl_of_athena.jpg",
                         description: "You are a symbol of wisdom and knowledge. You see in the dark what others fail to see in broad daylight.",
                         article: "The Owl of Athena always accompanied the goddess of wisdom. Owners of this personality are truth seekers, valuing science and logic and possessing a piercing insight.",
                         secretReport: {
