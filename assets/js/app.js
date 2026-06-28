@@ -2,7 +2,6 @@ let currentLang = 'ar';
 let currentQuiz = null;
 let currentStepId = 0; 
 let userResponses = []; 
-let scoreMap = {};
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
@@ -69,7 +68,6 @@ function startQuiz(quizId) {
     currentQuiz = data.quizzes.find(q => q.id === quizId);
     currentStepId = 0;
     userResponses = [];
-    scoreMap = {};
 
     document.getElementById('quiz-grid').classList.add('hidden');
     document.getElementById('hero-section').classList.add('hidden');
@@ -186,88 +184,57 @@ function showLoading() {
 }
 
 /**
- * نظام الأوزان الذكي (Weighted Scoring System)
- * كل صفة تساهم بنسب مختلفة في كائنات متعددة لزيادة دقة التحليل
+ * نظام الأوزان الذكي المحدث (Balanced Weighted Scoring)
+ * تم تعديل الأوزان لتقليل التحيز لكائنات معينة وضمان توزيع أعدل للنتائج
  */
 function calculateResult() {
-    // خطوة 1: حساب مجموع نقاط كل صفة (Trait)
     const traitScores = {};
     userResponses.forEach(resp => {
         traitScores[resp.trait] = (traitScores[resp.trait] || 0) + resp.value;
     });
 
-    // خطوة 2: نظام الأوزان - كل صفة تؤثر في عدة كائنات بنسب مختلفة
     const weightedTraitToCreature = {
-        // القيادة والقوة
-        leadership: { dragon: 1.5, valkyrie: 1.0, simurgh: 0.8, centaur: 0.6 },
-        power: { dragon: 1.3, hydra: 1.0, valkyrie: 0.9, cerberus: 0.7 },
-        intensity: { phoenix: 1.2, dragon: 1.0, hydra: 0.8, siren: 0.6 },
-        
-        // الحكمة والمعرفة
-        knowledge: { owl_of_athena: 1.5, simurgh: 1.2, sphinx: 1.0, centaur: 0.7 },
-        wisdom: { owl_of_athena: 1.4, simurgh: 1.3, sphinx: 0.9, kraken: 0.6 },
-        analysis: { sphinx: 1.3, kraken: 1.1, owl_of_athena: 1.0, centaur: 0.7 },
-        
-        // الغموض والحدس
-        mystery: { sphinx: 1.4, kraken: 1.2, siren: 1.0, kitsune: 0.9 },
-        intuition: { siren: 1.3, sphinx: 0.9, kitsune: 0.8, phoenix: 0.7 },
-        curiosity: { sphinx: 0.8, pegasus: 1.1, kraken: 0.7, simurgh: 0.9 },
-        
-        // النقاء والخير
-        purity: { unicorn: 1.5, phoenix: 0.9, valkyrie: 0.8, pegasus: 0.7 },
-        altruism: { unicorn: 1.4, phoenix: 1.0, faun: 0.8, valkyrie: 0.7 },
-        
-        // الاستقرار والتقاليد
-        stability: { golem: 1.5, centaur: 0.8, faun: 0.6, kraken: 0.5 },
-        tradition: { golem: 1.3, centaur: 0.9, valkyrie: 0.7, simurgh: 0.6 },
-        
-        // الاجتماعية والتكيف
-        social: { kitsune: 1.3, faun: 1.1, unicorn: 0.9, pegasus: 0.7 },
-        adaptation: { kitsune: 1.4, phoenix: 1.1, faun: 1.0, pegasus: 0.8 },
-        
-        // الاستكشاف والحرية
-        exploration: { pegasus: 1.4, kraken: 0.8, kitsune: 0.9, simurgh: 0.7 },
-        energy: { pegasus: 1.2, phoenix: 1.0, dragon: 0.8, faun: 0.9 },
-        
-        // الشرف والنزاهة
-        honesty: { valkyrie: 1.4, unicorn: 1.0, dragon: 0.8, centaur: 0.7 },
-        potential: { valkyrie: 1.2, simurgh: 1.0, phoenix: 0.9, pegasus: 0.8 },
-        
-        // الطبيعة والراحة
-        nature: { faun: 1.5, unicorn: 1.0, golem: 0.8, pegasus: 0.7 },
-        composure: { faun: 1.1, golem: 1.2, sphinx: 0.9, siren: 0.8 },
-        
-        // الحماية والولاء
-        protection: { cerberus: 1.5, dragon: 1.0, valkyrie: 0.9, golem: 0.7 },
-        
-        // الاستراتيجية والمنطق
-        strategy: { centaur: 1.3, kraken: 1.1, sphinx: 0.9, kitsune: 0.8 },
-        logic: { centaur: 1.2, owl_of_athena: 1.0, sphinx: 0.9, golem: 0.7 },
-        
-        // الجمال والأناقة
-        elegance: { siren: 1.4, unicorn: 1.0, phoenix: 0.8, kitsune: 0.9 },
-        
-        // الكمال والإصرار
-        perfection: { simurgh: 1.3, phoenix: 0.9, valkyrie: 0.8, centaur: 0.7 },
-        persistence: { hydra: 1.5, phoenix: 1.0, valkyrie: 0.9, golem: 0.8 }
+        leadership: { dragon: 1.4, valkyrie: 0.8, simurgh: 0.7, centaur: 0.5 },
+        power: { hydra: 1.4, dragon: 1.0, valkyrie: 0.7, cerberus: 0.8 },
+        intensity: { phoenix: 1.4, dragon: 0.9, hydra: 0.7, siren: 0.5 },
+        knowledge: { owl_of_athena: 1.5, simurgh: 1.1, sphinx: 0.9, centaur: 0.6 },
+        wisdom: { owl_of_athena: 1.3, simurgh: 1.4, sphinx: 0.8, kraken: 0.5 },
+        analysis: { sphinx: 1.4, kraken: 1.2, owl_of_athena: 0.9, centaur: 0.6 },
+        mystery: { sphinx: 1.3, kraken: 1.3, siren: 1.1, kitsune: 0.8 },
+        intuition: { siren: 1.5, sphinx: 0.8, kitsune: 0.9, phoenix: 0.6 },
+        curiosity: { sphinx: 0.7, pegasus: 1.3, kraken: 0.6, simurgh: 0.8 },
+        purity: { unicorn: 1.6, phoenix: 0.8, valkyrie: 0.6, pegasus: 0.7 },
+        altruism: { unicorn: 1.4, phoenix: 0.9, faun: 0.9, valkyrie: 0.6 },
+        stability: { golem: 1.6, centaur: 0.7, faun: 0.5, kraken: 0.4 },
+        tradition: { golem: 1.4, centaur: 1.0, valkyrie: 0.6, simurgh: 0.5 },
+        social: { kitsune: 1.2, faun: 1.3, unicorn: 0.8, pegasus: 0.6 },
+        adaptation: { kitsune: 1.4, phoenix: 1.0, faun: 1.1, pegasus: 0.7 },
+        exploration: { pegasus: 1.5, kraken: 0.7, kitsune: 0.8, simurgh: 0.6 },
+        energy: { pegasus: 1.1, phoenix: 1.1, dragon: 0.7, faun: 1.0 },
+        honesty: { valkyrie: 1.5, unicorn: 0.9, dragon: 0.6, centaur: 0.6 },
+        potential: { valkyrie: 1.0, simurgh: 1.2, phoenix: 1.0, pegasus: 0.9 },
+        nature: { faun: 1.5, unicorn: 0.9, golem: 0.7, pegasus: 0.6 },
+        composure: { faun: 1.0, golem: 1.3, sphinx: 0.8, siren: 0.7 },
+        protection: { cerberus: 1.6, dragon: 0.9, valkyrie: 0.8, golem: 0.6 },
+        strategy: { centaur: 1.4, kraken: 1.0, sphinx: 0.8, kitsune: 0.7 },
+        logic: { centaur: 1.3, owl_of_athena: 0.9, sphinx: 0.8, golem: 0.6 },
+        elegance: { siren: 1.5, unicorn: 0.9, phoenix: 0.7, kitsune: 0.8 },
+        perfection: { simurgh: 1.4, phoenix: 0.8, valkyrie: 0.7, centaur: 0.6 },
+        persistence: { hydra: 1.5, phoenix: 0.9, valkyrie: 0.8, golem: 0.7 }
     };
 
-    // خطوة 3: تطبيق الأوزان وحساب نقاط كل كائن
     const creatureScores = {};
     for (const trait in traitScores) {
         const weights = weightedTraitToCreature[trait];
         if (weights) {
             for (const creatureId in weights) {
-                const weight = weights[creatureId];
-                creatureScores[creatureId] = (creatureScores[creatureId] || 0) + (traitScores[trait] * weight);
+                creatureScores[creatureId] = (creatureScores[creatureId] || 0) + (traitScores[trait] * weights[creatureId]);
             }
         }
     }
 
-    // خطوة 4: إيجاد الكائن الذي حصل على أعلى نقاط
     let maxScore = -1;
     let winnerId = 'dragon';
-
     for (const id in creatureScores) {
         if (creatureScores[id] > maxScore) {
             maxScore = creatureScores[id];
@@ -275,36 +242,46 @@ function calculateResult() {
         }
     }
 
-    // خطوة 5: حساب بيانات الرادار (Radar Chart)
-    const radarData = {
-        power: ((traitScores['power'] || 0) + (traitScores['intensity'] || 0) + (traitScores['leadership'] || 0)) * 1.2,
-        wisdom: ((traitScores['wisdom'] || 0) + (traitScores['knowledge'] || 0) + (traitScores['analysis'] || 0)) * 1.2,
-        mystery: ((traitScores['mystery'] || 0) + (traitScores['intuition'] || 0) + (traitScores['curiosity'] || 0)) * 1.2,
-        purity: ((traitScores['purity'] || 0) + (traitScores['altruism'] || 0) + (traitScores['nature'] || 0)) * 1.2,
-        leadership: ((traitScores['leadership'] || 0) + (traitScores['strategy'] || 0) + (traitScores['honesty'] || 0)) * 1.2,
-        adaptation: ((traitScores['adaptation'] || 0) + (traitScores['energy'] || 0) + (traitScores['exploration'] || 0)) * 1.2
+    // حساب بيانات الرادار - تم ربطها بقوة بالكائن الفائز لضمان الاتساق البصري
+    const baseRadar = {
+        power: (traitScores['power'] || 0) + (traitScores['intensity'] || 0) + (traitScores['leadership'] || 0),
+        wisdom: (traitScores['wisdom'] || 0) + (traitScores['knowledge'] || 0) + (traitScores['analysis'] || 0),
+        mystery: (traitScores['mystery'] || 0) + (traitScores['intuition'] || 0) + (traitScores['curiosity'] || 0),
+        purity: (traitScores['purity'] || 0) + (traitScores['altruism'] || 0) + (traitScores['nature'] || 0),
+        leadership: (traitScores['leadership'] || 0) + (traitScores['strategy'] || 0) + (traitScores['honesty'] || 0),
+        adaptation: (traitScores['adaptation'] || 0) + (traitScores['energy'] || 0) + (traitScores['exploration'] || 0)
     };
 
-    // تطبيع البيانات بين 0-100
-    for (let key in radarData) {
-        radarData[key] = Math.min(100, Math.max(20, (radarData[key] / 18) * 100));
-    }
+    // تعزيز سمات الكائن الفائز في الرادار ليكون الرسم متسقاً مع النتيجة
+    const creatureTraitMapping = {
+        dragon: ['power', 'leadership'],
+        phoenix: ['adaptation', 'purity'],
+        unicorn: ['purity'],
+        sphinx: ['mystery', 'wisdom'],
+        kraken: ['mystery', 'power'],
+        owl_of_athena: ['wisdom'],
+        centaur: ['wisdom', 'leadership'],
+        cerberus: ['power', 'leadership'],
+        faun: ['adaptation', 'purity'],
+        golem: ['power', 'wisdom'],
+        hydra: ['power', 'adaptation'],
+        kitsune: ['adaptation', 'mystery'],
+        pegasus: ['adaptation', 'purity'],
+        simurgh: ['wisdom', 'purity'],
+        siren: ['mystery', 'purity'],
+        valkyrie: ['leadership', 'power']
+    };
 
-    // البحث عن الكائن في قائمة النتائج
-    const result = currentQuiz.results.find(r => r.id === winnerId);
-    
-    // التعامل مع الحالة النادرة جداً حيث قد لا يكون الكائن موجوداً
-    if (!result) {
-        console.warn(`Warning: Creature with ID "${winnerId}" not found. Using default dragon.`);
-        return {
-            creature: currentQuiz.results[0],
-            radar: radarData
-        };
+    const boostTraits = creatureTraitMapping[winnerId] || [];
+    boostTraits.forEach(t => { if(baseRadar[t] !== undefined) baseRadar[t] += 5; });
+
+    for (let key in baseRadar) {
+        baseRadar[key] = Math.min(100, Math.max(30, (baseRadar[key] / 18) * 100));
     }
 
     return {
-        creature: result,
-        radar: radarData
+        creature: currentQuiz.results.find(r => r.id === winnerId) || currentQuiz.results[0],
+        radar: baseRadar
     };
 }
 
@@ -327,7 +304,6 @@ function showResult() {
             </div>
             
             <div class="p-8 md:p-14">
-                <!-- Radar Chart Section -->
                 <div class="mb-16">
                     <h3 class="text-3xl font-bold text-white mb-10 text-center">
                         ${currentLang === 'ar' ? 'خارطة القوى الروحية' : 'Spiritual Power Map'}
@@ -349,17 +325,19 @@ function showResult() {
                 
                 <div class="relative p-1 bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 rounded-[2rem] overflow-hidden shadow-2xl">
                     <div class="relative p-10 bg-slate-900/95 rounded-[1.8rem] overflow-hidden">
-                        <div class="absolute inset-0 backdrop-blur-sm flex flex-col items-center justify-center p-8 text-center z-10" id="lock-overlay">
+                        <!-- Lock Overlay -->
+                        <div class="absolute inset-0 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center z-[50]" id="lock-overlay">
                             <div class="w-20 h-20 bg-gradient-to-tr from-purple-600 to-pink-600 rounded-full flex items-center justify-center mb-6 border-4 border-white/10 shadow-inner">
                                 <i class="fas fa-lock text-3xl text-white"></i>
                             </div>
                             <h3 class="text-3xl font-bold mb-4 text-white">${currentLang === 'ar' ? 'التقرير السري المتقدم' : 'Advanced Secret Report'}</h3>
                             <p class="text-slate-300 mb-8 text-lg">${currentLang === 'ar' ? 'اكتشف الحقائق المخفية عن شخصيتك' : 'Discover hidden truths about your personality'}</p>
-                            <button onclick="unlockSecretReport()" class="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold rounded-full transition-all transform hover:scale-105 active:scale-95 shadow-lg pulse-button">
+                            <button onclick="unlockSecretReport()" class="relative z-[60] px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold rounded-full transition-all transform hover:scale-105 active:scale-95 shadow-lg pulse-button cursor-pointer">
                                 ${currentLang === 'ar' ? '🔓 فتح التقرير السري' : '🔓 Unlock Secret Report'}
                             </button>
                         </div>
-                        <div class="relative z-0 hidden" id="secret-report-actual-content">
+                        <!-- Actual Content -->
+                        <div class="relative z-0 opacity-0 transition-opacity duration-700" id="secret-report-actual-content">
                             <h4 class="text-2xl font-bold text-purple-400 mb-6 text-center">${currentLang === 'ar' ? 'نقاط قوتك' : 'Your Strengths'}</h4>
                             <p class="text-slate-200 mb-8 text-lg leading-relaxed text-center">${creature.secretReport.strengths}</p>
                             
@@ -389,7 +367,6 @@ function showResult() {
         </div>
     `;
 
-    // رسم الرادار
     renderRadarChart(radar);
 }
 
@@ -397,10 +374,14 @@ function unlockSecretReport() {
     const lockOverlay = document.getElementById('lock-overlay');
     const secretContent = document.getElementById('secret-report-actual-content');
     
-    lockOverlay.classList.add('lock-overlay-hidden');
+    // أنيميشن الاختفاء
+    lockOverlay.style.opacity = '0';
+    lockOverlay.style.pointerEvents = 'none';
+    
     setTimeout(() => {
         lockOverlay.classList.add('hidden');
-        secretContent.classList.remove('hidden');
+        secretContent.classList.remove('opacity-0');
+        secretContent.classList.add('opacity-100');
     }, 500);
 }
 
@@ -447,11 +428,18 @@ function renderRadarChart(data) {
                     beginAtZero: true,
                     max: 100,
                     ticks: {
-                        color: 'rgba(148, 163, 184, 0.6)',
-                        font: { size: 10 }
+                        display: false,
+                        stepSize: 20
                     },
                     grid: {
                         color: 'rgba(100, 116, 139, 0.2)'
+                    },
+                    angleLines: {
+                        color: 'rgba(100, 116, 139, 0.2)'
+                    },
+                    pointLabels: {
+                        color: 'rgba(226, 232, 240, 0.7)',
+                        font: { size: 11 }
                     }
                 }
             }
@@ -460,17 +448,26 @@ function renderRadarChart(data) {
 }
 
 function shareResult() {
+    const creatureName = document.querySelector('h2').innerText;
     const text = currentLang === 'ar' 
-        ? `لقد اكتشفت أنني ${document.querySelector('h2').innerText}! جرب اختبار QuizMagic الآن واكتشف كائنك الأسطوري الحقيقي 🐉`
-        : `I discovered I'm a ${document.querySelector('h2').innerText}! Try QuizMagic now and discover your true mythical creature 🐉`;
+        ? `لقد اكتشفت أنني ${creatureName}! جرب اختبار QuizMagic الآن واكتشف كائنك الأسطوري الحقيقي 🐉`
+        : `I discovered I'm a ${creatureName}! Try QuizMagic now and discover your true mythical creature 🐉`;
     
     if (navigator.share) {
         navigator.share({
             title: 'QuizMagic',
             text: text,
             url: window.location.href
+        }).catch(() => {
+            copyToClipboard(text);
         });
     } else {
-        alert(text);
+        copyToClipboard(text);
     }
+}
+
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        alert(currentLang === 'ar' ? 'تم نسخ النتيجة! يمكنك مشاركتها الآن.' : 'Result copied! You can share it now.');
+    });
 }
