@@ -168,22 +168,44 @@ function nextStep() {
 }
 
 function showLoading() {
-    const container = document.getElementById('quiz-container');
-    container.innerHTML = `
-        <div class="py-16 text-center">
-            <div class="relative inline-block w-24 h-24 mb-8">
-                <div class="absolute inset-0 border-4 border-purple-500/10 rounded-full"></div>
-                <div class="absolute inset-0 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
-                <div class="absolute inset-4 border-4 border-pink-500/20 border-b-transparent rounded-full animate-spin-slow"></div>
-            </div>
-            <h2 class="text-3xl font-bold mb-4 animate-pulse bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
-                ${currentLang === 'ar' ? 'جاري تحليل شخصيتك...' : 'Analyzing your psyche...'}
-            </h2>
-            <p class="text-slate-400 text-lg">${currentLang === 'ar' ? 'نقوم بربط إجاباتك بالقوى الأسطورية القديمة' : 'Mapping your responses to ancient mythical forces'}</p>
-        </div>
-    `;
-    setTimeout(showResult, 3500);
+    document.getElementById(\'quiz-container\').classList.add(\'hidden\');
+    document.getElementById(\'loading-screen\').classList.remove(\'hidden\');
+    document.getElementById(\'loading-screen\').classList.add(\'opacity-100\');
+    const loadingMessages = currentLang === 'ar' ? [
+        'جاري تحليل الأنماط السلوكية...', 
+        'جاري مطابقة القوى الأسطورية...', 
+        'جاري فك تشفير رموز شخصيتك...', 
+        'قوى خفية على وشك الظهور...' 
+    ] : [
+        'Analyzing behavioral patterns...', 
+        'Matching mythical forces...', 
+        'Decoding your personality glyphs...', 
+        'Hidden powers are about to emerge...' 
+    ];
+    let messageIndex = 0;
+    const loadingTextElement = document.getElementById('loading-text');
+    const loadingSubtitleElement = document.getElementById('loading-subtitle');
+
+    const updateLoadingMessage = () => {
+        if (loadingTextElement && loadingSubtitleElement) {
+            loadingTextElement.innerText = loadingMessages[messageIndex];
+            loadingSubtitleElement.innerText = currentLang === 'ar' ? 'يرجى الانتظار...' : 'Please wait...';
+            messageIndex = (messageIndex + 1) % loadingMessages.length;
+        }
+    };
+
+    const loadingInterval = setInterval(updateLoadingMessage, 1000);
+
+
+    updateLoadingMessage(); // Initial message
+    setTimeout(() => {
+        clearInterval(loadingInterval);
+        document.getElementById(\'loading-screen\').classList.remove(\'opacity-100\');
+        document.getElementById(\'loading-screen\').classList.add(\'hidden\');
+        showResult();
+    }, 3500);
 }
+
 
 function calculateResult() {
     const traitScores = {};
@@ -191,43 +213,46 @@ function calculateResult() {
         traitScores[resp.trait] = (traitScores[resp.trait] || 0) + resp.value;
     });
 
-    const traitToCreature = {
-        leadership: 'dragon',
-        protection: 'cerberus',
-        analysis: 'kraken',
-        knowledge: 'owl_of_athena',
-        wisdom: 'owl_of_athena',
-        ambition: 'simurgh',
-        perfection: 'simurgh',
-        mystery: 'sphinx',
-        curiosity: 'sphinx',
-        stability: 'golem',
-        tradition: 'golem',
-        social: 'kitsune',
-        adaptation: 'kitsune',
-        purity: 'unicorn',
-        altruism: 'unicorn',
-        exploration: 'pegasus',
-        energy: 'pegasus',
-        honesty: 'valkyrie',
-        potential: 'valkyrie',
-        nature: 'faun',
-        composure: 'faun',
-        potential: 'phoenix',
-        intensity: 'phoenix',
-        elegance: 'siren',
-        intuition: 'siren',
-        persistence: 'hydra',
-        power: 'hydra',
-        strategy: 'centaur',
-        logic: 'centaur'
+    const traitWeights = {
+        leadership: { dragon: 1.0, phoenix: 0.5, valkyrie: 0.7, simurgh: 0.3, centaur: 0.4 },
+        protection: { cerberus: 1.0, dragon: 0.4, golem: 0.6, hydra: 0.3 },
+        analysis: { kraken: 1.0, sphinx: 0.7, owl_of_athena: 0.6, centaur: 0.5 },
+        knowledge: { owl_of_athena: 1.0, sphinx: 0.5, simurgh: 0.8, centaur: 0.6 },
+        wisdom: { owl_of_athena: 1.0, simurgh: 0.9, sphinx: 0.6, centaur: 0.7 },
+        ambition: { simurgh: 1.0, dragon: 0.7, phoenix: 0.5, valkyrie: 0.6 },
+        perfection: { simurgh: 1.0, unicorn: 0.5, owl_of_athena: 0.4 },
+        mystery: { sphinx: 1.0, kraken: 0.8, siren: 0.6, kitsune: 0.5 },
+        curiosity: { sphinx: 1.0, pegasus: 0.7, kitsune: 0.6, owl_of_athena: 0.4 },
+        stability: { golem: 1.0, cerberus: 0.7, faun: 0.3 },
+        tradition: { golem: 1.0, centaur: 0.5, owl_of_athena: 0.4 },
+        social: { kitsune: 1.0, faun: 0.8, unicorn: 0.4 },
+        adaptation: { kitsune: 1.0, phoenix: 0.7, hydra: 0.6, pegasus: 0.5 },
+        purity: { unicorn: 1.0, phoenix: 0.6, faun: 0.5 },
+        altruism: { unicorn: 1.0, phoenix: 0.7, valkyrie: 0.5 },
+        exploration: { pegasus: 1.0, kitsune: 0.6, hydra: 0.5 },
+        energy: { pegasus: 1.0, phoenix: 0.8, hydra: 0.7, dragon: 0.6 },
+        honesty: { valkyrie: 1.0, unicorn: 0.7, centaur: 0.5 },
+        potential: { valkyrie: 1.0, phoenix: 0.8, simurgh: 0.7, pegasus: 0.6 },
+        nature: { faun: 1.0, unicorn: 0.6, hydra: 0.4 },
+        composure: { faun: 1.0, golem: 0.7, owl_of_athena: 0.5 },
+        intensity: { phoenix: 1.0, dragon: 0.8, hydra: 0.7, siren: 0.6 },
+        elegance: { siren: 1.0, kitsune: 0.7, unicorn: 0.5 },
+        intuition: { siren: 1.0, sphinx: 0.7, owl_of_athena: 0.6 },
+        persistence: { hydra: 1.0, golem: 0.8, kraken: 0.7, dragon: 0.6 },
+        power: { hydra: 1.0, dragon: 0.9, kraken: 0.8, valkyrie: 0.7 },
+        strategy: { centaur: 1.0, kraken: 0.8, sphinx: 0.7, dragon: 0.6 },
+        logic: { centaur: 1.0, owl_of_athena: 0.8, sphinx: 0.7, golem: 0.6 }
     };
 
     const creatureScores = {};
-    for (const trait in traitScores) {
-        const creatureId = traitToCreature[trait];
-        if (creatureId) {
-            creatureScores[creatureId] = (creatureScores[creatureId] || 0) + traitScores[trait];
+    for (const resp of userResponses) {
+        const trait = resp.trait;
+        const value = resp.value;
+        if (traitWeights[trait]) {
+            for (const creatureId in traitWeights[trait]) {
+                const weight = traitWeights[trait][creatureId];
+                creatureScores[creatureId] = (creatureScores[creatureId] || 0) + (value * weight);
+            }
         }
     }
 
@@ -268,73 +293,100 @@ function showResult() {
     const container = document.getElementById('result-container');
     container.classList.remove('hidden');
 
-    container.innerHTML = `
-        <div class="bg-slate-800/80 rounded-[2.5rem] overflow-hidden border border-slate-700/50 shadow-2xl result-glow mb-12">
-            <div class="relative h-80 md:h-[30rem]">
-                <img src="${creature.image}" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent"></div>
-                <div class="absolute bottom-10 left-0 right-0 px-8 text-center">
-                    <span class="bg-purple-600/90 backdrop-blur-md text-white px-5 py-2 rounded-full text-sm font-bold mb-4 inline-block shadow-lg uppercase tracking-widest border border-white/20">${creature.rarity}</span>
-                    <h2 class="text-5xl md:text-7xl font-black text-white drop-shadow-2xl mb-2">${creature.name}</h2>
-                    <p class="text-purple-300 font-bold text-xl">${currentLang === 'ar' ? 'هذا هو كائنك الأسطوري الحقيقي' : 'This is your true mythical essence'}</p>
-                </div>
-            </div>
-            
-            <div class="p-8 md:p-14">
-                <!-- Radar Chart Section -->
-                <div class="mb-16">
-                    <h3 class="text-3xl font-bold text-white mb-10 text-center">
-                        ${currentLang === 'ar' ? 'خارطة القوى الروحية' : 'Spiritual Power Map'}
-                    </h3>
-                    <div class="max-w-md mx-auto bg-slate-900/40 p-6 rounded-[2rem] border border-slate-700/30 shadow-inner">
-                        <canvas id="radarChart"></canvas>
-                    </div>
-                </div>
+    container.classList.add('opacity-0'); // Start with opacity 0 for fade-in
 
-                <div class="mb-12">
-                    <div class="inline-block p-3 bg-purple-600/10 rounded-2xl mb-6">
-                        <i class="fas fa-fingerprint text-3xl text-purple-500"></i>
+    setTimeout(() => {
+        container.innerHTML = `
+            <div id="result-content" class="opacity-0 transition-opacity duration-1000">
+        
+            <div class="bg-slate-800/80 rounded-[2.5rem] overflow-hidden border border-slate-700/50 shadow-2xl result-glow mb-12 animate-fade-in-up">
+                <div class="relative h-80 md:h-[30rem]">
+                    <img src="${creature.image}" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent"></div>
+                    <div class="absolute bottom-10 left-0 right-0 px-8 text-center">
+                        <span class="bg-purple-600/90 backdrop-blur-md text-white px-5 py-2 rounded-full text-sm font-bold mb-4 inline-block shadow-lg uppercase tracking-widest border border-white/20 animate-fade-in delay-100">${creature.rarity}</span>
+                        <h2 class="text-5xl md:text-7xl font-black text-white drop-shadow-2xl mb-2 animate-fade-in delay-200">${creature.name}</h2>
+                        <p class="text-purple-300 font-bold text-xl animate-fade-in delay-300">${currentLang === 'ar' ? 'هذا هو كائنك الأسطوري الحقيقي' : 'This is your true mythical essence'}</p>
                     </div>
-                    <h3 class="text-3xl font-bold text-white mb-6">
-                        ${currentLang === 'ar' ? 'التحليل النفسي العميق' : 'Deep Psychological Analysis'}
-                    </h3>
-                    <p class="text-xl text-slate-300 leading-relaxed text-center italic">"${creature.description}"</p>
                 </div>
                 
-                <div class="relative p-1 bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 rounded-[2rem] overflow-hidden shadow-2xl">
-                    <div class="relative p-10 bg-slate-900/95 rounded-[1.8rem] overflow-hidden">
-                        <div class="absolute inset-0 backdrop-blur-sm flex flex-col items-center justify-center p-8 text-center z-10">
-                            <div class="w-20 h-20 bg-gradient-to-tr from-purple-600 to-pink-600 rounded-full flex items-center justify-center mb-6 border-4 border-white/10 shadow-inner">
-                                <i class="fas fa-lock text-3xl text-white"></i>
-                            </div>
-                            <h3 class="text-3xl font-bold mb-4 text-white">${currentLang === 'ar' ? 'التقرير السري المتقدم' : 'Advanced Secret Report'}</h3>
-                            <p class="text-slate-300 mb-8 max-w-md mx-auto text-lg leading-relaxed">
-                                ${currentLang === 'ar' ? 'لقد كشفنا عن جوانب مخفية في عقلك الباطن. افتح التقرير الكامل لمعرفة نقاط قوتك المطلقة وتحدياتك القادمة.' : 'We have uncovered hidden aspects of your subconscious. Unlock the full report to see your absolute strengths and upcoming challenges.'}
-                            </p>
-                            <button id="unlock-button" onclick="callCPALocker()" class="pulse-button bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white px-12 py-5 rounded-full font-black text-xl transition-all transform hover:scale-105 shadow-2xl shadow-purple-600/40 border border-white/20">
-                                <i class="fas fa-unlock-alt mr-2"></i> ${currentLang === 'ar' ? 'افتح التقرير الكامل (مجاناً)' : 'Unlock Full Report (Free)'}
-                            </button>
+                <div class="p-8 md:p-14">
+                    <!-- Radar Chart Section -->
+                    <div class="mb-16 animate-fade-in delay-400">
+                        <h3 class="text-3xl font-bold text-white mb-10 text-center">
+                            ${currentLang === 'ar' ? 'خارطة القوى الروحية' : 'Spiritual Power Map'}
+                        </h3>
+                        <div class="max-w-md mx-auto bg-slate-900/40 p-6 rounded-[2rem] border border-slate-700/30 shadow-inner">
+                            <canvas id="radarChart"></canvas>
                         </div>
-                        <div id="secret-report-content-placeholder" class="opacity-5 select-none blur-md text-start space-y-6">
-                            <p class="font-bold text-2xl">${currentLang === 'ar' ? 'بيانات تحليل العقل الباطن:' : 'Subconscious Mapping Data:'}</p>
-                            <p>${currentLang === 'ar' ? 'بناءً على تقييمك المكون من 40 نقطة، تظهر مساراتك العصبية توافقاً كبيراً مع النماذج الأصلية القديمة.' : 'Based on your 40-point assessment, your neural pathways show significant alignment with ancient archetypes.'}</p>
-                            <div class="h-4 bg-slate-800 rounded w-3/4"></div>
-                            <div class="h-4 bg-slate-800 rounded w-1/2"></div>
-                            <div class="h-4 bg-slate-800 rounded w-5/6"></div>
+                    </div>
+
+                    <div class="mb-12 animate-fade-in delay-500">
+                        <div class="inline-block p-3 bg-purple-600/10 rounded-2xl mb-6">
+                            <i class="fas fa-fingerprint text-3xl text-purple-500"></i>
+                        </div>
+                        <h3 class="text-3xl font-bold text-white mb-6">
+                            ${currentLang === 'ar' ? 'التحليل النفسي العميق' : 'Deep Psychological Analysis'}
+                        </h3>
+                        <p class="text-xl text-slate-300 leading-relaxed text-center italic">"${creature.description}"</p>
+                    </div>
+                    
+                    <div class="relative p-1 bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 rounded-[2rem] overflow-hidden shadow-2xl animate-fade-in delay-600">
+                        <div class="relative p-10 bg-slate-900/95 rounded-[1.8rem] overflow-hidden">
+                            <div class="absolute inset-0 backdrop-blur-sm flex flex-col items-center justify-center p-8 text-center z-10" id="secret-report-overlay">
+                                <div class="w-20 h-20 bg-gradient-to-tr from-purple-600 to-pink-600 rounded-full flex items-center justify-center mb-6 border-4 border-white/10 shadow-inner">
+                                    <i class="fas fa-lock text-3xl text-white"></i>
+                                </div>
+                                <h3 class="text-3xl font-bold mb-4 text-white">${currentLang === 'ar' ? 'التقرير السري المتقدم' : 'Advanced Secret Report'}</h3>
+                                <p class="text-slate-400 text-lg max-w-md mb-8 leading-relaxed">
+                                    ${currentLang === 'ar' ? 'لقد كشفنا عن جوانب مخفية في عقلك الباطن. افتح التقرير الكامل لمعرفة نقاط قوتك المطلقة وتحدياتك القادمة.' : 'We have uncovered hidden aspects of your subconscious. Unlock the full report to see your absolute strengths and upcoming challenges.'}
+                                </p>
+                                <button id="unlock-button" class="pulse-button bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white px-12 py-5 rounded-full font-black text-xl transition-all transform hover:scale-105 shadow-2xl shadow-purple-600/40 border border-white/20">
+                                    <i class="fas fa-unlock-alt mr-2"></i> ${currentLang === 'ar' ? 'افتح التقرير الكامل (مجاناً)' : 'Unlock Full Report (Free)'}
+                                </button>
+                            </div>
+                            <div id="secret-report-actual-content" class="opacity-5 select-none blur-md text-start space-y-6">
+                                <p class="font-bold text-2xl">${currentLang === 'ar' ? 'بيانات تحليل العقل الباطن:' : 'Subconscious Mapping Data:'}</p>
+                                <p>${currentLang === 'ar' ? 'بناءً على تقييمك المكون من 40 نقطة، تظهر مساراتك العصبية توافقاً كبيراً مع النماذج الأصلية القديمة.' : 'Based on your 40-point assessment, your neural pathways show significant alignment with ancient archetypes.'}</p>
+                                <div class="h-4 bg-slate-800 rounded w-3/4"></div>
+                                <div class="h-4 bg-slate-800 rounded w-1/2"></div>
+                                <div class="h-4 bg-slate-800 rounded w-5/6"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="flex justify-center mb-20">
-            <button onclick="location.reload()" class="bg-slate-800 hover:bg-slate-700 text-white px-10 py-4 rounded-2xl font-bold transition-all border border-slate-700 shadow-xl">
-                <i class="fas fa-redo-alt mr-2"></i> ${currentLang === 'ar' ? 'إعادة الاختبار' : 'Retake Quiz'}
-            </button>
-        </div>
-    `;
+            <div class="flex justify-center mb-20 animate-fade-in delay-700">
+                <button onclick="location.reload()" class="bg-slate-800 hover:bg-slate-700 text-white px-10 py-4 rounded-2xl font-bold transition-all border border-slate-700 shadow-xl">
+                    <i class="fas fa-redo-alt mr-2"></i> ${currentLang === 'ar' ? 'إعادة الاختبار' : 'Retake Quiz'}
+                </button>
+            </div>
+        </div>`;
+        container.classList.remove(\'opacity-0\');
+        container.classList.add(\'opacity-100\');
+        renderRadarChart(radar);
+        window.scrollTo({ top: 0, behavior: \'smooth\' });
+        // Add event listener for unlock button
+        document.getElementById(\'unlock-button\').addEventListener(\'click\', () => {
+            document.getElementById(\'secret-report-overlay\').classList.add(\'hidden\');
+            document.getElementById(\'secret-report-actual-content\').classList.remove(\'opacity-5\', \'blur-md\', \'select-none\');
+            document.getElementById(\'secret-report-actual-content\').classList.add(\'opacity-100\');
+        });
 
-    renderRadarChart(radar);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+        // Add Download Result Card Button
+        const downloadButtonHtml = `<button id="download-result-card" class="bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-2xl font-bold transition-all border border-blue-700 shadow-xl mt-8">
+                                        <i class="fas fa-download mr-2"></i> ${currentLang === \'ar\' ? \'تحميل بطاقة النتيجة\' : \'Download Result Card\'}
+                                    </button>`;
+        document.querySelector(\'#result-container > div\').insertAdjacentHTML(\'beforeend\', downloadButtonHtml);
+        document.getElementById(\'download-result-card\').addEventListener(\'click\', downloadResultCard);
+
+        // Update Meta Tags for social sharing
+        updateMetaTags(creature);
+
+        // Make result content visible after it's fully rendered
+        document.getElementById(\'result-content\').classList.remove(\'opacity-0\');
+
+    }, 500); // Delay for fade-in effect
 }
 
 function renderRadarChart(data) {
@@ -386,6 +438,50 @@ function renderRadarChart(data) {
     });
 }
 
+function downloadResultCard() {
+    const resultCard = document.querySelector(\".result-glow\"); // The main result card element
+    if (!resultCard) {
+        console.error(\"Result card element not found for download.\");
+        return;
+    }
+
+    // Temporarily hide elements not meant for the card, like the retake button
+    const retakeButton = document.querySelector(\"#result-container button\");
+    if (retakeButton) retakeButton.style.display = \"none\";
+
+    html2canvas(resultCard, {
+        scale: 2, // Increase scale for better quality
+        useCORS: true, // Enable cross-origin images if any
+        backgroundColor: null // Transparent background
+    }).then(canvas => {
+        // Create a temporary link to download the image
+        const link = document.createElement(\"a\");
+        link.download = \"QuizMagic_Result.png\";
+        link.href = canvas.toDataURL(\"image/png\");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        // Restore hidden elements
+        if (retakeButton) retakeButton.style.display = \"\";
+    }).catch(error => {
+        console.error(\"Error generating result card image:\", error);
+        alert(currentLang === \"ar\" ? \"حدث خطأ أثناء تحميل البطاقة.\" : \"Error downloading card.\");
+        if (retakeButton) retakeButton.style.display = \"\";
+    });
+}
+
+function updateMetaTags(creature) {
+    document.title = `${currentLang === \"ar\" ? \"أنا \" : \"I am a \"}${creature.name} - QuizMagic`;
+    document.querySelector(\"meta[name=\"description\"]\").setAttribute(\"content\", creature.description);
+    document.querySelector(\"meta[property=\"og:title\"]\").setAttribute(\"content\", `${currentLang === \"ar\" ? \"أنا \" : \"I am a \"}${creature.name} - QuizMagic`);
+    document.querySelector(\"meta[property=\"og:description\"]\").setAttribute(\"content\", creature.description);
+    document.querySelector(\"meta[property=\"og:image\"]\").setAttribute(\"content\", window.location.origin + creature.image);
+    document.querySelector(\"meta[name=\"twitter:title\"]\").setAttribute(\"content\", `${currentLang === \"ar\" ? \"أنا \" : \"I am a \"}${creature.name} - QuizMagic`);
+    document.querySelector(\"meta[name=\"twitter:description\"]\").setAttribute(\"content\", creature.description);
+    document.querySelector(\"meta[name=\"twitter:image\"]\").setAttribute(\"content\", window.location.origin + creature.image);
+}
+
 function callCPALocker() {
     // Fake loading for effect
     const btn = document.getElementById('unlock-button');
@@ -400,6 +496,40 @@ function callCPALocker() {
 }
 
 function onCpaLockerSuccess() {
+    const result = calculateResult().creature;
+    const actualContent = document.getElementById('secret-report-actual-content');
+    const unlockOverlay = document.getElementById('secret-report-overlay');
+    
+    unlockOverlay.classList.add('lock-overlay-hidden'); // Add animation class
+
+    setTimeout(() => {
+        unlockOverlay.style.display = 'none';
+        actualContent.classList.remove('opacity-5', 'select-none', 'blur-md');
+        actualContent.classList.add('opacity-100', 'secret-content-glow'); // Add glow effect
+        
+        actualContent.innerHTML = `
+            <div class="space-y-8 animate-fade-in">
+                <div class="border-l-4 border-purple-500 pl-6 py-2 bg-purple-500/5 rounded-r-xl">
+                    <h4 class="text-purple-400 font-bold text-xl mb-3">${currentLang === 'ar' ? 'نقاط القوة المطلقة' : 'Absolute Strengths'}</h4>
+                    <p class="text-slate-200 text-lg leading-relaxed">${result.secretReport.strengths}</p>
+                </div>
+                
+                <div class="border-l-4 border-pink-500 pl-6 py-2 bg-pink-500/5 rounded-r-xl">
+                    <h4 class="text-pink-400 font-bold text-xl mb-3">${currentLang === 'ar' ? 'التحديات الكبرى' : 'Major Challenges'}</h4>
+                    <p class="text-slate-200 text-lg leading-relaxed">${result.secretReport.challenges}</p>
+                </div>
+                
+                <div class="bg-gradient-to-r from-slate-800 to-slate-800/50 p-8 rounded-3xl border border-slate-700/50">
+                    <h4 class="text-white font-bold text-xl mb-4 flex items-center">
+                        <i class="fas fa-lightbulb text-yellow-400 mr-3"></i>
+                        ${currentLang === 'ar' ? 'نصيحة روحية لك' : 'Spiritual Insight for You'}
+                    </h4>
+                    <p class="text-slate-300 text-lg italic leading-relaxed">"${result.secretReport.insight}"</p>
+                </div>
+            </div>
+        `;
+    }, 500); // Match overlay fade-out duration
+}
     // This will be called when the CPA offer is completed
     const result = calculateResult().creature;
     const placeholder = document.getElementById('secret-report-content-placeholder');
