@@ -12,10 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
     loadPartial('header-placeholder', 'partials/header.html');
 
     // Load Footer
-    loadPartial(\'footer-placeholder\', \'partials/footer.html\');
+    loadPartial('footer-placeholder', 'partials/footer.html');
 
     // Load Main Content for index.html if on index page
-    if (window.location.pathname === \'/\' || window.location.pathname === \'/index.html\') {
-        loadPartial(\'main-content-placeholder\', \'partials/index-main-content.html\');
+    if (window.location.pathname === '/' || window.location.pathname === '/index.html') {
+        loadPartial('main-content-placeholder', 'partials/index-main-content.html');
     }
 });

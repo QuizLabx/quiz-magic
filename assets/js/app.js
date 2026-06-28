@@ -1,736 +1,532 @@
-const quizzesData = {
-    ar: {
-        title: "QuizMagic | عالم الاختبارات الأسطورية",
-        heroTitle: "اكتشف كائنك الأسطوري الحقيقي",
-        heroSubtitle: "رحلة في أعماق عقلك الباطن لكشف القوى القديمة التي تسكن روحك",
-        footerDesc: "منصة الاختبارات النفسية الأكثر دقة في العالم العربي.",
-        quizzes: [
-            {
-                id: "mythical-creature",
-                title: "اختبار الكائن الأسطوري",
-                badge: "الأكثر دقة",
-                image: "assets/images/dragon.jpg",
-                description: "تحليل نفسي متقدم يربط سماتك الشخصية بأساطير الكائنات القديمة.",
-                questions: [
-                    { id: 1, text: "أشعر بالراحة أكثر عندما أكون وحيداً مع أفكاري.", trait: "mystery", type: "likert" },
-                    { id: 2, text: "أميل دائماً لتولي دور القيادة في المجموعات.", trait: "leadership", type: "likert" },
-                    { id: 3, text: "أهتم بمساعدة الآخرين حتى لو كان ذلك على حساب راحتي.", trait: "altruism", type: "likert" },
-                    { 
-                        id: 4, 
-                        text: "أي من هذه البوابات تجذبك أكثر للدخول إليها؟", 
-                        type: "visual",
-                        options: [
-                            { label: "بوابة النور", image: "assets/images/quiz/q4_opt1.jpg", trait: "purity", value: 5 },
-                            { label: "بوابة الغموض", image: "assets/images/quiz/q4_opt2.jpg", trait: "mystery", value: 5 },
-                            { label: "بوابة القوة", image: "assets/images/quiz/q4_opt3.jpg", trait: "power", value: 5 },
-                            { label: "بوابة الطبيعة", image: "assets/images/quiz/q4_opt4.jpg", trait: "nature", value: 5 }
-                        ]
-                    },
-                    { id: 5, text: "أفضل التخطيط لكل شيء مسبقاً بدلاً من العفوية.", trait: "strategy", type: "likert" },
-                    { id: 6, text: "لدي قدرة كبيرة على التكيف مع التغييرات المفاجئة.", trait: "adaptation", type: "likert" },
-                    { id: 7, text: "أبحث دائماً عن المعنى العميق وراء الأشياء.", trait: "knowledge", type: "likert" },
-                    { 
-                        id: 8, 
-                        text: "ما هو العنصر الذي تشعر أنه يمثل طاقتك الداخلية؟", 
-                        type: "visual",
-                        options: [
-                            { label: "النار", image: "assets/images/quiz/q8_opt1.jpg", trait: "intensity", value: 5 },
-                            { label: "المياه", image: "assets/images/quiz/q8_opt2.jpg", trait: "composure", value: 5 },
-                            { label: "الأرض", image: "assets/images/quiz/q8_opt3.jpg", trait: "stability", value: 5 },
-                            { label: "الرياح", image: "assets/images/quiz/q8_opt4.jpg", trait: "exploration", value: 5 }
-                        ]
-                    },
-                    { id: 9, text: "أجد صعوبة في مسامحة الأشخاص الذين أخطأوا في حقي.", trait: "persistence", type: "likert" },
-                    { id: 10, text: "أثق بحدسي أكثر من المنطق في اتخاذ القرارات.", trait: "intuition", type: "likert" },
-                    { id: 11, text: "أحب أن أكون محاطاً بالجمال والفن في حياتي.", trait: "elegance", type: "likert" },
-                    { 
-                        id: 12, 
-                        text: "أي من هذه المشاهد يمنحك شعوراً أكبر بالسلام؟", 
-                        type: "visual",
-                        options: [
-                            { label: "قمة جبل", image: "assets/images/quiz/q12_opt1.jpg", trait: "ambition", value: 5 },
-                            { label: "مكتبة قديمة", image: "assets/images/quiz/q12_opt2.jpg", trait: "wisdom", value: 5 },
-                            { label: "حديقة سرية", image: "assets/images/quiz/q12_opt3.jpg", trait: "purity", value: 5 },
-                            { label: "شاطئ مهجور", image: "assets/images/quiz/q12_opt4.jpg", trait: "mystery", value: 5 }
-                        ]
-                    },
-                    { id: 13, text: "أستمتع بمناقشة الأفكار الفلسفية والمعقدة.", trait: "analysis", type: "likert" },
-                    { id: 14, text: "أنا شخص صبور جداً عند التعامل مع المشاكل الطويلة.", trait: "persistence", type: "likert" },
-                    { id: 15, text: "أهتم كثيراً بسمعتي وكيف يطالعني الآخرون.", trait: "potential", type: "likert" },
-                    { 
-                        id: 16, 
-                        text: "أي رمز سحري تختار ليكون تميمة حظك؟", 
-                        type: "visual",
-                        options: [
-                            { label: "العين", image: "assets/images/quiz/q16_opt1.jpg", trait: "knowledge", value: 5 },
-                            { label: "الخنجر", image: "assets/images/quiz/q16_opt2.jpg", trait: "protection", value: 5 },
-                            { label: "الكأس", image: "assets/images/quiz/q16_opt3.jpg", trait: "altruism", value: 5 },
-                            { label: "المفتاح", image: "assets/images/quiz/q16_opt4.jpg", trait: "curiosity", value: 5 }
-                        ]
-                    },
-                    { id: 17, text: "أفضل العمل ضمن فريق بدلاً من العمل منفرداً.", trait: "social", type: "likert" },
-                    { id: 18, text: "أنا دائماً صادق مع نفسي حتى لو كان الحلم مؤلماً.", trait: "honesty", type: "likert" },
-                    { id: 19, text: "أمتلك طاقة كبيرة تدفعني لتجربة أشياء جديدة دائماً.", trait: "energy", type: "likert" },
-                    { 
-                        id: 20, 
-                        text: "ما هو الحيوان الذي تشعر بارتباط روحي معه؟", 
-                        type: "visual",
-                        options: [
-                            { label: "الذئب", image: "assets/images/quiz/q20_opt1.jpg", trait: "social", value: 5 },
-                            { label: "الأفعى", image: "assets/images/quiz/q20_opt2.jpg", trait: "strategy", value: 5 },
-                            { label: "النسر", image: "assets/images/quiz/q20_opt3.jpg", trait: "exploration", value: 5 },
-                            { label: "الفراشة", image: "assets/images/quiz/q20_opt4.jpg", trait: "adaptation", value: 5 }
-                        ]
-                    },
-                    { id: 21, text: "أنا شخص عاطفي جداً وتؤثر فيّ القصص الإنسانية.", trait: "nature", type: "likert" },
-                    { id: 22, text: "أحب التحدي والمنافسة للوصول إلى القمة.", trait: "leadership", type: "likert" },
-                    { id: 23, text: "أميل للحفاظ على التقاليد والقيم القديمة.", trait: "tradition", type: "likert" },
-                    { 
-                        id: 24, 
-                        text: "أي جوهرة تشعر أنها تملك طاقة تجذبك؟", 
-                        type: "visual",
-                        options: [
-                            { label: "ياقوت أحمر", image: "assets/images/quiz/q24_opt1.jpg", trait: "intensity", value: 5 },
-                            { label: "ماس أزرق", image: "assets/images/quiz/q24_opt2.jpg", trait: "logic", value: 5 },
-                            { label: "زمرد أخضر", image: "assets/images/quiz/q24_opt3.jpg", trait: "nature", value: 5 },
-                            { label: "جمشت أرجواني", image: "assets/images/quiz/q24_opt4.jpg", trait: "intuition", value: 5 }
-                        ]
-                    },
-                    { id: 25, text: "أستطيع التحكم في أعصابي حتى في أصعب المواقف.", trait: "composure", type: "likert" },
-                    { id: 26, text: "أهتم بالتفاصيل الصغيرة التي قد لا يلاحظها الآخرون.", trait: "analysis", type: "likert" },
-                    { id: 27, text: "أنا شخص متفائل وأرى الجانب المشرق دائماً.", trait: "potential", type: "likert" },
-                    { 
-                        id: 28, 
-                        text: "أي سماء تفضل أن تتأملها في الليل؟", 
-                        type: "visual",
-                        options: [
-                            { label: "شفق قطبي", image: "assets/images/quiz/q28_opt1.jpg", trait: "potential", value: 5 },
-                            { label: "كسوف كلي", image: "assets/images/quiz/q28_opt2.jpg", trait: "mystery", value: 5 },
-                            { label: "سديم فضائي", image: "assets/images/quiz/q28_opt3.jpg", trait: "exploration", value: 5 },
-                            { label: "برق صامت", image: "assets/images/quiz/q28_opt4.jpg", trait: "energy", value: 5 }
-                        ]
-                    },
-                    { id: 29, text: "أفضل الاستقرار في مكان واحد على كثرة الترحال.", trait: "stability", type: "likert" },
-                    { id: 30, text: "أشعر أن لدي رسالة كبيرة يجب أن أؤديها في الحياة.", trait: "ambition", type: "likert" },
-                    { id: 31, text: "أحب الغموض ولا أكشف كل أوراقي للآخرين.", trait: "mystery", type: "likert" },
-                    { 
-                        id: 32, 
-                        text: "أي وسيلة نقل أسطورية تختار لرحلتك القادمة؟", 
-                        type: "visual",
-                        options: [
-                            { label: "سفينة طائرة", image: "assets/images/quiz/q32_opt1.jpg", trait: "exploration", value: 5 },
-                            { label: "عربة نور", image: "assets/images/quiz/q32_opt2.jpg", trait: "purity", value: 5 },
-                            { label: "بساط ريحي", image: "assets/images/quiz/q32_opt3.jpg", trait: "wisdom", value: 5 },
-                            { label: "تنين صغير", image: "assets/images/quiz/q32_opt4.jpg", trait: "protection", value: 5 }
-                        ]
-                    },
-                    { id: 33, text: "أنا شخص عملي جداً ولا أضيع وقتي في الأحلام.", trait: "logic", type: "likert" },
-                    { id: 34, text: "أبحث دائماً عن المثالية في كل ما أفعل.", trait: "perfection", type: "likert" },
-                    { id: 35, text: "أنا مخلص جداً لأصدقائي وعائلتي.", trait: "social", type: "likert" },
-                    { 
-                        id: 36, 
-                        text: "ما هو السلاح الذي ستختاره للدفاع عن مملكتك؟", 
-                        type: "visual",
-                        options: [
-                            { label: "سيف الضوء", image: "assets/images/quiz/q36_opt1.jpg", trait: "honesty", value: 5 },
-                            { label: "درع الظل", image: "assets/images/quiz/q36_opt2.jpg", trait: "protection", value: 5 },
-                            { label: "قوس النجوم", image: "assets/images/quiz/q36_opt3.jpg", trait: "strategy", value: 5 },
-                            { label: "عصا الحكيم", image: "assets/images/quiz/q36_opt4.jpg", trait: "knowledge", value: 5 }
-                        ]
-                    },
-                    { id: 37, text: "أحب أن أكون متميزاً ومختلفاً عن الآخرين.", trait: "potential", type: "likert" },
-                    { id: 38, text: "أنا شخص مرن جداً في تفكيري.", trait: "adaptation", type: "likert" },
-                    { id: 39, text: "أؤمن أن القوة الحقيقية تأتي من الداخل.", trait: "power", type: "likert" },
-                    { 
-                        id: 40, 
-                        text: "أي نهاية تفضل أن تختم بها قصة حياتك؟", 
-                        type: "visual",
-                        options: [
-                            { label: "عرش ذهبي", image: "assets/images/quiz/q40_opt1.jpg", trait: "leadership", value: 5 },
-                            { label: "كوخ هادئ", image: "assets/images/quiz/q40_opt2.jpg", trait: "nature", value: 5 },
-                            { label: "رحلة أبدية", image: "assets/images/quiz/q40_opt3.jpg", trait: "curiosity", value: 5 },
-                            { label: "اتحاد كوني", image: "assets/images/quiz/q40_opt4.jpg", trait: "mystery", value: 5 }
-                        ]
-                    }
-                ],
-                results: [
-                    {
-                        id: "dragon",
-                        name: "التنين العظيم",
-                        rarity: "أسطوري",
-                        image: "assets/images/dragon.jpg",
-                        description: "أنت تجسيد للقوة والقيادة. تمتلك روحاً نارية لا تقهر وطموحاً يتجاوز السحاب.",
-                        article: "يُعتبر التنين في جميع الثقافات رمزاً للقوة المطلقة والحكمة القديمة. أصحاب هذه الشخصية هم قادة طبيعيون، يمتلكون رؤية بعيدة المدى وقدرة على مواجهة أصعب التحديات دون خوف.",
-                        secretReport: {
-                            strengths: "كاريزما طاغية، شجاعة استثنائية، وقدرة على حماية من تحب بكل قوتك.",
-                            challenges: "قد تميل أحياناً للسيطرة المفرطة أو الغضب السريع عندما لا تسير الأمور كما خططت.",
-                            insight: "قوتك الحقيقية تكمن في كبح جماح نارك واستخدامها للتدفئة بدلاً من الحرق."
-                        }
-                    },
-                    {
-                        id: "phoenix",
-                        name: "طائر العنقاء",
-                        rarity: "نادر جداً",
-                        image: "assets/images/phoenix.jpg",
-                        description: "أنت رمز للتجدد والأمل. تمتلك قدرة مذهلة على النهوض من الرماد أقوى من ذي قبل.",
-                        article: "العنقاء لا تموت أبداً، بل تولد من جديد. أصحاب هذه الشخصية يمتلكون مرونة نفسية مذهلة، وهم قادرون على تحويل الألم إلى وقود للإبداع والنجاح.",
-                        secretReport: {
-                            strengths: "تفاؤل لا ينضب، قدرة على الشفاء الذاتي، وإلهام الآخرين بقصة نجاحك.",
-                            challenges: "قد تستهلك نفسك في العطاء للآخرين حتى تحترق تماماً قبل أن تبدأ دورتك الجديدة.",
-                            insight: "تذكر أنك لست مضطراً للاحتراق دائماً لتثبت وجودك؛ النور الهادئ يدوم أطول."
-                        }
-                    },
-                    {
-                        id: "unicorn",
-                        name: "وحيد القرن النقي",
-                        rarity: "نادر",
-                        image: "assets/images/unicorn.jpg",
-                        description: "أنت تجسيد للنقاء واللطف. تمتلك روحاً بريئة تهدف دائماً لنشر الخير والجمال.",
-                        article: "وحيد القرن هو رمز الطهارة والشفاء. أصحاب هذه الشخصية هم بلسم لجروح الآخرين، يمتلكون حدساً نقياً وقدرة على رؤية الجمال في أبسط الأشياء.",
-                        secretReport: {
-                            strengths: "صدق مطلق، قدرة على التعاطف العميق، ونية صافية تجذب الناس إليك.",
-                            challenges: "حساسيتك المفرطة قد تجعلك عرضة للجروح من العالم القاسي من حولك.",
-                            insight: "نقاء قلبك هو أقوى درع تملكه، لا تسمح للعالم أن يغير جوهرك."
-                        }
-                    },
-                    {
-                        id: "sphinx",
-                        name: "أبو الهول الغامض",
-                        rarity: "أسطوري",
-                        image: "assets/images/sphinx.jpg",
-                        description: "أنت حارس الأسرار والحكمة. تمتلك عقلاً تحليلياً يرى ما وراء الستار ويحل أعقد الألغاز.",
-                        article: "أبو الهول يمثل التوازن بين القوة الجسدية والذكاء الحاد. أصحاب هذه الشخصية هم مفكرون صامتون، يراقبون العالم بدقة ولا يتحدثون إلا عندما يملكون الحقيقة.",
-                        secretReport: {
-                            strengths: "ذكاء حاد، قدرة على قراءة البشر، وصبر طويل في انتظار اللحظة المناسبة.",
-                            challenges: "ميلك للعزلة والغموض قد يجعل الآخرين يجدون صعوبة في التقرب منك أو فهمك.",
-                            insight: "مشاركة جزء من أسرارك قد يفتح لك أبواباً من الصداقة لم تكن تتوقعها."
-                        }
-                    },
-                    {
-                        id: "kraken",
-                        name: "الكراكن العظيم",
-                        rarity: "نادر جداً",
-                        image: "assets/images/kraken.jpg",
-                        description: "أنت قوة الأعماق الغامضة. تمتلك نفوذاً واسعاً وقدرة على التحكم في الأمور من خلف الكواليس.",
-                        article: "الكراكن هو سيد المحيطات المظلمة. أصحاب هذه الشخصية يمتلكون شخصية معقدة وعميقة، يفضلون العمل في صمت وتأثيرهم يظهر فجأة وبقوة هائلة.",
-                        secretReport: {
-                            strengths: "تخطيط استراتيجي، قوة إرادة جبارة، وقدرة على إدارة الأزمات الكبرى.",
-                            challenges: "قد تميل للغموض الزائد الذي قد يتحول إلى رغبة في السيطرة الخفية.",
-                            insight: "الأعماق جميلة، لكن لا تنسَ الصعود للسطح أحياناً لتستمتع بنور الشمس."
-                        }
-                    },
-                    {
-                        id: "owl_of_athena",
-                        name: "بومة أثينا",
-                        rarity: "نادر",
-                        image: "assets/images/owl_of_athena.jpg",
-                        description: "أنت رمز الحكمة والمعرفة. ترى في الظلام ما يعجز الآخرون عن رؤيته في وضح النهار.",
-                        article: "بومة أثينا كانت ترافق آلهة الحكمة دائماً. أصحاب هذه الشخصية هم باحثون عن الحقيقة، يقدرون العلم والمنطق ويمتلكون بصيرة نافذة.",
-                        secretReport: {
-                            strengths: "تركيز عالٍ، قدرة على التعلم السريع، وحكمة تسبق سنك بكثير.",
-                            challenges: "ميلك للمنطق الجاف قد يجعلك تهمل الجانب العاطفي في علاقاتك.",
-                            insight: "الحكمة الحقيقية هي التي تجمع بين ذكاء العقل ورحمة القلب."
-                        }
-                    },
-                    {
-                        id: "centaur",
-                        name: "القنطور الحكيم",
-                        rarity: "نادر",
-                        image: "assets/images/centaur.jpg",
-                        description: "أنت رمز للتوازن بين العقل والقوة البدنية. تمتلك حكمة فطرية وروحاً حرة.",
-                        article: "القنطور يمثل الجانب البري والحكيم في الطبيعة البشرية. أصحاب هذه الشخصية هم استراتيجيون بالفطرة، يقدرون الحرية والمنطق.",
-                        secretReport: {
-                            strengths: "تفكير منطقي، قدرة على التحمل، ورؤية فلسفية للحياة.",
-                            challenges: "قد تجد صعوبة في الالتزام بالقواعد الصارمة التي تحد من حريتك.",
-                            insight: "توازنك هو سر قوتك، لا تترك جانباً يطغى على الآخر."
-                        }
-                    },
-                    {
-                        id: "cerberus",
-                        name: "سيربيروس الحارس",
-                        rarity: "نادر جداً",
-                        image: "assets/images/cerberus.jpg",
-                        description: "أنت الحامي الوفي والدرع المنيع. تمتلك يقظة دائمة وقدرة على حماية ما هو ثمين.",
-                        article: "سيربيروس هو حارس البوابات العظيم. أصحاب هذه الشخصية يمتلكون ولاءً لا يتزعزع وقدرة على رصد الأخطار قبل وقوعها.",
-                        secretReport: {
-                            strengths: "ولاء مطلق، يقظة عالية، وقدرة على حماية من تحب.",
-                            challenges: "قد تكون مفرطاً في الحماية أو تجد صعوبة في الثقة بالغرباء.",
-                            insight: "الحماية لا تعني دائماً القسوة؛ أحياناً يكون اللين هو أقوى دفاع."
-                        }
-                    },
-                    {
-                        id: "faun",
-                        name: "الفون الطبيعي",
-                        rarity: "شائع",
-                        image: "assets/images/faun.jpg",
-                        description: "أنت روح الطبيعة والمرح. تمتلك قدرة على الاستمتاع بالحياة ونشر البهجة من حولك.",
-                        article: "الفون يمثل الجانب المبهج والمرتبط بالطبيعة. أصحاب هذه الشخصية هم أشخاص اجتماعيون، يحبون الموسيقى والفن والعيش في اللحظة.",
-                        secretReport: {
-                            strengths: "روح مرحة، ارتباط عميق بالطبيعة، وقدرة على التكيف الاجتماعي.",
-                            challenges: "قد تميل للعفوية الزائدة التي قد تؤدي لإهمال المسؤوليات الجدية.",
-                            insight: "المرح ضروري، لكن القليل من الجدية يساعدك على تحقيق أحلامك الكبرى."
-                        }
-                    },
-                    {
-                        id: "golem",
-                        name: "الجولم الصخري",
-                        rarity: "نادر",
-                        image: "assets/images/golem.jpg",
-                        description: "أنت رمز للاستقرار والصلابة. تمتلك إرادة من حجر وقدرة على تحمل أصعب الظروف.",
-                        article: "الجولم هو الكائن المصنوع من الأرض، وهو يمثل الثبات. أصحاب هذه الشخصية هم أشخاص يعتمد عليهم، صبورون وهادئون.",
-                        secretReport: {
-                            strengths: "صبر أيوب، صلابة نفسية، ووفاء بالوعود مهما كلف الأمر.",
-                            challenges: "قد تجد صعوبة في التعبير عن مشاعرك أو التكيف مع التغييرات السريعة.",
-                            insight: "حتى الصخر يمكن أن ينبت منه الزهر؛ لا تخشَ إظهار جانبك اللين."
-                        }
-                    },
-                    {
-                        id: "hydra",
-                        name: "الهيدرا المتجددة",
-                        rarity: "أسطوري",
-                        image: "assets/images/hydra.jpg",
-                        description: "أنت رمز للإصرار والتعددية. كلما واجهت تحدياً، خرجت منه بأفكار وحلول أكثر.",
-                        article: "الهيدرا كائن ينمو له رأسان كلما قطع واحد. أصحاب هذه الشخصية هم أشخاص مثابرون جداً، لا يعرفون الاستسلام أبداً.",
-                        secretReport: {
-                            strengths: "إصرار لا يلين، تعدد المواهب، وقدرة على التعافي السريع من الفشل.",
-                            challenges: "قد تشتت نفسك في الكثير من الاتجاهات في وقت واحد.",
-                            insight: "تركيز كل رؤوسك على هدف واحد سيجعلك لا تقهر."
-                        }
-                    },
-                    {
-                        id: "kitsune",
-                        name: "الكيتسوني الماكر",
-                        rarity: "نادر جداً",
-                        image: "assets/images/kitsune.jpg",
-                        description: "أنت رمز للذكاء التكيفي والسحر. تمتلك قدرة على تغيير شكلك وأسلوبك حسب الموقف.",
-                        article: "الكيتسوني هو الثعلب الأسطوري الياباني. أصحاب هذه الشخصية هم أذكياء جداً، يمتلكون جاذبية غامضة وقدرة على الإقناع.",
-                        secretReport: {
-                            strengths: "ذكاء اجتماعي، قدرة على الإقناع، ومرونة عالية في التفكير.",
-                            challenges: "قد يجد الآخرون صعوبة في معرفة وجهك الحقيقي أو نواياك الصادقة.",
-                            insight: "الذكاء موهبة، استخدمها لبناء الجسور وليس فقط لخداع العابرين."
-                        }
-                    },
-                    {
-                        id: "pegasus",
-                        name: "بيجاسوس المجنح",
-                        rarity: "نادر",
-                        image: "assets/images/pegasus.jpg",
-                        description: "أنت رمز للحرية والإلهام. تمتلك روحاً تحلق فوق المصاعب وتسعى دائماً للأفق البعيد.",
-                        article: "بيجاسوس هو الحصان المجنح الذي يمثل الخيال. أصحاب هذه الشخصية هم حالمون، يمتلكون طاقة إيجابية ورغبة في الاستكشاف.",
-                        secretReport: {
-                            strengths: "خيال واسع، طاقة إيجابية، ورغبة مستمرة في التطور والحرية.",
-                            challenges: "قد تجد صعوبة في التعامل مع الواقع المادي والقيود اليومية.",
-                            insight: "جناحاك يحملانك للسماء، لكن حوافرك هي التي تثبتك على الأرض؛ اعتني بكليهما."
-                        }
-                    },
-                    {
-                        id: "simurgh",
-                        name: "السيمرغ الحكيم",
-                        rarity: "أسطوري",
-                        image: "assets/images/simurgh.jpg",
-                        description: "أنت رمز للكمال والمعرفة الشاملة. تمتلك رؤية شاملة للكون وتفهم ترابط الأشياء.",
-                        article: "السيمرغ هو الطائر الأسطوري الفارسي الذي يملك علم كل العصور. أصحاب هذه الشخصية هم حكماء، يسعون للكمال الروحي والمعرفي.",
-                        secretReport: {
-                            strengths: "معرفة واسعة، هدوء نفسي، وقدرة على تقديم النصيحة الحكيمة.",
-                            challenges: "قد تميل للمثالية الزائدة التي قد تجعلك تشعر بخيبة أمل من الواقع.",
-                            insight: "الكمال رحلة وليس محطة وصول؛ استمتع بالطريق بكل ما فيه."
-                        }
-                    },
-                    {
-                        id: "siren",
-                        name: "السيرين الساحرة",
-                        rarity: "نادر جداً",
-                        image: "assets/images/siren.jpg",
-                        description: "أنت رمز للجاذبية والحدس العميق. تمتلك تأثيراً ساحراً على من حولك وقدرة على فهم المشاعر.",
-                        article: "السيرين هي كائن البحار الذي يملك صوتاً لا يقاوم. أصحاب هذه الشخصية هم أشخاص جذابون، يمتلكون حدساً قوياً وفهماً عميقاً للنفس البشرية.",
-                        secretReport: {
-                            strengths: "جاذبية طبيعية، حدس قوي، وفهم عميق للمشاعر.",
-                            challenges: "قد تستخدم تأثيرك للسيطرة على الآخرين عاطفياً دون قصد.",
-                            insight: "سحرك أمانة، استخدمه لرفع معنويات الآخرين وإرشادهم."
-                        }
-                    },
-                    {
-                        id: "valkyrie",
-                        name: "الفالكيري المحاربة",
-                        rarity: "أسطوري",
-                        image: "assets/images/valkyrie.jpg",
-                        description: "أنت رمز للشرف والاختيار. تمتلك شجاعة المحاربين وقدرة على اتخاذ القرارات المصيرية.",
-                        article: "الفالكيري هن مختارات الأبطال في الأساطير الإسكندنافية. أصحاب هذه الشخصية هم أشخاص شجعان، يقدرون الشرف والعدالة.",
-                        secretReport: {
-                            strengths: "شجاعة منقطعة النظير، نزاهة، وقدرة على قيادة الآخرين نحو النصر.",
-                            challenges: "قد تكون صارماً جداً مع نفسك ومع الآخرين في تطبيق معاييرك.",
-                            insight: "البطل الحقيقي يعرف متى يضع سيفه ويظهر الرحمة."
-                        }
-                    }
-                ]
-            }
-        ]
-    },
-    en: {
-        title: "QuizMagic | World of Mythical Quizzes",
-        heroTitle: "Discover Your True Mythical Creature",
-        heroSubtitle: "A journey into your subconscious to reveal the ancient forces within your soul",
-        footerDesc: "The most accurate psychological quiz platform in the Arab world.",
-        quizzes: [
-            {
-                id: "mythical-creature",
-                title: "Mythical Creature Test",
-                badge: "Most Accurate",
-                image: "assets/images/dragon.jpg",
-                description: "An advanced psychological analysis linking your traits to ancient creature legends.",
-                questions: [
-                    { id: 1, text: "I feel more comfortable when I am alone with my thoughts.", trait: "mystery", type: "likert" },
-                    { id: 2, text: "I always tend to take the leadership role in groups.", trait: "leadership", type: "likert" },
-                    { id: 3, text: "I care about helping others even at the expense of my own comfort.", trait: "altruism", type: "likert" },
-                    { 
-                        id: 4, 
-                        text: "Which of these portals attracts you most to enter?", 
-                        type: "visual",
-                        options: [
-                            { label: "Portal of Light", image: "assets/images/quiz/q4_opt1.jpg", trait: "purity", value: 5 },
-                            { label: "Portal of Mystery", image: "assets/images/quiz/q4_opt2.jpg", trait: "mystery", value: 5 },
-                            { label: "Portal of Power", image: "assets/images/quiz/q4_opt3.jpg", trait: "power", value: 5 },
-                            { label: "Portal of Nature", image: "assets/images/quiz/q4_opt4.jpg", trait: "nature", value: 5 }
-                        ]
-                    },
-                    { id: 5, text: "I prefer planning everything in advance rather than spontaneity.", trait: "strategy", type: "likert" },
-                    { id: 6, text: "I have a great ability to adapt to sudden changes.", trait: "adaptation", type: "likert" },
-                    { id: 7, text: "I always look for the deep meaning behind things.", trait: "knowledge", type: "likert" },
-                    { 
-                        id: 8, 
-                        text: "Which element do you feel represents your inner energy?", 
-                        type: "visual",
-                        options: [
-                            { label: "Fire", image: "assets/images/quiz/q8_opt1.jpg", trait: "intensity", value: 5 },
-                            { label: "Water", image: "assets/images/quiz/q8_opt2.jpg", trait: "composure", value: 5 },
-                            { label: "Earth", image: "assets/images/quiz/q8_opt3.jpg", trait: "stability", value: 5 },
-                            { label: "Wind", image: "assets/images/quiz/q8_opt4.jpg", trait: "exploration", value: 5 }
-                        ]
-                    },
-                    { id: 9, text: "I find it difficult to forgive people who have wronged me.", trait: "persistence", type: "likert" },
-                    { id: 10, text: "I trust my intuition more than logic in decision making.", trait: "intuition", type: "likert" },
-                    { id: 11, text: "I love being surrounded by beauty and art in my life.", trait: "elegance", type: "likert" },
-                    { 
-                        id: 12, 
-                        text: "Which of these scenes gives you a greater sense of peace?", 
-                        type: "visual",
-                        options: [
-                            { label: "Mountain Peak", image: "assets/images/quiz/q12_opt1.jpg", trait: "ambition", value: 5 },
-                            { label: "Old Library", image: "assets/images/quiz/q12_opt2.jpg", trait: "wisdom", value: 5 },
-                            { label: "Secret Garden", image: "assets/images/quiz/q12_opt3.jpg", trait: "purity", value: 5 },
-                            { label: "Deserted Beach", image: "assets/images/quiz/q12_opt4.jpg", trait: "mystery", value: 5 }
-                        ]
-                    },
-                    { id: 13, text: "I enjoy discussing philosophical and complex ideas.", trait: "analysis", type: "likert" },
-                    { id: 14, text: "I am a very patient person when dealing with long-term problems.", trait: "persistence", type: "likert" },
-                    { id: 15, text: "I care a lot about my reputation and how others perceive me.", trait: "potential", type: "likert" },
-                    { 
-                        id: 16, 
-                        text: "Which magical symbol do you choose to be your lucky charm?", 
-                        type: "visual",
-                        options: [
-                            { label: "The Eye", image: "assets/images/quiz/q16_opt1.jpg", trait: "knowledge", value: 5 },
-                            { label: "The Dagger", image: "assets/images/quiz/q16_opt2.jpg", trait: "protection", value: 5 },
-                            { label: "The Chalice", image: "assets/images/quiz/q16_opt3.jpg", trait: "altruism", value: 5 },
-                            { label: "The Key", image: "assets/images/quiz/q16_opt4.jpg", trait: "curiosity", value: 5 }
-                        ]
-                    },
-                    { id: 17, text: "I prefer working in a team rather than working alone.", trait: "social", type: "likert" },
-                    { id: 18, text: "I am always honest with myself even if the truth is painful.", trait: "honesty", type: "likert" },
-                    { id: 19, text: "I have a lot of energy that drives me to try new things always.", trait: "energy", type: "likert" },
-                    { 
-                        id: 20, 
-                        text: "Which animal do you feel a spiritual connection with?", 
-                        type: "visual",
-                        options: [
-                            { label: "Wolf", image: "assets/images/quiz/q20_opt1.jpg", trait: "social", value: 5 },
-                            { label: "Snake", image: "assets/images/quiz/q20_opt2.jpg", trait: "strategy", value: 5 },
-                            { label: "Eagle", image: "assets/images/quiz/q20_opt3.jpg", trait: "exploration", value: 5 },
-                            { label: "Butterfly", image: "assets/images/quiz/q20_opt4.jpg", trait: "adaptation", value: 5 }
-                        ]
-                    },
-                    { id: 21, text: "I am a very emotional person and am moved by human stories.", trait: "nature", type: "likert" },
-                    { id: 22, text: "I love challenge and competition to reach the top.", trait: "leadership", type: "likert" },
-                    { id: 23, text: "I tend to maintain old traditions and values.", trait: "tradition", type: "likert" },
-                    { 
-                        id: 24, 
-                        text: "Which gemstone do you feel has an energy that attracts you?", 
-                        type: "visual",
-                        options: [
-                            { label: "Ruby", image: "assets/images/quiz/q24_opt1.jpg", trait: "intensity", value: 5 },
-                            { label: "Blue Diamond", image: "assets/images/quiz/q24_opt2.jpg", trait: "logic", value: 5 },
-                            { label: "Emerald", image: "assets/images/quiz/q24_opt3.jpg", trait: "nature", value: 5 },
-                            { label: "Amethyst", image: "assets/images/quiz/q24_opt4.jpg", trait: "intuition", value: 5 }
-                        ]
-                    },
-                    { id: 25, text: "I can control my temper even in the most difficult situations.", trait: "composure", type: "likert" },
-                    { id: 26, text: "I care about small details that others might not notice.", trait: "analysis", type: "likert" },
-                    { id: 27, text: "I am an optimistic person and always see the bright side.", trait: "potential", type: "likert" },
-                    { 
-                        id: 28, 
-                        text: "Which sky do you prefer to contemplate at night?", 
-                        type: "visual",
-                        options: [
-                            { label: "Aurora", image: "assets/images/quiz/q28_opt1.jpg", trait: "potential", value: 5 },
-                            { label: "Total Eclipse", image: "assets/images/quiz/q28_opt2.jpg", trait: "mystery", value: 5 },
-                            { label: "Nebula", image: "assets/images/quiz/q28_opt3.jpg", trait: "exploration", value: 5 },
-                            { label: "Silent Lightning", image: "assets/images/quiz/q28_opt4.jpg", trait: "energy", value: 5 }
-                        ]
-                    },
-                    { id: 29, text: "I prefer staying in one place over frequent traveling.", trait: "stability", type: "likert" },
-                    { id: 30, text: "I feel that I have a great mission to fulfill in life.", trait: "ambition", type: "likert" },
-                    { id: 31, text: "I love mystery and do not reveal all my cards to others.", trait: "mystery", type: "likert" },
-                    { 
-                        id: 32, 
-                        text: "Which mythical transport do you choose for your next journey?", 
-                        type: "visual",
-                        options: [
-                            { label: "Flying Ship", image: "assets/images/quiz/q32_opt1.jpg", trait: "exploration", value: 5 },
-                            { label: "Light Carriage", image: "assets/images/quiz/q32_opt2.jpg", trait: "purity", value: 5 },
-                            { label: "Flying Carpet", image: "assets/images/quiz/q32_opt3.jpg", trait: "wisdom", value: 5 },
-                            { label: "Baby Dragon", image: "assets/images/quiz/q32_opt4.jpg", trait: "protection", value: 5 }
-                        ]
-                    },
-                    { id: 33, text: "I am a very practical person and do not waste my time on dreams.", trait: "logic", type: "likert" },
-                    { id: 34, text: "I always look for perfection in everything I do.", trait: "perfection", type: "likert" },
-                    { id: 35, text: "I am very loyal to my friends and family.", trait: "social", type: "likert" },
-                    { 
-                        id: 36, 
-                        text: "What weapon will you choose to defend your kingdom?", 
-                        type: "visual",
-                        options: [
-                            { label: "Light Sword", image: "assets/images/quiz/q36_opt1.jpg", trait: "honesty", value: 5 },
-                            { label: "Shadow Shield", image: "assets/images/quiz/q36_opt2.jpg", trait: "protection", value: 5 },
-                            { label: "Star Bow", image: "assets/images/quiz/q36_opt3.jpg", trait: "strategy", value: 5 },
-                            { label: "Sage Staff", image: "assets/images/quiz/q36_opt4.jpg", trait: "knowledge", value: 5 }
-                        ]
-                    },
-                    { id: 37, text: "I like to be unique and different from others.", trait: "potential", type: "likert" },
-                    { id: 38, text: "I am a very flexible person in my thinking.", trait: "adaptation", type: "likert" },
-                    { id: 39, text: "I believe that true strength comes from within.", trait: "power", type: "likert" },
-                    { 
-                        id: 40, 
-                        text: "What ending do you prefer to conclude your life story?", 
-                        type: "visual",
-                        options: [
-                            { label: "Golden Throne", image: "assets/images/quiz/q40_opt1.jpg", trait: "leadership", value: 5 },
-                            { label: "Quiet Cottage", image: "assets/images/quiz/q40_opt2.jpg", trait: "nature", value: 5 },
-                            { label: "Eternal Journey", image: "assets/images/quiz/q40_opt3.jpg", trait: "curiosity", value: 5 },
-                            { label: "Cosmic Unity", image: "assets/images/quiz/q40_opt4.jpg", trait: "mystery", value: 5 }
-                        ]
-                    }
-                ],
-                results: [
-                    {
-                        id: "dragon",
-                        name: "Great Dragon",
-                        rarity: "Mythical",
-                        image: "assets/images/dragon.jpg",
-                        description: "You are the embodiment of power and leadership. You possess an invincible fiery spirit and ambition that exceeds the clouds.",
-                        article: "The dragon is considered in all cultures a symbol of absolute power and ancient wisdom. Owners of this personality are natural leaders, possessing a long-term vision and the ability to face the most difficult challenges without fear.",
-                        secretReport: {
-                            strengths: "Overwhelming charisma, exceptional courage, and the ability to protect those you love with all your might.",
-                            challenges: "You may sometimes tend toward excessive control or quick anger when things don't go as planned.",
-                            insight: "Your true strength lies in curbing your fire and using it for warmth rather than burning."
-                        }
-                    },
-                    {
-                        id: "phoenix",
-                        name: "Phoenix",
-                        rarity: "Very Rare",
-                        image: "assets/images/phoenix.jpg",
-                        description: "You are a symbol of renewal and hope. You have an amazing ability to rise from the ashes stronger than before.",
-                        article: "The Phoenix never dies, but is born anew. Owners of this personality possess amazing psychological resilience, and are able to turn pain into fuel for creativity and success.",
-                        secretReport: {
-                            strengths: "Inexhaustible optimism, ability to self-heal, and inspiring others with your success story.",
-                            challenges: "You may consume yourself in giving to others until you burn out completely before your new cycle begins.",
-                            insight: "Remember that you don't always have to burn to prove your existence; calm light lasts longer."
-                        }
-                    },
-                    {
-                        id: "unicorn",
-                        name: "Pure Unicorn",
-                        rarity: "Rare",
-                        image: "assets/images/unicorn.jpg",
-                        description: "You are the embodiment of purity and kindness. You possess an innocent spirit that always aims to spread goodness and beauty.",
-                        article: "The unicorn is a symbol of purity and healing. Owners of this personality are a balm for the wounds of others, possessing a pure intuition and the ability to see beauty in the simplest things.",
-                        secretReport: {
-                            strengths: "Absolute honesty, ability for deep empathy, and a pure intention that attracts people to you.",
-                            challenges: "Your extreme sensitivity may make you vulnerable to wounds from the harsh world around you.",
-                            insight: "The purity of your heart is the strongest shield you own, do not let the world change your essence."
-                        }
-                    },
-                    {
-                        id: "sphinx",
-                        name: "Mysterious Sphinx",
-                        rarity: "Mythical",
-                        image: "assets/images/sphinx.jpg",
-                        description: "You are the guardian of secrets and wisdom. You possess an analytical mind that sees behind the curtain and solves the most complex riddles.",
-                        article: "The Sphinx represents the balance between physical strength and sharp intelligence. Owners of this personality are silent thinkers, observing the world accurately and only speaking when they possess the truth.",
-                        secretReport: {
-                            strengths: "Sharp intelligence, ability to read humans, and long patience in waiting for the right moment.",
-                            challenges: "Your tendency toward isolation and mystery may make it difficult for others to get close to you or understand you.",
-                            insight: "Sharing part of your secrets may open doors of friendship you didn't expect."
-                        }
-                    },
-                    {
-                        id: "kraken",
-                        name: "Great Kraken",
-                        rarity: "Very Rare",
-                        image: "assets/images/kraken.jpg",
-                        description: "You are the power of the mysterious depths. You possess wide influence and the ability to control things from behind the scenes.",
-                        article: "The Kraken is the master of the dark oceans. Owners of this personality possess a complex and deep personality, preferring to work in silence and their impact appears suddenly and with enormous power.",
-                        secretReport: {
-                            strengths: "Strategic planning, giant willpower, and the ability to manage major crises.",
-                            challenges: "You may tend toward excessive mystery which may turn into a desire for hidden control.",
-                            insight: "The depths are beautiful, but don't forget to come to the surface sometimes to enjoy the sunlight."
-                        }
-                    },
-                    {
-                        id: "owl_of_athena",
-                        name: "Owl of Athena",
-                        rarity: "Rare",
-                        image: "assets/images/owl_of_athena.jpg",
-                        description: "You are a symbol of wisdom and knowledge. You see in the dark what others fail to see in broad daylight.",
-                        article: "The Owl of Athena always accompanied the goddess of wisdom. Owners of this personality are truth seekers, valuing science and logic and possessing a piercing insight.",
-                        secretReport: {
-                            strengths: "High focus, ability to learn quickly, and wisdom far beyond your age.",
-                            challenges: "Your tendency toward dry logic may make you neglect the emotional side in your relationships.",
-                            insight: "True wisdom is that which combines the intelligence of the mind and the mercy of the heart."
-                        }
-                    },
-                    {
-                        id: "centaur",
-                        name: "Wise Centaur",
-                        rarity: "Rare",
-                        image: "assets/images/centaur.jpg",
-                        description: "You are a symbol of balance between mind and physical strength. You possess innate wisdom and a free spirit.",
-                        article: "The Centaur represents the wild and wise side of human nature. Owners of this personality are natural strategists, valuing freedom and logic.",
-                        secretReport: {
-                            strengths: "Logical thinking, endurance, and a philosophical view of life.",
-                            challenges: "You may find it difficult to adhere to strict rules that limit your freedom.",
-                            insight: "Your balance is the secret to your strength; do not let one side dominate the other."
-                        }
-                    },
-                    {
-                        id: "cerberus",
-                        name: "Guardian Cerberus",
-                        rarity: "Very Rare",
-                        image: "assets/images/cerberus.jpg",
-                        description: "You are a loyal protector and an impenetrable shield. You possess constant vigilance and the ability to guard what is precious.",
-                        article: "Cerberus is the great guardian of gates. Owners of this personality possess unwavering loyalty and the ability to detect dangers before they occur.",
-                        secretReport: {
-                            strengths: "Absolute loyalty, high vigilance, and the ability to protect those you love.",
-                            challenges: "You may be overly protective or find it difficult to trust strangers.",
-                            insight: "Protection does not always mean harshness; sometimes gentleness is the strongest defense."
-                        }
-                    },
-                    {
-                        id: "faun",
-                        name: "Natural Faun",
-                        rarity: "Common",
-                        image: "assets/images/faun.jpg",
-                        description: "You are the spirit of nature and joy. You possess the ability to enjoy life and spread cheer around you.",
-                        article: "The Faun represents the joyful and nature-bound side. Owners of this personality are social, love music, art, and living in the moment.",
-                        secretReport: {
-                            strengths: "Playful spirit, deep connection to nature, and high social adaptability.",
-                            challenges: "You may tend towards excessive spontaneity which could lead to neglecting serious responsibilities.",
-                            insight: "Fun is essential, but a little seriousness helps you achieve your bigger dreams."
-                        }
-                    },
-                    {
-                        id: "golem",
-                        name: "Stone Golem",
-                        rarity: "Rare",
-                        image: "assets/images/golem.jpg",
-                        description: "You are a symbol of stability and solidity. You possess a will of stone and the ability to endure the toughest conditions.",
-                        article: "The Golem is a creature made of earth, representing steadfastness. Owners of this personality are reliable, patient, and calm.",
-                        secretReport: {
-                            strengths: "Extreme patience, psychological resilience, and unwavering loyalty to promises.",
-                            challenges: "You may find it difficult to express your feelings or adapt to rapid changes.",
-                            insight: "Even from stone, flowers can grow; do not be afraid to show your softer side."
-                        }
-                    },
-                    {
-                        id: "hydra",
-                        name: "Renewing Hydra",
-                        rarity: "Mythical",
-                        image: "assets/images/hydra.jpg",
-                        description: "You are a symbol of persistence and multiplicity. Whenever you face a challenge, you emerge with more ideas and solutions.",
-                        article: "The Hydra is a creature that grows two heads when one is cut off. Owners of this personality are very persistent, never knowing surrender.",
-                        secretReport: {
-                            strengths: "Unyielding persistence, diverse talents, and quick recovery from failure.",
-                            challenges: "You may scatter yourself in too many directions at once.",
-                            insight: "Focusing all your heads on one goal will make you invincible."
-                        }
-                    },
-                    {
-                        id: "kitsune",
-                        name: "Cunning Kitsune",
-                        rarity: "Very Rare",
-                        image: "assets/images/kitsune.jpg",
-                        description: "You are a symbol of adaptive intelligence and magic. You possess the ability to change your form and style according to the situation.",
-                        article: "The Kitsune is the mythical Japanese fox. Owners of this personality are very intelligent, possessing a mysterious charm and the ability to persuade.",
-                        secretReport: {
-                            strengths: "Social intelligence, persuasive ability, and high flexibility in thinking.",
-                            challenges: "Others may find it difficult to know your true face or sincere intentions.",
-                            insight: "Intelligence is a gift; use it to build bridges, not just to deceive passersby."
-                        }
-                    },
-                    {
-                        id: "pegasus",
-                        name: "Winged Pegasus",
-                        rarity: "Rare",
-                        image: "assets/images/pegasus.jpg",
-                        description: "You are a symbol of freedom and inspiration. You possess a spirit that soars above difficulties and always seeks the distant horizon.",
-                        article: "Pegasus is the winged horse that represents imagination. Owners of this personality are dreamers, possessing positive energy and a desire for exploration.",
-                        secretReport: {
-                            strengths: "Vast imagination, positive energy, and a continuous desire for development and freedom.",
-                            challenges: "You may find it difficult to deal with material reality and daily constraints.",
-                            insight: "Your wings carry you to the sky, but your hooves keep you on the ground; take care of both."
-                        }
-                    },
-                    {
-                        id: "simurgh",
-                        name: "Wise Simurgh",
-                        rarity: "Mythical",
-                        image: "assets/images/simurgh.jpg",
-                        description: "You are a symbol of perfection and comprehensive knowledge. You possess a holistic view of the universe and understand the interconnectedness of things.",
-                        article: "The Simurgh is the mythical Persian bird that holds the knowledge of all ages. Owners of this personality are sages, seeking spiritual and cognitive perfection.",
-                        secretReport: {
-                            strengths: "Extensive knowledge, psychological calmness, and the ability to offer wise counsel.",
-                            challenges: "You may tend towards excessive idealism which could lead to disappointment with reality.",
-                            insight: "Perfection is a journey, not a destination; enjoy the path with all it entails."
-                        }
-                    },
-                    {
-                        id: "siren",
-                        name: "Charming Siren",
-                        rarity: "Very Rare",
-                        image: "assets/images/siren.jpg",
-                        description: "You are a symbol of attraction and deep intuition. You possess a captivating influence over those around you and the ability to understand emotions.",
-                        article: "The Siren is a mythical creature known for its enchanting voice. Owners of this personality are charismatic, possessing a strong intuition and deep emotional understanding.",
-                        secretReport: {
-                            strengths: "Natural charm, strong intuition, and deep understanding of emotions.",
-                            challenges: "You may unintentionally use your influence to emotionally control others.",
-                            insight: "Your charm is a trust; use it to uplift and guide others."
-                        }
-                    },
-                    {
-                        id: "valkyrie",
-                        name: "Warrior Valkyrie",
-                        rarity: "Mythical",
-                        image: "assets/images/valkyrie.jpg",
-                        description: "You are a symbol of honor and choice. You possess the courage of warriors and the ability to make fateful decisions.",
-                        article: "The Valkyries are choosers of the slain in Norse mythology. Owners of this personality are brave, valuing honor and justice.",
-                        secretReport: {
-                            strengths: "Unparalleled courage, integrity, and the ability to lead others to victory.",
-                            challenges: "You may be too strict with yourself and others in applying your standards.",
-                            insight: "A true hero knows when to lay down their sword and show mercy."
-                        }
-                    }
-                ]
-            }
-        ]
+let currentLang = 'ar';
+let currentQuiz = null;
+let currentStepId = 0; 
+let userResponses = []; 
+let scoreMap = {};
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+    const savedLang = localStorage.getItem('quiz_lang') || 'ar';
+    setLanguage(savedLang);
+    if (localStorage.getItem('quiz_lang')) {
+        document.getElementById('language-screen').classList.add('opacity-0', 'pointer-events-none');
     }
-};
+});
+
+function showLanguageScreen() {
+    document.getElementById('language-screen').classList.remove('opacity-0', 'pointer-events-none');
+}
+
+function setLanguage(lang) {
+    currentLang = lang;
+    localStorage.setItem('quiz_lang', lang);
+    
+    const data = quizzesData[lang];
+    document.getElementById('site-title').innerText = data.title;
+    document.getElementById('hero-title').innerText = data.heroTitle;
+    document.getElementById('hero-subtitle').innerText = data.heroSubtitle;
+    document.getElementById('footer-desc').innerText = data.footerDesc;
+    document.getElementById('lang-btn-text').innerText = lang === 'ar' ? 'العربية' : 'English';
+    
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.lang = lang;
+
+    renderQuizGrid();
+    document.getElementById('language-screen').classList.add('opacity-0', 'pointer-events-none');
+}
+
+function renderQuizGrid() {
+    const grid = document.getElementById('quiz-grid');
+    const data = quizzesData[currentLang];
+    grid.innerHTML = '';
+
+    data.quizzes.forEach(quiz => {
+        const card = document.createElement('div');
+        card.className = `quiz-card group bg-slate-800/60 rounded-3xl overflow-hidden border border-slate-700/50 cursor-pointer flex flex-col`;
+        card.innerHTML = `
+            <div class="relative h-56 overflow-hidden">
+                <img src="${quiz.image}" alt="${quiz.title}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent"></div>
+                <div class="absolute top-4 right-4 bg-purple-600/90 backdrop-blur-md text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-xl">
+                    ${quiz.badge}
+                </div>
+            </div>
+            <div class="p-6 flex-grow flex flex-col">
+                <h3 class="text-xl font-bold mb-3 group-hover:text-purple-400 transition-colors">${quiz.title}</h3>
+                <p class="text-slate-400 text-sm mb-6 flex-grow leading-relaxed">${quiz.description}</p>
+                <button class="w-full py-3 rounded-xl font-bold transition-all transform active:scale-95 bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white shadow-lg shadow-purple-600/20">
+                    ${currentLang === 'ar' ? 'ابدأ الاختبار 🎭' : 'Start Quiz 🎭'}
+                </button>
+            </div>
+        `;
+        card.onclick = () => startQuiz(quiz.id);
+        grid.appendChild(card);
+    });
+}
+
+function startQuiz(quizId) {
+    const data = quizzesData[currentLang];
+    currentQuiz = data.quizzes.find(q => q.id === quizId);
+    currentStepId = 0;
+    userResponses = [];
+    scoreMap = {};
+
+    document.getElementById('quiz-grid').classList.add('hidden');
+    document.getElementById('hero-section').classList.add('hidden');
+    const container = document.getElementById('quiz-container');
+    container.classList.remove('hidden');
+    
+    showStep();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showStep() {
+    const question = currentQuiz.questions[currentStepId];
+    const container = document.getElementById('quiz-container');
+    const totalSteps = currentQuiz.questions.length;
+    const progress = ((currentStepId + 1) / totalSteps) * 100;
+    
+    container.classList.add('opacity-0');
+    
+    setTimeout(() => {
+        let content = `
+            <div class="mb-8">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-xs font-bold text-purple-400 uppercase tracking-widest">
+                        ${currentLang === 'ar' ? 'السؤال' : 'Question'} ${currentStepId + 1} / ${totalSteps}
+                    </span>
+                    <span class="text-xs text-slate-500">${Math.round(progress)}%</span>
+                </div>
+                <div class="w-full bg-slate-700/30 h-1.5 rounded-full overflow-hidden">
+                    <div class="bg-gradient-to-r from-purple-600 to-pink-500 h-full transition-all duration-500" style="width: ${progress}%"></div>
+                </div>
+            </div>
+
+            <div class="mb-10">
+                <h2 class="text-2xl md:text-3xl font-bold text-slate-100 text-center leading-tight">${question.text}</h2>
+            </div>
+        `;
+
+        if (question.type === 'visual') {
+            content += `
+                <div class="grid grid-cols-2 gap-4 sm:gap-6">
+                    ${question.options.map((opt) => `
+                        <div onclick="handleVisualChoice('${opt.trait}', ${opt.value})" class="group cursor-pointer relative overflow-hidden rounded-2xl border-2 border-slate-700 hover:border-purple-500 transition-all transform hover:scale-[1.03] active:scale-95 shadow-lg">
+                            <div class="aspect-square overflow-hidden">
+                                <img src="${opt.image}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                            </div>
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80"></div>
+                            <div class="absolute bottom-0 left-0 right-0 p-3 text-center">
+                                <span class="text-white font-bold text-sm sm:text-lg">${opt.label}</span>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        } else {
+            content += `
+                <div class="space-y-3">
+                    ${[
+                        { text: currentLang === 'ar' ? 'أوافق بشدة' : 'Strongly Agree', value: 5, color: 'bg-green-600/20 border-green-500/50 hover:bg-green-600/40' },
+                        { text: currentLang === 'ar' ? 'أوافق' : 'Agree', value: 4, color: 'bg-blue-600/20 border-blue-500/50 hover:bg-blue-600/40' },
+                        { text: currentLang === 'ar' ? 'محايد' : 'Neutral', value: 3, color: 'bg-slate-700/40 border-slate-600/50 hover:bg-slate-700/60' },
+                        { text: currentLang === 'ar' ? 'لا أوافق' : 'Disagree', value: 2, color: 'bg-orange-600/20 border-orange-500/50 hover:bg-orange-600/40' },
+                        { text: currentLang === 'ar' ? 'لا أوافق بشدة' : 'Strongly Disagree', value: 1, color: 'bg-red-600/20 border-red-500/50 hover:bg-red-600/40' }
+                    ].map((opt) => `
+                        <button onclick="handleLikert(${opt.value})" class="w-full p-4 text-center ${opt.color} border rounded-2xl transition-all transform hover:scale-[1.02] active:scale-95 font-bold text-lg">
+                            ${opt.text}
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        container.innerHTML = content;
+        container.classList.remove('opacity-0');
+        container.classList.add('opacity-100');
+    }, 200);
+}
+
+function handleLikert(value) {
+    const question = currentQuiz.questions[currentStepId];
+    userResponses.push({ trait: question.trait, value: value });
+    nextStep();
+}
+
+function handleVisualChoice(trait, value) {
+    userResponses.push({ trait: trait, value: value });
+    nextStep();
+}
+
+function nextStep() {
+    if (currentStepId < currentQuiz.questions.length - 1) {
+        currentStepId++;
+        showStep();
+    } else {
+        showLoading();
+    }
+}
+
+function showLoading() {
+    document.getElementById('quiz-container').classList.add('hidden');
+    document.getElementById('loading-screen').classList.remove('hidden');
+    document.getElementById('loading-screen').classList.add('opacity-100');
+    const loadingMessages = currentLang === 'ar' ? [
+        'جاري تحليل الأنماط السلوكية...', 
+        'جاري مطابقة القوى الأسطورية...', 
+        'جاري فك تشفير رموز شخصيتك...', 
+        'قوى خفية على وشك الظهور...' 
+    ] : [
+        'Analyzing behavioral patterns...', 
+        'Matching mythical forces...', 
+        'Decoding your personality glyphs...', 
+        'Hidden powers are about to emerge...' 
+    ];
+    let messageIndex = 0;
+    const loadingTextElement = document.getElementById('loading-text');
+    const loadingSubtitleElement = document.getElementById('loading-subtitle');
+
+    const updateLoadingMessage = () => {
+        if (loadingTextElement && loadingSubtitleElement) {
+            loadingTextElement.innerText = loadingMessages[messageIndex];
+            loadingSubtitleElement.innerText = currentLang === 'ar' ? 'يرجى الانتظار...' : 'Please wait...';
+            messageIndex = (messageIndex + 1) % loadingMessages.length;
+        }
+    };
+
+    const loadingInterval = setInterval(updateLoadingMessage, 1000);
+
+
+    updateLoadingMessage(); // Initial message
+    setTimeout(() => {
+        clearInterval(loadingInterval);
+        document.getElementById('loading-screen').classList.remove('opacity-100');
+        document.getElementById('loading-screen').classList.add('hidden');
+        showResult();
+    }, 3500);
+}
+
+
+function calculateResult() {
+    const traitScores = {};
+    userResponses.forEach(resp => {
+        traitScores[resp.trait] = (traitScores[resp.trait] || 0) + resp.value;
+    });
+
+    const traitWeights = {
+        leadership: { dragon: 1.0, phoenix: 0.5, valkyrie: 0.7, simurgh: 0.3, centaur: 0.4 },
+        protection: { cerberus: 1.0, dragon: 0.4, golem: 0.6, hydra: 0.3 },
+        analysis: { kraken: 1.0, sphinx: 0.7, owl_of_athena: 0.6, centaur: 0.5 },
+        knowledge: { owl_of_athena: 1.0, sphinx: 0.5, simurgh: 0.8, centaur: 0.6 },
+        wisdom: { owl_of_athena: 1.0, simurgh: 0.9, sphinx: 0.6, centaur: 0.7 },
+        ambition: { simurgh: 1.0, dragon: 0.7, phoenix: 0.5, valkyrie: 0.6 },
+        perfection: { simurgh: 1.0, unicorn: 0.5, owl_of_athena: 0.4 },
+        mystery: { sphinx: 1.0, kraken: 0.8, siren: 0.6, kitsune: 0.5 },
+        curiosity: { sphinx: 1.0, pegasus: 0.7, kitsune: 0.6, owl_of_athena: 0.4 },
+        stability: { golem: 1.0, cerberus: 0.7, faun: 0.3 },
+        tradition: { golem: 1.0, centaur: 0.5, owl_of_athena: 0.4 },
+        social: { kitsune: 1.0, faun: 0.8, unicorn: 0.4 },
+        adaptation: { kitsune: 1.0, phoenix: 0.7, hydra: 0.6, pegasus: 0.5 },
+        purity: { unicorn: 1.0, phoenix: 0.6, faun: 0.5 },
+        altruism: { unicorn: 1.0, phoenix: 0.7, valkyrie: 0.5 },
+        exploration: { pegasus: 1.0, kitsune: 0.6, hydra: 0.5 },
+        energy: { pegasus: 1.0, phoenix: 0.8, hydra: 0.7, dragon: 0.6 },
+        honesty: { valkyrie: 1.0, unicorn: 0.7, centaur: 0.5 },
+        potential: { valkyrie: 1.0, phoenix: 0.8, simurgh: 0.7, pegasus: 0.6 },
+        nature: { faun: 1.0, unicorn: 0.6, hydra: 0.4 },
+        composure: { faun: 1.0, golem: 0.7, owl_of_athena: 0.5 },
+        intensity: { phoenix: 1.0, dragon: 0.8, hydra: 0.7, siren: 0.6 },
+        elegance: { siren: 1.0, kitsune: 0.7, unicorn: 0.5 },
+        intuition: { siren: 1.0, sphinx: 0.7, owl_of_athena: 0.6 },
+        persistence: { hydra: 1.0, golem: 0.8, kraken: 0.7, dragon: 0.6 },
+        power: { hydra: 1.0, dragon: 0.9, kraken: 0.8, valkyrie: 0.7 },
+        strategy: { centaur: 1.0, kraken: 0.8, sphinx: 0.7, dragon: 0.6 },
+        logic: { centaur: 1.0, owl_of_athena: 0.8, sphinx: 0.7, golem: 0.6 }
+    };
+
+    const creatureScores = {};
+    for (const resp of userResponses) {
+        const trait = resp.trait;
+        const value = resp.value;
+        if (traitWeights[trait]) {
+            for (const creatureId in traitWeights[trait]) {
+                const weight = traitWeights[trait][creatureId];
+                creatureScores[creatureId] = (creatureScores[creatureId] || 0) + (value * weight);
+            }
+        }
+    }
+
+    let maxScore = -1;
+    let winnerId = 'dragon';
+
+    for (const id in creatureScores) {
+        if (creatureScores[id] > maxScore) {
+            maxScore = creatureScores[id];
+            winnerId = id;
+        }
+    }
+
+    // Calculate Radar Chart Data
+    const radarData = {
+        power: (traitScores['power'] || 0) + (traitScores['intensity'] || 0) + (traitScores['leadership'] || 0),
+        wisdom: (traitScores['wisdom'] || 0) + (traitScores['knowledge'] || 0) + (traitScores['analysis'] || 0),
+        mystery: (traitScores['mystery'] || 0) + (traitScores['intuition'] || 0) + (traitScores['curiosity'] || 0),
+        purity: (traitScores['purity'] || 0) + (traitScores['altruism'] || 0) + (traitScores['nature'] || 0),
+        leadership: (traitScores['leadership'] || 0) + (traitScores['strategy'] || 0) + (traitScores['honesty'] || 0),
+        adaptation: (traitScores['adaptation'] || 0) + (traitScores['energy'] || 0) + (traitScores['exploration'] || 0)
+    };
+
+    // Normalize to 0-100
+    for (let key in radarData) {
+        radarData[key] = Math.min(100, Math.max(20, (radarData[key] / 15) * 100));
+    }
+
+    return {
+        creature: currentQuiz.results.find(r => r.id === winnerId) || currentQuiz.results[0],
+        radar: radarData
+    };
+}
+
+function showResult() {
+    const { creature, radar } = calculateResult();
+    document.getElementById('quiz-container').classList.add('hidden');
+    const container = document.getElementById('result-container');
+    container.classList.remove('hidden');
+
+    container.classList.add('opacity-0'); // Start with opacity 0 for fade-in
+
+    setTimeout(() => {
+        container.innerHTML = `
+            <div id="result-content" class="opacity-0 transition-opacity duration-1000">
+        
+            <div class="bg-slate-800/80 rounded-[2.5rem] overflow-hidden border border-slate-700/50 shadow-2xl result-glow mb-12 animate-fade-in-up">
+                <div class="relative h-80 md:h-[30rem]">
+                    <img src="${creature.image}" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent"></div>
+                    <div class="absolute bottom-10 left-0 right-0 px-8 text-center">
+                        <span class="bg-purple-600/90 backdrop-blur-md text-white px-5 py-2 rounded-full text-sm font-bold mb-4 inline-block shadow-lg uppercase tracking-widest border border-white/20 animate-fade-in delay-100">${creature.rarity}</span>
+                        <h2 class="text-5xl md:text-7xl font-black text-white drop-shadow-2xl mb-2 animate-fade-in delay-200">${creature.name}</h2>
+                        <p class="text-purple-300 font-bold text-xl animate-fade-in delay-300">${currentLang === 'ar' ? 'هذا هو كائنك الأسطوري الحقيقي' : 'This is your true mythical essence'}</p>
+                    </div>
+                </div>
+                
+                <div class="p-8 md:p-14">
+                    <!-- Radar Chart Section -->
+                    <div class="mb-16 animate-fade-in delay-400">
+                        <h3 class="text-3xl font-bold text-white mb-10 text-center">
+                            ${currentLang === 'ar' ? 'خارطة القوى الروحية' : 'Spiritual Power Map'}
+                        </h3>
+                        <div class="max-w-md mx-auto bg-slate-900/40 p-6 rounded-[2rem] border border-slate-700/30 shadow-inner">
+                            <canvas id="radarChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="mb-12 animate-fade-in delay-500">
+                        <div class="inline-block p-3 bg-purple-600/10 rounded-2xl mb-6">
+                            <i class="fas fa-fingerprint text-3xl text-purple-500"></i>
+                        </div>
+                        <h3 class="text-3xl font-bold text-white mb-6">
+                            ${currentLang === 'ar' ? 'التحليل النفسي العميق' : 'Deep Psychological Analysis'}
+                        </h3>
+                        <p class="text-xl text-slate-300 leading-relaxed text-center italic">"${creature.description}"</p>
+                    </div>
+                    
+                    <div class="relative p-1 bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 rounded-[2rem] overflow-hidden shadow-2xl animate-fade-in delay-600">
+                        <div class="relative p-10 bg-slate-900/95 rounded-[1.8rem] overflow-hidden">
+                            <div class="absolute inset-0 backdrop-blur-sm flex flex-col items-center justify-center p-8 text-center z-10" id="secret-report-overlay">
+                                <div class="w-20 h-20 bg-gradient-to-tr from-purple-600 to-pink-600 rounded-full flex items-center justify-center mb-6 border-4 border-white/10 shadow-inner">
+                                    <i class="fas fa-lock text-3xl text-white"></i>
+                                </div>
+                                <h3 class="text-3xl font-bold mb-4 text-white">${currentLang === 'ar' ? 'التقرير السري المتقدم' : 'Advanced Secret Report'}</h3>
+                                <p class="text-slate-400 text-lg max-w-md mb-8 leading-relaxed">
+                                    ${currentLang === 'ar' ? 'لقد كشفنا عن جوانب مخفية في عقلك الباطن. افتح التقرير الكامل لمعرفة نقاط قوتك المطلقة وتحدياتك القادمة.' : 'We have uncovered hidden aspects of your subconscious. Unlock the full report to see your absolute strengths and upcoming challenges.'}
+                                </p>
+                                <button id="unlock-button" class="pulse-button bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white px-12 py-5 rounded-full font-black text-xl transition-all transform hover:scale-105 shadow-2xl shadow-purple-600/40 border border-white/20">
+                                    <i class="fas fa-unlock-alt mr-2"></i> ${currentLang === 'ar' ? 'افتح التقرير الكامل (مجاناً)' : 'Unlock Full Report (Free)'}
+                                </button>
+                            </div>
+                            <div id="secret-report-actual-content" class="opacity-5 select-none blur-md text-start space-y-6">
+                                <p class="font-bold text-2xl">${currentLang === 'ar' ? 'بيانات تحليل العقل الباطن:' : 'Subconscious Mapping Data:'}</p>
+                                <p>${currentLang === 'ar' ? 'بناءً على تقييمك المكون من 40 نقطة، تظهر مساراتك العصبية توافقاً كبيراً مع النماذج الأصلية القديمة.' : 'Based on your 40-point assessment, your neural pathways show significant alignment with ancient archetypes.'}</p>
+                                <div class="h-4 bg-slate-800 rounded w-3/4"></div>
+                                <div class="h-4 bg-slate-800 rounded w-1/2"></div>
+                                <div class="h-4 bg-slate-800 rounded w-5/6"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-center mb-20 animate-fade-in delay-700">
+                <button onclick="location.reload()" class="bg-slate-800 hover:bg-slate-700 text-white px-10 py-4 rounded-2xl font-bold transition-all border border-slate-700 shadow-xl">
+                    <i class="fas fa-redo-alt mr-2"></i> ${currentLang === 'ar' ? 'إعادة الاختبار' : 'Retake Quiz'}
+                </button>
+            </div>
+        </div>`;
+        container.classList.remove('opacity-0');
+        container.classList.add('opacity-100');
+        renderRadarChart(radar);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        // Add event listener for unlock button
+        document.getElementById('unlock-button').addEventListener('click', () => {
+            document.getElementById('secret-report-overlay').classList.add('hidden');
+            document.getElementById('secret-report-actual-content').classList.remove('opacity-5', 'blur-md', 'select-none');
+            document.getElementById('secret-report-actual-content').classList.add('opacity-100');
+        });
+
+        // Add Download Result Card Button
+        const downloadButtonHtml = `<button id="download-result-card" class="bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-2xl font-bold transition-all border border-blue-700 shadow-xl mt-8">
+                                        <i class="fas fa-download mr-2"></i> ${currentLang === 'ar' ? 'تحميل بطاقة النتيجة' : 'Download Result Card'}
+                                    </button>`;
+        document.querySelector('#result-container > div').insertAdjacentHTML('beforeend', downloadButtonHtml);
+        document.getElementById('download-result-card').addEventListener('click', downloadResultCard);
+
+        // Update Meta Tags for social sharing
+        updateMetaTags(creature);
+
+        // Make result content visible after it's fully rendered
+        document.getElementById('result-content').classList.remove('opacity-0');
+
+    }, 500); // Delay for fade-in effect
+}
+
+function renderRadarChart(data) {
+    const ctx = document.getElementById('radarChart').getContext('2d');
+    
+    const labels = currentLang === 'ar' 
+        ? ['القوة', 'الحكمة', 'الغموض', 'النقاء', 'القيادة', 'التكيف']
+        : ['Power', 'Wisdom', 'Mystery', 'Purity', 'Leadership', 'Adaptation'];
+
+    new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: currentLang === 'ar' ? 'نسبة القوى' : 'Power Levels',
+                data: [data.power, data.wisdom, data.mystery, data.purity, data.leadership, data.adaptation],
+                backgroundColor: 'rgba(147, 51, 234, 0.2)',
+                borderColor: 'rgba(168, 85, 247, 1)',
+                borderWidth: 3,
+                pointBackgroundColor: 'rgba(236, 72, 153, 1)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(236, 72, 153, 1)',
+                pointRadius: 4
+            }]
+        },
+        options: {
+            scales: {
+                r: {
+                    angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                    pointLabels: {
+                        color: '#cbd5e1',
+                        font: { size: 14, family: 'Cairo' }
+                    },
+                    ticks: { display: false, stepSize: 20 },
+                    suggestedMin: 0,
+                    suggestedMax: 100
+                }
+            },
+            plugins: {
+                legend: { display: false }
+            },
+            animation: {
+                duration: 2000,
+                easing: 'easeOutQuart'
+            }
+        }
+    });
+}
+
+function downloadResultCard() {
+    const resultCard = document.querySelector(".result-glow"); // The main result card element
+    if (!resultCard) {
+        console.error("Result card element not found for download.");
+        return;
+    }
+
+    // Temporarily hide elements not meant for the card, like the retake button
+    const retakeButton = document.querySelector("#result-container button");
+    if (retakeButton) retakeButton.style.display = "none";
+
+    html2canvas(resultCard, {
+        scale: 2, // Increase scale for better quality
+        useCORS: true, // Enable cross-origin images if any
+        backgroundColor: null // Transparent background
+    }).then(canvas => {
+        // Create a temporary link to download the image
+        const link = document.createElement("a");
+        link.download = "QuizMagic_Result.png";
+        link.href = canvas.toDataURL("image/png");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        // Restore hidden elements
+        if (retakeButton) retakeButton.style.display = "";
+    }).catch(error => {
+        console.error("Error generating result card image:", error);
+        alert(currentLang === "ar" ? "حدث خطأ أثناء تحميل البطاقة." : "Error downloading card.");
+        if (retakeButton) retakeButton.style.display = "";
+    });
+}
+
+function updateMetaTags(creature) {
+    document.title = `${currentLang === 'ar' ? 'أنا ' : 'I am a '}${creature.name} - QuizMagic`;
+    document.querySelector('meta[name="description"]').setAttribute('content', creature.description);
+    document.querySelector('meta[property="og:title"]').setAttribute('content', `${currentLang === 'ar' ? 'أنا ' : 'I am a '}${creature.name} - QuizMagic`);
+    document.querySelector('meta[property="og:description"]').setAttribute('content', creature.description);
+    document.querySelector('meta[property="og:image"]').setAttribute('content', window.location.origin + creature.image);
+    document.querySelector('meta[name="twitter:title"]').setAttribute('content', `${currentLang === 'ar' ? 'أنا ' : 'I am a '}${creature.name} - QuizMagic`);
+    document.querySelector('meta[name="twitter:description"]').setAttribute('content', creature.description);
+    document.querySelector('meta[name="twitter:image"]').setAttribute('content', window.location.origin + creature.image);
+}
+
+function callCPALocker() {
+    // Fake loading for effect
+    const btn = document.getElementById('unlock-button');
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = `<i class="fas fa-spinner animate-spin"></i> ${currentLang === 'ar' ? 'جاري التحميل...' : 'Loading...'}`;
+    
+    setTimeout(() => {
+        alert(currentLang === 'ar' ? 'سيتم تفعيل قفل المحتوى هنا لعرض العروض! (محاكاة للفتح)' : 'CPA Locker will be triggered here! (Simulation)');
+        onCpaLockerSuccess();
+    }, 2000);
+}
+
+function onCpaLockerSuccess() {
+    const result = calculateResult().creature;
+    const actualContent = document.getElementById('secret-report-actual-content');
+    const unlockOverlay = document.getElementById('secret-report-overlay');
+    
+    unlockOverlay.classList.add('lock-overlay-hidden'); // Add animation class
+
+    setTimeout(() => {
+        unlockOverlay.style.display = 'none';
+        actualContent.classList.remove('opacity-5', 'select-none', 'blur-md');
+        actualContent.classList.add('opacity-100', 'secret-content-glow'); // Add glow effect
+        
+        actualContent.innerHTML = `
+            <div class="space-y-8 animate-fade-in">
+                <div class="border-l-4 border-purple-500 pl-6 py-2 bg-purple-500/5 rounded-r-xl">
+                    <h4 class="text-purple-400 font-bold text-xl mb-3">${currentLang === 'ar' ? 'نقاط القوة المطلقة' : 'Absolute Strengths'}</h4>
+                    <p class="text-slate-200 text-lg leading-relaxed">${result.secretReport.strengths}</p>
+                </div>
+                
+                <div class="border-l-4 border-pink-500 pl-6 py-2 bg-pink-500/5 rounded-r-xl">
+                    <h4 class="text-pink-400 font-bold text-xl mb-3">${currentLang === 'ar' ? 'التحديات الكبرى' : 'Major Challenges'}</h4>
+                    <p class="text-slate-200 text-lg leading-relaxed">${result.secretReport.challenges}</p>
+                </div>
+                
+                <div class="bg-gradient-to-r from-slate-800 to-slate-800/50 p-8 rounded-3xl border border-slate-700/50">
+                    <h4 class="text-white font-bold text-xl mb-4 flex items-center">
+                        <i class="fas fa-lightbulb text-yellow-400 mr-3"></i>
+                        ${currentLang === 'ar' ? 'نصيحة روحية لك' : 'Spiritual Insight for You'}
+                    </h4>
+                    <p class="text-slate-300 text-lg italic leading-relaxed">"${result.secretReport.insight}"</p>
+                </div>
+            </div>
+        `;
+    }, 500); // Match overlay fade-out duration
+}
