@@ -7,10 +7,21 @@ let userResponses = [];
 document.addEventListener('DOMContentLoaded', () => {
     const savedLang = localStorage.getItem('quiz_lang') || 'ar';
     setLanguage(savedLang);
+    applyConfig();
     if (localStorage.getItem('quiz_lang')) {
         document.getElementById('language-screen').classList.add('opacity-0', 'pointer-events-none');
     }
 });
+
+function applyConfig() {
+    if (typeof siteConfig !== 'undefined') {
+        document.getElementById('fb-link').href = siteConfig.socialLinks.facebook;
+        document.getElementById('tw-link').href = siteConfig.socialLinks.twitter;
+        document.getElementById('ig-link').href = siteConfig.socialLinks.instagram;
+        document.getElementById('yt-link').href = siteConfig.socialLinks.youtube;
+        document.getElementById('li-link').href = siteConfig.socialLinks.linkedin;
+    }
+}
 
 function showLanguageScreen() {
     document.getElementById('language-screen').classList.remove('opacity-0', 'pointer-events-none');
@@ -41,7 +52,7 @@ function renderQuizGrid() {
 
     data.quizzes.forEach(quiz => {
         const card = document.createElement('div');
-        card.className = `quiz-card group bg-slate-800/60 rounded-3xl overflow-hidden border border-slate-700/50 cursor-pointer flex flex-col`;
+        card.className = `quiz-card group bg-slate-800/60 rounded-3xl overflow-hidden border border-slate-700/50 cursor-pointer flex flex-col animate-fade-in`;
         card.innerHTML = `
             <div class="relative h-56 overflow-hidden">
                 <img src="${quiz.image}" alt="${quiz.title}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
@@ -74,8 +85,51 @@ function startQuiz(quizId) {
     const container = document.getElementById('quiz-container');
     container.classList.remove('hidden');
     
-    showStep();
+    if (siteConfig.settings.showWelcomeScreen) {
+        showWelcomeScreen();
+    } else {
+        showStep();
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showWelcomeScreen() {
+    const container = document.getElementById('quiz-container');
+    const isAr = currentLang === 'ar';
+    
+    container.innerHTML = `
+        <div class="animate-fade-in">
+            <h3 class="text-3xl font-bold text-center mb-10 text-white">
+                <i class="fas fa-lightbulb text-yellow-400 mr-3"></i>
+                ${isAr ? 'كيف يعمل الاختبار؟' : 'How it works?'}
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
+                <div class="bg-slate-900/40 p-5 rounded-2xl border border-slate-700/50">
+                    <div class="text-3xl mb-3 text-purple-400"><i class="fas fa-question-circle"></i></div>
+                    <h4 class="font-bold text-white mb-2">${isAr ? 'الخطوة 1: الأسئلة' : 'Step 1: Questions'}</h4>
+                    <p class="text-slate-400 text-xs">${isAr ? 'أجب على الأسئلة بصراحة وتلقائية.' : 'Answer the questions honestly and spontaneously.'}</p>
+                </div>
+                <div class="bg-slate-900/40 p-5 rounded-2xl border border-slate-700/50">
+                    <div class="text-3xl mb-3 text-blue-400"><i class="fas fa-brain"></i></div>
+                    <h4 class="font-bold text-white mb-2">${isAr ? 'الخطوة 2: التحليل' : 'Step 2: Analysis'}</h4>
+                    <p class="text-slate-400 text-xs">${isAr ? 'نظامنا يحلل إجاباتك بخوارزمية متقدمة.' : 'Our system analyzes your answers with an advanced algorithm.'}</p>
+                </div>
+                <div class="bg-slate-900/40 p-5 rounded-2xl border border-slate-700/50">
+                    <div class="text-3xl mb-3 text-pink-400"><i class="fas fa-dragon"></i></div>
+                    <h4 class="font-bold text-white mb-2">${isAr ? 'الخطوة 3: الكشف' : 'Step 3: Discovery'}</h4>
+                    <p class="text-slate-400 text-xs">${isAr ? 'اكتشف كائنك الأسطوري من بين 16 كائن.' : 'Discover your mythical creature among 16 beings.'}</p>
+                </div>
+                <div class="bg-slate-900/40 p-5 rounded-2xl border border-slate-700/50">
+                    <div class="text-3xl mb-3 text-green-400"><i class="fas fa-share-alt"></i></div>
+                    <h4 class="font-bold text-white mb-2">${isAr ? 'الخطوة 4: المشاركة' : 'Step 4: Sharing'}</h4>
+                    <p class="text-slate-400 text-xs">${isAr ? 'شارك نتيجتك المذهلة مع أصدقائك.' : 'Share your amazing result with your friends.'}</p>
+                </div>
+            </div>
+            <button onclick="showStep()" class="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold rounded-2xl shadow-lg transform hover:scale-[1.02] active:scale-95 transition-all">
+                ${isAr ? 'فهمت، ابدأ الآن 🚀' : 'Got it, Start Now 🚀'}
+            </button>
+        </div>
+    `;
 }
 
 function showStep() {
@@ -96,12 +150,12 @@ function showStep() {
                     <span class="text-xs text-slate-500">${Math.round(progress)}%</span>
                 </div>
                 <div class="w-full bg-slate-700/30 h-1.5 rounded-full overflow-hidden">
-                    <div class="bg-gradient-to-r from-purple-600 to-pink-500 h-full transition-all duration-500" style="width: ${progress}%"></div>
+                    <div class="bg-gradient-to-r from-purple-600 to-pink-500 h-full transition-all duration-500 progress-bar-animated" style="width: ${progress}%"></div>
                 </div>
             </div>
 
             <div class="mb-10">
-                <h2 class="text-2xl md:text-3xl font-bold text-slate-100 text-center leading-tight">${question.text}</h2>
+                <h2 class="text-2xl md:text-3xl font-bold text-slate-100 text-center leading-tight animate-slide-up">${question.text}</h2>
             </div>
         `;
 
@@ -168,7 +222,7 @@ function nextStep() {
 function showLoading() {
     const container = document.getElementById('quiz-container');
     container.innerHTML = `
-        <div class="py-16 text-center">
+        <div class="py-16 text-center animate-fade-in">
             <div class="relative inline-block w-24 h-24 mb-8">
                 <div class="absolute inset-0 border-4 border-purple-500/10 rounded-full"></div>
                 <div class="absolute inset-0 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
@@ -180,13 +234,9 @@ function showLoading() {
             <p class="text-slate-400 text-lg">${currentLang === 'ar' ? 'نقوم بربط إجاباتك بالقوى الأسطورية القديمة' : 'Mapping your responses to ancient mythical forces'}</p>
         </div>
     `;
-    setTimeout(showResult, 3500);
+    setTimeout(showResult, siteConfig.settings.analysisDelay);
 }
 
-/**
- * نظام الأوزان الذكي المحدث (Balanced Weighted Scoring)
- * تم تعديل الأوزان لتقليل التحيز لكائنات معينة وضمان توزيع أعدل للنتائج
- */
 function calculateResult() {
     const traitScores = {};
     userResponses.forEach(resp => {
@@ -242,7 +292,6 @@ function calculateResult() {
         }
     }
 
-    // حساب بيانات الرادار - تم ربطها بقوة بالكائن الفائز لضمان الاتساق البصري
     const baseRadar = {
         power: (traitScores['power'] || 0) + (traitScores['intensity'] || 0) + (traitScores['leadership'] || 0),
         wisdom: (traitScores['wisdom'] || 0) + (traitScores['knowledge'] || 0) + (traitScores['analysis'] || 0),
@@ -252,7 +301,6 @@ function calculateResult() {
         adaptation: (traitScores['adaptation'] || 0) + (traitScores['energy'] || 0) + (traitScores['exploration'] || 0)
     };
 
-    // تعزيز سمات الكائن الفائز في الرادار ليكون الرسم متسقاً مع النتيجة
     const creatureTraitMapping = {
         dragon: ['power', 'leadership'],
         phoenix: ['adaptation', 'purity'],
@@ -292,7 +340,7 @@ function showResult() {
     container.classList.remove('hidden');
 
     container.innerHTML = `
-        <div class="bg-slate-800/80 rounded-[2.5rem] overflow-hidden border border-slate-700/50 shadow-2xl result-glow mb-12">
+        <div class="bg-slate-800/80 rounded-[2.5rem] overflow-hidden border border-slate-700/50 shadow-2xl result-glow mb-12 animate-fade-in">
             <div class="relative h-80 md:h-[30rem]">
                 <img src="${creature.image}" class="w-full h-full object-cover">
                 <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent"></div>
@@ -325,7 +373,6 @@ function showResult() {
                 
                 <div class="relative p-1 bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 rounded-[2rem] overflow-hidden shadow-2xl">
                     <div class="relative p-10 bg-slate-900/95 rounded-[1.8rem] overflow-hidden">
-                        <!-- Lock Overlay -->
                         <div class="absolute inset-0 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center z-[50]" id="lock-overlay">
                             <div class="w-20 h-20 bg-gradient-to-tr from-purple-600 to-pink-600 rounded-full flex items-center justify-center mb-6 border-4 border-white/10 shadow-inner">
                                 <i class="fas fa-lock text-3xl text-white"></i>
@@ -336,7 +383,6 @@ function showResult() {
                                 ${currentLang === 'ar' ? '🔓 فتح التقرير السري' : '🔓 Unlock Secret Report'}
                             </button>
                         </div>
-                        <!-- Actual Content -->
                         <div class="relative z-0 opacity-0 transition-opacity duration-700" id="secret-report-actual-content">
                             <h4 class="text-2xl font-bold text-purple-400 mb-6 text-center">${currentLang === 'ar' ? 'نقاط قوتك' : 'Your Strengths'}</h4>
                             <p class="text-slate-200 mb-8 text-lg leading-relaxed text-center">${creature.secretReport.strengths}</p>
@@ -374,7 +420,6 @@ function unlockSecretReport() {
     const lockOverlay = document.getElementById('lock-overlay');
     const secretContent = document.getElementById('secret-report-actual-content');
     
-    // أنيميشن الاختفاء
     lockOverlay.style.opacity = '0';
     lockOverlay.style.pointerEvents = 'none';
     
@@ -448,6 +493,7 @@ function renderRadarChart(data) {
 }
 
 function shareResult() {
+    if (!siteConfig.settings.enableShare) return;
     const creatureName = document.querySelector('h2').innerText;
     const text = currentLang === 'ar' 
         ? `لقد اكتشفت أنني ${creatureName}! جرب اختبار QuizMagic الآن واكتشف كائنك الأسطوري الحقيقي 🐉`
