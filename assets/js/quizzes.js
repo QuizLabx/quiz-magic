@@ -370,7 +370,7 @@ const quizzesData = {
         title: "QuizMagic | World of Mythical Quizzes",
         heroTitle: "Discover Your True Mythical Creature",
         heroSubtitle: "A journey into your subconscious to reveal the ancient forces within your soul",
-        footerDesc: "The most accurate psychological quiz platform in the Arab world.",
+        footerDesc: "The most accurate psychological quiz platform in the world.",
         quizzes: [
             {
                 id: "mythical-creature",
@@ -379,23 +379,23 @@ const quizzesData = {
                 image: "assets/images/dragon.jpg",
                 description: "An advanced psychological analysis linking your traits to ancient creature legends.",
                 questions: [
-                    { id: 1, text: "I feel more comfortable when I am alone with my thoughts.", trait: "mystery", type: "likert" },
-                    { id: 2, text: "I always tend to take the leadership role in groups.", trait: "leadership", type: "likert" },
+                    { id: 1, text: "I feel most comfortable when I'm alone with my thoughts.", trait: "mystery", type: "likert" },
+                    { id: 2, text: "I always tend to take on a leadership role in groups.", trait: "leadership", type: "likert" },
                     { id: 3, text: "I care about helping others even at the expense of my own comfort.", trait: "altruism", type: "likert" },
                     { 
                         id: 4, 
-                        text: "Which of these portals attracts you most to enter?", 
+                        text: "Which of these gateways attracts you most to enter?", 
                         type: "visual",
                         options: [
-                            { label: "Portal of Light", image: "assets/images/quiz/q4_opt1.jpg", trait: "purity", value: 5 },
-                            { label: "Portal of Mystery", image: "assets/images/quiz/q4_opt2.jpg", trait: "mystery", value: 5 },
-                            { label: "Portal of Power", image: "assets/images/quiz/q4_opt3.jpg", trait: "power", value: 5 },
-                            { label: "Portal of Nature", image: "assets/images/quiz/q4_opt4.jpg", trait: "nature", value: 5 }
+                            { label: "Gate of Light", image: "assets/images/quiz/q4_opt1.jpg", trait: "purity", value: 5 },
+                            { label: "Gate of Mystery", image: "assets/images/quiz/q4_opt2.jpg", trait: "mystery", value: 5 },
+                            { label: "Gate of Power", image: "assets/images/quiz/q4_opt3.jpg", trait: "power", value: 5 },
+                            { label: "Gate of Nature", image: "assets/images/quiz/q4_opt4.jpg", trait: "nature", value: 5 }
                         ]
                     },
-                    { id: 5, text: "I prefer planning everything in advance rather than spontaneity.", trait: "strategy", type: "likert" },
+                    { id: 5, text: "I prefer to plan everything in advance rather than be spontaneous.", trait: "strategy", type: "likert" },
                     { id: 6, text: "I have a great ability to adapt to sudden changes.", trait: "adaptation", type: "likert" },
-                    { id: 7, text: "I always look for the deep meaning behind things.", trait: "knowledge", type: "likert" },
+                    { id: 7, text: "I always search for deep meaning behind things.", trait: "knowledge", type: "likert" },
                     { 
                         id: 8, 
                         text: "Which element do you feel represents your inner energy?", 
@@ -408,25 +408,25 @@ const quizzesData = {
                         ]
                     },
                     { id: 9, text: "I find it difficult to forgive people who have wronged me.", trait: "persistence", type: "likert" },
-                    { id: 10, text: "I trust my intuition more than logic in decision making.", trait: "intuition", type: "likert" },
+                    { id: 10, text: "I trust my intuition more than logic when making decisions.", trait: "intuition", type: "likert" },
                     { id: 11, text: "I love being surrounded by beauty and art in my life.", trait: "elegance", type: "likert" },
                     { 
                         id: 12, 
-                        text: "Which of these scenes gives you a greater sense of peace?", 
+                        text: "Which of these scenes gives you the greatest sense of peace?", 
                         type: "visual",
                         options: [
                             { label: "Mountain Peak", image: "assets/images/quiz/q12_opt1.jpg", trait: "ambition", value: 5 },
-                            { label: "Old Library", image: "assets/images/quiz/q12_opt2.jpg", trait: "wisdom", value: 5 },
+                            { label: "Ancient Library", image: "assets/images/quiz/q12_opt2.jpg", trait: "wisdom", value: 5 },
                             { label: "Secret Garden", image: "assets/images/quiz/q12_opt3.jpg", trait: "purity", value: 5 },
-                            { label: "Deserted Beach", image: "assets/images/quiz/q12_opt4.jpg", trait: "mystery", value: 5 }
+                            { label: "Abandoned Beach", image: "assets/images/quiz/q12_opt4.jpg", trait: "mystery", value: 5 }
                         ]
                     },
-                    { id: 13, text: "I enjoy discussing philosophical and complex ideas.", trait: "analysis", type: "analysis", type: "likert" },
+                    { id: 13, text: "I enjoy discussing philosophical and complex ideas.", trait: "analysis", type: "likert" },
                     { id: 14, text: "I am a very patient person when dealing with long-term problems.", trait: "persistence", type: "likert" },
-                    { id: 15, text: "I care a lot about my reputation and how others perceive me.", trait: "potential", type: "likert" },
+                    { id: 15, text: "I care greatly about my reputation and how others perceive me.", trait: "potential", type: "likert" },
                     { 
                         id: 16, 
-                        text: "Which magical symbol do you choose to be your lucky charm?", 
+                        text: "Which magical symbol would you choose as your lucky charm?", 
                         type: "visual",
                         options: [
                             { label: "The Eye", image: "assets/images/quiz/q16_opt1.jpg", trait: "knowledge", value: 5 },
@@ -435,9 +435,9 @@ const quizzesData = {
                             { label: "The Key", image: "assets/images/quiz/q16_opt4.jpg", trait: "curiosity", value: 5 }
                         ]
                     },
-                    { id: 17, text: "I prefer working in a team rather than working alone.", trait: "social", type: "likert" },
+                    { id: 17, text: "I prefer working within a team rather than working alone.", trait: "social", type: "likert" },
                     { id: 18, text: "I am always honest with myself even if the truth is painful.", trait: "honesty", type: "likert" },
-                    { id: 19, text: "I have a lot of energy that drives me to try new things always.", trait: "energy", type: "likert" },
+                    { id: 19, text: "I possess great energy that drives me to try new things constantly.", trait: "energy", type: "likert" },
                     { 
                         id: 20, 
                         text: "Which animal do you feel a spiritual connection with?", 
@@ -449,60 +449,60 @@ const quizzesData = {
                             { label: "Butterfly", image: "assets/images/quiz/q20_opt4.jpg", trait: "adaptation", value: 5 }
                         ]
                     },
-                    { id: 21, text: "I am a very emotional person and am moved by human stories.", trait: "nature", type: "likert" },
-                    { id: 22, text: "I love challenge and competition to reach the top.", trait: "leadership", type: "likert" },
-                    { id: 23, text: "I tend to maintain old traditions and values.", trait: "tradition", type: "likert" },
+                    { id: 21, text: "I am a very emotional person and human stories affect me deeply.", trait: "nature", type: "likert" },
+                    { id: 22, text: "I love challenges and competition to reach the top.", trait: "leadership", type: "likert" },
+                    { id: 23, text: "I tend to preserve traditions and old values.", trait: "tradition", type: "likert" },
                     { 
                         id: 24, 
-                        text: "Which gemstone do you feel has an energy that attracts you?", 
+                        text: "Which gemstone do you feel possesses energy that attracts you?", 
                         type: "visual",
                         options: [
-                            { label: "Ruby", image: "assets/images/quiz/q24_opt1.jpg", trait: "intensity", value: 5 },
+                            { label: "Red Ruby", image: "assets/images/quiz/q24_opt1.jpg", trait: "intensity", value: 5 },
                             { label: "Blue Diamond", image: "assets/images/quiz/q24_opt2.jpg", trait: "logic", value: 5 },
-                            { label: "Emerald", image: "assets/images/quiz/q24_opt3.jpg", trait: "nature", value: 5 },
-                            { label: "Amethyst", image: "assets/images/quiz/q24_opt4.jpg", trait: "intuition", value: 5 }
+                            { label: "Green Emerald", image: "assets/images/quiz/q24_opt3.jpg", trait: "nature", value: 5 },
+                            { label: "Purple Amethyst", image: "assets/images/quiz/q24_opt4.jpg", trait: "intuition", value: 5 }
                         ]
                     },
-                    { id: 25, text: "I can control my temper even in the most difficult situations.", trait: "composure", type: "likert" },
-                    { id: 26, text: "I care about small details that others might not notice.", trait: "analysis", type: "likert" },
+                    { id: 25, text: "I can control my nerves even in the most difficult situations.", trait: "composure", type: "likert" },
+                    { id: 26, text: "I pay attention to small details that others might miss.", trait: "analysis", type: "likert" },
                     { id: 27, text: "I am an optimistic person and always see the bright side.", trait: "potential", type: "likert" },
                     { 
                         id: 28, 
-                        text: "Which sky do you prefer to contemplate at night?", 
+                        text: "Which sky would you prefer to contemplate at night?", 
                         type: "visual",
                         options: [
-                            { label: "Aurora", image: "assets/images/quiz/q28_opt1.jpg", trait: "potential", value: 5 },
+                            { label: "Aurora Borealis", image: "assets/images/quiz/q28_opt1.jpg", trait: "potential", value: 5 },
                             { label: "Total Eclipse", image: "assets/images/quiz/q28_opt2.jpg", trait: "mystery", value: 5 },
-                            { label: "Nebula", image: "assets/images/quiz/q28_opt3.jpg", trait: "exploration", value: 5 },
+                            { label: "Cosmic Nebula", image: "assets/images/quiz/q28_opt3.jpg", trait: "exploration", value: 5 },
                             { label: "Silent Lightning", image: "assets/images/quiz/q28_opt4.jpg", trait: "energy", value: 5 }
                         ]
                     },
-                    { id: 29, text: "I prefer staying in one place over frequent traveling.", trait: "stability", type: "likert" },
-                    { id: 30, text: "I feel that I have a great mission to fulfill in life.", trait: "ambition", type: "likert" },
-                    { id: 31, text: "I love mystery and do not reveal all my cards to others.", trait: "mystery", type: "likert" },
+                    { id: 29, text: "I prefer stability in one place over frequent travel.", trait: "stability", type: "likert" },
+                    { id: 30, text: "I feel that I have a great purpose to fulfill in life.", trait: "ambition", type: "likert" },
+                    { id: 31, text: "I love mystery and don't reveal all my cards to others.", trait: "mystery", type: "likert" },
                     { 
                         id: 32, 
-                        text: "Which mythical transport do you choose for your next journey?", 
+                        text: "Which mythical transportation would you choose for your next journey?", 
                         type: "visual",
                         options: [
                             { label: "Flying Ship", image: "assets/images/quiz/q32_opt1.jpg", trait: "exploration", value: 5 },
-                            { label: "Light Carriage", image: "assets/images/quiz/q32_opt2.jpg", trait: "purity", value: 5 },
-                            { label: "Flying Carpet", image: "assets/images/quiz/q32_opt3.jpg", trait: "wisdom", value: 5 },
-                            { label: "Baby Dragon", image: "assets/images/quiz/q32_opt4.jpg", trait: "protection", value: 5 }
+                            { label: "Chariot of Light", image: "assets/images/quiz/q32_opt2.jpg", trait: "purity", value: 5 },
+                            { label: "Magic Carpet", image: "assets/images/quiz/q32_opt3.jpg", trait: "wisdom", value: 5 },
+                            { label: "Little Dragon", image: "assets/images/quiz/q32_opt4.jpg", trait: "protection", value: 5 }
                         ]
                     },
-                    { id: 33, text: "I am a very practical person and do not waste my time on dreams.", trait: "logic", type: "likert" },
-                    { id: 34, text: "I always look for perfection in everything I do.", trait: "perfection", type: "likert" },
+                    { id: 33, text: "I am a very practical person and don't waste time on dreams.", trait: "logic", type: "likert" },
+                    { id: 34, text: "I always search for perfection in everything I do.", trait: "perfection", type: "likert" },
                     { id: 35, text: "I am very loyal to my friends and family.", trait: "social", type: "likert" },
                     { 
                         id: 36, 
-                        text: "What weapon will you choose to defend your kingdom?", 
+                        text: "Which weapon would you choose to defend your kingdom?", 
                         type: "visual",
                         options: [
-                            { label: "Light Sword", image: "assets/images/quiz/q36_opt1.jpg", trait: "honesty", value: 5 },
-                            { label: "Shadow Shield", image: "assets/images/quiz/q36_opt2.jpg", trait: "protection", value: 5 },
-                            { label: "Star Bow", image: "assets/images/quiz/q36_opt3.jpg", trait: "strategy", value: 5 },
-                            { label: "Sage Staff", image: "assets/images/quiz/q36_opt4.jpg", trait: "knowledge", value: 5 }
+                            { label: "Sword of Light", image: "assets/images/quiz/q36_opt1.jpg", trait: "honesty", value: 5 },
+                            { label: "Shield of Shadows", image: "assets/images/quiz/q36_opt2.jpg", trait: "protection", value: 5 },
+                            { label: "Bow of Stars", image: "assets/images/quiz/q36_opt3.jpg", trait: "strategy", value: 5 },
+                            { label: "Staff of the Sage", image: "assets/images/quiz/q36_opt4.jpg", trait: "knowledge", value: 5 }
                         ]
                     },
                     { id: 37, text: "I like to be unique and different from others.", trait: "potential", type: "likert" },
@@ -510,7 +510,7 @@ const quizzesData = {
                     { id: 39, text: "I believe that true strength comes from within.", trait: "power", type: "likert" },
                     { 
                         id: 40, 
-                        text: "What ending do you prefer to conclude your life story?", 
+                        text: "What ending would you prefer to conclude your life story?", 
                         type: "visual",
                         options: [
                             { label: "Golden Throne", image: "assets/images/quiz/q40_opt1.jpg", trait: "leadership", value: 5 },
@@ -597,6 +597,136 @@ const quizzesData = {
                             strengths: "High focus, ability to learn quickly, and wisdom far beyond your age.",
                             challenges: "Your tendency toward dry logic may make you neglect the emotional side in your relationships.",
                             insight: "True wisdom is that which combines the intelligence of the mind and the mercy of the heart."
+                        }
+                    },
+                    {
+                        id: "centaur",
+                        name: "Wise Centaur",
+                        rarity: "Rare",
+                        image: "assets/images/centaur.jpg",
+                        description: "You are a symbol of balance between mind and physical strength. You possess innate wisdom and a free spirit.",
+                        article: "The Centaur represents the wild and wise side of human nature. Owners of this personality are natural strategists, valuing freedom and logic.",
+                        secretReport: {
+                            strengths: "Logical thinking, ability to endure, and a philosophical view of life.",
+                            challenges: "You may find it difficult to commit to strict rules that limit your freedom.",
+                            insight: "Your balance is the secret of your strength, don't let one side overshadow the other."
+                        }
+                    },
+                    {
+                        id: "cerberus",
+                        name: "Cerberus the Guardian",
+                        rarity: "Very Rare",
+                        image: "assets/images/cerberus.jpg",
+                        description: "You are the loyal protector and impenetrable shield. You possess constant vigilance and the ability to protect what is precious.",
+                        article: "Cerberus is the great guardian of the gates. Owners of this personality possess unwavering loyalty and the ability to detect dangers before they occur.",
+                        secretReport: {
+                            strengths: "Absolute loyalty, high alertness, and the ability to protect those you love.",
+                            challenges: "You may be overly protective or find it difficult to trust strangers.",
+                            insight: "Protection doesn't always mean harshness; sometimes gentleness is the strongest defense."
+                        }
+                    },
+                    {
+                        id: "faun",
+                        name: "Natural Faun",
+                        rarity: "Common",
+                        image: "assets/images/faun.jpg",
+                        description: "You are the spirit of nature and joy. You possess the ability to enjoy life and spread happiness around you.",
+                        article: "The Faun represents the joyful and nature-connected side. Owners of this personality are social people, loving music, art, and living in the moment.",
+                        secretReport: {
+                            strengths: "Cheerful spirit, deep connection with nature, and ability to adapt socially.",
+                            challenges: "You may tend toward excessive spontaneity which may lead to neglecting serious responsibilities.",
+                            insight: "Joy is necessary, but a little seriousness helps you achieve your big dreams."
+                        }
+                    },
+                    {
+                        id: "golem",
+                        name: "Rocky Golem",
+                        rarity: "Rare",
+                        image: "assets/images/golem.jpg",
+                        description: "You are a symbol of stability and solidity. You possess a will of stone and the ability to endure the most difficult circumstances.",
+                        article: "The Golem is the creature made of earth, representing steadfastness. Owners of this personality are dependable people, patient and calm.",
+                        secretReport: {
+                            strengths: "Patience of Job, psychological strength, and keeping promises no matter the cost.",
+                            challenges: "You may find it difficult to express your feelings or adapt to rapid changes.",
+                            insight: "Even stone can grow flowers; don't fear showing your gentle side."
+                        }
+                    },
+                    {
+                        id: "hydra",
+                        name: "Regenerating Hydra",
+                        rarity: "Mythical",
+                        image: "assets/images/hydra.jpg",
+                        description: "You are a symbol of persistence and multiplicity. Every challenge you face, you emerge with more ideas and solutions.",
+                        article: "The Hydra is a creature that grows two heads whenever one is cut off. Owners of this personality are very persistent people who never know surrender.",
+                        secretReport: {
+                            strengths: "Unwavering persistence, multiple talents, and the ability to recover quickly from failure.",
+                            challenges: "You may scatter yourself in many directions at once.",
+                            insight: "Focusing all your heads on one goal will make you unstoppable."
+                        }
+                    },
+                    {
+                        id: "kitsune",
+                        name: "Cunning Kitsune",
+                        rarity: "Very Rare",
+                        image: "assets/images/kitsune.jpg",
+                        description: "You are a symbol of adaptive intelligence and magic. You possess the ability to change your form and style according to the situation.",
+                        article: "The Kitsune is the legendary Japanese fox. Owners of this personality are very intelligent, possessing mysterious charm and the ability to persuade.",
+                        secretReport: {
+                            strengths: "Social intelligence, ability to persuade, and high flexibility in thinking.",
+                            challenges: "Others may find it difficult to know your true face or genuine intentions.",
+                            insight: "Intelligence is a gift, use it to build bridges not just to deceive passersby."
+                        }
+                    },
+                    {
+                        id: "pegasus",
+                        name: "Winged Pegasus",
+                        rarity: "Rare",
+                        image: "assets/images/pegasus.jpg",
+                        description: "You are a symbol of freedom and inspiration. You possess a spirit that soars above difficulties and always seeks the distant horizon.",
+                        article: "Pegasus is the winged horse that represents imagination. Owners of this personality are dreamers, possessing positive energy and a desire for exploration.",
+                        secretReport: {
+                            strengths: "Vast imagination, positive energy, and constant desire for growth and freedom.",
+                            challenges: "You may find it difficult to deal with material reality and daily constraints.",
+                            insight: "Your wings carry you to the sky, but your hooves keep you grounded; care for both."
+                        }
+                    },
+                    {
+                        id: "simurgh",
+                        name: "Wise Simurgh",
+                        rarity: "Mythical",
+                        image: "assets/images/simurgh.jpg",
+                        description: "You are a symbol of perfection and comprehensive knowledge. You possess a complete vision of the universe and understand the interconnection of things.",
+                        article: "The Simurgh is the legendary Persian bird that possesses the knowledge of all ages. Owners of this personality are wise, seeking spiritual and intellectual perfection.",
+                        secretReport: {
+                            strengths: "Vast knowledge, inner peace, and the ability to give wise advice.",
+                            challenges: "You may tend toward excessive perfectionism which may make you feel disappointed by reality.",
+                            insight: "Perfection is a journey not a destination; enjoy the path with all it contains."
+                        }
+                    },
+                    {
+                        id: "siren",
+                        name: "Enchanting Siren",
+                        rarity: "Very Rare",
+                        image: "assets/images/siren.jpg",
+                        description: "You are a symbol of attraction and deep intuition. You possess an enchanting effect on those around you and the ability to understand emotions.",
+                        article: "The Siren is the sea creature with an irresistible voice. Owners of this personality are attractive people, possessing strong intuition and deep understanding of human nature.",
+                        secretReport: {
+                            strengths: "Natural attraction, strong intuition, and deep understanding of emotions.",
+                            challenges: "You may use your influence to emotionally control others unintentionally.",
+                            insight: "Your magic is a trust, use it to uplift others and guide them."
+                        }
+                    },
+                    {
+                        id: "valkyrie",
+                        name: "Warrior Valkyrie",
+                        rarity: "Mythical",
+                        image: "assets/images/valkyrie.jpg",
+                        description: "You are a symbol of honor and choice. You possess the courage of warriors and the ability to make momentous decisions.",
+                        article: "The Valkyries are the chosen of heroes in Norse mythology. Owners of this personality are brave people who value honor and justice.",
+                        secretReport: {
+                            strengths: "Unparalleled courage, integrity, and the ability to lead others toward victory.",
+                            challenges: "You may be too strict with yourself and others in applying your standards.",
+                            insight: "The true hero knows when to put down his sword and show mercy."
                         }
                     }
                 ]
