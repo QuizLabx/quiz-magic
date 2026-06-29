@@ -3,7 +3,7 @@
  * استخدم هذا الملف لتحديث روابطك وإعدادات الموقع بسهولة
  */
 
-const siteConfig = {
+const config = {
     // روابط وسائل التواصل الاجتماعي - ضع روابطك هنا
     socialLinks: {
         facebook: "https://facebook.com/yourpage",
@@ -13,10 +13,12 @@ const siteConfig = {
         linkedin: "https://linkedin.com/in/yourprofile"
     },
     
-    // إعدادات عامة
-    settings: {
+    // إعدادات الميزات
+    features: {
         showWelcomeScreen: true, // إظهار شاشة "كيف يعمل الاختبار" قبل البدء
-        analysisDelay: 3500,     // مدة ظهور شاشة "جاري التحليل" (بالملي ثانية)
         enableShare: true        // تفعيل ميزة المشاركة
-    }
+    },
+
+    // إعدادات تقنية
+    analysisSpeed: 3500 // مدة ظهور شاشة "جاري التحليل" (بالملي ثانية)
 };
