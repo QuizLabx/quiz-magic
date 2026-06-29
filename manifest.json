@@ -2,7 +2,7 @@
   "name": "QuizMagic | عالم الاختبارات الأسطورية",
   "short_name": "QuizMagic",
   "description": "اكتشف كائنك الأسطوري الحقيقي بناءً على تحليل نفسي عميق.",
-  "start_url": "/quiz-magic/index.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#a855f7",
