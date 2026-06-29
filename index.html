@@ -3,215 +3,174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuizMagic | اكتشف أسرار شخصيتك</title>
-    <link rel="icon" type="image/png" href="favicon.png">
+    <title id="site-title">QuizMagic | عالم الاختبارات الأسطورية</title>
     
-    <!-- PWA Meta Tags -->
+    <!-- PWA & SEO -->
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0f172a">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="assets/images/icon-192x192.png">
-
-    <!-- SEO & Social Media Sharing (Open Graph) -->
-    <meta name="description" content="اكتشف كائنك الأسطوري الحقيقي بناءً على تحليل نفسي عميق. هل أنت تنين، عنقاء، أم كراكن؟">
-    <meta property="og:title" content="كويز ماجيك: ما هو كائنك الأسطوري؟ 🐉">
-    <meta property="og:description" content="اختبار تفاعلي يكشف القوى الأسطورية الكامنة في شخصيتك. جربه الآن!">
-    <meta property="og:image" content="https://quizlabx.github.io/quiz-magic/assets/images/dragon.jpg">
-    <meta property="og:url" content="https://quizlabx.github.io/quiz-magic/">
-    <meta property="og:type" content="website">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="كويز ماجيك: ما هو كائنك الأسطوري؟ 🐉">
-    <meta name="twitter:description" content="اكتشف كائنك الأسطوري الحقيقي الآن!">
-    <meta name="twitter:image" content="https://quizlabx.github.io/quiz-magic/assets/images/dragon.jpg">
-
+    <meta name="theme-color" content="#a855f7">
+    <meta name="description" content="اكتشف كائنك الأسطوري الحقيقي بناءً على تحليل نفسي عميق.">
+    <meta property="og:title" content="QuizMagic | اكتشف كائنك الأسطوري">
+    <meta property="og:description" content="اختبار تحليل شخصية متقدم يكشف عن القوى الأسطورية الكامنة في داخلك.">
+    <meta property="og:image" content="assets/images/icon-512x512.png">
+    
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Cairo -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    
     <link rel="stylesheet" href="assets/css/style.css">
-    <style>
-        body { font-family: 'Cairo', sans-serif; }
-        
-        /* Hidden Share Template */
-        #share-template {
-            position: fixed;
-            left: -9999px;
-            top: -9999px;
-            width: 1080px;
-            height: 1080px;
-            background: #0f172a;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 60px;
-            z-index: -100;
-        }
-        
-        .share-card-bg {
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at top right, #581c87 0%, #0f172a 70%);
-            z-index: 1;
-        }
-        
-        .share-content {
-            position: relative;
-            z-index: 2;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            border: 8px solid rgba(168, 85, 247, 0.3);
-            border-radius: 40px;
-            padding: 40px;
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(20px);
-        }
-    </style>
 </head>
-<body class="bg-[#0f172a] text-slate-200 min-h-screen flex flex-col">
+<body class="bg-slate-950 text-slate-200 font-['Cairo'] selection:bg-purple-500/30 overflow-x-hidden">
 
-    <!-- Hidden Share Template for High-Quality Images -->
-    <div id="share-template">
-        <div class="share-card-bg"></div>
-        <div class="share-content">
-            <div class="flex justify-between items-center w-full mb-10">
-                <div class="text-3xl font-black text-purple-500 flex items-center gap-3">
-                    <i class="fas fa-magic"></i> QuizMagic
+    <!-- Background Decoration -->
+    <div class="fixed inset-0 -z-10 overflow-hidden">
+        <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-600/20 blur-[120px] rounded-full animate-pulse"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-600/10 blur-[120px] rounded-full animate-pulse" style="animation-delay: 2s"></div>
+    </div>
+
+    <!-- Header / Navbar -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-slate-950/50 backdrop-blur-xl border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="location.reload()">
+                <div class="w-10 h-10 bg-gradient-to-tr from-purple-600 to-pink-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-600/20">
+                    <i class="fas fa-hat-wizard text-white text-xl"></i>
                 </div>
-                <div class="text-xl text-slate-400 font-bold tracking-widest uppercase">
-                    Mythical Analysis Result
-                </div>
+                <span class="text-2xl font-black tracking-tighter bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">QUIZMAGIC</span>
             </div>
             
-            <div class="flex flex-row gap-10 w-full items-center flex-grow">
-                <div class="w-1/2 h-[500px] rounded-[3rem] overflow-hidden border-4 border-purple-500/50 shadow-2xl">
-                    <img id="share-creature-img" src="" class="w-full h-full object-cover">
-                </div>
-                
-                <div class="w-1/2 flex flex-col gap-6">
-                    <div id="share-rarity" class="bg-purple-600 text-white px-6 py-2 rounded-full text-lg font-black inline-block w-fit uppercase"></div>
-                    <h2 id="share-creature-name" class="text-7xl font-black text-white leading-tight"></h2>
-                    <p id="share-tagline" class="text-2xl text-purple-300 font-bold"></p>
-                    <div class="h-1 w-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></div>
-                    <p id="share-description" class="text-2xl text-slate-300 leading-relaxed italic"></p>
-                </div>
-            </div>
-
-            <div class="w-full flex justify-between items-end mt-10">
-                <div class="flex flex-col gap-2">
-                    <p class="text-slate-400 text-lg">اكتشف كائنك الآن على:</p>
-                    <p class="text-2xl font-bold text-white">quizlabx.github.io/quiz-magic</p>
-                </div>
-                <div class="w-48 h-48 bg-white p-4 rounded-3xl shadow-xl flex items-center justify-center">
-                    <!-- Placeholder for QR or Logo -->
-                    <i class="fas fa-magic text-7xl text-purple-600"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Language Selector Screen -->
-    <div id="language-screen" class="fixed inset-0 z-50 bg-[#0f172a] flex flex-col items-center justify-center transition-opacity duration-500">
-        <div class="text-center p-6">
-            <div class="mb-8 text-7xl text-purple-500 animate-pulse">
-                <i class="fas fa-magic"></i>
-            </div>
-            <h1 class="text-3xl font-bold mb-8">اختر اللغة / Choose Language</h1>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <button onclick="setLanguage('ar')" class="bg-purple-600 hover:bg-purple-700 text-white px-12 py-4 rounded-full font-bold text-xl transition-all transform hover:scale-105 shadow-lg shadow-purple-500/20">العربية</button>
-                <button onclick="setLanguage('en')" class="bg-slate-700 hover:bg-slate-600 text-white px-12 py-4 rounded-full font-bold text-xl transition-all transform hover:scale-105">English</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Header -->
-    <header class="p-4 border-b border-slate-800 bg-[#0f172a]/80 backdrop-blur-md sticky top-0 z-40">
-        <div class="container mx-auto flex justify-between items-center">
-            <a href="index.html" class="text-2xl font-bold text-purple-500 flex items-center gap-2">
-                <i class="fas fa-magic"></i>
-                <span id="site-title">QuizMagic</span>
-            </a>
-            <button onclick="showLanguageScreen()" class="text-sm bg-slate-800 px-3 py-1 rounded-md hover:bg-slate-700 border border-slate-700 transition">
-                <i class="fas fa-globe mr-1"></i> <span id="lang-btn-text">العربية</span>
+            <button onclick="showLanguageScreen()" class="group flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-full border border-white/10 transition-all">
+                <i class="fas fa-globe text-purple-400 group-hover:rotate-12 transition-transform"></i>
+                <span id="lang-btn-text" class="text-sm font-bold">العربية</span>
             </button>
         </div>
-    </header>
+    </nav>
+
+    <!-- Language Selector Overlay -->
+    <div id="language-screen" class="fixed inset-0 z-[100] bg-slate-950 flex items-center justify-center p-6 transition-all duration-700">
+        <div class="max-w-md w-full text-center">
+            <h2 class="text-4xl font-black mb-12 bg-gradient-to-b from-white to-slate-500 bg-clip-text text-transparent">CHOOSE LANGUAGE</h2>
+            <div class="grid grid-cols-1 gap-4">
+                <button onclick="setLanguage('ar')" class="group relative p-6 bg-slate-900 rounded-3xl border border-white/5 hover:border-purple-500/50 transition-all overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-r from-purple-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <span class="relative text-2xl font-bold">العربية</span>
+                </button>
+                <button onclick="setLanguage('en')" class="group relative p-6 bg-slate-900 rounded-3xl border border-white/5 hover:border-blue-500/50 transition-all overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <span class="relative text-2xl font-bold">English</span>
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- Main Content -->
-    <main class="flex-grow container mx-auto px-4 py-8">
+    <main class="pt-32 pb-20 px-6 max-w-5xl mx-auto">
+        
         <!-- Hero Section -->
-        <section id="hero-section" class="text-center mb-12">
-            <h2 id="hero-title" class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent pb-2">
-                اكتشف أسرار شخصيتك الخفية
-            </h2>
-            <p id="hero-subtitle" class="text-slate-400 text-lg max-w-2xl mx-auto">
-                اختر اختبارك المفضل وابدأ رحلة ممتعة في عالم الخيال والنتائج المذهلة.
-            </p>
+        <section id="hero-section" class="text-center mb-20 animate-fade-in">
+            <h1 id="hero-title" class="text-5xl md:text-7xl font-black mb-6 leading-tight tracking-tight">اكتشف كائنك الأسطوري الحقيقي</h1>
+            <p id="hero-subtitle" class="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">تحليل شخصية عميق يغوص في أعماق روحك ليكشف عن القوى الأسطورية التي تسكنك.</p>
         </section>
 
         <!-- Quiz Grid -->
-        <div id="quiz-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <!-- Cards will be generated by JS -->
+        <div id="quiz-grid" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Quizzes will be rendered here -->
         </div>
 
-        <!-- Quiz Container (Hidden by default) -->
-        <div id="quiz-container" class="hidden max-w-3xl mx-auto bg-slate-800/40 p-6 md:p-10 rounded-3xl border border-slate-700 shadow-2xl glass">
-            <!-- Quiz Engine content will be injected here -->
+        <!-- Quiz Container (Questions) -->
+        <div id="quiz-container" class="hidden max-w-2xl mx-auto bg-slate-900/50 backdrop-blur-2xl p-8 md:p-12 rounded-[2.5rem] border border-white/10 shadow-2xl">
+            <!-- Questions will be rendered here -->
         </div>
 
-        <!-- Result Container (Hidden by default) -->
-        <div id="result-container" class="hidden max-w-3xl mx-auto text-center">
-            <!-- Results will be injected here -->
+        <!-- Result Container -->
+        <div id="result-container" class="hidden">
+            <!-- Result will be rendered here -->
         </div>
+
     </main>
 
     <!-- Footer -->
-    <footer class="bg-slate-900/50 border-t border-slate-800 py-12 mt-12">
-        <div class="container mx-auto px-4">
-            <div id="footer-links-container" class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-                <div>
-                    <h3 class="text-2xl font-bold text-purple-500 mb-4 flex items-center gap-2">
-                        <i class="fas fa-magic"></i> QuizMagic
-                    </h3>
-                    <p id="footer-desc" class="text-slate-400 text-sm max-w-md leading-relaxed">
-                        منصة ترفيهية متخصصة في اختبارات الشخصية والنتائج الخيالية الممتعة. شارك النتائج مع أصدقائك واستمتع بالرحلة.
-                    </p>
+    <footer class="border-t border-white/5 py-12 px-6">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+            <div class="text-center md:text-right">
+                <div class="flex items-center justify-center md:justify-start gap-2 mb-4">
+                    <div class="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-hat-wizard text-white text-sm"></i>
+                    </div>
+                    <span class="font-bold text-xl tracking-tighter">QUIZMAGIC</span>
                 </div>
-                <div class="flex flex-wrap gap-6 justify-start md:justify-end text-sm text-slate-400">
-                    <div id="social-links" class="flex gap-4 mb-4 md:mb-0 w-full md:w-auto justify-center md:justify-end">
-                        <!-- Social links from config.js -->
-                    </div>
-                    <div class="flex gap-6">
-                        <a href="about.html" class="hover:text-purple-400 transition font-medium">من نحن</a>
-                        <a href="contact.html" class="hover:text-purple-400 transition font-medium">اتصل بنا</a>
-                        <a href="privacy.html" class="hover:text-purple-400 transition font-medium">سياسة الخصوصية</a>
-                        <a href="terms.html" class="hover:text-purple-400 transition font-medium">شروط الاستخدام</a>
-                    </div>
+                <p id="footer-desc" class="text-slate-500 text-sm max-w-xs">عالم من الاختبارات النفسية والأسطورية المصممة بعناية.</p>
+            </div>
+            
+            <div class="flex flex-col items-center gap-4">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-widest">تابعنا على</span>
+                <div id="social-links" class="flex gap-4">
+                    <!-- Links from config.js -->
                 </div>
             </div>
-            <div class="border-t border-slate-800/50 mt-10 pt-8 text-center text-xs text-slate-500">
-                <p>&copy; 2026 QuizMagic. جميع الحقوق محفوظة.</p>
+            
+            <div class="text-slate-500 text-sm">
+                &copy; 2024 QuizMagic. All rights reserved.
             </div>
         </div>
     </footer>
 
+    <!-- HIDDEN SHARE TEMPLATE (For Image Generation) -->
+    <div id="share-template" class="fixed left-[-2000px] top-0 w-[1080px] h-[1080px] bg-slate-950 overflow-hidden flex flex-col items-center justify-center p-20 text-center" dir="rtl">
+        <!-- Dynamic Background Layer -->
+        <div id="share-bg-glow" class="absolute inset-0 bg-gradient-to-br from-purple-900/40 via-slate-950 to-slate-950"></div>
+        <div class="absolute top-[-10%] right-[-10%] w-[60%] h-[60%] bg-purple-600/10 blur-[150px] rounded-full"></div>
+        
+        <!-- Content Layer -->
+        <div class="relative z-10 w-full h-full flex flex-col items-center">
+            <!-- Header Logo -->
+            <div class="flex items-center gap-4 mb-12">
+                <div class="w-16 h-16 bg-purple-600 rounded-2xl flex items-center justify-center shadow-2xl">
+                    <i class="fas fa-hat-wizard text-white text-3xl"></i>
+                </div>
+                <span class="text-4xl font-black text-white tracking-tighter">QUIZMAGIC</span>
+            </div>
+
+            <!-- Creature Image -->
+            <div class="relative w-80 h-80 mb-10">
+                <div id="share-img-ring" class="absolute inset-[-15px] border-4 border-purple-500/30 rounded-full animate-pulse"></div>
+                <img id="share-creature-img" src="" class="w-full h-full object-cover rounded-full border-8 border-white/10 shadow-2xl">
+            </div>
+
+            <!-- Name & Rarity -->
+            <span id="share-rarity" class="bg-purple-600 text-white px-6 py-2 rounded-full text-xl font-bold mb-6 uppercase tracking-widest shadow-xl">LEGENDARY</span>
+            <h2 id="share-creature-name" class="text-8xl font-black text-white mb-4 drop-shadow-2xl">DRAGON</h2>
+            <p id="share-tagline" class="text-3xl text-purple-400 font-bold mb-10 italic">كائني الأسطوري الحقيقي</p>
+
+            <!-- Description -->
+            <div class="max-w-3xl bg-white/5 backdrop-blur-md p-10 rounded-[3rem] border border-white/10">
+                <p id="share-description" class="text-2xl text-slate-300 leading-relaxed font-medium">
+                    تحليل شخصيتك يكشف عن روح قوية وحكيمة...
+                </p>
+            </div>
+
+            <!-- Footer Link -->
+            <div class="mt-auto pt-10 border-t border-white/5 w-full">
+                <p class="text-slate-500 text-xl font-bold">اكتشف كائنك الآن: <span class="text-purple-500">quizlabx.github.io/quiz-magic</span></p>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script src="assets/js/config.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="assets/js/quizzes.js"></script>
     <script src="assets/js/app.js"></script>
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./service-worker.js');
+                navigator.serviceWorker.register('service-worker.js');
             });
         }
     </script>
