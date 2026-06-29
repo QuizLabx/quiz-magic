@@ -10,7 +10,7 @@ const config = {
         twitter: "https://twitter.com/yourprofile",
         instagram: "https://instagram.com/yourprofile",
         youtube: "https://youtube.com/yourchannel",
-        linkedin: "https://linkedin.com/in/yourprofile"
+        telegram: "https://t.me/yourchannel"
     },
     
     // إعدادات الميزات
