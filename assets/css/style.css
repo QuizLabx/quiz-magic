@@ -1,338 +1,367 @@
 /* 
-   Custom Styles for QuizMagic - Full Professional Version (Phase 2)
-   Includes: Dark/Light Mode, Glassmorphism, Advanced Animations, Skeleton Loaders, and Fixed Dragon Progress.
-*/
-
-:root {
-    /* Dark Mode Variables (Default) */
-    --bg-primary: #0f172a;
-    --bg-secondary: #1e293b;
-    --bg-tertiary: #334155;
-    --text-primary: #e2e8f0;
-    --text-secondary: #cbd5e1;
-    --text-muted: #94a3b8;
-    --border-color: rgba(71, 85, 105, 0.5);
-    --accent-primary: #a855f7;
-    --accent-secondary: #ec4899;
-    --overlay-bg: rgba(15, 23, 42, 0.95);
-    --card-shadow: rgba(0, 0, 0, 0.4);
-    --glass-bg: rgba(30, 41, 59, 0.4);
-    --skeleton-bg: rgba(71, 85, 105, 0.3);
-}
-
-/* Light Mode Variables - Soft Azure Theme */
-html.light-mode {
-    --bg-primary: #f0f9ff;
-    --bg-secondary: #e0f2fe;
-    --bg-tertiary: #bae6fd;
-    --text-primary: #0f172a;
-    --text-secondary: #334155;
-    --text-muted: #64748b;
-    --border-color: rgba(186, 230, 253, 0.8);
-    --accent-primary: #7c3aed;
-    --accent-secondary: #db2777;
-    --overlay-bg: rgba(240, 249, 255, 0.95);
-    --card-shadow: rgba(186, 230, 253, 0.5);
-    --glass-bg: rgba(224, 242, 254, 0.5);
-    --skeleton-bg: rgba(186, 230, 253, 0.4);
-}
-
-/* ==================== BASE STYLES ==================== */
-
-body {
-    background-color: var(--bg-primary);
-    color: var(--text-primary);
-    transition: background-color 0.5s ease, color 0.5s ease;
-    scroll-behavior: smooth;
-    overflow-x: hidden;
-    min-height: 100vh;
-}
-
-/* Theme Helper Classes */
-.theme-bg-primary { background-color: var(--bg-primary); }
-.theme-bg-secondary { background-color: var(--bg-secondary); }
-.theme-bg-tertiary { background-color: var(--bg-tertiary); }
-.theme-text-primary { color: var(--text-primary); }
-.theme-text-secondary { color: var(--text-secondary); }
-.theme-text-muted { color: var(--text-muted); }
-.theme-border { border-color: var(--border-color); }
-.theme-border-top { border-top: 1px solid var(--border-color); }
-.overlay-bg { background-color: var(--overlay-bg); }
-
-/* ==================== SKELETON LOADERS ==================== */
-
-@keyframes skeleton-shimmer {
-    0% { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
-}
-
-.skeleton-card {
-    background: linear-gradient(90deg, var(--skeleton-bg) 25%, rgba(255, 255, 255, 0.05) 50%, var(--skeleton-bg) 75%);
-    background-size: 200% 100%;
-    animation: skeleton-shimmer 1.5s infinite linear;
-    border-radius: 1.5rem;
-    height: 400px;
-    border: 1px solid var(--border-color);
-}
-
-/* ==================== PROGRESS BAR & DRAGON (FIXED) ==================== */
-
-.progress-wrapper {
-    position: relative;
-    padding-top: 35px; /* More space for dragon */
-    margin-bottom: 2rem;
-}
-
-.progress-container {
-    width: 100%;
-    height: 10px;
-    background-color: var(--bg-tertiary);
-    border-radius: 20px;
-    overflow: hidden;
-    position: relative;
-}
-
-.progress-bar {
-    height: 100%;
-    background: linear-gradient(90deg, #a855f7, #ec4899);
-    border-radius: 20px;
-    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
-}
-
-.dragon-marker {
-    position: absolute;
-    top: 0; 
-    font-size: 1.8rem;
-    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 20;
-    filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.6));
-    animation: dragon-float 1.5s ease-in-out infinite;
-}
-
-/* RTL Adjustment for Dragon */
-[dir="rtl"] .dragon-marker {
-    transform: translateX(-50%) scaleX(-1);
-}
-
-[dir="ltr"] .dragon-marker {
-    transform: translateX(-50%);
-}
-
-@keyframes dragon-float {
-    0%, 100% { transform: translate(var(--tw-translate-x, 0), 0) scaleX(var(--tw-scale-x, 1)); }
-    50% { transform: translate(var(--tw-translate-x, 0), -8px) scaleX(var(--tw-scale-x, 1)); }
-}
-
-/* ==================== ANIMATIONS (ORIGINAL) ==================== */
-
-@keyframes fade-in {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.animate-fade-in {
-    animation: fade-in 0.8s ease-out forwards;
-}
-
-@keyframes slide-up {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.animate-slide-up {
-    animation: slide-up 0.6s ease-out;
-}
-
-@keyframes glow-pulse {
-    0%, 100% { box-shadow: 0 0 20px -5px var(--accent-primary); opacity: 0.6; }
-    50% { box-shadow: 0 0 40px -5px var(--accent-primary); opacity: 0.9; }
-}
-
-.animate-glow-pulse {
-    animation: glow-pulse 3s ease-in-out infinite;
-}
-
-@keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
-}
-
-.animate-float {
-    animation: float 3s ease-in-out infinite;
-}
-
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-.animate-spin-slow {
-    animation: spin 6s linear infinite;
-}
-
-@keyframes shimmer {
-    0% { background-position: -1000px 0; }
-    100% { background-position: 1000px 0; }
-}
-
-.shimmer {
-    background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.2) 20%, rgba(255, 255, 255, 0) 40%, rgba(255, 255, 255, 0) 100%);
-    background-size: 1000px 100%;
-    animation: shimmer 2s infinite;
-}
-
-/* ==================== GLASSMORPHISM ==================== */
-
-.glass {
-    background: var(--glass-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid var(--border-color);
-    transition: all 0.3s ease-out;
-}
-
-.glass:hover {
-    background: rgba(var(--bg-secondary-rgb), 0.6);
-    border-color: rgba(var(--accent-primary-rgb), 0.3);
-    box-shadow: 0 8px 32px 0 var(--card-shadow);
-}
-
-.glass-enhanced {
-    background: linear-gradient(135deg, var(--glass-bg) 0%, rgba(var(--bg-secondary-rgb), 0.3) 100%);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid var(--border-color);
-    box-shadow: 0 8px 32px 0 var(--card-shadow);
-}
-
-/* ==================== CARDS ==================== */
-
-.quiz-card {
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
-    background-color: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-}
-
-.quiz-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-    transition: left 0.5s ease-out;
-    z-index: 1;
-}
-
-.quiz-card:hover::before {
-    left: 100%;
-}
-
-.quiz-card:hover {
-    transform: translateY(-12px) scale(1.02);
-    box-shadow: 0 25px 50px -12px var(--card-shadow);
-    border-color: var(--accent-primary);
-}
-
-.step-card {
-    position: relative;
-    overflow: hidden;
-    border: 1px solid var(--border-color);
-    transition: all 0.3s ease-out;
-    background-color: var(--bg-secondary);
-}
-
-.step-card:hover {
-    border-color: var(--accent-primary);
-    box-shadow: 0 10px 30px -10px var(--card-shadow);
-}
-
-/* ==================== BUTTONS & UI ==================== */
-
-.theme-toggle-btn {
-    background-color: var(--bg-tertiary);
-    border: 1px solid var(--border-color);
-    color: var(--text-primary);
-    transition: all 0.3s ease;
-}
-
-.theme-toggle-btn:hover {
-    background-color: var(--accent-primary);
-    color: white;
-    transform: scale(1.1);
-}
-
-.pulse-button {
-    animation: pulse-btn 2s infinite;
-}
-
-@keyframes pulse-btn {
-    0% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.4); transform: scale(1); }
-    70% { box-shadow: 0 0 0 15px rgba(168, 85, 247, 0); transform: scale(1.02); }
-    100% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0); transform: scale(1); }
-}
-
-/* ==================== SCROLLBAR ==================== */
-
-::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-}
-
-::-webkit-scrollbar-track {
-    background: var(--bg-primary);
-}
-
-::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, var(--accent-primary), var(--accent-secondary));
-    border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, var(--accent-secondary), var(--accent-primary));
-}
-
-/* ==================== TEXT EFFECTS ==================== */
-
-.text-gradient {
-    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-.gradient-text-animated {
-    background: linear-gradient(270deg, var(--accent-primary), var(--accent-secondary), #f97316, var(--accent-primary));
-    background-size: 300% 300%;
-    animation: gradient-shift 3s ease infinite;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-@keyframes gradient-shift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
-/* ==================== RESPONSIVE & ACCESSIBILITY ==================== */
-
-@media (max-width: 768px) {
-    .quiz-card:hover { transform: translateY(-8px) scale(1.01); }
-    .dragon-marker { font-size: 1.4rem; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
-}
-
-/* ==================== RTL ==================== */
-
-[dir="rtl"] .fa-chevron-left, [dir="rtl"] .fa-chevron-right { transform: rotate(180deg); }
-[dir="rtl"] .text-start { text-align: right; }
-[dir="ltr"] .text-start { text-align: left; }
+2	   Custom Styles for QuizMagic - Full Professional Version (Phase 3 Final)
+3	   Includes: Dark/Light Mode, Glassmorphism, Advanced Animations, Skeleton Loaders, Fixed Dragon Progress, and Mythical Wiki Accordion.
+4	*/
+5	
+6	:root {
+7	    /* Dark Mode Variables (Default) */
+8	    --bg-primary: #0f172a;
+9	    --bg-secondary: #1e293b;
+10	    --bg-tertiary: #334155;
+11	    --text-primary: #e2e8f0;
+12	    --text-secondary: #cbd5e1;
+13	    --text-muted: #94a3b8;
+14	    --border-color: rgba(71, 85, 105, 0.5);
+15	    --accent-primary: #a855f7;
+16	    --accent-secondary: #ec4899;
+17	    --overlay-bg: rgba(15, 23, 42, 0.95);
+18	    --card-shadow: rgba(0, 0, 0, 0.4);
+19	    --glass-bg: rgba(30, 41, 59, 0.4);
+20	    --skeleton-bg: rgba(71, 85, 105, 0.3);
+21	}
+22	
+23	/* Light Mode Variables - Soft Azure Theme */
+24	html.light-mode {
+25	    --bg-primary: #f0f9ff;
+26	    --bg-secondary: #e0f2fe;
+27	    --bg-tertiary: #bae6fd;
+28	    --text-primary: #0f172a;
+29	    --text-secondary: #334155;
+30	    --text-muted: #64748b;
+31	    --border-color: rgba(186, 230, 253, 0.8);
+32	    --accent-primary: #7c3aed;
+33	    --accent-secondary: #db2777;
+34	    --overlay-bg: rgba(240, 249, 255, 0.95);
+35	    --card-shadow: rgba(186, 230, 253, 0.5);
+36	    --glass-bg: rgba(224, 242, 254, 0.5);
+37	    --skeleton-bg: rgba(186, 230, 253, 0.4);
+38	}
+39	
+40	/* ==================== BASE STYLES ==================== */
+41	
+42	body {
+43	    background-color: var(--bg-primary);
+44	    color: var(--text-primary);
+45	    transition: background-color 0.5s ease, color 0.5s ease;
+46	    scroll-behavior: smooth;
+47	    overflow-x: hidden;
+48	    min-height: 100vh;
+49	}
+50	
+51	/* Theme Helper Classes */
+52	.theme-bg-primary { background-color: var(--bg-primary); }
+53	.theme-bg-secondary { background-color: var(--bg-secondary); }
+54	.theme-bg-tertiary { background-color: var(--bg-tertiary); }
+55	.theme-text-primary { color: var(--text-primary); }
+56	.theme-text-secondary { color: var(--text-secondary); }
+57	.theme-text-muted { color: var(--text-muted); }
+58	.theme-border { border-color: var(--border-color); }
+59	.theme-border-top { border-top: 1px solid var(--border-color); }
+60	.overlay-bg { background-color: var(--overlay-bg); }
+61	
+62	/* ==================== SKELETON LOADERS ==================== */
+63	
+64	@keyframes skeleton-shimmer {
+65	    0% { background-position: -200% 0; }
+66	    100% { background-position: 200% 0; }
+67	}
+68	
+69	.skeleton-card {
+70	    background: linear-gradient(90deg, var(--skeleton-bg) 25%, rgba(255, 255, 255, 0.05) 50%, var(--skeleton-bg) 75%);
+71	    background-size: 200% 100%;
+72	    animation: skeleton-shimmer 1.5s infinite linear;
+73	    border-radius: 1.5rem;
+74	    height: 400px;
+75	    border: 1px solid var(--border-color);
+76	}
+77	
+78	/* ==================== PROGRESS BAR & DRAGON (FIXED) ==================== */
+79	
+80	.progress-wrapper {
+81	    position: relative;
+82	    padding-top: 35px; /* More space for dragon */
+83	    margin-bottom: 2rem;
+84	}
+85	
+86	.progress-container {
+87	    width: 100%;
+88	    height: 10px;
+89	    background-color: var(--bg-tertiary);
+90	    border-radius: 20px;
+91	    overflow: hidden;
+92	    position: relative;
+93	}
+94	
+95	.progress-bar {
+96	    height: 100%;
+97	    background: linear-gradient(90deg, #a855f7, #ec4899);
+98	    border-radius: 20px;
+99	    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+100	    box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
+101	}
+102	
+103	.dragon-marker {
+104	    position: absolute;
+105	    top: 0; 
+106	    font-size: 1.8rem;
+107	    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+108	    z-index: 20;
+109	    filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.6));
+110	    animation: dragon-float 1.5s ease-in-out infinite;
+111	}
+112	
+113	/* RTL Adjustment for Dragon */
+114	[dir="rtl"] .dragon-marker {
+115	    transform: translateX(-50%) scaleX(-1);
+116	}
+117	
+118	[dir="ltr"] .dragon-marker {
+119	    transform: translateX(-50%);
+120	}
+121	
+122	@keyframes dragon-float {
+123	    0%, 100% { transform: translate(var(--tw-translate-x, 0), 0) scaleX(var(--tw-scale-x, 1)); }
+124	    50% { transform: translate(var(--tw-translate-x, 0), -8px) scaleX(var(--tw-scale-x, 1)); }
+125	}
+126	
+127	/* ==================== ANIMATIONS (ORIGINAL) ==================== */
+128	
+129	@keyframes fade-in {
+130	    from { opacity: 0; transform: translateY(20px); }
+131	    to { opacity: 1; transform: translateY(0); }
+132	}
+133	
+134	.animate-fade-in {
+135	    animation: fade-in 0.8s ease-out forwards;
+136	}
+137	
+138	@keyframes slide-up {
+139	    from { opacity: 0; transform: translateY(30px); }
+140	    to { opacity: 1; transform: translateY(0); }
+141	}
+142	
+143	.animate-slide-up {
+144	    animation: slide-up 0.6s ease-out;
+145	}
+146	
+147	@keyframes glow-pulse {
+148	    0%, 100% { box-shadow: 0 0 20px -5px var(--accent-primary); opacity: 0.6; }
+149	    50% { box-shadow: 0 0 40px -5px var(--accent-primary); opacity: 0.9; }
+150	}
+151	
+152	.animate-glow-pulse {
+153	    animation: glow-pulse 3s ease-in-out infinite;
+154	}
+155	
+156	@keyframes float {
+157	    0%, 100% { transform: translateY(0px); }
+158	    50% { transform: translateY(-10px); }
+159	}
+160	
+161	.animate-float {
+162	    animation: float 3s ease-in-out infinite;
+163	}
+164	
+165	@keyframes spin {
+166	    from { transform: rotate(0deg); }
+167	    to { transform: rotate(360deg); }
+168	}
+169	
+170	.animate-spin-slow {
+171	    animation: spin 6s linear infinite;
+172	}
+173	
+174	@keyframes shimmer {
+175	    0% { background-position: -1000px 0; }
+176	    100% { background-position: 1000px 0; }
+177	}
+178	
+179	.shimmer {
+180	    background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.2) 20%, rgba(255, 255, 255, 0) 40%, rgba(255, 255, 255, 0) 100%);
+181	    background-size: 1000px 100%;
+182	    animation: shimmer 2s infinite;
+183	}
+184	
+185	/* ==================== GLASSMORPHISM ==================== */
+186	
+187	.glass {
+188	    background: var(--glass-bg);
+189	    backdrop-filter: blur(12px);
+190	    -webkit-backdrop-filter: blur(12px);
+191	    border: 1px solid var(--border-color);
+192	    transition: all 0.3s ease-out;
+193	}
+194	
+195	.glass:hover {
+196	    background: rgba(var(--bg-secondary-rgb), 0.6);
+197	    border-color: rgba(var(--accent-primary-rgb), 0.3);
+198	    box-shadow: 0 8px 32px 0 var(--card-shadow);
+199	}
+200	
+201	.glass-enhanced {
+202	    background: linear-gradient(135deg, var(--glass-bg) 0%, rgba(var(--bg-secondary-rgb), 0.3) 100%);
+203	    backdrop-filter: blur(16px);
+204	    -webkit-backdrop-filter: blur(16px);
+205	    border: 1px solid var(--border-color);
+206	    box-shadow: 0 8px 32px 0 var(--card-shadow);
+207	}
+208	
+209	/* ==================== CARDS ==================== */
+210	
+211	.quiz-card {
+212	    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+213	    position: relative;
+214	    overflow: hidden;
+215	    background-color: var(--bg-secondary);
+216	    border: 1px solid var(--border-color);
+217	}
+218	
+219	.quiz-card::before {
+220	    content: '';
+221	    position: absolute;
+222	    top: 0;
+223	    left: -100%;
+224	    width: 100%;
+225	    height: 100%;
+226	    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+227	    transition: left 0.5s ease-out;
+228	    z-index: 1;
+229	}
+230	
+231	.quiz-card:hover::before {
+232	    left: 100%;
+233	}
+234	
+235	.quiz-card:hover {
+236	    transform: translateY(-12px) scale(1.02);
+237	    box-shadow: 0 25px 50px -12px var(--card-shadow);
+238	    border-color: var(--accent-primary);
+239	}
+240	
+241	.step-card {
+242	    position: relative;
+243	    overflow: hidden;
+244	    border: 1px solid var(--border-color);
+245	    transition: all 0.3s ease-out;
+246	    background-color: var(--bg-secondary);
+247	}
+248	
+249	.step-card:hover {
+250	    border-color: var(--accent-primary);
+251	    box-shadow: 0 10px 30px -10px var(--card-shadow);
+252	}
+253	
+254	/* ==================== ACCORDION (MYTHICAL WIKI) ==================== */
+255	
+256	.accordion-item {
+257	    border: 1px solid var(--border-color);
+258	    margin-bottom: 0.75rem;
+259	    transition: all 0.3s ease;
+260	}
+261	
+262	.accordion-header {
+263	    background: transparent;
+264	    cursor: pointer;
+265	}
+266	
+267	.accordion-content {
+268	    max-height: 0;
+269	    overflow: hidden;
+270	    transition: max-height 0.3s ease-out, padding 0.3s ease;
+271	}
+272	
+273	.accordion-item.active .accordion-content {
+274	    max-height: 1200px; /* Increased for long content */
+275	    padding-bottom: 1.5rem;
+276	}
+277	
+278	.accordion-item.active .accordion-icon {
+279	    transform: rotate(180deg);
+280	}
+281	
+282	/* ==================== BUTTONS & UI ==================== */
+283	
+284	.theme-toggle-btn {
+285	    background-color: var(--bg-tertiary);
+286	    border: 1px solid var(--border-color);
+287	    color: var(--text-primary);
+288	    transition: all 0.3s ease;
+289	}
+290	
+291	.theme-toggle-btn:hover {
+292	    background-color: var(--accent-primary);
+293	    color: white;
+294	    transform: scale(1.1);
+295	}
+296	
+297	.pulse-button {
+298	    animation: pulse-btn 2s infinite;
+299	}
+300	
+301	@keyframes pulse-btn {
+302	    0% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.4); transform: scale(1); }
+303	    70% { box-shadow: 0 0 0 15px rgba(168, 85, 247, 0); transform: scale(1.02); }
+304	    100% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0); transform: scale(1); }
+305	}
+306	
+307	/* ==================== SCROLLBAR ==================== */
+308	
+309	::-webkit-scrollbar {
+310	    width: 10px;
+311	    height: 10px;
+312	}
+313	
+314	::-webkit-scrollbar-track {
+315	    background: var(--bg-primary);
+316	}
+317	
+318	::-webkit-scrollbar-thumb {
+319	    background: linear-gradient(180deg, var(--accent-primary), var(--accent-secondary));
+320	    border-radius: 10px;
+321	}
+322	
+323	::-webkit-scrollbar-thumb:hover {
+324	    background: linear-gradient(180deg, var(--accent-secondary), var(--accent-primary));
+325	}
+326	
+327	/* ==================== TEXT EFFECTS ==================== */
+328	
+329	.text-gradient {
+330	    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+331	    -webkit-background-clip: text;
+332	    -webkit-text-fill-color: transparent;
+333	    background-clip: text;
+334	}
+335	
+336	.gradient-text-animated {
+337	    background: linear-gradient(270deg, var(--accent-primary), var(--accent-secondary), #f97316, var(--accent-primary));
+338	    background-size: 300% 300%;
+339	    animation: gradient-shift 3s ease infinite;
+340	    -webkit-background-clip: text;
+341	    -webkit-text-fill-color: transparent;
+342	    background-clip: text;
+343	}
+344	
+345	@keyframes gradient-shift {
+346	    0% { background-position: 0% 50%; }
+347	    50% { background-position: 100% 50%; }
+348	    100% { background-position: 0% 50%; }
+349	}
+350	
+351	/* ==================== RESPONSIVE & ACCESSIBILITY ==================== */
+352	
+353	@media (max-width: 768px) {
+354	    .quiz-card:hover { transform: translateY(-8px) scale(1.01); }
+355	    .dragon-marker { font-size: 1.4rem; }
+356	}
+357	
+358	@media (prefers-reduced-motion: reduce) {
+359	    * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+360	}
+361	
+362	/* ==================== RTL ==================== */
+363	
+364	[dir="rtl"] .fa-chevron-left, [dir="rtl"] .fa-chevron-right { transform: rotate(180deg); }
+365	[dir="rtl"] .text-start { text-align: right; }
+366	[dir="ltr"] .text-start { text-align: left; }
+367	
