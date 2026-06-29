@@ -18,6 +18,7 @@ function renderSocialLinks() {
     if (!container) return;
     container.innerHTML = '';
     
+    // Check if config exists (from config.js)
     if (typeof config !== 'undefined' && config.socialLinks) {
         const links = [
             { id: 'facebook', icon: 'fab fa-facebook-f' },
@@ -99,7 +100,7 @@ function renderQuizGrid() {
 
 function showWelcomeScreen(quizId) {
     const data = quizzesData[currentLang];
-    const isAr = currentLang === 'ar';
+    const quiz = data.quizzes.find(q => q.id === quizId);
     
     document.getElementById('quiz-grid').classList.add('hidden');
     document.getElementById('hero-section').classList.add('hidden');
@@ -107,6 +108,7 @@ function showWelcomeScreen(quizId) {
     const container = document.getElementById('quiz-container');
     container.classList.remove('hidden');
     
+    const isAr = currentLang === 'ar';
     container.innerHTML = `
         <div class="animate-fade-in text-center py-6">
             <h3 class="text-3xl font-bold mb-10 text-white">
@@ -461,61 +463,6 @@ function unlockSecretReport() {
 }
 
 function prepareShareTemplate(creature) {
-    // Dynamic Background Mapping
-    const elements = {
-        fire: { 
-            bg: 'linear-gradient(135deg, #450a0a 0%, #0f172a 100%)', 
-            glow: '#ef4444', 
-            accent: '#f97316',
-            creatures: ['dragon', 'phoenix', 'hydra'] 
-        },
-        water: { 
-            bg: 'linear-gradient(135deg, #164e63 0%, #0f172a 100%)', 
-            glow: '#06b6d4', 
-            accent: '#3b82f6',
-            creatures: ['kraken', 'siren'] 
-        },
-        nature: { 
-            bg: 'linear-gradient(135deg, #064e3b 0%, #0f172a 100%)', 
-            glow: '#10b981', 
-            accent: '#84cc16',
-            creatures: ['unicorn', 'faun', 'golem'] 
-        },
-        light: { 
-            bg: 'linear-gradient(135deg, #713f12 0%, #0f172a 100%)', 
-            glow: '#eab308', 
-            accent: '#facc15',
-            creatures: ['valkyrie', 'pegasus', 'simurgh', 'owl_of_athena'] 
-        },
-        mystery: { 
-            bg: 'linear-gradient(135deg, #4c1d95 0%, #0f172a 100%)', 
-            glow: '#8b5cf6', 
-            accent: '#d946ef',
-            creatures: ['sphinx', 'kitsune', 'cerberus', 'centaur'] 
-        }
-    };
-
-    let selectedElement = elements.mystery; // Default
-    for (const key in elements) {
-        if (elements[key].creatures.includes(creature.id)) {
-            selectedElement = elements[key];
-            break;
-        }
-    }
-
-    // Apply Styles to Template
-    const templateBg = document.getElementById('share-bg-glow');
-    const imgRing = document.getElementById('share-img-ring');
-    const rarityBadge = document.getElementById('share-rarity');
-    const tagline = document.getElementById('share-tagline');
-
-    if (templateBg) templateBg.style.background = selectedElement.bg;
-    if (imgRing) imgRing.style.borderColor = `${selectedElement.glow}4d`; // 30% opacity
-    if (rarityBadge) rarityBadge.style.backgroundColor = selectedElement.accent;
-    if (tagline) tagline.innerText = currentLang === 'ar' ? 'كائني الأسطوري الحقيقي' : 'My True Mythical Essence';
-    if (tagline) tagline.style.color = selectedElement.glow;
-
-    // Fill Data
     const img = document.getElementById('share-creature-img');
     if (img) img.src = creature.image;
     
@@ -524,6 +471,9 @@ function prepareShareTemplate(creature) {
     
     const rarity = document.getElementById('share-rarity');
     if (rarity) rarity.innerText = creature.rarity;
+    
+    const tagline = document.getElementById('share-tagline');
+    if (tagline) tagline.innerText = currentLang === 'ar' ? 'كائني الأسطوري الحقيقي' : 'My True Mythical Essence';
     
     const desc = document.getElementById('share-description');
     if (desc) desc.innerText = creature.description.substring(0, 160) + '...';
