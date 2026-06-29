@@ -6,11 +6,11 @@
 const config = {
     // روابط وسائل التواصل الاجتماعي - ضع روابطك هنا
     socialLinks: {
-        facebook: "https://facebook.com/yourpage",
+        facebook: "https://www.facebook.com/profile.php?id=61591169685014",
         twitter: "https://twitter.com/yourprofile",
-        instagram: "https://instagram.com/yourprofile",
+        instagram: "https://www.instagram.com/quizz.magic/",
         youtube: "https://youtube.com/yourchannel",
-        telegram: "https://t.me/yourchannel"
+        telegram: "https://t.me/quiz_magic"
     },
     
     // إعدادات الميزات
