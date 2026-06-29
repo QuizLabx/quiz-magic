@@ -51,139 +51,9 @@
             padding: 60px;
             z-index: -100;
         }
-        
-        .share-card-bg {
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at top right, #581c87 0%, #0f172a 70%);
-            z-index: 1;
-        }
-        
-        .share-content {
-            position: relative;
-            z-index: 2;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            border: 8px solid rgba(168, 85, 247, 0.3);
-            border-radius: 40px;
-            padding: 40px;
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(20px);
-        }
-
-        /* Dark/Light Mode Transitions */
-        * {
-            @apply transition-colors duration-300;
-        }
-
-        /* Dark Mode (Default) */
-        :root {
-            --bg-primary: #0f172a;
-            --bg-secondary: #1e293b;
-            --bg-tertiary: #334155;
-            --text-primary: #e2e8f0;
-            --text-secondary: #cbd5e1;
-            --text-muted: #94a3b8;
-            --border-color: #475569;
-            --accent-primary: #a855f7;
-            --accent-secondary: #ec4899;
-        }
-
-        /* Light Mode */
-        html.light-mode {
-            --bg-primary: #f0f9ff;
-            --bg-secondary: #e0f2fe;
-            --bg-tertiary: #bae6fd;
-            --text-primary: #0c2340;
-            --text-secondary: #164e63;
-            --text-muted: #0e7490;
-            --border-color: #06b6d4;
-            --accent-primary: #7c3aed;
-            --accent-secondary: #db2777;
-        }
-
-        body {
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-        }
-
-        header {
-            background-color: var(--bg-secondary) !important;
-            border-color: var(--border-color) !important;
-        }
-
-        .glass {
-            background-color: rgba(var(--bg-secondary-rgb, 30, 41, 59), 0.4) !important;
-            border-color: var(--border-color) !important;
-        }
-
-        .text-slate-400 {
-            color: var(--text-secondary) !important;
-        }
-
-        .text-slate-500 {
-            color: var(--text-muted) !important;
-        }
-
-        .border-slate-800 {
-            border-color: var(--border-color) !important;
-        }
-
-        .border-slate-700 {
-            border-color: var(--border-color) !important;
-        }
-
-        .bg-slate-800 {
-            background-color: var(--bg-secondary) !important;
-        }
-
-        .bg-slate-900 {
-            background-color: var(--bg-tertiary) !important;
-        }
-
-        .bg-slate-900\/40 {
-            background-color: rgba(var(--bg-tertiary-rgb, 51, 65, 85), 0.4) !important;
-        }
-
-        .bg-slate-800\/60 {
-            background-color: rgba(var(--bg-secondary-rgb, 30, 41, 59), 0.6) !important;
-        }
-
-        .bg-slate-800\/40 {
-            background-color: rgba(var(--bg-secondary-rgb, 30, 41, 59), 0.4) !important;
-        }
-
-        .bg-slate-800\/80 {
-            background-color: rgba(var(--bg-secondary-rgb, 30, 41, 59), 0.8) !important;
-        }
-
-        footer {
-            background-color: var(--bg-secondary) !important;
-            border-color: var(--border-color) !important;
-        }
-
-        .quiz-card {
-            background-color: var(--bg-secondary) !important;
-            border-color: var(--border-color) !important;
-        }
-
-        /* Theme Toggle Button */
-        .theme-toggle-btn {
-            background-color: var(--bg-tertiary);
-            border-color: var(--border-color);
-            color: var(--text-primary);
-        }
-
-        .theme-toggle-btn:hover {
-            background-color: var(--accent-primary);
-            color: white;
-        }
     </style>
 </head>
-<body class="bg-[#0f172a] text-slate-200 min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col transition-colors duration-500">
 
     <!-- Hidden Share Template for High-Quality Images -->
     <div id="share-template">
@@ -218,7 +88,6 @@
                     <p class="text-2xl font-bold text-white">quizlabx.github.io/quiz-magic</p>
                 </div>
                 <div class="w-48 h-48 bg-white p-4 rounded-3xl shadow-xl flex items-center justify-center">
-                    <!-- Placeholder for QR or Logo -->
                     <i class="fas fa-magic text-7xl text-purple-600"></i>
                 </div>
             </div>
@@ -226,12 +95,12 @@
     </div>
 
     <!-- Language Selector Screen -->
-    <div id="language-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center transition-opacity duration-500" style="background-color: var(--bg-primary);">
+    <div id="language-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center transition-all duration-500 overlay-bg">
         <div class="text-center p-6">
             <div class="mb-8 text-7xl text-purple-500 animate-pulse">
                 <i class="fas fa-magic"></i>
             </div>
-            <h1 class="text-3xl font-bold mb-8" style="color: var(--text-primary);">اختر اللغة / Choose Language</h1>
+            <h1 class="text-3xl font-bold mb-8 theme-text-primary">اختر اللغة / Choose Language</h1>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
                 <button onclick="setLanguage('ar')" class="bg-purple-600 hover:bg-purple-700 text-white px-12 py-4 rounded-full font-bold text-xl transition-all transform hover:scale-105 shadow-lg shadow-purple-500/20">العربية</button>
                 <button onclick="setLanguage('en')" class="bg-slate-700 hover:bg-slate-600 text-white px-12 py-4 rounded-full font-bold text-xl transition-all transform hover:scale-105">English</button>
@@ -240,7 +109,7 @@
     </div>
 
     <!-- Header -->
-    <header class="p-4 border-b sticky top-0 z-40" style="background-color: var(--bg-secondary); border-color: var(--border-color);">
+    <header class="p-4 border-b sticky top-0 z-40 theme-bg-secondary theme-border">
         <div class="container mx-auto flex justify-between items-center">
             <a href="index.html" class="text-2xl font-bold text-purple-500 flex items-center gap-2">
                 <i class="fas fa-magic"></i>
@@ -252,7 +121,7 @@
                     <i class="fas fa-moon"></i>
                 </button>
                 <!-- Language Toggle Button -->
-                <button onclick="showLanguageScreen()" class="text-sm px-3 py-2 rounded-md border transition-all" style="background-color: var(--bg-tertiary); border-color: var(--border-color); color: var(--text-primary);">
+                <button onclick="showLanguageScreen()" class="text-sm px-3 py-2 rounded-md border transition-all theme-bg-tertiary theme-border theme-text-primary">
                     <i class="fas fa-globe mr-1"></i> <span id="lang-btn-text">العربية</span>
                 </button>
             </div>
@@ -266,7 +135,7 @@
             <h2 id="hero-title" class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent pb-2">
                 اكتشف أسرار شخصيتك الخفية
             </h2>
-            <p id="hero-subtitle" class="text-lg max-w-2xl mx-auto" style="color: var(--text-secondary);">
+            <p id="hero-subtitle" class="text-lg max-w-2xl mx-auto theme-text-secondary">
                 اختر اختبارك المفضل وابدأ رحلة ممتعة في عالم الخيال والنتائج المذهلة.
             </p>
         </section>
@@ -277,7 +146,7 @@
         </div>
 
         <!-- Quiz Container (Hidden by default) -->
-        <div id="quiz-container" class="hidden max-w-3xl mx-auto p-6 md:p-10 rounded-3xl border shadow-2xl glass" style="background-color: rgba(30, 41, 59, 0.4); border-color: var(--border-color);">
+        <div id="quiz-container" class="hidden max-w-3xl mx-auto p-6 md:p-10 rounded-3xl border shadow-2xl glass theme-border">
             <!-- Quiz Engine content will be injected here -->
         </div>
 
@@ -288,14 +157,14 @@
     </main>
 
     <!-- Footer -->
-    <footer class="py-12 mt-12" style="background-color: var(--bg-secondary); border-top: 1px solid var(--border-color);">
+    <footer class="py-12 mt-12 theme-bg-secondary theme-border-top">
         <div class="container mx-auto px-4">
             <div id="footer-links-container" class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
                 <div>
                     <h3 class="text-2xl font-bold text-purple-500 mb-4 flex items-center gap-2">
                         <i class="fas fa-magic"></i> QuizMagic
                     </h3>
-                    <p id="footer-desc" class="text-sm max-w-md leading-relaxed" style="color: var(--text-secondary);">
+                    <p id="footer-desc" class="text-sm max-w-md leading-relaxed theme-text-secondary">
                         منصة ترفيهية متخصصة في اختبارات الشخصية والنتائج الخيالية الممتعة. شارك النتائج مع أصدقائك واستمتع بالرحلة.
                     </p>
                 </div>
@@ -305,7 +174,7 @@
                         <!-- Social links from config.js will be injected here -->
                     </div>
                     <!-- Quick Links -->
-                    <div class="flex flex-wrap gap-6 justify-center md:justify-end text-sm" style="color: var(--text-secondary);">
+                    <div class="flex flex-wrap gap-6 justify-center md:justify-end text-sm theme-text-secondary">
                         <a href="about.html" class="hover:text-purple-400 transition font-medium">من نحن</a>
                         <a href="contact.html" class="hover:text-purple-400 transition font-medium">اتصل بنا</a>
                         <a href="privacy.html" class="hover:text-purple-400 transition font-medium">سياسة الخصوصية</a>
@@ -313,7 +182,7 @@
                     </div>
                 </div>
             </div>
-            <div class="border-t mt-10 pt-8 text-center text-xs" style="border-color: var(--border-color); color: var(--text-muted);">
+            <div class="border-t mt-10 pt-8 text-center text-xs theme-border theme-text-muted">
                 <p>&copy; 2026 QuizMagic. جميع الحقوق محفوظة.</p>
             </div>
         </div>
