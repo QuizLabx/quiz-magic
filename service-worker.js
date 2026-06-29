@@ -1,4 +1,4 @@
-const CACHE_NAME = 'quizmagic-v2';
+const CACHE_NAME = 'quizmagic-v3';
 const ASSETS = [
   '/',
   '/index.html',
