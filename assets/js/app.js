@@ -3,6 +3,7 @@ let currentQuiz = null;
 let currentStepId = 0; 
 let userResponses = []; 
 let currentTheme = 'dark';
+let isQuizActive = false; // Flag to prevent grid re-render during quiz
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
@@ -45,8 +46,10 @@ function toggleTheme() {
     localStorage.setItem('quiz_theme', newTheme);
     updateThemeToggleIcon();
     
-    // Re-render grid to apply theme to dynamic cards if needed
-    renderQuizGrid();
+    // ONLY re-render grid if we are on the home screen
+    if (!isQuizActive) {
+        renderQuizGrid();
+    }
 }
 
 function updateThemeToggleIcon() {
@@ -136,10 +139,10 @@ function setLanguage(lang) {
 // ==================== QUIZ GRID ====================
 
 function renderQuizGrid() {
-    // Show skeleton loaders
+    isQuizActive = false; // Reset flag
     showSkeletonLoaders();
     
-    // Simulate loading delay for better UX
+    // Increased delay to 800ms to ensure skeletons are visible on fast connections
     setTimeout(() => {
         const grid = document.getElementById('quiz-grid');
         const data = quizzesData[currentLang];
@@ -175,14 +178,14 @@ function renderQuizGrid() {
             grid.appendChild(card);
         });
 
-        // Hide skeleton loaders and show grid
         hideSkeletonLoaders();
-    }, 600);
+    }, 800);
 }
 
 // ==================== WELCOME SCREEN ====================
 
 function showWelcomeScreen(quizId) {
+    isQuizActive = true; // Set flag
     const data = quizzesData[currentLang];
     const quiz = data.quizzes.find(q => q.id === quizId);
     
@@ -231,6 +234,7 @@ function showWelcomeScreen(quizId) {
 // ==================== QUIZ ENGINE ====================
 
 function startQuiz(quizId) {
+    isQuizActive = true;
     const data = quizzesData[currentLang];
     currentQuiz = data.quizzes.find(q => q.id === quizId);
     currentStepId = 0;
@@ -255,7 +259,7 @@ function showStep() {
     
     setTimeout(() => {
         let content = `
-            <div class="mb-8">
+            <div class="progress-wrapper">
                 <div class="flex justify-between items-center mb-4">
                     <span class="text-xs font-bold text-purple-400 uppercase tracking-widest">
                         ${currentLang === 'ar' ? 'السؤال' : 'Question'} ${currentStepId + 1} / ${totalSteps}
@@ -263,10 +267,9 @@ function showStep() {
                     <span class="text-xs theme-text-muted">${Math.round(progress)}%</span>
                 </div>
                 <div class="progress-container">
-                    <div class="progress-bar" style="width: ${progress}%">
-                        <span class="progress-dragon">🐉</span>
-                    </div>
+                    <div class="progress-bar" style="width: ${progress}%"></div>
                 </div>
+                <div class="dragon-marker" style="${currentLang === 'ar' ? 'right' : 'left'}: ${progress}%">🐉</div>
             </div>
 
             <div class="mb-10">
@@ -430,6 +433,7 @@ function calculateResult() {
 // ==================== RESULT DISPLAY ====================
 
 function showResult() {
+    isQuizActive = false;
     const { creature, radar } = calculateResult();
     document.getElementById('quiz-container').classList.add('hidden');
     const container = document.getElementById('result-container');
