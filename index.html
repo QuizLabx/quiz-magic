@@ -8,7 +8,9 @@
     
     <!-- PWA Meta Tags -->
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#a855f7">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="assets/images/icon-192x192.png">
 
     <!-- SEO & Social Media Sharing (Open Graph) -->
@@ -26,15 +28,94 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts: Cairo -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
     <style>
         body { font-family: 'Cairo', sans-serif; }
+        
+        /* Hidden Share Template */
+        #share-template {
+            position: fixed;
+            left: -9999px;
+            top: -9999px;
+            width: 1080px;
+            height: 1080px;
+            background: #0f172a;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px;
+            z-index: -100;
+        }
+        
+        .share-card-bg {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top right, #581c87 0%, #0f172a 70%);
+            z-index: 1;
+        }
+        
+        .share-content {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 8px solid rgba(168, 85, 247, 0.3);
+            border-radius: 40px;
+            padding: 40px;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(20px);
+        }
     </style>
 </head>
 <body class="bg-[#0f172a] text-slate-200 min-h-screen flex flex-col">
+
+    <!-- Hidden Share Template for High-Quality Images -->
+    <div id="share-template">
+        <div class="share-card-bg"></div>
+        <div class="share-content">
+            <div class="flex justify-between items-center w-full mb-10">
+                <div class="text-3xl font-black text-purple-500 flex items-center gap-3">
+                    <i class="fas fa-magic"></i> QuizMagic
+                </div>
+                <div class="text-xl text-slate-400 font-bold tracking-widest uppercase">
+                    Mythical Analysis Result
+                </div>
+            </div>
+            
+            <div class="flex flex-row gap-10 w-full items-center flex-grow">
+                <div class="w-1/2 h-[500px] rounded-[3rem] overflow-hidden border-4 border-purple-500/50 shadow-2xl">
+                    <img id="share-creature-img" src="" class="w-full h-full object-cover">
+                </div>
+                
+                <div class="w-1/2 flex flex-col gap-6">
+                    <div id="share-rarity" class="bg-purple-600 text-white px-6 py-2 rounded-full text-lg font-black inline-block w-fit uppercase"></div>
+                    <h2 id="share-creature-name" class="text-7xl font-black text-white leading-tight"></h2>
+                    <p id="share-tagline" class="text-2xl text-purple-300 font-bold"></p>
+                    <div class="h-1 w-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></div>
+                    <p id="share-description" class="text-2xl text-slate-300 leading-relaxed italic"></p>
+                </div>
+            </div>
+
+            <div class="w-full flex justify-between items-end mt-10">
+                <div class="flex flex-col gap-2">
+                    <p class="text-slate-400 text-lg">اكتشف كائنك الآن على:</p>
+                    <p class="text-2xl font-bold text-white">quizlabx.github.io/quiz-magic</p>
+                </div>
+                <div class="w-48 h-48 bg-white p-4 rounded-3xl shadow-xl flex items-center justify-center">
+                    <!-- Placeholder for QR or Logo -->
+                    <i class="fas fa-magic text-7xl text-purple-600"></i>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Language Selector Screen -->
     <div id="language-screen" class="fixed inset-0 z-50 bg-[#0f172a] flex flex-col items-center justify-center transition-opacity duration-500">
@@ -53,7 +134,7 @@
     <!-- Header -->
     <header class="p-4 border-b border-slate-800 bg-[#0f172a]/80 backdrop-blur-md sticky top-0 z-40">
         <div class="container mx-auto flex justify-between items-center">
-            <a href="index.html" class="text-2xl font-bold text-purple-500 flex items-center gap-2 hover-glow">
+            <a href="index.html" class="text-2xl font-bold text-purple-500 flex items-center gap-2">
                 <i class="fas fa-magic"></i>
                 <span id="site-title">QuizMagic</span>
             </a>
@@ -66,37 +147,35 @@
     <!-- Main Content -->
     <main class="flex-grow container mx-auto px-4 py-8">
         <!-- Hero Section -->
-        <section id="hero-section" class="text-center mb-16 animate-fade-in">
-            <h2 id="hero-title" class="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-purple-400 via-pink-500 to-purple-600 bg-clip-text text-transparent pb-2">
+        <section id="hero-section" class="text-center mb-12">
+            <h2 id="hero-title" class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent pb-2">
                 اكتشف أسرار شخصيتك الخفية
             </h2>
-            <p id="hero-subtitle" class="text-slate-400 text-lg max-w-2xl mx-auto mb-8">
+            <p id="hero-subtitle" class="text-slate-400 text-lg max-w-2xl mx-auto">
                 اختر اختبارك المفضل وابدأ رحلة ممتعة في عالم الخيال والنتائج المذهلة.
             </p>
-            <div class="h-1 w-24 bg-gradient-to-r from-purple-600 to-pink-500 mx-auto rounded-full"></div>
         </section>
 
         <!-- Quiz Grid -->
-        <div id="quiz-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+        <div id="quiz-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <!-- Cards will be generated by JS -->
         </div>
 
         <!-- Quiz Container (Hidden by default) -->
-        <div id="quiz-container" class="hidden max-w-3xl mx-auto bg-slate-800/40 p-6 md:p-10 rounded-3xl border border-slate-700 shadow-2xl glass animate-fade-in">
+        <div id="quiz-container" class="hidden max-w-3xl mx-auto bg-slate-800/40 p-6 md:p-10 rounded-3xl border border-slate-700 shadow-2xl glass">
             <!-- Quiz Engine content will be injected here -->
         </div>
 
         <!-- Result Container (Hidden by default) -->
-        <div id="result-container" class="hidden max-w-3xl mx-auto text-center animate-fade-in">
+        <div id="result-container" class="hidden max-w-3xl mx-auto text-center">
             <!-- Results will be injected here -->
         </div>
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gradient-to-b from-slate-900/50 to-slate-950 border-t border-slate-800 py-12 mt-16">
+    <footer class="bg-slate-900/50 border-t border-slate-800 py-12 mt-12">
         <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-10 mb-10">
-                <!-- Brand Info -->
+            <div id="footer-links-container" class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
                 <div>
                     <h3 class="text-2xl font-bold text-purple-500 mb-4 flex items-center gap-2">
                         <i class="fas fa-magic"></i> QuizMagic
@@ -105,75 +184,36 @@
                         منصة ترفيهية متخصصة في اختبارات الشخصية والنتائج الخيالية الممتعة. شارك النتائج مع أصدقائك واستمتع بالرحلة.
                     </p>
                 </div>
-
-                <!-- Quick Links -->
-                <div>
-                    <h4 class="text-lg font-bold text-white mb-4" id="footer-links-title">روابط سريعة</h4>
-                    <div class="flex flex-col gap-2 text-sm text-slate-400">
-                        <a href="about.html" class="hover:text-purple-400 transition font-medium flex items-center gap-2">
-                            <i class="fas fa-chevron-left"></i> <span id="link-about">من نحن</span>
-                        </a>
-                        <a href="contact.html" class="hover:text-purple-400 transition font-medium flex items-center gap-2">
-                            <i class="fas fa-chevron-left"></i> <span id="link-contact">اتصل بنا</span>
-                        </a>
-                        <a href="privacy.html" class="hover:text-purple-400 transition font-medium flex items-center gap-2">
-                            <i class="fas fa-chevron-left"></i> <span id="link-privacy">سياسة الخصوصية</span>
-                        </a>
-                        <a href="terms.html" class="hover:text-purple-400 transition font-medium flex items-center gap-2">
-                            <i class="fas fa-chevron-left"></i> <span id="link-terms">شروط الاستخدام</span>
-                        </a>
+                <div class="flex flex-wrap gap-6 justify-start md:justify-end text-sm text-slate-400">
+                    <div id="social-links" class="flex gap-4 mb-4 md:mb-0 w-full md:w-auto justify-center md:justify-end">
+                        <!-- Social links from config.js -->
                     </div>
-                </div>
-
-                <!-- Social Media -->
-                <div>
-                    <h4 class="text-lg font-bold text-white mb-4" id="footer-social-title">تابعنا</h4>
-                    <div class="flex gap-4" id="social-links-container">
-                        <a id="fb-link" href="#" class="w-10 h-10 bg-slate-800 hover:bg-purple-600 rounded-full flex items-center justify-center transition-all transform hover:scale-110 social-icon" title="Facebook">
-                            <i class="fab fa-facebook-f text-white"></i>
-                        </a>
-                        <a id="tw-link" href="#" class="w-10 h-10 bg-slate-800 hover:bg-blue-500 rounded-full flex items-center justify-center transition-all transform hover:scale-110 social-icon" title="Twitter">
-                            <i class="fab fa-twitter text-white"></i>
-                        </a>
-                        <a id="ig-link" href="#" class="w-10 h-10 bg-slate-800 hover:bg-pink-600 rounded-full flex items-center justify-center transition-all transform hover:scale-110 social-icon" title="Instagram">
-                            <i class="fab fa-instagram text-white"></i>
-                        </a>
-                        <a id="yt-link" href="#" class="w-10 h-10 bg-slate-800 hover:bg-red-600 rounded-full flex items-center justify-center transition-all transform hover:scale-110 social-icon" title="YouTube">
-                            <i class="fab fa-youtube text-white"></i>
-                        </a>
-                        <a id="li-link" href="#" class="w-10 h-10 bg-slate-800 hover:bg-blue-700 rounded-full flex items-center justify-center transition-all transform hover:scale-110 social-icon" title="LinkedIn">
-                            <i class="fab fa-linkedin-in text-white"></i>
-                        </a>
+                    <div class="flex gap-6">
+                        <a href="about.html" class="hover:text-purple-400 transition font-medium">من نحن</a>
+                        <a href="contact.html" class="hover:text-purple-400 transition font-medium">اتصل بنا</a>
+                        <a href="privacy.html" class="hover:text-purple-400 transition font-medium">سياسة الخصوصية</a>
+                        <a href="terms.html" class="hover:text-purple-400 transition font-medium">شروط الاستخدام</a>
                     </div>
                 </div>
             </div>
-
-            <!-- Divider -->
-            <div class="border-t border-slate-800/50 pt-8">
-                <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-500">
-                    <p>&copy; 2026 QuizMagic. جميع الحقوق محفوظة.</p>
-                    <p id="footer-made">صُنع بـ <i class="fas fa-heart text-red-500 mx-1"></i> من فريق QuizMagic</p>
-                </div>
+            <div class="border-t border-slate-800/50 mt-10 pt-8 text-center text-xs text-slate-500">
+                <p>&copy; 2026 QuizMagic. جميع الحقوق محفوظة.</p>
             </div>
         </div>
     </footer>
 
     <!-- Scripts -->
     <script src="assets/js/config.js"></script>
-    <!-- Chart.js for Radar Charts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- html2canvas for Image Generation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="assets/js/quizzes.js"></script>
     <script src="assets/js/app.js"></script>
-    
-    <!-- PWA Service Worker Registration -->
     <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/service-worker.js');
-        });
-      }
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js');
+            });
+        }
     </script>
 </body>
 </html>
