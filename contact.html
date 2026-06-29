@@ -6,78 +6,144 @@
     <title>اتصل بنا | QuizMagic</title>
     <link rel="icon" type="image/png" href="favicon.png">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
     <style>
         body { font-family: 'Cairo', sans-serif; }
-        .glass-panel {
-            background: rgba(30, 41, 59, 0.7 );
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
     </style>
 </head>
-<body class="bg-[#0f172a] text-slate-200 min-h-screen">
-    <div class="max-w-4xl mx-auto px-4 py-16">
-        <a href="index.html" class="inline-flex items-center text-purple-500 hover:text-purple-400 mb-12 transition-colors gap-2">
-            <i class="fas fa-arrow-right rtl:rotate-0 ltr:rotate-180"></i>
-            <span>العودة للرئيسية / Back to Home</span>
-        </a>
+<body class="min-h-screen flex flex-col transition-colors duration-500 theme-bg-primary">
 
-        <div class="text-center mb-16">
-            <h1 class="text-5xl font-black mb-6 bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">اتصل بنا / Contact Us</h1>
-            <p class="text-slate-400 text-xl max-w-2xl mx-auto leading-relaxed">
-                لديك سؤال؟ أو ترغب في إضافة اختبار جديد؟ نحن هنا للاستماع إليك.  
-
-                Have a question? Or want to suggest a new quiz? We're here to listen.
-            </p>
-        </div>
-
-        <div class="glass-panel p-8 md:p-12 rounded-[2.5rem] shadow-2xl">
-            <!-- Formspree Integration -->
-            <form action="https://formspree.io/f/xykqwpjz" method="POST" class="space-y-8">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div>
-                        <label class="block text-sm font-bold text-slate-400 mb-3 uppercase tracking-wider">الاسم الكامل / Full Name</label>
-                        <div class="relative">
-                            <i class="fas fa-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"></i>
-                            <input type="text" name="name" required placeholder="John Doe / محمد علي" 
-                                class="w-full bg-slate-900/50 border border-slate-700 rounded-2xl py-4 pl-12 pr-4 text-white focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-bold text-slate-400 mb-3 uppercase tracking-wider">البريد الإلكتروني / Email Address</label>
-                        <div class="relative">
-                            <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"></i>
-                            <input type="email" name="email" required placeholder="example@gmail.com" 
-                                class="w-full bg-slate-900/50 border border-slate-700 rounded-2xl py-4 pl-12 pr-4 text-white focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all">
-                        </div>
-                    </div>
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-bold text-slate-400 mb-3 uppercase tracking-wider">الرسالة / Your Message</label>
-                    <textarea name="message" rows="6" required placeholder="How can we help you? / كيف يمكننا مساعدتك؟" 
-                        class="w-full bg-slate-900/50 border border-slate-700 rounded-2xl py-4 px-6 text-white focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"></textarea>
-                </div>
-
-                <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-black py-5 rounded-2xl shadow-xl shadow-purple-600/20 transition-all transform active:scale-[0.98] flex items-center justify-center gap-3 text-xl">
-                    <i class="fas fa-paper-plane"></i>
-                    <span>إرسال الرسالة / Send Message</span>
+    <!-- Header -->
+    <header class="p-4 border-b sticky top-0 z-40 theme-bg-secondary theme-border">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold text-purple-500 flex items-center gap-2">
+                <i class="fas fa-magic"></i>
+                <span>QuizMagic</span>
+            </a>
+            <div class="flex items-center gap-3">
+                <!-- Theme Toggle Button -->
+                <button id="theme-toggle" onclick="toggleTheme()" class="theme-toggle-btn text-sm px-3 py-2 rounded-md border transition-all transform hover:scale-105" title="تبديل المظهر / Toggle Theme">
+                    <i class="fas fa-moon"></i>
                 </button>
-            </form>
-
-            <div class="mt-12 pt-12 border-t border-slate-700/50 text-center">
-                <p class="text-slate-500 mb-4">أو راسلنا مباشرة عبر البريد الإلكتروني / Or email us directly:</p>
-                <a href="mailto:quizmagicsupport@gmail.com" class="text-2xl font-bold text-purple-400 hover:text-purple-300 transition-colors">
-                    quizmagicsupport@gmail.com
-                </a>
+                <!-- Language Toggle Button -->
+                <button onclick="changeLanguage()" class="text-sm px-3 py-2 rounded-md border transition-all theme-bg-tertiary theme-border theme-text-primary">
+                    <i class="fas fa-globe mr-1"></i> <span id="lang-btn-text">العربية</span>
+                </button>
             </div>
         </div>
+    </header>
 
-        <footer class="mt-16 text-center text-slate-600 text-sm">
-            <p>&copy; 2026 QuizMagic. All rights reserved.</p>
-        </footer>
-    </div>
+    <!-- Main Content -->
+    <main class="flex-grow">
+        <div class="max-w-4xl mx-auto px-4 py-16">
+            <a href="index.html" class="inline-flex items-center theme-text-secondary hover:theme-text-primary transition font-medium mb-12 gap-2">
+                <i class="fas fa-arrow-right"></i>
+                <span>العودة للرئيسية / Back to Home</span>
+            </a>
+
+            <div class="text-center mb-16">
+                <h1 class="text-5xl font-black mb-6 bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">اتصل بنا / Contact Us</h1>
+                <p class="text-xl max-w-2xl mx-auto leading-relaxed theme-text-secondary">
+                    لديك سؤال؟ أو ترغب في إضافة اختبار جديد؟ نحن هنا للاستماع إليك.
+                    <br><br>
+                    Have a question? Or want to suggest a new quiz? We're here to listen.
+                </p>
+            </div>
+
+            <div class="glass p-8 md:p-12 rounded-[2.5rem] shadow-2xl">
+                <!-- Formspree Integration -->
+                <form action="https://formspree.io/f/xykqwpjz" method="POST" class="space-y-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <label class="block text-sm font-bold theme-text-muted mb-3 uppercase tracking-wider">الاسم الكامل / Full Name</label>
+                            <div class="relative">
+                                <i class="fas fa-user absolute left-4 top-1/2 -translate-y-1/2 theme-text-muted"></i>
+                                <input type="text" name="name" required placeholder="John Doe / محمد علي" 
+                                    class="w-full theme-bg-tertiary/50 theme-border border rounded-2xl py-4 pl-12 pr-4 theme-text-primary focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold theme-text-muted mb-3 uppercase tracking-wider">البريد الإلكتروني / Email Address</label>
+                            <div class="relative">
+                                <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 theme-text-muted"></i>
+                                <input type="email" name="email" required placeholder="example@gmail.com" 
+                                    class="w-full theme-bg-tertiary/50 theme-border border rounded-2xl py-4 pl-12 pr-4 theme-text-primary focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-bold theme-text-muted mb-3 uppercase tracking-wider">الرسالة / Your Message</label>
+                        <textarea name="message" rows="6" required placeholder="How can we help you? / كيف يمكننا مساعدتك؟" 
+                            class="w-full theme-bg-tertiary/50 theme-border border rounded-2xl py-4 px-6 theme-text-primary focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-black py-5 rounded-2xl shadow-xl shadow-purple-600/20 transition-all transform active:scale-[0.98] flex items-center justify-center gap-3 text-xl">
+                        <i class="fas fa-paper-plane"></i>
+                        <span>إرسال الرسالة / Send Message</span>
+                    </button>
+                </form>
+
+                <div class="mt-12 pt-12 theme-border-top">
+                    <p class="theme-text-muted mb-4 text-center">أو راسلنا مباشرة عبر البريد الإلكتروني / Or email us directly:</p>
+                    <a href="mailto:quizmagicsupport@gmail.com" class="text-2xl font-bold text-purple-400 hover:text-purple-300 transition-colors text-center block">
+                        quizmagicsupport@gmail.com
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-8 mt-12 theme-bg-secondary theme-border-top">
+        <div class="container mx-auto px-4 text-center">
+            <p class="theme-text-muted text-sm">&copy; 2026 QuizMagic. جميع الحقوق محفوظة. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Initialize theme on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('quiz_theme') || 'dark';
+            applyTheme(savedTheme);
+            updateThemeToggleIcon();
+        });
+
+        function applyTheme(theme) {
+            const html = document.documentElement;
+            if (theme === 'light') {
+                html.classList.add('light-mode');
+            } else {
+                html.classList.remove('light-mode');
+            }
+            localStorage.setItem('quiz_theme', theme);
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const newTheme = html.classList.contains('light-mode') ? 'dark' : 'light';
+            applyTheme(newTheme);
+            updateThemeToggleIcon();
+        }
+
+        function updateThemeToggleIcon() {
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            const html = document.documentElement;
+            if (html.classList.contains('light-mode')) {
+                themeToggleBtn.innerHTML = '<i class="fas fa-sun"></i>';
+                themeToggleBtn.title = 'تبديل للوضع الليلي / Switch to Dark Mode';
+            } else {
+                themeToggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
+                themeToggleBtn.title = 'تبديل للوضع النهاري / Switch to Light Mode';
+            }
+        }
+
+        function changeLanguage() {
+            alert('Language switching coming soon!');
+        }
+    </script>
 </body>
 </html>
