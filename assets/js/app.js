@@ -2,18 +2,16 @@ let currentLang = 'ar';
 let currentQuiz = null;
 let currentStepId = 0; 
 let userResponses = []; 
-let currentTheme = 'dark'; // Track current theme
+let currentTheme = 'dark';
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     const savedLang = localStorage.getItem('quiz_lang') || 'ar';
     const savedTheme = localStorage.getItem('quiz_theme') || 'auto';
     
-    // Initialize theme
     initializeTheme(savedTheme);
-    
-    // Initialize language
     setLanguage(savedLang);
+    
     if (localStorage.getItem('quiz_lang')) {
         document.getElementById('language-screen').classList.add('opacity-0', 'pointer-events-none');
     }
@@ -25,19 +23,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function initializeTheme(savedTheme) {
     let preferredTheme = savedTheme;
-    
-    // If auto, detect system preference
     if (preferredTheme === 'auto') {
         preferredTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
-    
     applyTheme(preferredTheme);
 }
 
 function applyTheme(theme) {
     currentTheme = theme;
     const html = document.documentElement;
-    
     if (theme === 'light') {
         html.classList.add('light-mode');
     } else {
@@ -50,6 +44,9 @@ function toggleTheme() {
     applyTheme(newTheme);
     localStorage.setItem('quiz_theme', newTheme);
     updateThemeToggleIcon();
+    
+    // Re-render grid to apply theme to dynamic cards if needed
+    renderQuizGrid();
 }
 
 function updateThemeToggleIcon() {
@@ -65,15 +62,6 @@ function updateThemeToggleIcon() {
     }
 }
 
-// Listen for system theme changes
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-    const savedTheme = localStorage.getItem('quiz_theme');
-    if (savedTheme === 'auto') {
-        const newTheme = e.matches ? 'dark' : 'light';
-        applyTheme(newTheme);
-    }
-});
-
 // ==================== SOCIAL LINKS ====================
 
 function renderSocialLinks() {
@@ -81,7 +69,6 @@ function renderSocialLinks() {
     if (!container) return;
     container.innerHTML = '';
     
-    // Check if config exists (from config.js)
     if (typeof config !== 'undefined' && config.socialLinks) {
         const links = [
             { id: 'facebook', icon: 'fab fa-facebook-f' },
@@ -96,8 +83,7 @@ function renderSocialLinks() {
                 const a = document.createElement('a');
                 a.href = config.socialLinks[link.id];
                 a.target = "_blank";
-                a.className = "w-10 h-10 rounded-full flex items-center justify-center hover:bg-purple-600 hover:text-white transition-all transform hover:scale-110";
-                a.style.backgroundColor = 'var(--bg-tertiary)';
+                a.className = "w-10 h-10 rounded-full flex items-center justify-center hover:bg-purple-600 hover:text-white transition-all transform hover:scale-110 theme-bg-tertiary theme-text-primary";
                 a.innerHTML = `<i class="${link.icon}"></i>`;
                 container.appendChild(a);
             }
@@ -138,18 +124,18 @@ function renderQuizGrid() {
 
     data.quizzes.forEach(quiz => {
         const card = document.createElement('div');
-        card.className = `quiz-card group bg-slate-800/60 rounded-3xl overflow-hidden border border-slate-700/50 cursor-pointer flex flex-col animate-fade-in`;
+        card.className = `quiz-card group rounded-3xl overflow-hidden cursor-pointer flex flex-col animate-fade-in`;
         card.innerHTML = `
             <div class="relative h-56 overflow-hidden">
                 <img src="${quiz.image}" alt="${quiz.title}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                 <div class="absolute top-4 right-4 bg-purple-600/90 backdrop-blur-md text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-xl">
                     ${quiz.badge}
                 </div>
             </div>
             <div class="p-6 flex-grow flex flex-col">
-                <h3 class="text-xl font-bold mb-3 group-hover:text-purple-400 transition-colors">${quiz.title}</h3>
-                <p class="text-slate-400 text-sm mb-6 flex-grow leading-relaxed">${quiz.description}</p>
+                <h3 class="text-xl font-bold mb-3 group-hover:text-purple-400 transition-colors theme-text-primary">${quiz.title}</h3>
+                <p class="theme-text-secondary text-sm mb-6 flex-grow leading-relaxed">${quiz.description}</p>
                 <button class="w-full py-3 rounded-xl font-bold transition-all transform active:scale-95 bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white shadow-lg shadow-purple-600/20">
                     ${currentLang === 'ar' ? 'ابدأ الاختبار 🎭' : 'Start Quiz 🎭'}
                 </button>
@@ -181,30 +167,30 @@ function showWelcomeScreen(quizId) {
     const isAr = currentLang === 'ar';
     container.innerHTML = `
         <div class="animate-fade-in text-center py-6">
-            <h3 class="text-3xl font-bold mb-10 text-white">
+            <h3 class="text-3xl font-bold mb-10 theme-text-primary">
                 <i class="fas fa-lightbulb text-yellow-400 mr-3"></i>
                 ${isAr ? 'كيف يعمل الاختبار؟' : 'How it works?'}
             </h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
-                <div class="bg-slate-900/40 p-5 rounded-2xl border border-slate-700/50">
+                <div class="theme-bg-tertiary/20 p-5 rounded-2xl border theme-border">
                     <div class="text-3xl mb-3 text-purple-400"><i class="fas fa-question-circle"></i></div>
-                    <h4 class="font-bold text-white mb-2">${isAr ? 'الخطوة 1: الأسئلة' : 'Step 1: Questions'}</h4>
-                    <p class="text-slate-400 text-xs">${isAr ? 'أجب على الأسئلة بصراحة وتلقائية.' : 'Answer the questions honestly and spontaneously.'}</p>
+                    <h4 class="font-bold theme-text-primary mb-2">${isAr ? 'الخطوة 1: الأسئلة' : 'Step 1: Questions'}</h4>
+                    <p class="theme-text-secondary text-xs">${isAr ? 'أجب على الأسئلة بصراحة وتلقائية.' : 'Answer the questions honestly and spontaneously.'}</p>
                 </div>
-                <div class="bg-slate-900/40 p-5 rounded-2xl border border-slate-700/50">
+                <div class="theme-bg-tertiary/20 p-5 rounded-2xl border theme-border">
                     <div class="text-3xl mb-3 text-blue-400"><i class="fas fa-brain"></i></div>
-                    <h4 class="font-bold text-white mb-2">${isAr ? 'الخطوة 2: التحليل' : 'Step 2: Analysis'}</h4>
-                    <p class="text-slate-400 text-xs">${isAr ? 'نظامنا يحلل إجاباتك بخوارزمية متقدمة.' : 'Our system analyzes your answers with an advanced algorithm.'}</p>
+                    <h4 class="font-bold theme-text-primary mb-2">${isAr ? 'الخطوة 2: التحليل' : 'Step 2: Analysis'}</h4>
+                    <p class="theme-text-secondary text-xs">${isAr ? 'نظامنا يحلل إجاباتك بخوارزمية متقدمة.' : 'Our system analyzes your answers with an advanced algorithm.'}</p>
                 </div>
-                <div class="bg-slate-900/40 p-5 rounded-2xl border border-slate-700/50">
+                <div class="theme-bg-tertiary/20 p-5 rounded-2xl border theme-border">
                     <div class="text-3xl mb-3 text-pink-400"><i class="fas fa-dragon"></i></div>
-                    <h4 class="font-bold text-white mb-2">${isAr ? 'الخطوة 3: الكشف' : 'Step 3: Discovery'}</h4>
-                    <p class="text-slate-400 text-xs">${isAr ? 'اكتشف كائنك الأسطوري من بين 16 كائن.' : 'Discover your mythical creature among 16 beings.'}</p>
+                    <h4 class="font-bold theme-text-primary mb-2">${isAr ? 'الخطوة 3: الكشف' : 'Step 3: Discovery'}</h4>
+                    <p class="theme-text-secondary text-xs">${isAr ? 'اكتشف كائنك الأسطوري من بين 16 كائن.' : 'Discover your mythical creature among 16 beings.'}</p>
                 </div>
-                <div class="bg-slate-900/40 p-5 rounded-2xl border border-slate-700/50">
+                <div class="theme-bg-tertiary/20 p-5 rounded-2xl border theme-border">
                     <div class="text-3xl mb-3 text-green-400"><i class="fas fa-share-alt"></i></div>
-                    <h4 class="font-bold text-white mb-2">${isAr ? 'الخطوة 4: المشاركة' : 'Step 4: Sharing'}</h4>
-                    <p class="text-slate-400 text-xs">${isAr ? 'حمل نتيجتك كصورة احترافية وشاركها.' : 'Download your result as a professional image and share it.'}</p>
+                    <h4 class="font-bold theme-text-primary mb-2">${isAr ? 'الخطوة 4: المشاركة' : 'Step 4: Sharing'}</h4>
+                    <p class="theme-text-secondary text-xs">${isAr ? 'حمل نتيجتك كصورة احترافية وشاركها.' : 'Download your result as a professional image and share it.'}</p>
                 </div>
             </div>
             <button onclick="startQuiz('${quizId}')" class="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold rounded-2xl shadow-lg transform hover:scale-[1.02] active:scale-95 transition-all">
@@ -246,15 +232,15 @@ function showStep() {
                     <span class="text-xs font-bold text-purple-400 uppercase tracking-widest">
                         ${currentLang === 'ar' ? 'السؤال' : 'Question'} ${currentStepId + 1} / ${totalSteps}
                     </span>
-                    <span class="text-xs text-slate-500">${Math.round(progress)}%</span>
+                    <span class="text-xs theme-text-muted">${Math.round(progress)}%</span>
                 </div>
-                <div class="w-full bg-slate-700/30 h-1.5 rounded-full overflow-hidden">
+                <div class="w-full theme-bg-tertiary/30 h-1.5 rounded-full overflow-hidden">
                     <div class="bg-gradient-to-r from-purple-600 to-pink-500 h-full transition-all duration-500 progress-bar-animated" style="width: ${progress}%"></div>
                 </div>
             </div>
 
             <div class="mb-10">
-                <h2 class="text-2xl md:text-3xl font-bold text-slate-100 text-center leading-tight animate-slide-up">${question.text}</h2>
+                <h2 class="text-2xl md:text-3xl font-bold theme-text-primary text-center leading-tight animate-slide-up">${question.text}</h2>
             </div>
         `;
 
@@ -262,7 +248,7 @@ function showStep() {
             content += `
                 <div class="grid grid-cols-2 gap-4 sm:gap-6">
                     ${question.options.map((opt) => `
-                        <div onclick="handleVisualChoice('${opt.trait}', ${opt.value})" class="group cursor-pointer relative overflow-hidden rounded-2xl border-2 border-slate-700 hover:border-purple-500 transition-all transform hover:scale-[1.03] active:scale-95 shadow-lg">
+                        <div onclick="handleVisualChoice('${opt.trait}', ${opt.value})" class="group cursor-pointer relative overflow-hidden rounded-2xl border-2 theme-border hover:border-purple-500 transition-all transform hover:scale-[1.03] active:scale-95 shadow-lg">
                             <div class="aspect-square overflow-hidden">
                                 <img src="${opt.image}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                             </div>
@@ -280,11 +266,11 @@ function showStep() {
                     ${[
                         { text: currentLang === 'ar' ? 'أوافق بشدة' : 'Strongly Agree', value: 5, color: 'bg-green-600/20 border-green-500/50 hover:bg-green-600/40' },
                         { text: currentLang === 'ar' ? 'أوافق' : 'Agree', value: 4, color: 'bg-blue-600/20 border-blue-500/50 hover:bg-blue-600/40' },
-                        { text: currentLang === 'ar' ? 'محايد' : 'Neutral', value: 3, color: 'bg-slate-700/40 border-slate-600/50 hover:bg-slate-700/60' },
+                        { text: currentLang === 'ar' ? 'محايد' : 'Neutral', value: 3, color: 'theme-bg-tertiary/40 theme-border hover:theme-bg-tertiary/60' },
                         { text: currentLang === 'ar' ? 'لا أوافق' : 'Disagree', value: 2, color: 'bg-orange-600/20 border-orange-500/50 hover:bg-orange-600/40' },
                         { text: currentLang === 'ar' ? 'لا أوافق بشدة' : 'Strongly Disagree', value: 1, color: 'bg-red-600/20 border-red-500/50 hover:bg-red-600/40' }
                     ].map((opt) => `
-                        <button onclick="handleLikert(${opt.value})" class="w-full p-4 text-center ${opt.color} border rounded-2xl transition-all transform hover:scale-[1.02] active:scale-95 font-bold text-lg">
+                        <button onclick="handleLikert(${opt.value})" class="w-full p-4 text-center ${opt.color} border rounded-2xl transition-all transform hover:scale-[1.02] active:scale-95 font-bold text-lg theme-text-primary">
                             ${opt.text}
                         </button>
                     `).join('')}
@@ -333,7 +319,7 @@ function showLoading() {
             <h2 class="text-3xl font-bold mb-4 animate-pulse bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
                 ${currentLang === 'ar' ? 'جاري تحليل شخصيتك...' : 'Analyzing your psyche...'}
             </h2>
-            <p class="text-slate-400 text-lg">${currentLang === 'ar' ? 'نقوم بربط إجاباتك بالقوى الأسطورية القديمة' : 'Mapping your responses to ancient mythical forces'}</p>
+            <p class="theme-text-secondary text-lg">${currentLang === 'ar' ? 'نقوم بربط إجاباتك بالقوى الأسطورية القديمة' : 'Mapping your responses to ancient mythical forces'}</p>
         </div>
     `;
     setTimeout(showResult, delay);
@@ -396,7 +382,6 @@ function calculateResult() {
         }
     }
 
-    // Radar Data
     const radarData = {
         power: Math.min(100, Math.max(30, ((traitScores['power'] || 3) + (traitScores['leadership'] || 3)) * 8)),
         wisdom: Math.min(100, Math.max(30, ((traitScores['wisdom'] || 3) + (traitScores['knowledge'] || 3)) * 8)),
@@ -421,10 +406,10 @@ function showResult() {
     container.classList.remove('hidden');
 
     container.innerHTML = `
-        <div class="bg-slate-800/80 rounded-[2.5rem] overflow-hidden border border-slate-700/50 shadow-2xl result-glow mb-12 animate-fade-in">
+        <div class="theme-bg-secondary rounded-[2.5rem] overflow-hidden border theme-border shadow-2xl mb-12 animate-fade-in">
             <div class="relative h-80 md:h-[30rem]">
                 <img src="${creature.image}" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
                 <div class="absolute bottom-10 left-0 right-0 px-8 text-center">
                     <span class="bg-purple-600/90 backdrop-blur-md text-white px-5 py-2 rounded-full text-sm font-bold mb-4 inline-block shadow-lg uppercase tracking-widest border border-white/20">${creature.rarity}</span>
                     <h2 class="text-5xl md:text-7xl font-black text-white drop-shadow-2xl mb-2">${creature.name}</h2>
@@ -434,10 +419,10 @@ function showResult() {
             
             <div class="p-8 md:p-14">
                 <div class="mb-16">
-                    <h3 class="text-3xl font-bold text-white mb-10 text-center">
+                    <h3 class="text-3xl font-bold theme-text-primary mb-10 text-center">
                         ${currentLang === 'ar' ? 'خارطة القوى الروحية' : 'Spiritual Power Map'}
                     </h3>
-                    <div class="max-w-md mx-auto bg-slate-900/40 p-6 rounded-[2rem] border border-slate-700/30 shadow-inner">
+                    <div class="max-w-md mx-auto theme-bg-tertiary/20 p-6 rounded-[2rem] border theme-border shadow-inner">
                         <canvas id="radarChart"></canvas>
                     </div>
                 </div>
@@ -446,29 +431,29 @@ function showResult() {
                     <div class="inline-block p-3 bg-purple-600/10 rounded-2xl mb-6">
                         <i class="fas fa-fingerprint text-3xl text-purple-500"></i>
                     </div>
-                    <h3 class="text-3xl font-bold text-white mb-6">
+                    <h3 class="text-3xl font-bold theme-text-primary mb-6">
                         ${currentLang === 'ar' ? 'التحليل النفسي العميق' : 'Deep Psychological Analysis'}
                     </h3>
-                    <p class="text-xl text-slate-300 leading-relaxed text-center italic">"${creature.description}"</p>
+                    <p class="text-xl theme-text-secondary leading-relaxed text-center italic">"${creature.description}"</p>
                 </div>
                 
                 <div class="relative p-1 bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 rounded-[2rem] overflow-hidden shadow-2xl">
-                    <div class="relative p-10 bg-slate-900/95 rounded-[1.8rem] overflow-hidden">
+                    <div class="relative p-10 theme-bg-primary rounded-[1.8rem] overflow-hidden">
                         <div id="cpa-locker" class="absolute inset-0 backdrop-blur-sm flex flex-col items-center justify-center p-8 text-center z-10">
                             <div class="w-20 h-20 bg-gradient-to-tr from-purple-600 to-pink-600 rounded-full flex items-center justify-center mb-6 border-4 border-white/10 shadow-inner">
                                 <i class="fas fa-lock text-3xl text-white"></i>
                             </div>
-                            <h3 class="text-3xl font-bold mb-4 text-white">${currentLang === 'ar' ? 'التقرير السري المتقدم' : 'Advanced Secret Report'}</h3>
-                            <button onclick="unlockSecretReport()" class="bg-white text-slate-900 px-8 py-3 rounded-full font-bold hover:bg-purple-100 transition-all z-[60] cursor-pointer relative">
+                            <h3 class="text-3xl font-bold mb-4 theme-text-primary">${currentLang === 'ar' ? 'التقرير السري المتقدم' : 'Advanced Secret Report'}</h3>
+                            <button onclick="unlockSecretReport()" class="bg-purple-600 text-white px-8 py-3 rounded-full font-bold hover:bg-purple-700 transition-all z-[60] cursor-pointer relative">
                                 ${currentLang === 'ar' ? 'فتح التقرير السري' : 'Unlock Secret Report'}
                             </button>
                         </div>
                         <div id="secret-content" class="opacity-10 blur-xl transition-all duration-1000">
                             <h4 class="text-2xl font-bold text-purple-400 mb-4">${currentLang === 'ar' ? 'نمط قوتك:' : 'Power Pattern:'}</h4>
-                            <p class="text-slate-300 mb-6">${creature.secretReport.strengths}</p>
+                            <p class="theme-text-secondary mb-6">${creature.secretReport.strengths}</p>
                             <h4 class="text-2xl font-bold text-purple-400 mb-4">${currentLang === 'ar' ? 'التحديات:' : 'Challenges:'}</h4>
-                            <p class="text-slate-300 mb-6">${creature.secretReport.challenges}</p>
-                            <div class="p-4 bg-purple-900/20 border border-purple-500/30 rounded-xl">
+                            <p class="theme-text-secondary mb-6">${creature.secretReport.challenges}</p>
+                            <div class="p-4 theme-bg-tertiary/20 border theme-border rounded-xl">
                                 <p class="text-purple-300 italic">"${creature.secretReport.insight}"</p>
                             </div>
                         </div>
@@ -486,7 +471,7 @@ function showResult() {
             </button>
         </div>
 
-        <button onclick="location.reload()" class="text-slate-500 hover:text-white transition font-bold mb-20">
+        <button onclick="location.reload()" class="theme-text-muted hover:theme-text-primary transition font-bold mb-20">
             <i class="fas fa-redo mr-2"></i> ${currentLang === 'ar' ? 'إعادة الاختبار' : 'Retake Quiz'}
         </button>
     `;
@@ -503,6 +488,10 @@ function renderRadarChart(data) {
         ? ['القوة', 'الحكمة', 'الغموض', 'النقاء', 'القيادة', 'التكيف']
         : ['Power', 'Wisdom', 'Mystery', 'Purity', 'Leadership', 'Adaptation'];
 
+    const isLight = document.documentElement.classList.contains('light-mode');
+    const gridColor = isLight ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)';
+    const textColor = isLight ? '#0f172a' : '#94a3b8';
+
     new Chart(ctx, {
         type: 'radar',
         data: {
@@ -515,16 +504,14 @@ function renderRadarChart(data) {
                 borderWidth: 3,
                 pointBackgroundColor: '#a855f7',
                 pointBorderColor: '#fff',
-                pointHoverBackgroundColor: '#fff',
-                pointHoverBorderColor: '#a855f7'
             }]
         },
         options: {
             scales: {
                 r: {
-                    angleLines: { color: 'rgba(255,255,255,0.1)' },
-                    grid: { color: 'rgba(255,255,255,0.1)' },
-                    pointLabels: { color: '#94a3b8', font: { size: 14, family: 'Cairo' } },
+                    angleLines: { color: gridColor },
+                    grid: { color: gridColor },
+                    pointLabels: { color: textColor, font: { size: 14, family: 'Cairo' } },
                     ticks: { display: false },
                     suggestedMin: 0,
                     suggestedMax: 100
@@ -551,16 +538,12 @@ function unlockSecretReport() {
 function prepareShareTemplate(creature) {
     const img = document.getElementById('share-creature-img');
     if (img) img.src = creature.image;
-    
     const name = document.getElementById('share-creature-name');
     if (name) name.innerText = creature.name;
-    
     const rarity = document.getElementById('share-rarity');
     if (rarity) rarity.innerText = creature.rarity;
-    
     const tagline = document.getElementById('share-tagline');
     if (tagline) tagline.innerText = currentLang === 'ar' ? 'كائني الأسطوري الحقيقي' : 'My True Mythical Essence';
-    
     const desc = document.getElementById('share-description');
     if (desc) desc.innerText = creature.description.substring(0, 160) + '...';
 }
@@ -574,7 +557,6 @@ async function downloadResultAsImage() {
     btn.disabled = true;
 
     const template = document.getElementById('share-template');
-    
     try {
         const canvas = await html2canvas(template, {
             scale: 2,
@@ -584,7 +566,6 @@ async function downloadResultAsImage() {
             height: 1080,
             logging: false
         });
-
         const link = document.createElement('a');
         link.download = `QuizMagic-Result-${Date.now()}.png`;
         link.href = canvas.toDataURL('image/png', 1.0);
@@ -607,7 +588,6 @@ function shareResult() {
             : `I discovered that I am a ${name}! Take the quiz and discover your mythical essence.`,
         url: window.location.href
     };
-
     if (navigator.share) {
         navigator.share(shareData);
     } else {
