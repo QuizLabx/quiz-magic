@@ -25,7 +25,7 @@ function renderSocialLinks() {
             { id: 'twitter', icon: 'fab fa-twitter' },
             { id: 'instagram', icon: 'fab fa-instagram' },
             { id: 'youtube', icon: 'fab fa-youtube' },
-            { id: 'linkedin', icon: 'fab fa-linkedin-in' }
+            { id: 'telegram', icon: 'fab fa-telegram-plane' }
         ];
 
         links.forEach(link => {
