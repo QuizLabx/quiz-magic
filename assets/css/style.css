@@ -1,4 +1,7 @@
-/* Custom Styles for QuizMagic - Professional Dark/Light System */
+/* 
+   Custom Styles for QuizMagic - Phase 2: Smart Loading & Interactive Progress
+   Includes: Skeleton Loaders, Animated Progress Bar with Dragon Icon, and Enhanced UX
+*/
 
 :root {
     /* Dark Mode Variables (Default) */
@@ -11,8 +14,10 @@
     --border-color: rgba(71, 85, 105, 0.5);
     --accent-primary: #a855f7;
     --accent-secondary: #ec4899;
-    --overlay-bg: #0f172a;
-    --card-shadow: rgba(0, 0, 0, 0.3);
+    --overlay-bg: rgba(15, 23, 42, 0.95);
+    --card-shadow: rgba(0, 0, 0, 0.4);
+    --glass-bg: rgba(30, 41, 59, 0.4);
+    --skeleton-bg: rgba(71, 85, 105, 0.3);
 }
 
 /* Light Mode Variables - Soft Azure Theme */
@@ -26,20 +31,24 @@ html.light-mode {
     --border-color: rgba(186, 230, 253, 0.8);
     --accent-primary: #7c3aed;
     --accent-secondary: #db2777;
-    --overlay-bg: #f0f9ff;
-    --card-shadow: rgba(186, 230, 253, 0.4);
+    --overlay-bg: rgba(240, 249, 255, 0.95);
+    --card-shadow: rgba(186, 230, 253, 0.5);
+    --glass-bg: rgba(224, 242, 254, 0.5);
+    --skeleton-bg: rgba(186, 230, 253, 0.4);
 }
 
-/* Base Overrides */
+/* ==================== BASE STYLES ==================== */
+
 body {
     background-color: var(--bg-primary);
     color: var(--text-primary);
     transition: background-color 0.5s ease, color 0.5s ease;
     scroll-behavior: smooth;
     overflow-x: hidden;
+    min-height: 100vh;
 }
 
-/* Custom Theme Classes to avoid Tailwind hardcoded conflicts */
+/* Theme Helper Classes */
 .theme-bg-primary { background-color: var(--bg-primary); }
 .theme-bg-secondary { background-color: var(--bg-secondary); }
 .theme-bg-tertiary { background-color: var(--bg-tertiary); }
@@ -50,43 +59,100 @@ body {
 .theme-border-top { border-top: 1px solid var(--border-color); }
 .overlay-bg { background-color: var(--overlay-bg); }
 
-/* ==================== GLASSMORPHISM ==================== */
+/* ==================== SKELETON LOADERS ==================== */
 
-.glass {
-    background: rgba(30, 41, 59, 0.4);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid var(--border-color);
-    transition: all 0.3s ease;
+@keyframes skeleton-pulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
 }
 
-html.light-mode .glass {
-    background: rgba(224, 242, 254, 0.5);
+.skeleton-card {
+    background: linear-gradient(90deg, var(--skeleton-bg) 25%, rgba(255, 255, 255, 0.1) 50%, var(--skeleton-bg) 75%);
+    background-size: 200% 100%;
+    animation: skeleton-pulse 1.5s ease-in-out infinite;
+    border-radius: 1.5rem;
+    height: 400px;
     border: 1px solid var(--border-color);
 }
 
-/* ==================== CARDS ==================== */
+.skeleton-text {
+    background: linear-gradient(90deg, var(--skeleton-bg) 25%, rgba(255, 255, 255, 0.1) 50%, var(--skeleton-bg) 75%);
+    background-size: 200% 100%;
+    animation: skeleton-pulse 1.5s ease-in-out infinite;
+    border-radius: 0.5rem;
+    height: 1rem;
+    margin-bottom: 0.5rem;
+}
 
-.quiz-card {
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+.skeleton-text-lg {
+    height: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+/* ==================== ANIMATED PROGRESS BAR WITH DRAGON ==================== */
+
+.progress-container {
     position: relative;
+    width: 100%;
+    height: 8px;
+    background-color: var(--bg-tertiary);
+    border-radius: 10px;
     overflow: hidden;
-    background-color: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    box-shadow: 0 4px 6px -1px var(--card-shadow);
+    margin-top: 1rem;
 }
 
-.quiz-card:hover {
-    transform: translateY(-12px) scale(1.02);
-    box-shadow: 0 25px 50px -12px rgba(168, 85, 247, 0.35);
-    border-color: var(--accent-primary);
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #a855f7, #ec4899, #a855f7);
+    background-size: 200% 100%;
+    animation: progress-gradient 3s ease infinite;
+    border-radius: 10px;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.6);
 }
 
-html.light-mode .quiz-card:hover {
-    box-shadow: 0 25px 50px -12px rgba(124, 58, 237, 0.25);
+@keyframes progress-gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
-/* ==================== ANIMATIONS ==================== */
+/* Dragon Icon on Progress Bar */
+.progress-dragon {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+    animation: dragon-walk 0.8s ease-in-out infinite;
+    filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.8));
+    z-index: 10;
+}
+
+@keyframes dragon-walk {
+    0%, 100% { transform: translateY(-50%) scaleX(1); }
+    50% { transform: translateY(-55%) scaleX(1); }
+}
+
+/* Alternative: Magic Wand Icon */
+.progress-magic {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%) rotate(-45deg);
+    font-size: 1rem;
+    animation: magic-rotate 1s linear infinite;
+    filter: drop-shadow(0 0 8px rgba(236, 72, 153, 0.8));
+    z-index: 10;
+}
+
+@keyframes magic-rotate {
+    0% { transform: translateY(-50%) rotate(-45deg); }
+    100% { transform: translateY(-50%) rotate(315deg); }
+}
+
+/* ==================== ANIMATIONS (ORIGINAL) ==================== */
 
 @keyframes fade-in {
     from { opacity: 0; transform: translateY(20px); }
@@ -106,36 +172,139 @@ html.light-mode .quiz-card:hover {
     animation: slide-up 0.6s ease-out;
 }
 
-/* ==================== THEME TOGGLE ==================== */
+@keyframes glow-pulse {
+    0%, 100% { box-shadow: 0 0 20px -5px var(--accent-primary); opacity: 0.6; }
+    50% { box-shadow: 0 0 40px -5px var(--accent-primary); opacity: 0.9; }
+}
+
+.animate-glow-pulse {
+    animation: glow-pulse 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+    animation: spin 6s linear infinite;
+}
+
+@keyframes shimmer {
+    0% { background-position: -1000px 0; }
+    100% { background-position: 1000px 0; }
+}
+
+.shimmer {
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.2) 20%, rgba(255, 255, 255, 0) 40%, rgba(255, 255, 255, 0) 100%);
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite;
+}
+
+/* ==================== GLASSMORPHISM ==================== */
+
+.glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease-out;
+}
+
+.glass:hover {
+    background: rgba(var(--bg-secondary-rgb), 0.6);
+    border-color: rgba(var(--accent-primary-rgb), 0.3);
+    box-shadow: 0 8px 32px 0 var(--card-shadow);
+}
+
+.glass-enhanced {
+    background: linear-gradient(135deg, var(--glass-bg) 0%, rgba(var(--bg-secondary-rgb), 0.3) 100%);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 32px 0 var(--card-shadow);
+}
+
+/* ==================== CARDS ==================== */
+
+.quiz-card {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+}
+
+.quiz-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s ease-out;
+    z-index: 1;
+}
+
+.quiz-card:hover::before {
+    left: 100%;
+}
+
+.quiz-card:hover {
+    transform: translateY(-12px) scale(1.02);
+    box-shadow: 0 25px 50px -12px var(--card-shadow);
+    border-color: var(--accent-primary);
+}
+
+.step-card {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease-out;
+    background-color: var(--bg-secondary);
+}
+
+.step-card:hover {
+    border-color: var(--accent-primary);
+    box-shadow: 0 10px 30px -10px var(--card-shadow);
+}
+
+/* ==================== BUTTONS & UI ==================== */
 
 .theme-toggle-btn {
     background-color: var(--bg-tertiary);
     border: 1px solid var(--border-color);
     color: var(--text-primary);
-    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 .theme-toggle-btn:hover {
     background-color: var(--accent-primary);
     color: white;
+    transform: scale(1.1);
 }
 
-/* ==================== SCROLLBAR ==================== */
-
-::-webkit-scrollbar {
-    width: 8px;
+.pulse-button {
+    animation: pulse-btn 2s infinite;
 }
 
-::-webkit-scrollbar-track {
-    background: var(--bg-primary);
+@keyframes pulse-btn {
+    0% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.4); transform: scale(1); }
+    70% { box-shadow: 0 0 0 15px rgba(168, 85, 247, 0); transform: scale(1.02); }
+    100% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0); transform: scale(1); }
 }
 
-::-webkit-scrollbar-thumb {
-    background: var(--accent-primary);
-    border-radius: 10px;
-}
-
-/* ==================== PROGRESS BAR ==================== */
+/* ==================== PROGRESS BAR (ORIGINAL) ==================== */
 
 .progress-bar-animated {
     background-image: linear-gradient(45deg, rgba(255,255,255,0.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.15) 75%, transparent 75%, transparent);
@@ -148,14 +317,63 @@ html.light-mode .quiz-card:hover {
     to { background-position: 0 0; }
 }
 
-/* ==================== RTL ADJUSTMENTS ==================== */
+/* ==================== SCROLLBAR ==================== */
 
-[dir="rtl"] .fa-chevron-left, [dir="rtl"] .fa-chevron-right {
-    transform: rotate(180deg);
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
 }
 
-/* ==================== CHART ADAPTATION ==================== */
-
-html.light-mode canvas {
-    filter: saturate(1.2) contrast(1.1);
+::-webkit-scrollbar-track {
+    background: var(--bg-primary);
 }
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--accent-primary), var(--accent-secondary));
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, var(--accent-secondary), var(--accent-primary));
+}
+
+/* ==================== TEXT EFFECTS ==================== */
+
+.text-gradient {
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.gradient-text-animated {
+    background: linear-gradient(270deg, var(--accent-primary), var(--accent-secondary), #f97316, var(--accent-primary));
+    background-size: 300% 300%;
+    animation: gradient-shift 3s ease infinite;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+@keyframes gradient-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* ==================== RESPONSIVE & ACCESSIBILITY ==================== */
+
+@media (max-width: 768px) {
+    .quiz-card:hover { transform: translateY(-8px) scale(1.01); }
+    .progress-dragon { font-size: 1rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+/* ==================== RTL ==================== */
+
+[dir="rtl"] .fa-chevron-left, [dir="rtl"] .fa-chevron-right { transform: rotate(180deg); }
+[dir="rtl"] .text-start { text-align: right; }
+[dir="ltr"] .text-start { text-align: left; }
