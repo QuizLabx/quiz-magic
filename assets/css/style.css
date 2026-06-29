@@ -1,6 +1,6 @@
 /* 
-   Custom Styles for QuizMagic - Phase 2: Smart Loading & Interactive Progress
-   Includes: Skeleton Loaders, Animated Progress Bar with Dragon Icon, and Enhanced UX
+   Custom Styles for QuizMagic - Full Professional Version (Phase 2)
+   Includes: Dark/Light Mode, Glassmorphism, Advanced Animations, Skeleton Loaders, and Fixed Dragon Progress.
 */
 
 :root {
@@ -61,95 +61,67 @@ body {
 
 /* ==================== SKELETON LOADERS ==================== */
 
-@keyframes skeleton-pulse {
-    0%, 100% { opacity: 0.6; }
-    50% { opacity: 1; }
+@keyframes skeleton-shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
 }
 
 .skeleton-card {
-    background: linear-gradient(90deg, var(--skeleton-bg) 25%, rgba(255, 255, 255, 0.1) 50%, var(--skeleton-bg) 75%);
+    background: linear-gradient(90deg, var(--skeleton-bg) 25%, rgba(255, 255, 255, 0.05) 50%, var(--skeleton-bg) 75%);
     background-size: 200% 100%;
-    animation: skeleton-pulse 1.5s ease-in-out infinite;
+    animation: skeleton-shimmer 1.5s infinite linear;
     border-radius: 1.5rem;
     height: 400px;
     border: 1px solid var(--border-color);
 }
 
-.skeleton-text {
-    background: linear-gradient(90deg, var(--skeleton-bg) 25%, rgba(255, 255, 255, 0.1) 50%, var(--skeleton-bg) 75%);
-    background-size: 200% 100%;
-    animation: skeleton-pulse 1.5s ease-in-out infinite;
-    border-radius: 0.5rem;
-    height: 1rem;
-    margin-bottom: 0.5rem;
-}
+/* ==================== PROGRESS BAR & DRAGON (FIXED) ==================== */
 
-.skeleton-text-lg {
-    height: 1.5rem;
-    margin-bottom: 1rem;
+.progress-wrapper {
+    position: relative;
+    padding-top: 35px; /* More space for dragon */
+    margin-bottom: 2rem;
 }
-
-/* ==================== ANIMATED PROGRESS BAR WITH DRAGON ==================== */
 
 .progress-container {
-    position: relative;
     width: 100%;
-    height: 8px;
+    height: 10px;
     background-color: var(--bg-tertiary);
-    border-radius: 10px;
+    border-radius: 20px;
     overflow: hidden;
-    margin-top: 1rem;
+    position: relative;
 }
 
 .progress-bar {
     height: 100%;
-    background: linear-gradient(90deg, #a855f7, #ec4899, #a855f7);
-    background-size: 200% 100%;
-    animation: progress-gradient 3s ease infinite;
-    border-radius: 10px;
+    background: linear-gradient(90deg, #a855f7, #ec4899);
+    border-radius: 20px;
     transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    box-shadow: 0 0 20px rgba(168, 85, 247, 0.6);
+    box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
 }
 
-@keyframes progress-gradient {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
-/* Dragon Icon on Progress Bar */
-.progress-dragon {
+.dragon-marker {
     position: absolute;
-    top: 50%;
-    right: 0;
-    transform: translateY(-50%);
-    font-size: 1.2rem;
-    animation: dragon-walk 0.8s ease-in-out infinite;
-    filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.8));
-    z-index: 10;
+    top: 0; 
+    font-size: 1.8rem;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 20;
+    filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.6));
+    animation: dragon-float 1.5s ease-in-out infinite;
 }
 
-@keyframes dragon-walk {
-    0%, 100% { transform: translateY(-50%) scaleX(1); }
-    50% { transform: translateY(-55%) scaleX(1); }
+/* RTL Adjustment for Dragon */
+[dir="rtl"] .dragon-marker {
+    transform: translateX(-50%) scaleX(-1);
 }
 
-/* Alternative: Magic Wand Icon */
-.progress-magic {
-    position: absolute;
-    top: 50%;
-    right: 0;
-    transform: translateY(-50%) rotate(-45deg);
-    font-size: 1rem;
-    animation: magic-rotate 1s linear infinite;
-    filter: drop-shadow(0 0 8px rgba(236, 72, 153, 0.8));
-    z-index: 10;
+[dir="ltr"] .dragon-marker {
+    transform: translateX(-50%);
 }
 
-@keyframes magic-rotate {
-    0% { transform: translateY(-50%) rotate(-45deg); }
-    100% { transform: translateY(-50%) rotate(315deg); }
+@keyframes dragon-float {
+    0%, 100% { transform: translate(var(--tw-translate-x, 0), 0) scaleX(var(--tw-scale-x, 1)); }
+    50% { transform: translate(var(--tw-translate-x, 0), -8px) scaleX(var(--tw-scale-x, 1)); }
 }
 
 /* ==================== ANIMATIONS (ORIGINAL) ==================== */
@@ -304,19 +276,6 @@ body {
     100% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0); transform: scale(1); }
 }
 
-/* ==================== PROGRESS BAR (ORIGINAL) ==================== */
-
-.progress-bar-animated {
-    background-image: linear-gradient(45deg, rgba(255,255,255,0.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.15) 75%, transparent 75%, transparent);
-    background-size: 1rem 1rem;
-    animation: progress-stripes 1s linear infinite;
-}
-
-@keyframes progress-stripes {
-    from { background-position: 1rem 0; }
-    to { background-position: 0 0; }
-}
-
 /* ==================== SCROLLBAR ==================== */
 
 ::-webkit-scrollbar {
@@ -365,7 +324,7 @@ body {
 
 @media (max-width: 768px) {
     .quiz-card:hover { transform: translateY(-8px) scale(1.01); }
-    .progress-dragon { font-size: 1rem; }
+    .dragon-marker { font-size: 1.4rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
