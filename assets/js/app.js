@@ -91,6 +91,24 @@ function renderSocialLinks() {
     }
 }
 
+// ==================== SKELETON LOADERS ====================
+
+function showSkeletonLoaders() {
+    const grid = document.getElementById('quiz-grid');
+    const skeletonGrid = document.getElementById('skeleton-grid');
+    
+    grid.classList.add('hidden');
+    skeletonGrid.classList.remove('hidden');
+}
+
+function hideSkeletonLoaders() {
+    const grid = document.getElementById('quiz-grid');
+    const skeletonGrid = document.getElementById('skeleton-grid');
+    
+    skeletonGrid.classList.add('hidden');
+    grid.classList.remove('hidden');
+}
+
 // ==================== LANGUAGE MANAGEMENT ====================
 
 function showLanguageScreen() {
@@ -118,38 +136,48 @@ function setLanguage(lang) {
 // ==================== QUIZ GRID ====================
 
 function renderQuizGrid() {
-    const grid = document.getElementById('quiz-grid');
-    const data = quizzesData[currentLang];
-    grid.innerHTML = '';
+    // Show skeleton loaders
+    showSkeletonLoaders();
+    
+    // Simulate loading delay for better UX
+    setTimeout(() => {
+        const grid = document.getElementById('quiz-grid');
+        const data = quizzesData[currentLang];
+        grid.innerHTML = '';
 
-    data.quizzes.forEach(quiz => {
-        const card = document.createElement('div');
-        card.className = `quiz-card group rounded-3xl overflow-hidden cursor-pointer flex flex-col animate-fade-in`;
-        card.innerHTML = `
-            <div class="relative h-56 overflow-hidden">
-                <img src="${quiz.image}" alt="${quiz.title}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                <div class="absolute top-4 right-4 bg-purple-600/90 backdrop-blur-md text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-xl">
-                    ${quiz.badge}
+        data.quizzes.forEach((quiz, index) => {
+            const card = document.createElement('div');
+            card.className = `quiz-card group rounded-3xl overflow-hidden cursor-pointer flex flex-col animate-fade-in`;
+            card.style.animationDelay = `${index * 0.1}s`;
+            card.innerHTML = `
+                <div class="relative h-56 overflow-hidden">
+                    <img src="${quiz.image}" alt="${quiz.title}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    <div class="absolute top-4 right-4 bg-purple-600/90 backdrop-blur-md text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-xl">
+                        ${quiz.badge}
+                    </div>
                 </div>
-            </div>
-            <div class="p-6 flex-grow flex flex-col">
-                <h3 class="text-xl font-bold mb-3 group-hover:text-purple-400 transition-colors theme-text-primary">${quiz.title}</h3>
-                <p class="theme-text-secondary text-sm mb-6 flex-grow leading-relaxed">${quiz.description}</p>
-                <button class="w-full py-3 rounded-xl font-bold transition-all transform active:scale-95 bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white shadow-lg shadow-purple-600/20">
-                    ${currentLang === 'ar' ? 'ابدأ الاختبار 🎭' : 'Start Quiz 🎭'}
-                </button>
-            </div>
-        `;
-        card.onclick = () => {
-            if (typeof config !== 'undefined' && config.features.showWelcomeScreen) {
-                showWelcomeScreen(quiz.id);
-            } else {
-                startQuiz(quiz.id);
-            }
-        };
-        grid.appendChild(card);
-    });
+                <div class="p-6 flex-grow flex flex-col">
+                    <h3 class="text-xl font-bold mb-3 group-hover:text-purple-400 transition-colors theme-text-primary">${quiz.title}</h3>
+                    <p class="theme-text-secondary text-sm mb-6 flex-grow leading-relaxed">${quiz.description}</p>
+                    <button class="w-full py-3 rounded-xl font-bold transition-all transform active:scale-95 bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white shadow-lg shadow-purple-600/20">
+                        ${currentLang === 'ar' ? 'ابدأ الاختبار 🎭' : 'Start Quiz 🎭'}
+                    </button>
+                </div>
+            `;
+            card.onclick = () => {
+                if (typeof config !== 'undefined' && config.features.showWelcomeScreen) {
+                    showWelcomeScreen(quiz.id);
+                } else {
+                    startQuiz(quiz.id);
+                }
+            };
+            grid.appendChild(card);
+        });
+
+        // Hide skeleton loaders and show grid
+        hideSkeletonLoaders();
+    }, 600);
 }
 
 // ==================== WELCOME SCREEN ====================
@@ -234,8 +262,10 @@ function showStep() {
                     </span>
                     <span class="text-xs theme-text-muted">${Math.round(progress)}%</span>
                 </div>
-                <div class="w-full theme-bg-tertiary/30 h-1.5 rounded-full overflow-hidden">
-                    <div class="bg-gradient-to-r from-purple-600 to-pink-500 h-full transition-all duration-500 progress-bar-animated" style="width: ${progress}%"></div>
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: ${progress}%">
+                        <span class="progress-dragon">🐉</span>
+                    </div>
                 </div>
             </div>
 
