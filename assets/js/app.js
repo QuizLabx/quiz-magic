@@ -2,16 +2,79 @@ let currentLang = 'ar';
 let currentQuiz = null;
 let currentStepId = 0; 
 let userResponses = []; 
+let currentTheme = 'dark'; // Track current theme
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     const savedLang = localStorage.getItem('quiz_lang') || 'ar';
+    const savedTheme = localStorage.getItem('quiz_theme') || 'auto';
+    
+    // Initialize theme
+    initializeTheme(savedTheme);
+    
+    // Initialize language
     setLanguage(savedLang);
     if (localStorage.getItem('quiz_lang')) {
         document.getElementById('language-screen').classList.add('opacity-0', 'pointer-events-none');
     }
     renderSocialLinks();
+    updateThemeToggleIcon();
 });
+
+// ==================== THEME MANAGEMENT ====================
+
+function initializeTheme(savedTheme) {
+    let preferredTheme = savedTheme;
+    
+    // If auto, detect system preference
+    if (preferredTheme === 'auto') {
+        preferredTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    
+    applyTheme(preferredTheme);
+}
+
+function applyTheme(theme) {
+    currentTheme = theme;
+    const html = document.documentElement;
+    
+    if (theme === 'light') {
+        html.classList.add('light-mode');
+    } else {
+        html.classList.remove('light-mode');
+    }
+}
+
+function toggleTheme() {
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    applyTheme(newTheme);
+    localStorage.setItem('quiz_theme', newTheme);
+    updateThemeToggleIcon();
+}
+
+function updateThemeToggleIcon() {
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    if (!themeToggleBtn) return;
+    
+    if (currentTheme === 'dark') {
+        themeToggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
+        themeToggleBtn.title = 'تبديل للوضع النهاري / Switch to Light Mode';
+    } else {
+        themeToggleBtn.innerHTML = '<i class="fas fa-sun"></i>';
+        themeToggleBtn.title = 'تبديل للوضع الليلي / Switch to Dark Mode';
+    }
+}
+
+// Listen for system theme changes
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    const savedTheme = localStorage.getItem('quiz_theme');
+    if (savedTheme === 'auto') {
+        const newTheme = e.matches ? 'dark' : 'light';
+        applyTheme(newTheme);
+    }
+});
+
+// ==================== SOCIAL LINKS ====================
 
 function renderSocialLinks() {
     const container = document.getElementById('social-links');
@@ -33,13 +96,16 @@ function renderSocialLinks() {
                 const a = document.createElement('a');
                 a.href = config.socialLinks[link.id];
                 a.target = "_blank";
-                a.className = "w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-purple-600 hover:text-white transition-all transform hover:scale-110";
+                a.className = "w-10 h-10 rounded-full flex items-center justify-center hover:bg-purple-600 hover:text-white transition-all transform hover:scale-110";
+                a.style.backgroundColor = 'var(--bg-tertiary)';
                 a.innerHTML = `<i class="${link.icon}"></i>`;
                 container.appendChild(a);
             }
         });
     }
 }
+
+// ==================== LANGUAGE MANAGEMENT ====================
 
 function showLanguageScreen() {
     document.getElementById('language-screen').classList.remove('opacity-0', 'pointer-events-none');
@@ -62,6 +128,8 @@ function setLanguage(lang) {
     renderQuizGrid();
     document.getElementById('language-screen').classList.add('opacity-0', 'pointer-events-none');
 }
+
+// ==================== QUIZ GRID ====================
 
 function renderQuizGrid() {
     const grid = document.getElementById('quiz-grid');
@@ -97,6 +165,8 @@ function renderQuizGrid() {
         grid.appendChild(card);
     });
 }
+
+// ==================== WELCOME SCREEN ====================
 
 function showWelcomeScreen(quizId) {
     const data = quizzesData[currentLang];
@@ -143,6 +213,8 @@ function showWelcomeScreen(quizId) {
         </div>
     `;
 }
+
+// ==================== QUIZ ENGINE ====================
 
 function startQuiz(quizId) {
     const data = quizzesData[currentLang];
@@ -246,6 +318,8 @@ function nextStep() {
     }
 }
 
+// ==================== LOADING SCREEN ====================
+
 function showLoading() {
     const container = document.getElementById('quiz-container');
     const delay = (typeof config !== 'undefined') ? config.analysisSpeed : 3500;
@@ -264,6 +338,8 @@ function showLoading() {
     `;
     setTimeout(showResult, delay);
 }
+
+// ==================== RESULT CALCULATION ====================
 
 function calculateResult() {
     const traitScores = {};
@@ -336,6 +412,8 @@ function calculateResult() {
     };
 }
 
+// ==================== RESULT DISPLAY ====================
+
 function showResult() {
     const { creature, radar } = calculateResult();
     document.getElementById('quiz-container').classList.add('hidden');
@@ -387,9 +465,11 @@ function showResult() {
                         </div>
                         <div id="secret-content" class="opacity-10 blur-xl transition-all duration-1000">
                             <h4 class="text-2xl font-bold text-purple-400 mb-4">${currentLang === 'ar' ? 'نمط قوتك:' : 'Power Pattern:'}</h4>
-                            <p class="text-slate-300 mb-6">${creature.secretReport}</p>
+                            <p class="text-slate-300 mb-6">${creature.secretReport.strengths}</p>
+                            <h4 class="text-2xl font-bold text-purple-400 mb-4">${currentLang === 'ar' ? 'التحديات:' : 'Challenges:'}</h4>
+                            <p class="text-slate-300 mb-6">${creature.secretReport.challenges}</p>
                             <div class="p-4 bg-purple-900/20 border border-purple-500/30 rounded-xl">
-                                <p class="text-purple-300 italic">"${currentLang === 'ar' ? 'البطل الحقيقي يعرف متى يضع سيفه ويظهر الرحمة.' : 'A true hero knows when to put down their sword and show mercy.'}"</p>
+                                <p class="text-purple-300 italic">"${creature.secretReport.insight}"</p>
                             </div>
                         </div>
                     </div>
@@ -414,6 +494,8 @@ function showResult() {
     renderRadarChart(radar);
     prepareShareTemplate(creature);
 }
+
+// ==================== RADAR CHART ====================
 
 function renderRadarChart(data) {
     const ctx = document.getElementById('radarChart').getContext('2d');
@@ -453,6 +535,8 @@ function renderRadarChart(data) {
     });
 }
 
+// ==================== SECRET REPORT ====================
+
 function unlockSecretReport() {
     const locker = document.getElementById('cpa-locker');
     const content = document.getElementById('secret-content');
@@ -461,6 +545,8 @@ function unlockSecretReport() {
     content.style.opacity = '1';
     content.style.filter = 'none';
 }
+
+// ==================== SHARE TEMPLATE ====================
 
 function prepareShareTemplate(creature) {
     const img = document.getElementById('share-creature-img');
@@ -478,6 +564,8 @@ function prepareShareTemplate(creature) {
     const desc = document.getElementById('share-description');
     if (desc) desc.innerText = creature.description.substring(0, 160) + '...';
 }
+
+// ==================== DOWNLOAD & SHARE ====================
 
 async function downloadResultAsImage() {
     const btn = event.currentTarget;
