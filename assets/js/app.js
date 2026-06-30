@@ -3,7 +3,7 @@ let currentQuiz = null;
 let currentStepId = 0; 
 let userResponses = []; 
 let currentTheme = 'dark';
-let isQuizActive = false; // Flag to prevent grid re-render during quiz
+let isQuizActive = false; /// Flag to prevent grid re-render during quiz
 let userStats = {}; // Store user statistics
 
 // Initialize
