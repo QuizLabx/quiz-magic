@@ -4,8 +4,9 @@ let currentStepId = 0;
 let userResponses = []; 
 let currentTheme = 'dark';
 let isQuizActive = false; // Flag to prevent grid re-render during quiz
+let userStats = {}; // Store user statistics
 
-/// Initialize
+// Initialize
 document.addEventListener('DOMContentLoaded', () => {
     const savedLang = localStorage.getItem('quiz_lang') || 'ar';
     const savedTheme = localStorage.getItem('quiz_theme') || 'auto';
@@ -18,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     renderSocialLinks();
     updateThemeToggleIcon();
+    loadUserStats();
 });
 
 // ==================== THEME MANAGEMENT ====================
@@ -86,7 +88,7 @@ function renderSocialLinks() {
                 const a = document.createElement('a');
                 a.href = config.socialLinks[link.id];
                 a.target = "_blank";
-                a.rel = "noopener noreferrer"; // ✅ إضافة خاصية الأمان
+                a.rel = "noopener noreferrer";
                 a.className = "w-10 h-10 rounded-full flex items-center justify-center hover:bg-purple-600 hover:text-white transition-all transform hover:scale-110 theme-bg-tertiary theme-text-primary";
                 a.innerHTML = `<i class="${link.icon}"></i>`;
                 container.appendChild(a);
@@ -143,7 +145,8 @@ function renderQuizGrid() {
     isQuizActive = false; // Reset flag
     showSkeletonLoaders();
     
-    // Increased delay to 800ms to ensure skeletons are visible on fast connections
+    // Dynamic delay based on connection speed (300-500ms instead of fixed 800ms)
+    const delay = navigator.connection?.effectiveType === '4g' ? 300 : 500;
     setTimeout(() => {
         const grid = document.getElementById('quiz-grid');
         const data = quizzesData[currentLang];
@@ -155,7 +158,7 @@ function renderQuizGrid() {
             card.style.animationDelay = `${index * 0.1}s`;
             card.innerHTML = `
                 <div class="relative h-56 overflow-hidden">
-                    <img src="${quiz.image}" alt="${quiz.title}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <img src="${quiz.image}" alt="${quiz.title}" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                     <div class="absolute top-4 right-4 bg-purple-600/90 backdrop-blur-md text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-xl">
                         ${quiz.badge}
@@ -180,7 +183,7 @@ function renderQuizGrid() {
         });
 
         hideSkeletonLoaders();
-    }, 800);
+    }, delay);
 }
 
 // ==================== WELCOME SCREEN ====================
@@ -284,7 +287,7 @@ function showStep() {
                     ${question.options.map((opt) => `
                         <div onclick="handleVisualChoice('${opt.trait}', ${opt.value})" class="group cursor-pointer relative overflow-hidden rounded-2xl border-2 theme-border hover:border-purple-500 transition-all transform hover:scale-[1.03] active:scale-95 shadow-lg">
                             <div class="aspect-square overflow-hidden">
-                                <img src="${opt.image}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                                <img src="${opt.image}" loading="lazy" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                             </div>
                             <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80"></div>
                             <div class="absolute bottom-0 left-0 right-0 p-3 text-center">
@@ -314,7 +317,6 @@ function showStep() {
 
         container.innerHTML = content;
         container.classList.remove('opacity-0');
-        container.classList.add('opacity-100');
     }, 200);
 }
 
@@ -367,7 +369,6 @@ function calculateResult() {
         traitScores[resp.trait] = (traitScores[resp.trait] || 0) + resp.value;
     });
 
-    // ✅ تم إضافة سمة "ambition" إلى هذا الجدول
     const weightedTraitToCreature = {
         leadership: { dragon: 1.4, valkyrie: 0.8, simurgh: 0.7, centaur: 0.5 },
         power: { hydra: 1.4, dragon: 1.0, valkyrie: 0.7, cerberus: 0.8 },
@@ -396,8 +397,7 @@ function calculateResult() {
         elegance: { siren: 1.5, unicorn: 0.9, phoenix: 0.7, kitsune: 0.8 },
         perfection: { simurgh: 1.4, phoenix: 0.8, valkyrie: 0.7, centaur: 0.6 },
         persistence: { hydra: 1.5, phoenix: 0.9, valkyrie: 0.8, golem: 0.7 },
-        // ✅ السمة الجديدة المضافة
-        ambition: { dragon: 1.3, pegasus: 1.4, simurgh: 1.2, valkyrie: 1.0, phoenix: 0.9 }
+        ambition: { dragon: 1.5, valkyrie: 1.2, simurgh: 1.0, phoenix: 0.8 }
     };
 
     const creatureScores = {};
@@ -430,23 +430,49 @@ function calculateResult() {
 
     return {
         creature: currentQuiz.results.find(r => r.id === winnerId) || currentQuiz.results[0],
-        radar: radarData
+        radar: radarData,
+        winnerId: winnerId
     };
+}
+
+// ==================== USER STATISTICS ====================
+
+function loadUserStats() {
+    const saved = localStorage.getItem('quiz_stats');
+    userStats = saved ? JSON.parse(saved) : {};
+}
+
+function saveUserStats(creatureId) {
+    userStats[creatureId] = (userStats[creatureId] || 0) + 1;
+    localStorage.setItem('quiz_stats', JSON.stringify(userStats));
+}
+
+function getCreaturePercentage(creatureId) {
+    const total = Object.values(userStats).reduce((a, b) => a + b, 0);
+    if (total === 0) return 0;
+    return Math.round((userStats[creatureId] || 0) / total * 100);
 }
 
 // ==================== RESULT DISPLAY ====================
 
 function showResult() {
     isQuizActive = false;
-    const { creature, radar } = calculateResult();
+    const { creature, radar, winnerId } = calculateResult();
+    saveUserStats(winnerId);
+    
     document.getElementById('quiz-container').classList.add('hidden');
     const container = document.getElementById('result-container');
     container.classList.remove('hidden');
 
+    const percentage = getCreaturePercentage(winnerId);
+    const statsText = currentLang === 'ar' 
+        ? `${percentage}% من المستخدمين حصلوا على نفس النتيجة`
+        : `${percentage}% of users got the same result`;
+
     container.innerHTML = `
         <div class="theme-bg-secondary rounded-[2.5rem] overflow-hidden border theme-border shadow-2xl mb-12 animate-fade-in">
             <div class="relative h-80 md:h-[30rem]">
-                <img src="${creature.image}" class="w-full h-full object-cover">
+                <img src="${creature.image}" loading="lazy" class="w-full h-full object-cover">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
                 <div class="absolute bottom-10 left-0 right-0 px-8 text-center">
                     <span class="bg-purple-600/90 backdrop-blur-md text-white px-5 py-2 rounded-full text-sm font-bold mb-4 inline-block shadow-lg uppercase tracking-widest border border-white/20">${creature.rarity}</span>
@@ -456,6 +482,10 @@ function showResult() {
             </div>
             
             <div class="p-8 md:p-14">
+                <div class="mb-8 p-4 bg-purple-600/10 rounded-2xl border border-purple-500/30 text-center">
+                    <p class="text-lg font-semibold theme-text-primary">${statsText}</p>
+                </div>
+
                 <div class="mb-16">
                     <h3 class="text-3xl font-bold theme-text-primary mb-10 text-center">
                         ${currentLang === 'ar' ? 'خارطة القوى الروحية' : 'Spiritual Power Map'}
@@ -501,7 +531,6 @@ function showResult() {
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-12">
-            <!-- ✅ تم تعديل زر التحميل لتمرير this كمعامل -->
             <button onclick="downloadResultAsImage(this)" class="flex items-center justify-center gap-3 p-5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-2xl font-bold text-lg transition-all transform hover:scale-105 shadow-xl shadow-blue-600/20">
                 <i class="fas fa-image"></i> ${currentLang === 'ar' ? '🖼️ تحميل النتيجة كصورة' : '🖼️ Download as Image'}
             </button>
@@ -589,11 +618,10 @@ function prepareShareTemplate(creature) {
 
 // ==================== DOWNLOAD & SHARE ====================
 
-// ✅ الدالة المعدلة: تستقبل الزر نفسه كمعامل بدلاً من event
-async function downloadResultAsImage(button) {
-    const originalText = button.innerHTML;
-    button.innerHTML = `<i class="fas fa-spinner animate-spin"></i> ${currentLang === 'ar' ? 'جاري التجهيز...' : 'Preparing...'}`;
-    button.disabled = true;
+async function downloadResultAsImage(btn) {
+    const originalText = btn.innerHTML;
+    btn.innerHTML = `<i class="fas fa-spinner animate-spin"></i> ${currentLang === 'ar' ? 'جاري التجهيز...' : 'Preparing...'}`;
+    btn.disabled = true;
 
     const template = document.getElementById('share-template');
     try {
@@ -613,8 +641,8 @@ async function downloadResultAsImage(button) {
         console.error('Error:', err);
         alert(currentLang === 'ar' ? 'عذراً، حدث خطأ أثناء تحميل الصورة.' : 'Sorry, an error occurred.');
     } finally {
-        button.innerHTML = originalText;
-        button.disabled = false;
+        btn.innerHTML = originalText;
+        btn.disabled = false;
     }
 }
 
