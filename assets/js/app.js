@@ -23,7 +23,75 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Check for comparison URL parameter
     checkComparisonParam();
+    
+    // Hide splash screen after loading
+    hideSplashScreen();
 });
+
+// ==================== SPLASH SCREEN (NEW) ====================
+function hideSplashScreen() {
+    const splash = document.getElementById('splash-screen');
+    if (!splash) return;
+    // Wait minimum 2 seconds for effect
+    setTimeout(() => {
+        splash.classList.add('fade-out');
+        // Remove from DOM after animation
+        setTimeout(() => {
+            splash.remove();
+        }, 800);
+    }, 2000);
+}
+
+// ==================== CONFETTI SYSTEM (NEW) ====================
+function launchConfetti(creatureId) {
+    const container = document.getElementById('confetti-container');
+    if (!container) return;
+    
+    // Get colors from creature theme
+    const theme = creatureThemes[creatureId] || creatureThemes.dragon;
+    const colors = [
+        theme.primary,
+        theme.secondary,
+        '#a855f7',
+        '#ec4899',
+        '#fbbf24',
+        '#ffffff'
+    ];
+    
+    const shapes = ['square', 'circle', 'triangle'];
+    const piecesCount = 80;
+    
+    for (let i = 0; i < piecesCount; i++) {
+        const piece = document.createElement('div');
+        const shape = shapes[Math.floor(Math.random() * shapes.length)];
+        piece.className = `confetti-piece ${shape}`;
+        
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const left = Math.random() * 100;
+        const delay = Math.random() * 0.5;
+        const duration = 2.5 + Math.random() * 2;
+        const size = 6 + Math.random() * 10;
+        
+        piece.style.left = `${left}%`;
+        piece.style.animationDelay = `${delay}s`;
+        piece.style.animationDuration = `${duration}s`;
+        piece.style.width = `${size}px`;
+        piece.style.height = `${size}px`;
+        
+        if (shape === 'triangle') {
+            piece.style.color = color;
+        } else {
+            piece.style.backgroundColor = color;
+        }
+        
+        container.appendChild(piece);
+    }
+    
+    // Clean up confetti after animation
+    setTimeout(() => {
+        container.innerHTML = '';
+    }, 5000);
+}
 
 // ==================== THEME MANAGEMENT ====================
 function initializeTheme(savedTheme) {
@@ -243,10 +311,27 @@ function showStep() {
     const container = document.getElementById('quiz-container');
     const totalSteps = currentQuiz.questions.length;
     const progress = ((currentStepId + 1) / totalSteps) * 100;
-    container.classList.add('opacity-0');
+    
+    // Determine slide direction based on language (RTL/LTR)
+    const isRTL = currentLang === 'ar';
+    const slideInClass = isRTL ? 'question-slide-in-rtl' : 'question-slide-in-ltr';
+    const slideOutClass = isRTL ? 'question-slide-out-rtl' : 'question-slide-out-ltr';
 
-    setTimeout(() => {
-        let content = `
+    // Apply slide-out animation to current content if exists
+    const currentContent = container.querySelector('.quiz-content-wrapper');
+    if (currentContent) {
+        currentContent.classList.add(slideOutClass);
+        setTimeout(() => {
+            renderQuestionContent(container, question, totalSteps, progress, slideInClass);
+        }, 200);
+    } else {
+        renderQuestionContent(container, question, totalSteps, progress, slideInClass);
+    }
+}
+
+function renderQuestionContent(container, question, totalSteps, progress, slideInClass) {
+    let content = `
+        <div class="quiz-content-wrapper ${slideInClass}">
             <div class="progress-wrapper">
                 <div class="flex justify-between items-center mb-4">
                     <span class="text-xs font-bold text-purple-400 uppercase tracking-widest">
@@ -261,48 +346,48 @@ function showStep() {
             </div>
 
             <div class="mb-10">
-                <h2 class="text-2xl md:text-3xl font-bold theme-text-primary text-center leading-tight animate-slide-up">${question.text}</h2>
+                <h2 class="text-2xl md:text-3xl font-bold theme-text-primary text-center leading-tight">${question.text}</h2>
+            </div>
+    `;
+
+    if (question.type === 'visual') {
+        content += `
+            <div class="grid grid-cols-2 gap-4 sm:gap-6">
+                ${question.options.map((opt) => `
+                    <div onclick="handleVisualChoice('${opt.trait}', ${opt.value}, '${opt.axis || ''}')" class="group cursor-pointer relative overflow-hidden rounded-2xl border-2 theme-border hover:border-purple-500 transition-all transform hover:scale-[1.03] active:scale-95 shadow-lg">
+                        <div class="aspect-square overflow-hidden">
+                            <img src="${opt.image}" loading="lazy" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80"></div>
+                        <div class="absolute bottom-0 left-0 right-0 p-3 text-center">
+                            <span class="text-white font-bold text-sm sm:text-lg">${opt.label}</span>
+                        </div>
+                    </div>
+                `).join('')}
             </div>
         `;
+    } else {
+        content += `
+            <div class="space-y-3">
+                ${[
+                    { text: currentLang === 'ar' ? 'أوافق بشدة' : 'Strongly Agree', value: 5, color: 'bg-green-600/20 border-green-500/50 hover:bg-green-600/40' },
+                    { text: currentLang === 'ar' ? 'أوافق' : 'Agree', value: 4, color: 'bg-blue-600/20 border-blue-500/50 hover:bg-blue-600/40' },
+                    { text: currentLang === 'ar' ? 'محايد' : 'Neutral', value: 3, color: 'theme-bg-tertiary/40 theme-border hover:theme-bg-tertiary/60' },
+                    { text: currentLang === 'ar' ? 'لا أوافق' : 'Disagree', value: 2, color: 'bg-orange-600/20 border-orange-500/50 hover:bg-orange-600/40' },
+                    { text: currentLang === 'ar' ? 'لا أوافق بشدة' : 'Strongly Disagree', value: 1, color: 'bg-red-600/20 border-red-500/50 hover:bg-red-600/40' }
+                ].map((opt) => `
+                    <button onclick="handleLikert(${opt.value}, '${question.axis || ''}')" class="w-full p-4 text-center ${opt.color} border rounded-2xl transition-all transform hover:scale-[1.02] active:scale-95 font-bold theme-text-primary">
+                        ${opt.text}
+                    </button>
+                `).join('')}
+            </div>
+        `;
+    }
+    
+    content += `</div>`;
 
-        if (question.type === 'visual') {
-            content += `
-                <div class="grid grid-cols-2 gap-4 sm:gap-6">
-                    ${question.options.map((opt) => `
-                        <div onclick="handleVisualChoice('${opt.trait}', ${opt.value}, '${opt.axis || ''}')" class="group cursor-pointer relative overflow-hidden rounded-2xl border-2 theme-border hover:border-purple-500 transition-all transform hover:scale-[1.03] active:scale-95 shadow-lg">
-                            <div class="aspect-square overflow-hidden">
-                                <img src="${opt.image}" loading="lazy" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                            </div>
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80"></div>
-                            <div class="absolute bottom-0 left-0 right-0 p-3 text-center">
-                                <span class="text-white font-bold text-sm sm:text-lg">${opt.label}</span>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        } else {
-            content += `
-                <div class="space-y-3">
-                    ${[
-                        { text: currentLang === 'ar' ? 'أوافق بشدة' : 'Strongly Agree', value: 5, color: 'bg-green-600/20 border-green-500/50 hover:bg-green-600/40' },
-                        { text: currentLang === 'ar' ? 'أوافق' : 'Agree', value: 4, color: 'bg-blue-600/20 border-blue-500/50 hover:bg-blue-600/40' },
-                        { text: currentLang === 'ar' ? 'محايد' : 'Neutral', value: 3, color: 'theme-bg-tertiary/40 theme-border hover:theme-bg-tertiary/60' },
-                        { text: currentLang === 'ar' ? 'لا أوافق' : 'Disagree', value: 2, color: 'bg-orange-600/20 border-orange-500/50 hover:bg-orange-600/40' },
-                        { text: currentLang === 'ar' ? 'لا أوافق بشدة' : 'Strongly Disagree', value: 1, color: 'bg-red-600/20 border-red-500/50 hover:bg-red-600/40' }
-                    ].map((opt) => `
-                        <button onclick="handleLikert(${opt.value}, '${question.axis || ''}')" class="w-full p-4 text-center ${opt.color} border rounded-2xl transition-all transform hover:scale-[1.02] active:scale-95 font-bold theme-text-primary">
-                            ${opt.text}
-                        </button>
-                    `).join('')}
-                </div>
-            `;
-        }
-
-        container.innerHTML = content;
-        container.classList.remove('opacity-0');
-        updateVisualEvolution(progress);
-    }, 300);
+    container.innerHTML = content;
+    updateVisualEvolution(progress);
 }
 
 function updateVisualEvolution(progress) {
@@ -503,7 +588,6 @@ function checkComparisonParam() {
                 friendComparisonData = decoded;
                 history.replaceState({}, document.title, window.location.pathname);
                 const isAr = currentLang === 'ar';
-                // Delay alert to ensure language is set
                 setTimeout(() => {
                     alert(isAr 
                         ? 'لقد تلقيت تحدي مقارنة! أكمل الاختبار لترى مدى توافقكما.' 
@@ -699,6 +783,11 @@ function showResult() {
     renderRadarChart(radar);
     prepareShareTemplate(creature, secondaryCreature);
     applyCreatureTheme(winnerId);
+    
+    // 🎉 LAUNCH CONFETTI (NEW)
+    setTimeout(() => {
+        launchConfetti(winnerId);
+    }, 300);
 
     // Handle comparison if friend data is present
     if (friendComparisonData) {
