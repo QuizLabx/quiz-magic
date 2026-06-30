@@ -6,6 +6,65 @@ let currentTheme = 'dark';
 let isQuizActive = false;
 let userStats = {};
 let friendComparisonData = null;
+let userAchievements = {};
+
+// Achievement definitions
+const ACHIEVEMENTS = {
+    first_quiz: {
+        name: { ar: 'المستكشف الأول', en: 'First Explorer' },
+        description: { ar: 'أكمل أول اختبار', en: 'Complete your first quiz' },
+        icon: '🎭',
+        condition: (stats) => stats.totalQuizzes >= 1
+    },
+    perseverant: {
+        name: { ar: 'المثابر', en: 'Perseverant' },
+        description: { ar: 'أكمل 5 اختبارات', en: 'Complete 5 quizzes' },
+        icon: '⭐',
+        condition: (stats) => stats.totalQuizzes >= 5
+    },
+    rare_creature: {
+        name: { ar: 'الكائن النادر', en: 'Rare Creature' },
+        description: { ar: 'احصل على كائن أسطوري أو نادر جداً', en: 'Get a Legendary or Very Rare creature' },
+        icon: '💎',
+        condition: (stats) => {
+            const rareRarities = ['أسطوري', 'نادر جداً', 'Legendary', 'Very Rare'];
+            return stats.creatures && Object.keys(stats.creatures).some(id => {
+                const creature = quizzesData[currentLang].quizzes[0].results.find(r => r.id === id);
+                return creature && rareRarities.includes(creature.rarity);
+            });
+        }
+    },
+    social: {
+        name: { ar: 'الاجتماعي', en: 'Social' },
+        description: { ar: 'شارك النتيجة 3 مرات', en: 'Share result 3 times' },
+        icon: '🚀',
+        condition: (stats) => stats.shares >= 3
+    },
+    comparer: {
+        name: { ar: 'المقارن', en: 'Comparer' },
+        description: { ar: 'قارن مع صديق مرة واحدة', en: 'Compare with a friend once' },
+        icon: '⚔️',
+        condition: (stats) => stats.comparisons >= 1
+    },
+    collector: {
+        name: { ar: 'الجامع', en: 'Collector' },
+        description: { ar: 'احصل على 5 كائنات مختلفة', en: 'Get 5 different creatures' },
+        icon: '🎨',
+        condition: (stats) => stats.creatures && Object.keys(stats.creatures).length >= 5
+    },
+    loyal: {
+        name: { ar: 'المخلص', en: 'Loyal' },
+        description: { ar: 'أعد الاختبار 3 مرات', en: 'Retake quiz 3 times' },
+        icon: '🔄',
+        condition: (stats) => stats.retakes >= 3
+    },
+    deep_diver: {
+        name: { ar: 'المتعمق', en: 'Deep Diver' },
+        description: { ar: 'فتح التقرير السري 5 مرات', en: 'Unlock secret report 5 times' },
+        icon: '🔓',
+        condition: (stats) => stats.secretUnlocks >= 5
+    }
+};
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
@@ -20,6 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderSocialLinks();
     updateThemeToggleIcon();
     loadUserStats();
+    loadAchievements();
     
     // Check for comparison URL parameter
     checkComparisonParam();
@@ -32,10 +92,8 @@ document.addEventListener('DOMContentLoaded', () => {
 function hideSplashScreen() {
     const splash = document.getElementById('splash-screen');
     if (!splash) return;
-    // Wait minimum 2 seconds for effect
     setTimeout(() => {
         splash.classList.add('fade-out');
-        // Remove from DOM after animation
         setTimeout(() => {
             splash.remove();
         }, 800);
@@ -47,7 +105,6 @@ function launchConfetti(creatureId) {
     const container = document.getElementById('confetti-container');
     if (!container) return;
     
-    // Get colors from creature theme
     const theme = creatureThemes[creatureId] || creatureThemes.dragon;
     const colors = [
         theme.primary,
@@ -87,10 +144,145 @@ function launchConfetti(creatureId) {
         container.appendChild(piece);
     }
     
-    // Clean up confetti after animation
     setTimeout(() => {
         container.innerHTML = '';
     }, 5000);
+}
+
+// ==================== ACHIEVEMENTS SYSTEM (NEW) ====================
+function loadAchievements() {
+    const saved = localStorage.getItem('quiz_achievements');
+    userAchievements = saved ? JSON.parse(saved) : {};
+}
+
+function saveAchievements() {
+    localStorage.setItem('quiz_achievements', JSON.stringify(userAchievements));
+}
+
+function checkAchievements() {
+    const stats = getUserStats();
+    let newAchievements = [];
+    
+    for (const [key, achievement] of Object.entries(ACHIEVEMENTS)) {
+        if (!userAchievements[key] && achievement.condition(stats)) {
+            userAchievements[key] = {
+                unlocked: true,
+                unlockedAt: Date.now()
+            };
+            newAchievements.push(achievement);
+        }
+    }
+    
+    if (newAchievements.length > 0) {
+        saveAchievements();
+        showAchievementToast(newAchievements[0]);
+    }
+}
+
+function getUserStats() {
+    const saved = localStorage.getItem('quiz_stats');
+    const stats = saved ? JSON.parse(saved) : {};
+    
+    // Calculate total quizzes
+    let totalQuizzes = 0;
+    if (stats.creatures) {
+        totalQuizzes = Object.values(stats.creatures).reduce((a, b) => a + b, 0);
+    }
+    
+    return {
+        totalQuizzes: totalQuizzes,
+        creatures: stats.creatures || {},
+        shares: stats.shares || 0,
+        comparisons: stats.comparisons || 0,
+        retakes: stats.retakes || 0,
+        secretUnlocks: stats.secretUnlocks || 0
+    };
+}
+
+function showAchievementToast(achievement) {
+    const toast = document.getElementById('achievement-toast');
+    if (!toast) return;
+    
+    const isAr = currentLang === 'ar';
+    const title = toast.querySelector('.toast-title');
+    const message = toast.querySelector('.toast-message');
+    const icon = toast.querySelector('.toast-icon');
+    
+    title.textContent = isAr ? 'مبروك!' : 'Congratulations!';
+    message.textContent = isAr ? `فتحت وسام "${achievement.name.ar}"` : `You unlocked "${achievement.name.en}"`;
+    icon.textContent = achievement.icon;
+    
+    toast.classList.add('show');
+    
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 4000);
+}
+
+function showAchievementsModal() {
+    const modal = document.getElementById('achievements-modal');
+    if (!modal) return;
+    
+    renderAchievementsGrid();
+    modal.classList.add('show');
+}
+
+function closeAchievementsModal() {
+    const modal = document.getElementById('achievements-modal');
+    if (!modal) return;
+    modal.classList.remove('show');
+}
+
+function renderAchievementsGrid() {
+    const grid = document.getElementById('achievements-grid');
+    if (!grid) return;
+    
+    const isAr = currentLang === 'ar';
+    const stats = getUserStats();
+    
+    grid.innerHTML = '';
+    
+    for (const [key, achievement] of Object.entries(ACHIEVEMENTS)) {
+        const isUnlocked = userAchievements[key] && userAchievements[key].unlocked;
+        const progress = calculateAchievementProgress(key, stats);
+        
+        const card = document.createElement('div');
+        card.className = `achievement-card ${isUnlocked ? 'unlocked' : 'locked'}`;
+        
+        card.innerHTML = `
+            <div class="achievement-icon">${achievement.icon}</div>
+            <h3 class="achievement-name">${isAr ? achievement.name.ar : achievement.name.en}</h3>
+            <p class="achievement-description">${isAr ? achievement.description.ar : achievement.description.en}</p>
+            ${!isUnlocked ? `
+                <div class="achievement-progress">
+                    <div class="achievement-progress-bar" style="width: ${progress}%"></div>
+                </div>
+                <p class="achievement-progress-text">${progress}%</p>
+            ` : `
+                <div class="achievement-badge">${isAr ? 'مفتوح' : 'Unlocked'}</div>
+            `}
+        `;
+        
+        grid.appendChild(card);
+    }
+}
+
+function calculateAchievementProgress(key, stats) {
+    const conditions = {
+        first_quiz: Math.min(100, (stats.totalQuizzes / 1) * 100),
+        perseverant: Math.min(100, (stats.totalQuizzes / 5) * 100),
+        rare_creature: stats.creatures && Object.keys(stats.creatures).some(id => {
+            const creature = quizzesData[currentLang].quizzes[0].results.find(r => r.id === id);
+            return creature && ['أسطوري', 'نادر جداً', 'Legendary', 'Very Rare'].includes(creature.rarity);
+        }) ? 100 : 0,
+        social: Math.min(100, (stats.shares / 3) * 100),
+        comparer: Math.min(100, (stats.comparisons / 1) * 100),
+        collector: Math.min(100, (stats.creatures ? Object.keys(stats.creatures).length / 5 : 0) * 100),
+        loyal: Math.min(100, (stats.retakes / 3) * 100),
+        deep_diver: Math.min(100, (stats.secretUnlocks / 5) * 100)
+    };
+    
+    return Math.round(conditions[key] || 0);
 }
 
 // ==================== THEME MANAGEMENT ====================
@@ -312,12 +504,10 @@ function showStep() {
     const totalSteps = currentQuiz.questions.length;
     const progress = ((currentStepId + 1) / totalSteps) * 100;
     
-    // Determine slide direction based on language (RTL/LTR)
     const isRTL = currentLang === 'ar';
     const slideInClass = isRTL ? 'question-slide-in-rtl' : 'question-slide-in-ltr';
     const slideOutClass = isRTL ? 'question-slide-out-rtl' : 'question-slide-out-ltr';
 
-    // Apply slide-out animation to current content if exists
     const currentContent = container.querySelector('.quiz-content-wrapper');
     if (currentContent) {
         currentContent.classList.add(slideOutClass);
@@ -525,14 +715,18 @@ function loadUserStats() {
 }
 
 function saveUserStats(creatureId) {
-    userStats[creatureId] = (userStats[creatureId] || 0) + 1;
+    if (!userStats.creatures) {
+        userStats.creatures = {};
+    }
+    userStats.creatures[creatureId] = (userStats.creatures[creatureId] || 0) + 1;
     localStorage.setItem('quiz_stats', JSON.stringify(userStats));
 }
 
 function getCreaturePercentage(creatureId) {
-    const total = Object.values(userStats).reduce((a, b) => a + b, 0);
+    if (!userStats.creatures) return 0;
+    const total = Object.values(userStats.creatures).reduce((a, b) => a + b, 0);
     if (total === 0) return 0;
-    return Math.round((userStats[creatureId] || 0) / total * 100);
+    return Math.round((userStats.creatures[creatureId] || 0) / total * 100);
 }
 
 // ==================== RESULT DISPLAY ====================
@@ -784,12 +978,13 @@ function showResult() {
     prepareShareTemplate(creature, secondaryCreature);
     applyCreatureTheme(winnerId);
     
-    // 🎉 LAUNCH CONFETTI (NEW)
     setTimeout(() => {
         launchConfetti(winnerId);
     }, 300);
 
-    // Handle comparison if friend data is present
+    // Check achievements after showing result
+    checkAchievements();
+
     if (friendComparisonData) {
         const currentUserData = {
             creatureId: winnerId,
@@ -886,6 +1081,14 @@ function unlockSecretReport() {
     locker.style.pointerEvents = 'none';
     content.style.opacity = '1';
     content.style.filter = 'none';
+    
+    // Track secret unlocks for achievements
+    if (!userStats.secretUnlocks) {
+        userStats.secretUnlocks = 0;
+    }
+    userStats.secretUnlocks++;
+    localStorage.setItem('quiz_stats', JSON.stringify(userStats));
+    checkAchievements();
 }
 
 // ==================== SHARE TEMPLATE ====================
@@ -946,6 +1149,15 @@ function shareResult() {
         ? `اكتشفت كائني الأسطوري الهجين على QuizMagic! جربه الآن: `
         : `I discovered my hybrid mythical identity on QuizMagic! Try it now: `;
     const url = window.location.href;
+    
+    // Track shares for achievements
+    if (!userStats.shares) {
+        userStats.shares = 0;
+    }
+    userStats.shares++;
+    localStorage.setItem('quiz_stats', JSON.stringify(userStats));
+    checkAchievements();
+    
     if (navigator.share) {
         navigator.share({ title: 'QuizMagic', text: text, url: url });
     } else {
@@ -965,6 +1177,14 @@ function compareWithFriend() {
     const text = currentLang === 'ar'
         ? `تحداني في QuizMagic واكتشف مدى توافق هويتنا الأسطورية! ${comparisonUrl}`
         : `Challenge me on QuizMagic and discover our mythical compatibility! ${comparisonUrl}`;
+
+    // Track comparisons for achievements
+    if (!userStats.comparisons) {
+        userStats.comparisons = 0;
+    }
+    userStats.comparisons++;
+    localStorage.setItem('quiz_stats', JSON.stringify(userStats));
+    checkAchievements();
 
     if (navigator.share) {
         navigator.share({ title: 'QuizMagic Challenge', text: text, url: comparisonUrl });
