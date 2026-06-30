@@ -18,6 +18,8 @@
     --card-shadow: rgba(0, 0, 0, 0.4);
     --glass-bg: rgba(30, 41, 59, 0.4);
     --skeleton-bg: rgba(71, 85, 105, 0.3);
+    --bg-secondary-rgb: 30, 41, 59;
+    --accent-primary-rgb: 168, 85, 247;
 }
 
 /* Light Mode Variables - Soft Azure Theme */
@@ -35,6 +37,8 @@ html.light-mode {
     --card-shadow: rgba(186, 230, 253, 0.5);
     --glass-bg: rgba(224, 242, 254, 0.5);
     --skeleton-bg: rgba(186, 230, 253, 0.4);
+    --bg-secondary-rgb: 224, 242, 254;
+    --accent-primary-rgb: 124, 58, 237;
 }
 
 /* ==================== BASE STYLES ==================== */
@@ -110,24 +114,18 @@ body {
     animation: dragon-float 1.5s ease-in-out infinite;
 }
 
-/* ✅ إصلاح RTL للتنين - فصل الـ transform عن animation */
+/* RTL Adjustment for Dragon */
 [dir="rtl"] .dragon-marker {
-    transform: scaleX(-1);
-    /* نُطبق الانعكاس مرة واحدة فقط، ولا نضيف translateX هنا */
+    transform: translateX(-50%) scaleX(-1);
 }
 
 [dir="ltr"] .dragon-marker {
-    transform: scaleX(1);
+    transform: translateX(-50%);
 }
 
 @keyframes dragon-float {
-    0%, 100% { transform: translateY(0); }  /* نُحرك فقط في اتجاه Y */
-    50% { transform: translateY(-8px); }
-}
-
-/* ✅ دمج الـ scale مع الحركة باستخدام will-change */
-.dragon-marker {
-    will-change: transform, left, right;
+    0%, 100% { transform: translate(var(--tw-translate-x, 0), 0) scaleX(var(--tw-scale-x, 1)); }
+    50% { transform: translate(var(--tw-translate-x, 0), -8px) scaleX(var(--tw-scale-x, 1)); }
 }
 
 /* ==================== ANIMATIONS (ORIGINAL) ==================== */
@@ -199,13 +197,13 @@ body {
 }
 
 .glass:hover {
-    background: rgba(var(--bg-secondary-rgb), 0.6);
-    border-color: rgba(var(--accent-primary-rgb), 0.3);
+    background: rgba(var(--bg-secondary-rgb, 30, 41, 59), 0.6);
+    border-color: rgba(var(--accent-primary-rgb, 168, 85, 247), 0.3);
     box-shadow: 0 8px 32px 0 var(--card-shadow);
 }
 
 .glass-enhanced {
-    background: linear-gradient(135deg, var(--glass-bg) 0%, rgba(var(--bg-secondary-rgb), 0.3) 100%);
+    background: linear-gradient(135deg, var(--glass-bg) 0%, rgba(var(--bg-secondary-rgb, 30, 41, 59), 0.3) 100%);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--border-color);
