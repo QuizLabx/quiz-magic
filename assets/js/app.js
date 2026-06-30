@@ -5,7 +5,7 @@ let userResponses = [];
 let currentTheme = 'dark';
 let isQuizActive = false; // Flag to prevent grid re-render during quiz
 
-// Initialize
+/// Initialize
 document.addEventListener('DOMContentLoaded', () => {
     const savedLang = localStorage.getItem('quiz_lang') || 'ar';
     const savedTheme = localStorage.getItem('quiz_theme') || 'auto';
