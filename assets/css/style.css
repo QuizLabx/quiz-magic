@@ -110,24 +110,18 @@ body {
     animation: dragon-float 1.5s ease-in-out infinite;
 }
 
-/* ✅ إصلاح RTL للتنين - فصل الـ transform عن animation */
+/* RTL Adjustment for Dragon */
 [dir="rtl"] .dragon-marker {
-    transform: scaleX(-1);
-    /* نُطبق الانعكاس مرة واحدة فقط، ولا نضيف translateX هنا */
+    transform: translateX(-50%) scaleX(-1);
 }
 
 [dir="ltr"] .dragon-marker {
-    transform: scaleX(1);
+    transform: translateX(-50%);
 }
 
 @keyframes dragon-float {
-    0%, 100% { transform: translateY(0); }  /* نُحرك فقط في اتجاه Y */
-    50% { transform: translateY(-8px); }
-}
-
-/* ✅ دمج الـ scale مع الحركة باستخدام will-change */
-.dragon-marker {
-    will-change: transform, left, right;
+    0%, 100% { transform: translate(var(--tw-translate-x, 0), 0) scaleX(var(--tw-scale-x, 1)); }
+    50% { transform: translate(var(--tw-translate-x, 0), -8px) scaleX(var(--tw-scale-x, 1)); }
 }
 
 /* ==================== ANIMATIONS (ORIGINAL) ==================== */
