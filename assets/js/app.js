@@ -86,6 +86,7 @@ function renderSocialLinks() {
                 const a = document.createElement('a');
                 a.href = config.socialLinks[link.id];
                 a.target = "_blank";
+                a.rel = "noopener noreferrer"; // ✅ إضافة خاصية الأمان
                 a.className = "w-10 h-10 rounded-full flex items-center justify-center hover:bg-purple-600 hover:text-white transition-all transform hover:scale-110 theme-bg-tertiary theme-text-primary";
                 a.innerHTML = `<i class="${link.icon}"></i>`;
                 container.appendChild(a);
@@ -366,6 +367,7 @@ function calculateResult() {
         traitScores[resp.trait] = (traitScores[resp.trait] || 0) + resp.value;
     });
 
+    // ✅ تم إضافة سمة "ambition" إلى هذا الجدول
     const weightedTraitToCreature = {
         leadership: { dragon: 1.4, valkyrie: 0.8, simurgh: 0.7, centaur: 0.5 },
         power: { hydra: 1.4, dragon: 1.0, valkyrie: 0.7, cerberus: 0.8 },
@@ -393,7 +395,9 @@ function calculateResult() {
         logic: { centaur: 1.3, owl_of_athena: 0.9, sphinx: 0.8, golem: 0.6 },
         elegance: { siren: 1.5, unicorn: 0.9, phoenix: 0.7, kitsune: 0.8 },
         perfection: { simurgh: 1.4, phoenix: 0.8, valkyrie: 0.7, centaur: 0.6 },
-        persistence: { hydra: 1.5, phoenix: 0.9, valkyrie: 0.8, golem: 0.7 }
+        persistence: { hydra: 1.5, phoenix: 0.9, valkyrie: 0.8, golem: 0.7 },
+        // ✅ السمة الجديدة المضافة
+        ambition: { dragon: 1.3, pegasus: 1.4, simurgh: 1.2, valkyrie: 1.0, phoenix: 0.9 }
     };
 
     const creatureScores = {};
@@ -497,7 +501,8 @@ function showResult() {
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-12">
-            <button onclick="downloadResultAsImage()" class="flex items-center justify-center gap-3 p-5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-2xl font-bold text-lg transition-all transform hover:scale-105 shadow-xl shadow-blue-600/20">
+            <!-- ✅ تم تعديل زر التحميل لتمرير this كمعامل -->
+            <button onclick="downloadResultAsImage(this)" class="flex items-center justify-center gap-3 p-5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-2xl font-bold text-lg transition-all transform hover:scale-105 shadow-xl shadow-blue-600/20">
                 <i class="fas fa-image"></i> ${currentLang === 'ar' ? '🖼️ تحميل النتيجة كصورة' : '🖼️ Download as Image'}
             </button>
             <button onclick="shareResult()" class="flex items-center justify-center gap-3 p-5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white rounded-2xl font-bold text-lg transition-all transform hover:scale-105 shadow-xl shadow-purple-600/20">
@@ -584,11 +589,11 @@ function prepareShareTemplate(creature) {
 
 // ==================== DOWNLOAD & SHARE ====================
 
-async function downloadResultAsImage() {
-    const btn = event.currentTarget;
-    const originalText = btn.innerHTML;
-    btn.innerHTML = `<i class="fas fa-spinner animate-spin"></i> ${currentLang === 'ar' ? 'جاري التجهيز...' : 'Preparing...'}`;
-    btn.disabled = true;
+// ✅ الدالة المعدلة: تستقبل الزر نفسه كمعامل بدلاً من event
+async function downloadResultAsImage(button) {
+    const originalText = button.innerHTML;
+    button.innerHTML = `<i class="fas fa-spinner animate-spin"></i> ${currentLang === 'ar' ? 'جاري التجهيز...' : 'Preparing...'}`;
+    button.disabled = true;
 
     const template = document.getElementById('share-template');
     try {
@@ -608,8 +613,8 @@ async function downloadResultAsImage() {
         console.error('Error:', err);
         alert(currentLang === 'ar' ? 'عذراً، حدث خطأ أثناء تحميل الصورة.' : 'Sorry, an error occurred.');
     } finally {
-        btn.innerHTML = originalText;
-        btn.disabled = false;
+        button.innerHTML = originalText;
+        button.disabled = false;
     }
 }
 
