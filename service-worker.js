@@ -1,7 +1,11 @@
-const CACHE_NAME = 'quizmagic-v5';
+const CACHE_NAME = 'quizmagic-v6'; // ✅ تم تغيير الإصدار
 const ASSETS = [
   '/',
   '/index.html',
+  '/about.html',    // ✅ تمت الإضافة
+  '/contact.html',  // ✅ تمت الإضافة
+  '/privacy.html',  // ✅ تمت الإضافة
+  '/terms.html',    // ✅ تمت الإضافة
   '/assets/css/style.css',
   '/assets/js/config.js',
   '/assets/js/quizzes.js',
