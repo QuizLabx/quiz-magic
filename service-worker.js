@@ -1,4 +1,4 @@
-const CACHE_NAME = 'quizmagic-v6';
+const CACHE_VERSION = 'quizmagic-v6';
 const ASSETS = [
   '/',
   '/index.html',
@@ -17,17 +17,19 @@ const ASSETS = [
 
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
+    caches.open(CACHE_VERSION).then(cache => cache.addAll(ASSETS))
   );
 });
 
-// ✅ إضافة حدث activate لمسح الكاش القديم
 self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then(keys => {
+    caches.keys().then(cacheNames => {
       return Promise.all(
-        keys.filter(key => key !== CACHE_NAME)
-            .map(key => caches.delete(key))
+        cacheNames.map(cacheName => {
+          if (cacheName !== CACHE_VERSION) {
+            return caches.delete(cacheName);
+          }
+        })
       );
     })
   );
