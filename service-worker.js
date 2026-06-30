@@ -1,11 +1,11 @@
-const CACHE_NAME = 'quizmagic-v6'; // ✅ تم تغيير الإصدار
+const CACHE_NAME = 'quizmagic-v6';
 const ASSETS = [
   '/',
   '/index.html',
-  '/about.html',    // ✅ تمت الإضافة
-  '/contact.html',  // ✅ تمت الإضافة
-  '/privacy.html',  // ✅ تمت الإضافة
-  '/terms.html',    // ✅ تمت الإضافة
+  '/about.html',
+  '/contact.html',
+  '/privacy.html',
+  '/terms.html',
   '/assets/css/style.css',
   '/assets/js/config.js',
   '/assets/js/quizzes.js',
@@ -18,6 +18,18 @@ const ASSETS = [
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
+  );
+});
+
+// ✅ إضافة حدث activate لمسح الكاش القديم
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(keys => {
+      return Promise.all(
+        keys.filter(key => key !== CACHE_NAME)
+            .map(key => caches.delete(key))
+      );
+    })
   );
 });
 
