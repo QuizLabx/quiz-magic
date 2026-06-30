@@ -18,6 +18,21 @@
         .prose-invert h1, .prose-invert h2 { color: var(--text-primary); }
         hr { border-color: var(--border-color) !important; }
     </style>
+    <script>
+        // تطبيق الثيم المحفوظ عند تحميل الصفحة
+        (function() {
+            const savedTheme = localStorage.getItem('quiz_theme') || 'auto';
+            let theme = savedTheme;
+            if (theme === 'auto') {
+                theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+            if (theme === 'light') {
+                document.documentElement.classList.add('light-mode');
+            } else {
+                document.documentElement.classList.remove('light-mode');
+            }
+        })();
+    </script>
 </head>
 <body>
     <div class="max-w-3xl mx-auto px-4 py-16">
