@@ -145,7 +145,6 @@ function renderQuizGrid() {
     isQuizActive = false; // Reset flag
     showSkeletonLoaders();
     
-    // Dynamic delay based on connection speed (300-500ms instead of fixed 800ms)
     const delay = navigator.connection?.effectiveType === '4g' ? 300 : 500;
     setTimeout(() => {
         const grid = document.getElementById('quiz-grid');
@@ -208,24 +207,24 @@ function showWelcomeScreen(quizId) {
             </h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
                 <div class="theme-bg-tertiary/20 p-5 rounded-2xl border theme-border">
-                    <div class="text-3xl mb-3 text-purple-400"><i class="fas fa-question-circle"></i></div>
-                    <h4 class="font-bold theme-text-primary mb-2">${isAr ? 'الخطوة 1: الأسئلة' : 'Step 1: Questions'}</h4>
-                    <p class="theme-text-secondary text-xs">${isAr ? 'أجب على الأسئلة بصراحة وتلقائية.' : 'Answer the questions honestly and spontaneously.'}</p>
+                    <div class="text-3xl mb-3 text-purple-400"><i class="fas fa-dna"></i></div>
+                    <h4 class="font-bold theme-text-primary mb-2">${isAr ? 'الهوية الهجينة' : 'Hybrid Identity'}</h4>
+                    <p class="theme-text-secondary text-xs">${isAr ? 'نكتشف كائنك المهيمن وروحك المصاحبة.' : 'We discover your dominant creature and companion soul.'}</p>
                 </div>
                 <div class="theme-bg-tertiary/20 p-5 rounded-2xl border theme-border">
-                    <div class="text-3xl mb-3 text-blue-400"><i class="fas fa-brain"></i></div>
-                    <h4 class="font-bold theme-text-primary mb-2">${isAr ? 'الخطوة 2: التحليل' : 'Step 2: Analysis'}</h4>
-                    <p class="theme-text-secondary text-xs">${isAr ? 'نظامنا يحلل إجاباتك بخوارزمية متقدمة.' : 'Our system analyzes your answers with an advanced algorithm.'}</p>
+                    <div class="text-3xl mb-3 text-blue-400"><i class="fas fa-chart-pie"></i></div>
+                    <h4 class="font-bold theme-text-primary mb-2">${isAr ? 'مخطط القوى' : 'Power Blueprint'}</h4>
+                    <p class="theme-text-secondary text-xs">${isAr ? 'تحليل دقيق لـ 6 محاور لشخصيتك.' : 'Accurate analysis of 6 axes of your personality.'}</p>
                 </div>
                 <div class="theme-bg-tertiary/20 p-5 rounded-2xl border theme-border">
-                    <div class="text-3xl mb-3 text-pink-400"><i class="fas fa-dragon"></i></div>
-                    <h4 class="font-bold theme-text-primary mb-2">${isAr ? 'الخطوة 3: الكشف' : 'Step 3: Discovery'}</h4>
-                    <p class="theme-text-secondary text-xs">${isAr ? 'اكتشف كائنك الأسطوري من بين 16 كائن.' : 'Discover your mythical creature among 16 beings.'}</p>
+                    <div class="text-3xl mb-3 text-pink-400"><i class="fas fa-book-open"></i></div>
+                    <h4 class="font-bold theme-text-primary mb-2">${isAr ? 'سرد قصصي' : 'Narrative Results'}</h4>
+                    <p class="theme-text-secondary text-xs">${isAr ? 'نكتب لك قصة تصف يومك ككائن أسطوري.' : 'We write a story describing your day as a mythical being.'}</p>
                 </div>
                 <div class="theme-bg-tertiary/20 p-5 rounded-2xl border theme-border">
-                    <div class="text-3xl mb-3 text-green-400"><i class="fas fa-share-alt"></i></div>
-                    <h4 class="font-bold theme-text-primary mb-2">${isAr ? 'الخطوة 4: المشاركة' : 'Step 4: Sharing'}</h4>
-                    <p class="theme-text-secondary text-xs">${isAr ? 'حمل نتيجتك كصورة احترافية وشاركها.' : 'Download your result as a professional image and share it.'}</p>
+                    <div class="text-3xl mb-3 text-green-400"><i class="fas fa-medal"></i></div>
+                    <h4 class="font-bold theme-text-primary mb-2">${isAr ? 'الأوسمة والندرة' : 'Badges & Rarity'}</h4>
+                    <p class="theme-text-secondary text-xs">${isAr ? 'احصل على أوسمة نادرة بناءً على تميزك.' : 'Get rare badges based on your uniqueness.'}</p>
                 </div>
             </div>
             <button onclick="startQuiz('${quizId}')" class="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold rounded-2xl shadow-lg transform hover:scale-[1.02] active:scale-95 transition-all">
@@ -271,9 +270,9 @@ function showStep() {
                     <span class="text-xs theme-text-muted">${Math.round(progress)}%</span>
                 </div>
                 <div class="progress-container">
-                    <div class="progress-bar" style="width: ${progress}%"></div>
+                    <div id="dynamic-progress-bar" class="progress-bar transition-all duration-500" style="width: ${progress}%"></div>
                 </div>
-                <div class="dragon-marker" style="${currentLang === 'ar' ? 'right' : 'left'}: ${progress}%">🐉</div>
+                <div id="dynamic-marker" class="dragon-marker transition-all duration-500" style="${currentLang === 'ar' ? 'right' : 'left'}: ${progress}%">🐉</div>
             </div>
 
             <div class="mb-10">
@@ -285,7 +284,7 @@ function showStep() {
             content += `
                 <div class="grid grid-cols-2 gap-4 sm:gap-6">
                     ${question.options.map((opt) => `
-                        <div onclick="handleVisualChoice('${opt.trait}', ${opt.value})" class="group cursor-pointer relative overflow-hidden rounded-2xl border-2 theme-border hover:border-purple-500 transition-all transform hover:scale-[1.03] active:scale-95 shadow-lg">
+                        <div onclick="handleVisualChoice('${opt.trait}', ${opt.value}, '${opt.axis || ''}')" class="group cursor-pointer relative overflow-hidden rounded-2xl border-2 theme-border hover:border-purple-500 transition-all transform hover:scale-[1.03] active:scale-95 shadow-lg">
                             <div class="aspect-square overflow-hidden">
                                 <img src="${opt.image}" loading="lazy" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                             </div>
@@ -307,7 +306,7 @@ function showStep() {
                         { text: currentLang === 'ar' ? 'لا أوافق' : 'Disagree', value: 2, color: 'bg-orange-600/20 border-orange-500/50 hover:bg-orange-600/40' },
                         { text: currentLang === 'ar' ? 'لا أوافق بشدة' : 'Strongly Disagree', value: 1, color: 'bg-red-600/20 border-red-500/50 hover:bg-red-600/40' }
                     ].map((opt) => `
-                        <button onclick="handleLikert(${opt.value})" class="w-full p-4 text-center ${opt.color} border rounded-2xl transition-all transform hover:scale-[1.02] active:scale-95 font-bold text-lg theme-text-primary">
+                        <button onclick="handleLikert(${opt.value}, '${question.axis || ''}')" class="w-full p-4 text-center ${opt.color} border rounded-2xl transition-all transform hover:scale-[1.02] active:scale-95 font-bold theme-text-primary">
                             ${opt.text}
                         </button>
                     `).join('')}
@@ -317,37 +316,55 @@ function showStep() {
 
         container.innerHTML = content;
         container.classList.remove('opacity-0');
-    }, 200);
+        updateVisualEvolution(progress);
+    }, 300);
 }
 
-function handleLikert(value) {
+function updateVisualEvolution(progress) {
+    const bar = document.getElementById('dynamic-progress-bar');
+    const marker = document.getElementById('dynamic-marker');
+    if (!bar || !marker) return;
+
+    if (progress > 25) {
+        bar.style.boxShadow = '0 0 15px rgba(168, 85, 247, 0.5)';
+        marker.innerHTML = '✨';
+    }
+    if (progress > 50) {
+        bar.style.background = 'linear-gradient(to right, #a855f7, #ec4899)';
+        marker.innerHTML = '🔮';
+    }
+    if (progress > 75) {
+        bar.style.boxShadow = '0 0 25px rgba(236, 72, 153, 0.7)';
+        marker.innerHTML = '👑';
+    }
+}
+
+function handleLikert(value, axis) {
     const question = currentQuiz.questions[currentStepId];
-    userResponses.push({ trait: question.trait, value: value });
+    userResponses.push({ trait: question.trait, value: value, axis: axis });
     nextStep();
 }
 
-function handleVisualChoice(trait, value) {
-    userResponses.push({ trait: trait, value: value });
+function handleVisualChoice(trait, value, axis) {
+    userResponses.push({ trait: trait, value: value, axis: axis });
     nextStep();
 }
 
 function nextStep() {
-    if (currentStepId < currentQuiz.questions.length - 1) {
-        currentStepId++;
+    currentStepId++;
+    if (currentStepId < currentQuiz.questions.length) {
         showStep();
     } else {
         showLoading();
     }
 }
 
-// ==================== LOADING SCREEN ====================
-
 function showLoading() {
+    const delay = typeof config !== 'undefined' ? config.analysisSpeed : 3000;
     const container = document.getElementById('quiz-container');
-    const delay = (typeof config !== 'undefined') ? config.analysisSpeed : 3500;
     container.innerHTML = `
-        <div class="py-16 text-center animate-fade-in">
-            <div class="relative inline-block w-24 h-24 mb-8">
+        <div class="text-center py-20 animate-fade-in">
+            <div class="relative w-32 h-32 mx-auto mb-10">
                 <div class="absolute inset-0 border-4 border-purple-500/10 rounded-full"></div>
                 <div class="absolute inset-0 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
                 <div class="absolute inset-4 border-4 border-pink-500/20 border-b-transparent rounded-full animate-spin-slow"></div>
@@ -365,8 +382,15 @@ function showLoading() {
 
 function calculateResult() {
     const traitScores = {};
+    const axisScores = {
+        intelligence: 0, energy: 0, empathy: 0, strategy: 0, mystery: 0, willpower: 0
+    };
+
     userResponses.forEach(resp => {
         traitScores[resp.trait] = (traitScores[resp.trait] || 0) + resp.value;
+        if (resp.axis && axisScores.hasOwnProperty(resp.axis)) {
+            axisScores[resp.axis] += resp.value;
+        }
     });
 
     const weightedTraitToCreature = {
@@ -410,27 +434,23 @@ function calculateResult() {
         }
     }
 
-    let maxScore = -1;
-    let winnerId = 'dragon';
-    for (const id in creatureScores) {
-        if (creatureScores[id] > maxScore) {
-            maxScore = creatureScores[id];
-            winnerId = id;
-        }
-    }
+    // Sort creatures by score
+    const sortedCreatures = Object.keys(creatureScores).sort((a, b) => creatureScores[b] - creatureScores[a]);
+    const winnerId = sortedCreatures[0] || 'dragon';
+    const secondaryId = sortedCreatures[1] || 'phoenix';
 
-    const radarData = {
-        power: Math.min(100, Math.max(30, ((traitScores['power'] || 3) + (traitScores['leadership'] || 3)) * 8)),
-        wisdom: Math.min(100, Math.max(30, ((traitScores['wisdom'] || 3) + (traitScores['knowledge'] || 3)) * 8)),
-        mystery: Math.min(100, Math.max(30, ((traitScores['mystery'] || 3) + (traitScores['intuition'] || 3)) * 8)),
-        purity: Math.min(100, Math.max(30, ((traitScores['purity'] || 3) + (traitScores['nature'] || 3)) * 8)),
-        leadership: Math.min(100, Math.max(30, ((traitScores['leadership'] || 3) + (traitScores['strategy'] || 3)) * 8)),
-        adaptation: Math.min(100, Math.max(30, ((traitScores['adaptation'] || 3) + (traitScores['energy'] || 3)) * 8))
-    };
+    // Normalize axis scores (0-100)
+    const normalizedAxes = {};
+    for (const axis in axisScores) {
+        // Max possible score for an axis is roughly (Questions per axis * 5)
+        // Let's assume average of 6-7 questions per axis
+        normalizedAxes[axis] = Math.min(100, Math.max(20, (axisScores[axis] / 30) * 100));
+    }
 
     return {
         creature: currentQuiz.results.find(r => r.id === winnerId) || currentQuiz.results[0],
-        radar: radarData,
+        secondaryCreature: currentQuiz.results.find(r => r.id === secondaryId) || currentQuiz.results[1],
+        radar: normalizedAxes,
         winnerId: winnerId
     };
 }
@@ -455,10 +475,42 @@ function getCreaturePercentage(creatureId) {
 
 // ==================== RESULT DISPLAY ====================
 
+// Creature color themes for dynamic effects
+const creatureThemes = {
+    dragon: { primary: '#dc2626', secondary: '#fbbf24', glow: 'rgba(220, 38, 38, 0.5)' },
+    phoenix: { primary: '#ea580c', secondary: '#fbbf24', glow: 'rgba(234, 88, 12, 0.5)' },
+    unicorn: { primary: '#ec4899', secondary: '#fce7f3', glow: 'rgba(236, 72, 153, 0.5)' },
+    sphinx: { primary: '#8b5cf6', secondary: '#ddd6fe', glow: 'rgba(139, 92, 246, 0.5)' },
+    kraken: { primary: '#0369a1', secondary: '#06b6d4', glow: 'rgba(3, 105, 161, 0.5)' },
+    owl_of_athena: { primary: '#7c3aed', secondary: '#c4b5fd', glow: 'rgba(124, 58, 237, 0.5)' },
+    centaur: { primary: '#059669', secondary: '#86efac', glow: 'rgba(5, 150, 105, 0.5)' },
+    cerberus: { primary: '#1f2937', secondary: '#9ca3af', glow: 'rgba(31, 41, 55, 0.5)' },
+    faun: { primary: '#84cc16', secondary: '#dcfce7', glow: 'rgba(132, 204, 22, 0.5)' },
+    golem: { primary: '#6b7280', secondary: '#d1d5db', glow: 'rgba(107, 114, 128, 0.5)' },
+    hydra: { primary: '#7f1d1d', secondary: '#fca5a5', glow: 'rgba(127, 29, 29, 0.5)' },
+    kitsune: { primary: '#f97316', secondary: '#fed7aa', glow: 'rgba(249, 115, 22, 0.5)' },
+    pegasus: { primary: '#3b82f6', secondary: '#bfdbfe', glow: 'rgba(59, 130, 246, 0.5)' },
+    simurgh: { primary: '#d946ef', secondary: '#f0abfc', glow: 'rgba(217, 70, 239, 0.5)' },
+    siren: { primary: '#06b6d4', secondary: '#cffafe', glow: 'rgba(6, 182, 212, 0.5)' },
+    valkyrie: { primary: '#dc2626', secondary: '#fecaca', glow: 'rgba(220, 38, 38, 0.5)' }
+};
+
+function applyCreatureTheme(creatureId) {
+    const theme = creatureThemes[creatureId] || creatureThemes.dragon;
+    const resultContainer = document.getElementById('result-container');
+    
+    // Apply gradient background
+    resultContainer.style.background = `linear-gradient(135deg, ${theme.glow} 0%, rgba(15, 23, 42, 0.8) 100%)`;
+    resultContainer.style.borderRadius = '2.5rem';
+    resultContainer.style.padding = '2rem';
+    resultContainer.style.boxShadow = `0 0 60px ${theme.glow}`;
+}
+
 function showResult() {
     isQuizActive = false;
-    const { creature, radar, winnerId } = calculateResult();
+    const { creature, secondaryCreature, radar, winnerId } = calculateResult();
     saveUserStats(winnerId);
+    applyCreatureTheme(winnerId);
     
     document.getElementById('quiz-container').classList.add('hidden');
     const container = document.getElementById('result-container');
@@ -469,60 +521,133 @@ function showResult() {
         ? `${percentage}% من المستخدمين حصلوا على نفس النتيجة`
         : `${percentage}% of users got the same result`;
 
+    const isAr = currentLang === 'ar';
+
     container.innerHTML = `
         <div class="theme-bg-secondary rounded-[2.5rem] overflow-hidden border theme-border shadow-2xl mb-12 animate-fade-in">
-            <div class="relative h-80 md:h-[30rem]">
-                <img src="${creature.image}" loading="lazy" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
-                <div class="absolute bottom-10 left-0 right-0 px-8 text-center">
-                    <span class="bg-purple-600/90 backdrop-blur-md text-white px-5 py-2 rounded-full text-sm font-bold mb-4 inline-block shadow-lg uppercase tracking-widest border border-white/20">${creature.rarity}</span>
-                    <h2 class="text-5xl md:text-7xl font-black text-white drop-shadow-2xl mb-2">${creature.name}</h2>
-                    <p class="text-purple-300 font-bold text-xl">${currentLang === 'ar' ? 'هذا هو كائنك الأسطوري الحقيقي' : 'This is your true mythical essence'}</p>
+            <!-- New Clean Hybrid Identity Header -->
+            <div class="relative h-[28rem] md:h-[35rem] overflow-hidden bg-slate-950">
+                <img src="${creature.image}" loading="lazy" class="absolute inset-0 w-full h-full object-cover opacity-60 scale-105">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+                
+                <div class="absolute inset-0 flex flex-col items-center justify-center px-8 text-center">
+                    <div class="flex justify-center gap-3 mb-8">
+                        <span class="bg-purple-600/90 backdrop-blur-md text-white px-4 py-1.5 rounded-full text-[10px] font-black shadow-lg uppercase tracking-widest border border-white/10">
+                            ${creature.rarity}
+                        </span>
+                        <span class="bg-pink-600/80 backdrop-blur-md text-white px-4 py-1.5 rounded-full text-[10px] font-black shadow-lg uppercase tracking-widest border border-white/10">
+                            ${creature.badge || 'Legend'}
+                        </span>
+                    </div>
+                    
+                    <div class="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 mb-6">
+                        <div class="flex flex-col items-center">
+                            <span class="text-xs font-black text-purple-500 mb-2 uppercase tracking-tighter">${isAr ? 'المهيمن (70%)' : 'Dominant (70%)'}</span>
+                            <h2 class="text-4xl md:text-7xl font-black text-white drop-shadow-2xl">${creature.name}</h2>
+                        </div>
+                        <span class="text-purple-600 text-4xl md:text-6xl font-light opacity-50 hidden md:block">×</span>
+                        <div class="flex flex-col items-center">
+                            <span class="text-xs font-black text-pink-500 mb-2 uppercase tracking-tighter">${isAr ? 'المصاحب (30%)' : 'Companion (30%)'}</span>
+                            <h2 class="text-2xl md:text-4xl font-black text-slate-400 drop-shadow-2xl">${secondaryCreature.name}</h2>
+                        </div>
+                    </div>
+
+                    <p class="text-slate-400 font-medium text-sm md:text-lg mb-10 max-w-xl">
+                        ${isAr ? 'لقد تم تحليل جوهرك ودمجه مع القوى القديمة' : 'Your essence has been analyzed and merged with ancient forces'}
+                    </p>
+
+                    <!-- Expand Button -->
+                    <button onclick="toggleDetails()" class="group flex flex-col items-center gap-3 transition-all duration-500 hover:scale-110">
+                        <span class="text-xs font-bold text-purple-400 uppercase tracking-[0.3em] group-hover:text-purple-300">
+                            ${isAr ? 'اكتشف أسرار هويتك' : 'Discover Your Identity Secrets'}
+                        </span>
+                        <div class="w-12 h-12 rounded-full border-2 border-purple-500/30 flex items-center justify-center group-hover:border-purple-500 transition-colors">
+                            <i id="expand-icon" class="fas fa-chevron-down text-purple-500 animate-bounce"></i>
+                        </div>
+                    </button>
                 </div>
             </div>
             
-            <div class="p-8 md:p-14">
-                <div class="mb-8 p-4 bg-purple-600/10 rounded-2xl border border-purple-500/30 text-center">
-                    <p class="text-lg font-semibold theme-text-primary">${statsText}</p>
-                </div>
-
-                <div class="mb-16">
-                    <h3 class="text-3xl font-bold theme-text-primary mb-10 text-center">
-                        ${currentLang === 'ar' ? 'خارطة القوى الروحية' : 'Spiritual Power Map'}
-                    </h3>
-                    <div class="max-w-md mx-auto theme-bg-tertiary/20 p-6 rounded-[2rem] border theme-border shadow-inner">
-                        <canvas id="radarChart"></canvas>
+            <!-- Expandable Details Section -->
+            <div id="details-section" class="max-h-0 overflow-hidden transition-all duration-1000 ease-in-out">
+                <div class="p-8 md:p-14 border-t theme-border">
+                    <!-- Creature Encyclopedia -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-20">
+                        <div class="theme-bg-tertiary/20 p-8 rounded-[2.5rem] border theme-border">
+                            <div class="mb-6">
+                                <img src="${creature.image}" class="w-full h-48 object-cover rounded-2xl mb-4 border-2 border-purple-500">
+                                <h4 class="text-2xl font-bold theme-text-primary mb-1">${creature.name}</h4>
+                                <span class="text-xs text-purple-400 font-bold uppercase tracking-widest">${isAr ? 'الكيان المهيمن' : 'Dominant Entity'}</span>
+                            </div>
+                            <p class="theme-text-secondary leading-relaxed text-sm">
+                                ${creature.article || creature.description}
+                            </p>
+                        </div>
+                        <div class="theme-bg-tertiary/20 p-8 rounded-[2.5rem] border theme-border">
+                            <div class="mb-6">
+                                <img src="${secondaryCreature.image}" class="w-full h-48 object-cover rounded-2xl mb-4 border-2 border-pink-500">
+                                <h4 class="text-2xl font-bold theme-text-primary mb-1">${secondaryCreature.name}</h4>
+                                <span class="text-xs text-pink-400 font-bold uppercase tracking-widest">${isAr ? 'الروح المصاحبة' : 'Companion Soul'}</span>
+                            </div>
+                            <p class="theme-text-secondary leading-relaxed text-sm">
+                                ${secondaryCreature.article || secondaryCreature.description}
+                            </p>
+                        </div>
                     </div>
-                </div>
 
-                <div class="mb-12">
-                    <div class="inline-block p-3 bg-purple-600/10 rounded-2xl mb-6">
-                        <i class="fas fa-fingerprint text-3xl text-purple-500"></i>
+                    <!-- Hybrid Narrative & Analysis -->
+                    <div class="mb-20 text-center">
+                        <div class="inline-block p-4 bg-purple-600/10 rounded-3xl mb-6">
+                            <i class="fas fa-dna text-4xl text-purple-500"></i>
+                        </div>
+                        <h3 class="text-3xl font-bold theme-text-primary mb-6">
+                            ${isAr ? 'التحليل النفسي للهوية الهجينة' : 'Hybrid Identity Psychoanalysis'}
+                        </h3>
+                        <div class="max-w-3xl mx-auto theme-bg-tertiary/10 p-10 rounded-[3rem] border-2 border-dashed theme-border relative">
+                            <div class="absolute -top-4 -left-4 w-12 h-12 theme-bg-secondary flex items-center justify-center rounded-full border theme-border">
+                                <i class="fas fa-quote-left text-purple-500"></i>
+                            </div>
+                            <p class="text-xl theme-text-secondary leading-relaxed italic">
+                                "${creature.narrative || creature.description} ${isAr ? 'بينما تكمن في أعماقك روح' : 'While deep within lies the spirit of'} ${secondaryCreature.name} ${isAr ? 'التي تمنحك' : 'which grants you'} ${secondaryCreature.description.split('.')[0].toLowerCase()}."
+                            </p>
+                        </div>
                     </div>
-                    <h3 class="text-3xl font-bold theme-text-primary mb-6">
-                        ${currentLang === 'ar' ? 'التحليل النفسي العميق' : 'Deep Psychological Analysis'}
-                    </h3>
-                    <p class="text-xl theme-text-secondary leading-relaxed text-center italic">"${creature.description}"</p>
-                </div>
-                
+
+                    <!-- Power Blueprint (Radar Chart) -->
+                    <div class="mb-20">
+                        <h3 class="text-3xl font-bold theme-text-primary mb-10 text-center">
+                            ${isAr ? 'مخطط القوى (Power Blueprint)' : 'Power Blueprint'}
+                        </h3>
+                        <div class="max-w-md mx-auto theme-bg-tertiary/20 p-6 rounded-[2rem] border theme-border shadow-inner">
+                            <canvas id="radarChart"></canvas>
+                        </div>
+                    </div>
+
+                <!-- Secret Report -->
                 <div class="relative p-1 bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 rounded-[2rem] overflow-hidden shadow-2xl">
                     <div class="relative p-10 theme-bg-primary rounded-[1.8rem] overflow-hidden">
-                        <div id="cpa-locker" class="absolute inset-0 backdrop-blur-sm flex flex-col items-center justify-center p-8 text-center z-10">
+                        <div id="cpa-locker" class="absolute inset-0 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center z-10 bg-black/20">
                             <div class="w-20 h-20 bg-gradient-to-tr from-purple-600 to-pink-600 rounded-full flex items-center justify-center mb-6 border-4 border-white/10 shadow-inner">
                                 <i class="fas fa-lock text-3xl text-white"></i>
                             </div>
-                            <h3 class="text-3xl font-bold mb-4 theme-text-primary">${currentLang === 'ar' ? 'التقرير السري المتقدم' : 'Advanced Secret Report'}</h3>
-                            <button onclick="unlockSecretReport()" class="bg-purple-600 text-white px-8 py-3 rounded-full font-bold hover:bg-purple-700 transition-all z-[60] cursor-pointer relative">
-                                ${currentLang === 'ar' ? 'فتح التقرير السري' : 'Unlock Secret Report'}
+                            <h3 class="text-3xl font-bold mb-4 theme-text-primary">${isAr ? 'التقرير السري المتقدم' : 'Advanced Secret Report'}</h3>
+                            <button onclick="unlockSecretReport()" class="bg-purple-600 text-white px-8 py-3 rounded-full font-bold hover:bg-purple-700 transition-all z-[60] cursor-pointer relative shadow-xl">
+                                ${isAr ? 'فتح التقرير السري' : 'Unlock Secret Report'}
                             </button>
                         </div>
                         <div id="secret-content" class="opacity-10 blur-xl transition-all duration-1000">
-                            <h4 class="text-2xl font-bold text-purple-400 mb-4">${currentLang === 'ar' ? 'نمط قوتك:' : 'Power Pattern:'}</h4>
-                            <p class="theme-text-secondary mb-6">${creature.secretReport.strengths}</p>
-                            <h4 class="text-2xl font-bold text-purple-400 mb-4">${currentLang === 'ar' ? 'التحديات:' : 'Challenges:'}</h4>
-                            <p class="theme-text-secondary mb-6">${creature.secretReport.challenges}</p>
-                            <div class="p-4 theme-bg-tertiary/20 border theme-border rounded-xl">
-                                <p class="text-purple-300 italic">"${creature.secretReport.insight}"</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div>
+                                    <h4 class="text-2xl font-bold text-purple-400 mb-4">${isAr ? 'نمط قوتك:' : 'Power Pattern:'}</h4>
+                                    <p class="theme-text-secondary mb-6">${creature.secretReport.strengths}</p>
+                                </div>
+                                <div>
+                                    <h4 class="text-2xl font-bold text-pink-400 mb-4">${isAr ? 'نصيحة الكائن:' : 'Creature Advice:'}</h4>
+                                    <p class="theme-text-secondary mb-6">${creature.advice || creature.secretReport.insight}</p>
+                                </div>
+                            </div>
+                            <div class="mt-6 p-6 theme-bg-tertiary/20 border theme-border rounded-2xl text-center">
+                                <p class="text-purple-300 italic text-lg">"${creature.secretReport.insight}"</p>
                             </div>
                         </div>
                     </div>
@@ -532,29 +657,33 @@ function showResult() {
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-12">
             <button onclick="downloadResultAsImage(this)" class="flex items-center justify-center gap-3 p-5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-2xl font-bold text-lg transition-all transform hover:scale-105 shadow-xl shadow-blue-600/20">
-                <i class="fas fa-image"></i> ${currentLang === 'ar' ? '🖼️ تحميل النتيجة كصورة' : '🖼️ Download as Image'}
+                <i class="fas fa-image"></i> ${isAr ? '🖼️ تحميل النتيجة كصورة' : '🖼️ Download as Image'}
             </button>
             <button onclick="shareResult()" class="flex items-center justify-center gap-3 p-5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white rounded-2xl font-bold text-lg transition-all transform hover:scale-105 shadow-xl shadow-purple-600/20">
-                <i class="fas fa-share-alt"></i> ${currentLang === 'ar' ? '🚀 شارك النتيجة' : '🚀 Share Result'}
+                <i class="fas fa-share-alt"></i> ${isAr ? '🚀 شارك النتيجة' : '🚀 Share Result'}
+            </button>
+            <button onclick="compareWithFriend()" class="flex items-center justify-center gap-3 p-5 bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-500 hover:to-teal-500 text-white rounded-2xl font-bold text-lg transition-all transform hover:scale-105 shadow-xl shadow-green-600/20">
+                <i class="fas fa-users"></i> ${isAr ? '⚔️ قارن مع صديق' : '⚔️ Compare with Friend'}
             </button>
         </div>
 
         <button onclick="location.reload()" class="theme-text-muted hover:theme-text-primary transition font-bold mb-20">
-            <i class="fas fa-redo mr-2"></i> ${currentLang === 'ar' ? 'إعادة الاختبار' : 'Retake Quiz'}
+            <i class="fas fa-redo mr-2"></i> ${isAr ? 'إعادة الاختبار' : 'Retake Quiz'}
         </button>
     `;
 
     renderRadarChart(radar);
-    prepareShareTemplate(creature);
+    prepareShareTemplate(creature, secondaryCreature);
+    applyCreatureTheme(winnerId);
 }
 
 // ==================== RADAR CHART ====================
 
 function renderRadarChart(data) {
     const ctx = document.getElementById('radarChart').getContext('2d');
-    const labels = currentLang === 'ar' 
-        ? ['القوة', 'الحكمة', 'الغموض', 'النقاء', 'القيادة', 'التكيف']
-        : ['Power', 'Wisdom', 'Mystery', 'Purity', 'Leadership', 'Adaptation'];
+    const axesConfig = config.powerAxes[currentLang];
+    const labels = Object.values(axesConfig);
+    const dataValues = Object.keys(axesConfig).map(key => data[key] || 50);
 
     const isLight = document.documentElement.classList.contains('light-mode');
     const gridColor = isLight ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)';
@@ -565,13 +694,15 @@ function renderRadarChart(data) {
         data: {
             labels: labels,
             datasets: [{
-                label: currentLang === 'ar' ? 'قواك الروحية' : 'Spiritual Powers',
-                data: [data.power, data.wisdom, data.mystery, data.purity, data.leadership, data.adaptation],
+                label: currentLang === 'ar' ? 'تحليل القوى' : 'Power Analysis',
+                data: dataValues,
                 backgroundColor: 'rgba(168, 85, 247, 0.2)',
                 borderColor: 'rgba(168, 85, 247, 0.8)',
                 borderWidth: 3,
                 pointBackgroundColor: '#a855f7',
                 pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: '#a855f7'
             }]
         },
         options: {
@@ -579,18 +710,36 @@ function renderRadarChart(data) {
                 r: {
                     angleLines: { color: gridColor },
                     grid: { color: gridColor },
-                    pointLabels: { color: textColor, font: { size: 14, family: 'Cairo' } },
+                    pointLabels: { color: textColor, font: { size: 12, family: 'Cairo', weight: 'bold' } },
                     ticks: { display: false },
                     suggestedMin: 0,
                     suggestedMax: 100
                 }
             },
-            plugins: { legend: { display: false } }
+            plugins: { legend: { display: false } },
+            animation: { duration: 2000, easing: 'easeOutQuart' }
         }
     });
 }
 
 // ==================== SECRET REPORT ====================
+
+function toggleDetails() {
+    const section = document.getElementById('details-section');
+    const icon = document.getElementById('expand-icon');
+    
+    if (section.style.maxHeight && section.style.maxHeight !== '0px') {
+        section.style.maxHeight = '0px';
+        icon.style.transform = 'rotate(0deg)';
+    } else {
+        section.style.maxHeight = '5000px'; // Sufficient height for content
+        icon.style.transform = 'rotate(180deg)';
+        // Scroll smoothly to details
+        setTimeout(() => {
+            section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 300);
+    }
+}
 
 function unlockSecretReport() {
     const locker = document.getElementById('cpa-locker');
@@ -603,17 +752,17 @@ function unlockSecretReport() {
 
 // ==================== SHARE TEMPLATE ====================
 
-function prepareShareTemplate(creature) {
+function prepareShareTemplate(creature, secondary) {
     const img = document.getElementById('share-creature-img');
     if (img) img.src = creature.image;
     const name = document.getElementById('share-creature-name');
-    if (name) name.innerText = creature.name;
+    if (name) name.innerText = `${creature.name} × ${secondary.name}`;
     const rarity = document.getElementById('share-rarity');
     if (rarity) rarity.innerText = creature.rarity;
     const tagline = document.getElementById('share-tagline');
-    if (tagline) tagline.innerText = currentLang === 'ar' ? 'كائني الأسطوري الحقيقي' : 'My True Mythical Essence';
+    if (tagline) tagline.innerText = currentLang === 'ar' ? 'هويتي الأسطورية الهجينة' : 'My True Hybrid Essence';
     const desc = document.getElementById('share-description');
-    if (desc) desc.innerText = creature.description.substring(0, 160) + '...';
+    if (desc) desc.innerText = (creature.narrative || creature.description).substring(0, 160) + '...';
 }
 
 // ==================== DOWNLOAD & SHARE ====================
@@ -623,23 +772,21 @@ async function downloadResultAsImage(btn) {
     btn.innerHTML = `<i class="fas fa-spinner animate-spin"></i> ${currentLang === 'ar' ? 'جاري التجهيز...' : 'Preparing...'}`;
     btn.disabled = true;
 
-    const template = document.getElementById('share-template');
     try {
+        const template = document.getElementById('share-template');
         const canvas = await html2canvas(template, {
-            scale: 2,
             useCORS: true,
-            backgroundColor: '#0f172a',
-            width: 1080,
-            height: 1080,
-            logging: false
+            scale: 2,
+            backgroundColor: '#0f172a'
         });
+        
         const link = document.createElement('a');
         link.download = `QuizMagic-Result-${Date.now()}.png`;
-        link.href = canvas.toDataURL('image/png', 1.0);
+        link.href = canvas.toDataURL('image/png');
         link.click();
     } catch (err) {
-        console.error('Error:', err);
-        alert(currentLang === 'ar' ? 'عذراً، حدث خطأ أثناء تحميل الصورة.' : 'Sorry, an error occurred.');
+        console.error('Download failed:', err);
+        alert(currentLang === 'ar' ? 'عذراً، فشل تحميل الصورة.' : 'Sorry, download failed.');
     } finally {
         btn.innerHTML = originalText;
         btn.disabled = false;
@@ -647,18 +794,117 @@ async function downloadResultAsImage(btn) {
 }
 
 function shareResult() {
-    const name = document.querySelector('h2.text-5xl')?.innerText || 'Creature';
-    const shareData = {
-        title: 'QuizMagic',
-        text: currentLang === 'ar' 
-            ? `لقد اكتشفت أنني ${name}! جرب الاختبار الآن واكتشف كائنك الأسطوري.`
-            : `I discovered that I am a ${name}! Take the quiz and discover your mythical essence.`,
-        url: window.location.href
-    };
+    const text = currentLang === 'ar' 
+        ? `اكتشفت كائني الأسطوري الهجين على QuizMagic! جربه الآن: `
+        : `I discovered my hybrid mythical identity on QuizMagic! Try it now: `;
+    const url = window.location.href;
+
     if (navigator.share) {
-        navigator.share(shareData);
+        navigator.share({ title: 'QuizMagic', text: text, url: url });
     } else {
-        navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
-        alert(currentLang === 'ar' ? 'تم نسخ الرابط والنتيجة! يمكنك مشاركتها الآن.' : 'Link and result copied!');
+        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text + url)}`);
     }
 }
+
+function compareWithFriend() {
+    const { creature, secondaryCreature, radar, winnerId } = calculateResult(); // Recalculate to get fresh data
+    const friendData = {
+        creatureId: winnerId,
+        secondaryCreatureId: secondaryCreature.id,
+        radarScores: radar
+    };
+    const encodedData = btoa(JSON.stringify(friendData));
+    const comparisonUrl = `${window.location.origin}${window.location.pathname}?compare=${encodedData}`;
+
+    const text = currentLang === 'ar'
+        ? `تحداني في QuizMagic واكتشف مدى توافق هويتنا الأسطورية! ${comparisonUrl}`
+        : `Challenge me on QuizMagic and discover our mythical compatibility! ${comparisonUrl}`;
+
+    if (navigator.share) {
+        navigator.share({ title: 'QuizMagic Challenge', text: text, url: comparisonUrl });
+    } else {
+        navigator.clipboard.writeText(comparisonUrl).then(() => {
+            alert(currentLang === 'ar' ? 'تم نسخ رابط المقارنة! أرسله لصديقك.' : 'Comparison link copied! Send it to your friend.');
+        }).catch(err => {
+            console.error('Failed to copy link: ', err);
+            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`);
+        });
+    }
+}
+
+// Function to calculate compatibility (placeholder for now)
+function calculateCompatibility(user1Data, user2Data) {
+    // This is a simplified example. Real compatibility would involve more complex logic.
+    // For now, let's just compare dominant creatures and sum up some radar scores.
+    let score = 0;
+
+    if (user1Data.creatureId === user2Data.creatureId) {
+        score += 50; // Big bonus for same dominant creature
+    }
+    if (user1Data.secondaryCreatureId === user2Data.secondaryCreatureId) {
+        score += 20; // Bonus for same secondary creature
+    }
+
+    // Compare radar scores - simple difference
+    let radarDiff = 0;
+    for (const axis in user1Data.radarScores) {
+        radarDiff += Math.abs(user1Data.radarScores[axis] - user2Data.radarScores[axis]);
+    }
+    // Normalize radarDiff to contribute to score (smaller diff = higher score)
+    score += Math.max(0, 30 - (radarDiff / Object.keys(user1Data.radarScores).length));
+
+    return Math.min(100, Math.round(score)); // Cap at 100%
+}
+
+// Check for comparison URL parameter on page load
+let friendComparisonData = null;
+document.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const compareParam = urlParams.get('compare');
+    if (compareParam) {
+        try {
+            friendComparisonData = JSON.parse(atob(compareParam));
+            // Optionally, clear the URL parameter to avoid re-comparison on refresh
+            history.replaceState({}, document.title, window.location.pathname);
+            alert(currentLang === 'ar' ? 'لقد تلقيت تحدي مقارنة! أكمل الاختبار لترى مدى توافقكما.' : 'You received a comparison challenge! Complete the quiz to see your compatibility.');
+        } catch (e) {
+            console.error('Failed to parse comparison data:', e);
+        }
+    }
+    // ... rest of DOMContentLoaded ...
+});
+
+// Modify showResult to handle comparison if friendComparisonData is present
+const originalShowResult = showResult;
+showResult = function() {
+    originalShowResult(); // Call the original showResult first
+
+    if (friendComparisonData) {
+        const { creature, secondaryCreature, radar, winnerId } = calculateResult();
+        const currentUserData = {
+            creatureId: winnerId,
+            secondaryCreatureId: secondaryCreature.id,
+            radarScores: radar
+        };
+        const compatibilityScore = calculateCompatibility(friendComparisonData, currentUserData);
+
+        const isAr = currentLang === 'ar';
+        const comparisonResultHtml = `
+            <div class="mt-12 p-8 theme-bg-tertiary/20 rounded-[2.5rem] border theme-border text-center animate-fade-in">
+                <h3 class="text-3xl font-bold theme-text-primary mb-4">
+                    ${isAr ? '⚔️ نتيجة المقارنة الأسطورية ⚔️' : '⚔️ Mythical Comparison Result ⚔️'}
+                </h3>
+                <p class="text-xl theme-text-secondary mb-6">
+                    ${isAr ? 'مدى توافقك مع صديقك هو:' : 'Your compatibility with your friend is:'}
+                </p>
+                <div class="text-6xl font-black bg-gradient-to-r from-green-400 to-teal-500 bg-clip-text text-transparent mb-6">
+                    ${compatibilityScore}%
+                </div>
+                <p class="theme-text-secondary text-lg">
+                    ${isAr ? `أنت وصديقك ${friendComparisonData.creatureId} و ${currentUserData.creatureId} تشكلان ثنائياً أسطورياً بنسبة ${compatibilityScore}%!` : `You and your friend, the ${friendComparisonData.creatureId} and the ${currentUserData.creatureId}, form a mythical duo with ${compatibilityScore}% compatibility!`}
+                </p>
+            </div>
+        `;
+        document.getElementById('result-container').insertAdjacentHTML('beforeend', comparisonResultHtml);
+    }
+};
