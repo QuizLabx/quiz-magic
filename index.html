@@ -65,6 +65,38 @@ z-index: -100;
 <!-- ==================== CONFETTI CONTAINER (NEW) ==================== -->
 <div id="confetti-container" class="confetti-container"></div>
 
+<!-- ==================== ACHIEVEMENT TOAST (NEW) ==================== -->
+<div id="achievement-toast" class="achievement-toast">
+    <div class="toast-content">
+        <div class="toast-icon">🏆</div>
+        <div class="toast-text">
+            <h4 class="toast-title">مبروك!</h4>
+            <p class="toast-message">فتحت وسام جديد</p>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== ACHIEVEMENTS MODAL (NEW) ==================== -->
+<div id="achievements-modal" class="achievements-modal">
+    <div class="modal-overlay" onclick="closeAchievementsModal()"></div>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">
+                <i class="fas fa-trophy text-yellow-400"></i>
+                إنجازاتي
+            </h2>
+            <button onclick="closeAchievementsModal()" class="modal-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div id="achievements-grid" class="achievements-grid">
+                <!-- Achievements will be rendered here -->
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Hidden Share Template for High-Quality Images -->
 <div id="share-template">
 <div class="share-card-bg"></div>
@@ -136,6 +168,10 @@ Mythical Analysis Result
 <span id="site-title">QuizMagic</span>
 </a>
 <div class="flex items-center gap-3">
+<!-- Achievements Button (NEW) -->
+<button onclick="showAchievementsModal()" class="theme-toggle-btn text-sm px-3 py-2 rounded-md border transition-all transform hover:scale-105" title="إنجازاتي / My Achievements">
+<i class="fas fa-trophy"></i>
+</button>
 <!-- Theme Toggle Button -->
 <button id="theme-toggle" onclick="toggleTheme()" class="theme-toggle-btn text-sm px-3 py-2 rounded-md border transition-all transform hover:scale-105" title="تبديل المظهر / Toggle Theme">
 <i class="fas fa-moon"></i>
