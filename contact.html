@@ -8,16 +8,26 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
     <style>
-        body { font-family: 'Cairo', sans-serif; }
+        body { font-family: 'Cairo', sans-serif; background-color: var(--bg-primary); color: var(--text-primary); }
         .glass-panel {
-            background: rgba(30, 41, 59, 0.7 );
+            background: var(--glass-bg);
             backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color);
+        }
+        input, textarea {
+            background-color: var(--bg-tertiary);
+            border-color: var(--border-color);
+            color: var(--text-primary);
+        }
+        input:focus, textarea:focus {
+            border-color: var(--accent-primary);
+            ring-color: var(--accent-primary);
         }
     </style>
 </head>
-<body class="bg-[#0f172a] text-slate-200 min-h-screen">
+<body class="min-h-screen">
     <div class="max-w-4xl mx-auto px-4 py-16">
         <a href="index.html" class="inline-flex items-center text-purple-500 hover:text-purple-400 mb-12 transition-colors gap-2">
             <i class="fas fa-arrow-right rtl:rotate-0 ltr:rotate-180"></i>
@@ -26,39 +36,37 @@
 
         <div class="text-center mb-16">
             <h1 class="text-5xl font-black mb-6 bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">اتصل بنا / Contact Us</h1>
-            <p class="text-slate-400 text-xl max-w-2xl mx-auto leading-relaxed">
+            <p class="theme-text-secondary text-xl max-w-2xl mx-auto leading-relaxed">
                 لديك سؤال؟ أو ترغب في إضافة اختبار جديد؟ نحن هنا للاستماع إليك.  
-
                 Have a question? Or want to suggest a new quiz? We're here to listen.
             </p>
         </div>
 
         <div class="glass-panel p-8 md:p-12 rounded-[2.5rem] shadow-2xl">
-            <!-- Formspree Integration -->
             <form action="https://formspree.io/f/xykqwpjz" method="POST" class="space-y-8">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div>
-                        <label class="block text-sm font-bold text-slate-400 mb-3 uppercase tracking-wider">الاسم الكامل / Full Name</label>
+                        <label class="block text-sm font-bold theme-text-muted mb-3 uppercase tracking-wider">الاسم الكامل / Full Name</label>
                         <div class="relative">
                             <i class="fas fa-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"></i>
                             <input type="text" name="name" required placeholder="John Doe / محمد علي" 
-                                class="w-full bg-slate-900/50 border border-slate-700 rounded-2xl py-4 pl-12 pr-4 text-white focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all">
+                                class="w-full border rounded-2xl py-4 pl-12 pr-4 focus:outline-none transition-all theme-bg-tertiary theme-border theme-text-primary">
                         </div>
                     </div>
                     <div>
-                        <label class="block text-sm font-bold text-slate-400 mb-3 uppercase tracking-wider">البريد الإلكتروني / Email Address</label>
+                        <label class="block text-sm font-bold theme-text-muted mb-3 uppercase tracking-wider">البريد الإلكتروني / Email Address</label>
                         <div class="relative">
                             <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"></i>
                             <input type="email" name="email" required placeholder="example@gmail.com" 
-                                class="w-full bg-slate-900/50 border border-slate-700 rounded-2xl py-4 pl-12 pr-4 text-white focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all">
+                                class="w-full border rounded-2xl py-4 pl-12 pr-4 focus:outline-none transition-all theme-bg-tertiary theme-border theme-text-primary">
                         </div>
                     </div>
                 </div>
                 
                 <div>
-                    <label class="block text-sm font-bold text-slate-400 mb-3 uppercase tracking-wider">الرسالة / Your Message</label>
+                    <label class="block text-sm font-bold theme-text-muted mb-3 uppercase tracking-wider">الرسالة / Your Message</label>
                     <textarea name="message" rows="6" required placeholder="How can we help you? / كيف يمكننا مساعدتك؟" 
-                        class="w-full bg-slate-900/50 border border-slate-700 rounded-2xl py-4 px-6 text-white focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"></textarea>
+                        class="w-full border rounded-2xl py-4 px-6 focus:outline-none transition-all theme-bg-tertiary theme-border theme-text-primary"></textarea>
                 </div>
 
                 <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-black py-5 rounded-2xl shadow-xl shadow-purple-600/20 transition-all transform active:scale-[0.98] flex items-center justify-center gap-3 text-xl">
@@ -67,15 +75,15 @@
                 </button>
             </form>
 
-            <div class="mt-12 pt-12 border-t border-slate-700/50 text-center">
-                <p class="text-slate-500 mb-4">أو راسلنا مباشرة عبر البريد الإلكتروني / Or email us directly:</p>
+            <div class="mt-12 pt-12 border-t theme-border text-center">
+                <p class="theme-text-muted mb-4">أو راسلنا مباشرة عبر البريد الإلكتروني / Or email us directly:</p>
                 <a href="mailto:quizmagicsupport@gmail.com" class="text-2xl font-bold text-purple-400 hover:text-purple-300 transition-colors">
                     quizmagicsupport@gmail.com
                 </a>
             </div>
         </div>
 
-        <footer class="mt-16 text-center text-slate-600 text-sm">
+        <footer class="mt-16 text-center theme-text-muted text-sm">
             <p>&copy; 2026 QuizMagic. All rights reserved.</p>
         </footer>
     </div>
