@@ -1,29 +1,31 @@
 let currentLang = 'ar';
 let currentQuiz = null;
-let currentStepId = 0; 
-let userResponses = []; 
+let currentStepId = 0;
+let userResponses = [];
 let currentTheme = 'dark';
-let isQuizActive = false; /// Flag to prevent grid re-render during quiz
-let userStats = {}; // Store user statistics
+let isQuizActive = false;
+let userStats = {};
+let friendComparisonData = null;
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     const savedLang = localStorage.getItem('quiz_lang') || 'ar';
     const savedTheme = localStorage.getItem('quiz_theme') || 'auto';
-    
     initializeTheme(savedTheme);
     setLanguage(savedLang);
-    
+
     if (localStorage.getItem('quiz_lang')) {
         document.getElementById('language-screen').classList.add('opacity-0', 'pointer-events-none');
     }
     renderSocialLinks();
     updateThemeToggleIcon();
     loadUserStats();
+    
+    // Check for comparison URL parameter
+    checkComparisonParam();
 });
 
 // ==================== THEME MANAGEMENT ====================
-
 function initializeTheme(savedTheme) {
     let preferredTheme = savedTheme;
     if (preferredTheme === 'auto') {
@@ -47,8 +49,6 @@ function toggleTheme() {
     applyTheme(newTheme);
     localStorage.setItem('quiz_theme', newTheme);
     updateThemeToggleIcon();
-    
-    // ONLY re-render grid if we are on the home screen
     if (!isQuizActive) {
         renderQuizGrid();
     }
@@ -57,7 +57,6 @@ function toggleTheme() {
 function updateThemeToggleIcon() {
     const themeToggleBtn = document.getElementById('theme-toggle');
     if (!themeToggleBtn) return;
-    
     if (currentTheme === 'dark') {
         themeToggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
         themeToggleBtn.title = 'تبديل للوضع النهاري / Switch to Light Mode';
@@ -68,12 +67,10 @@ function updateThemeToggleIcon() {
 }
 
 // ==================== SOCIAL LINKS ====================
-
 function renderSocialLinks() {
     const container = document.getElementById('social-links');
     if (!container) return;
     container.innerHTML = '';
-    
     if (typeof config !== 'undefined' && config.socialLinks) {
         const links = [
             { id: 'facebook', icon: 'fab fa-facebook-f' },
@@ -98,11 +95,9 @@ function renderSocialLinks() {
 }
 
 // ==================== SKELETON LOADERS ====================
-
 function showSkeletonLoaders() {
     const grid = document.getElementById('quiz-grid');
     const skeletonGrid = document.getElementById('skeleton-grid');
-    
     grid.classList.add('hidden');
     skeletonGrid.classList.remove('hidden');
 }
@@ -110,13 +105,11 @@ function showSkeletonLoaders() {
 function hideSkeletonLoaders() {
     const grid = document.getElementById('quiz-grid');
     const skeletonGrid = document.getElementById('skeleton-grid');
-    
     skeletonGrid.classList.add('hidden');
     grid.classList.remove('hidden');
 }
 
 // ==================== LANGUAGE MANAGEMENT ====================
-
 function showLanguageScreen() {
     document.getElementById('language-screen').classList.remove('opacity-0', 'pointer-events-none');
 }
@@ -124,14 +117,13 @@ function showLanguageScreen() {
 function setLanguage(lang) {
     currentLang = lang;
     localStorage.setItem('quiz_lang', lang);
-    
     const data = quizzesData[lang];
     document.getElementById('site-title').innerText = data.title;
     document.getElementById('hero-title').innerText = data.heroTitle;
     document.getElementById('hero-subtitle').innerText = data.heroSubtitle;
     document.getElementById('footer-desc').innerText = data.footerDesc;
     document.getElementById('lang-btn-text').innerText = lang === 'ar' ? 'العربية' : 'English';
-    
+
     document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
     document.documentElement.lang = lang;
 
@@ -140,11 +132,9 @@ function setLanguage(lang) {
 }
 
 // ==================== QUIZ GRID ====================
-
 function renderQuizGrid() {
-    isQuizActive = false; // Reset flag
+    isQuizActive = false;
     showSkeletonLoaders();
-    
     const delay = navigator.connection?.effectiveType === '4g' ? 300 : 500;
     setTimeout(() => {
         const grid = document.getElementById('quiz-grid');
@@ -186,18 +176,16 @@ function renderQuizGrid() {
 }
 
 // ==================== WELCOME SCREEN ====================
-
 function showWelcomeScreen(quizId) {
-    isQuizActive = true; // Set flag
+    isQuizActive = true;
     const data = quizzesData[currentLang];
     const quiz = data.quizzes.find(q => q.id === quizId);
-    
     document.getElementById('quiz-grid').classList.add('hidden');
     document.getElementById('hero-section').classList.add('hidden');
-    
+
     const container = document.getElementById('quiz-container');
     container.classList.remove('hidden');
-    
+
     const isAr = currentLang === 'ar';
     container.innerHTML = `
         <div class="animate-fade-in text-center py-6">
@@ -235,19 +223,17 @@ function showWelcomeScreen(quizId) {
 }
 
 // ==================== QUIZ ENGINE ====================
-
 function startQuiz(quizId) {
     isQuizActive = true;
     const data = quizzesData[currentLang];
     currentQuiz = data.quizzes.find(q => q.id === quizId);
     currentStepId = 0;
     userResponses = [];
-
     document.getElementById('quiz-grid').classList.add('hidden');
     document.getElementById('hero-section').classList.add('hidden');
     const container = document.getElementById('quiz-container');
     container.classList.remove('hidden');
-    
+
     showStep();
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -257,9 +243,8 @@ function showStep() {
     const container = document.getElementById('quiz-container');
     const totalSteps = currentQuiz.questions.length;
     const progress = ((currentStepId + 1) / totalSteps) * 100;
-    
     container.classList.add('opacity-0');
-    
+
     setTimeout(() => {
         let content = `
             <div class="progress-wrapper">
@@ -324,7 +309,6 @@ function updateVisualEvolution(progress) {
     const bar = document.getElementById('dynamic-progress-bar');
     const marker = document.getElementById('dynamic-marker');
     if (!bar || !marker) return;
-
     if (progress > 25) {
         bar.style.boxShadow = '0 0 15px rgba(168, 85, 247, 0.5)';
         marker.innerHTML = '✨';
@@ -379,13 +363,11 @@ function showLoading() {
 }
 
 // ==================== RESULT CALCULATION ====================
-
 function calculateResult() {
     const traitScores = {};
     const axisScores = {
         intelligence: 0, energy: 0, empathy: 0, strategy: 0, mystery: 0, willpower: 0
     };
-
     userResponses.forEach(resp => {
         traitScores[resp.trait] = (traitScores[resp.trait] || 0) + resp.value;
         if (resp.axis && axisScores.hasOwnProperty(resp.axis)) {
@@ -434,16 +416,12 @@ function calculateResult() {
         }
     }
 
-    // Sort creatures by score
     const sortedCreatures = Object.keys(creatureScores).sort((a, b) => creatureScores[b] - creatureScores[a]);
     const winnerId = sortedCreatures[0] || 'dragon';
     const secondaryId = sortedCreatures[1] || 'phoenix';
 
-    // Normalize axis scores (0-100)
     const normalizedAxes = {};
     for (const axis in axisScores) {
-        // Max possible score for an axis is roughly (Questions per axis * 5)
-        // Let's assume average of 6-7 questions per axis
         normalizedAxes[axis] = Math.min(100, Math.max(20, (axisScores[axis] / 30) * 100));
     }
 
@@ -456,7 +434,6 @@ function calculateResult() {
 }
 
 // ==================== USER STATISTICS ====================
-
 function loadUserStats() {
     const saved = localStorage.getItem('quiz_stats');
     userStats = saved ? JSON.parse(saved) : {};
@@ -474,8 +451,6 @@ function getCreaturePercentage(creatureId) {
 }
 
 // ==================== RESULT DISPLAY ====================
-
-// Creature color themes for dynamic effects
 const creatureThemes = {
     dragon: { primary: '#dc2626', secondary: '#fbbf24', glow: 'rgba(220, 38, 38, 0.5)' },
     phoenix: { primary: '#ea580c', secondary: '#fbbf24', glow: 'rgba(234, 88, 12, 0.5)' },
@@ -498,12 +473,72 @@ const creatureThemes = {
 function applyCreatureTheme(creatureId) {
     const theme = creatureThemes[creatureId] || creatureThemes.dragon;
     const resultContainer = document.getElementById('result-container');
-    
-    // Apply gradient background
     resultContainer.style.background = `linear-gradient(135deg, ${theme.glow} 0%, rgba(15, 23, 42, 0.8) 100%)`;
     resultContainer.style.borderRadius = '2.5rem';
     resultContainer.style.padding = '2rem';
     resultContainer.style.boxShadow = `0 0 60px ${theme.glow}`;
+}
+
+// ==================== COMPARISON VALIDATION ====================
+function validateComparisonData(data) {
+    if (!data || typeof data !== 'object') return false;
+    if (!data.creatureId || typeof data.creatureId !== 'string') return false;
+    if (!data.secondaryCreatureId || typeof data.secondaryCreatureId !== 'string') return false;
+    if (!data.radarScores || typeof data.radarScores !== 'object') return false;
+    
+    const validAxes = ['intelligence', 'energy', 'empathy', 'strategy', 'mystery', 'willpower'];
+    for (const axis of validAxes) {
+        if (typeof data.radarScores[axis] !== 'number') return false;
+    }
+    return true;
+}
+
+function checkComparisonParam() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const compareParam = urlParams.get('compare');
+    if (compareParam) {
+        try {
+            const decoded = JSON.parse(atob(compareParam));
+            if (validateComparisonData(decoded)) {
+                friendComparisonData = decoded;
+                history.replaceState({}, document.title, window.location.pathname);
+                const isAr = currentLang === 'ar';
+                // Delay alert to ensure language is set
+                setTimeout(() => {
+                    alert(isAr 
+                        ? 'لقد تلقيت تحدي مقارنة! أكمل الاختبار لترى مدى توافقكما.' 
+                        : 'You received a comparison challenge! Complete the quiz to see your compatibility.');
+                }, 500);
+            } else {
+                console.warn('Invalid comparison data structure');
+                friendComparisonData = null;
+            }
+        } catch (e) {
+            console.error('Failed to parse comparison data:', e);
+            friendComparisonData = null;
+        }
+    }
+}
+
+function calculateCompatibility(user1Data, user2Data) {
+    let score = 0;
+    if (user1Data.creatureId === user2Data.creatureId) {
+        score += 50;
+    }
+    if (user1Data.secondaryCreatureId === user2Data.secondaryCreatureId) {
+        score += 20;
+    }
+
+    let radarDiff = 0;
+    const axes = Object.keys(user1Data.radarScores);
+    for (const axis of axes) {
+        if (user2Data.radarScores[axis] !== undefined) {
+            radarDiff += Math.abs(user1Data.radarScores[axis] - user2Data.radarScores[axis]);
+        }
+    }
+    score += Math.max(0, 30 - (radarDiff / axes.length));
+
+    return Math.min(100, Math.round(score));
 }
 
 function showResult() {
@@ -511,21 +546,15 @@ function showResult() {
     const { creature, secondaryCreature, radar, winnerId } = calculateResult();
     saveUserStats(winnerId);
     applyCreatureTheme(winnerId);
-    
     document.getElementById('quiz-container').classList.add('hidden');
     const container = document.getElementById('result-container');
     container.classList.remove('hidden');
 
     const percentage = getCreaturePercentage(winnerId);
-    const statsText = currentLang === 'ar' 
-        ? `${percentage}% من المستخدمين حصلوا على نفس النتيجة`
-        : `${percentage}% of users got the same result`;
-
     const isAr = currentLang === 'ar';
 
     container.innerHTML = `
         <div class="theme-bg-secondary rounded-[2.5rem] overflow-hidden border theme-border shadow-2xl mb-12 animate-fade-in">
-            <!-- New Clean Hybrid Identity Header -->
             <div class="relative h-[28rem] md:h-[35rem] overflow-hidden bg-slate-950">
                 <img src="${creature.image}" loading="lazy" class="absolute inset-0 w-full h-full object-cover opacity-60 scale-105">
                 <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
@@ -556,7 +585,6 @@ function showResult() {
                         ${isAr ? 'لقد تم تحليل جوهرك ودمجه مع القوى القديمة' : 'Your essence has been analyzed and merged with ancient forces'}
                     </p>
 
-                    <!-- Expand Button -->
                     <button onclick="toggleDetails()" class="group flex flex-col items-center gap-3 transition-all duration-500 hover:scale-110">
                         <span class="text-xs font-bold text-purple-400 uppercase tracking-[0.3em] group-hover:text-purple-300">
                             ${isAr ? 'اكتشف أسرار هويتك' : 'Discover Your Identity Secrets'}
@@ -568,10 +596,8 @@ function showResult() {
                 </div>
             </div>
             
-            <!-- Expandable Details Section -->
             <div id="details-section" class="max-h-0 overflow-hidden transition-all duration-1000 ease-in-out">
                 <div class="p-8 md:p-14 border-t theme-border">
-                    <!-- Creature Encyclopedia -->
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-20">
                         <div class="theme-bg-tertiary/20 p-8 rounded-[2.5rem] border theme-border">
                             <div class="mb-6">
@@ -595,7 +621,6 @@ function showResult() {
                         </div>
                     </div>
 
-                    <!-- Hybrid Narrative & Analysis -->
                     <div class="mb-20 text-center">
                         <div class="inline-block p-4 bg-purple-600/10 rounded-3xl mb-6">
                             <i class="fas fa-dna text-4xl text-purple-500"></i>
@@ -613,7 +638,6 @@ function showResult() {
                         </div>
                     </div>
 
-                    <!-- Power Blueprint (Radar Chart) -->
                     <div class="mb-20">
                         <h3 class="text-3xl font-bold theme-text-primary mb-10 text-center">
                             ${isAr ? 'مخطط القوى (Power Blueprint)' : 'Power Blueprint'}
@@ -623,31 +647,31 @@ function showResult() {
                         </div>
                     </div>
 
-                <!-- Secret Report -->
-                <div class="relative p-1 bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 rounded-[2rem] overflow-hidden shadow-2xl">
-                    <div class="relative p-10 theme-bg-primary rounded-[1.8rem] overflow-hidden">
-                        <div id="cpa-locker" class="absolute inset-0 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center z-10 bg-black/20">
-                            <div class="w-20 h-20 bg-gradient-to-tr from-purple-600 to-pink-600 rounded-full flex items-center justify-center mb-6 border-4 border-white/10 shadow-inner">
-                                <i class="fas fa-lock text-3xl text-white"></i>
-                            </div>
-                            <h3 class="text-3xl font-bold mb-4 theme-text-primary">${isAr ? 'التقرير السري المتقدم' : 'Advanced Secret Report'}</h3>
-                            <button onclick="unlockSecretReport()" class="bg-purple-600 text-white px-8 py-3 rounded-full font-bold hover:bg-purple-700 transition-all z-[60] cursor-pointer relative shadow-xl">
-                                ${isAr ? 'فتح التقرير السري' : 'Unlock Secret Report'}
-                            </button>
-                        </div>
-                        <div id="secret-content" class="opacity-10 blur-xl transition-all duration-1000">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <div>
-                                    <h4 class="text-2xl font-bold text-purple-400 mb-4">${isAr ? 'نمط قوتك:' : 'Power Pattern:'}</h4>
-                                    <p class="theme-text-secondary mb-6">${creature.secretReport.strengths}</p>
+                    <div class="relative p-1 bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 rounded-[2rem] overflow-hidden shadow-2xl">
+                        <div class="relative p-10 theme-bg-primary rounded-[1.8rem] overflow-hidden">
+                            <div id="cpa-locker" class="absolute inset-0 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center z-10 bg-black/20">
+                                <div class="w-20 h-20 bg-gradient-to-tr from-purple-600 to-pink-600 rounded-full flex items-center justify-center mb-6 border-4 border-white/10 shadow-inner">
+                                    <i class="fas fa-lock text-3xl text-white"></i>
                                 </div>
-                                <div>
-                                    <h4 class="text-2xl font-bold text-pink-400 mb-4">${isAr ? 'نصيحة الكائن:' : 'Creature Advice:'}</h4>
-                                    <p class="theme-text-secondary mb-6">${creature.advice || creature.secretReport.insight}</p>
-                                </div>
+                                <h3 class="text-3xl font-bold mb-4 theme-text-primary">${isAr ? 'التقرير السري المتقدم' : 'Advanced Secret Report'}</h3>
+                                <button onclick="unlockSecretReport()" class="bg-purple-600 text-white px-8 py-3 rounded-full font-bold hover:bg-purple-700 transition-all z-[60] cursor-pointer relative shadow-xl">
+                                    ${isAr ? 'فتح التقرير السري' : 'Unlock Secret Report'}
+                                </button>
                             </div>
-                            <div class="mt-6 p-6 theme-bg-tertiary/20 border theme-border rounded-2xl text-center">
-                                <p class="text-purple-300 italic text-lg">"${creature.secretReport.insight}"</p>
+                            <div id="secret-content" class="opacity-10 blur-xl transition-all duration-1000">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                    <div>
+                                        <h4 class="text-2xl font-bold text-purple-400 mb-4">${isAr ? 'نمط قوتك:' : 'Power Pattern:'}</h4>
+                                        <p class="theme-text-secondary mb-6">${creature.secretReport.strengths}</p>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-2xl font-bold text-pink-400 mb-4">${isAr ? 'نصيحة الكائن:' : 'Creature Advice:'}</h4>
+                                        <p class="theme-text-secondary mb-6">${creature.advice || creature.secretReport.insight}</p>
+                                    </div>
+                                </div>
+                                <div class="mt-6 p-6 theme-bg-tertiary/20 border theme-border rounded-2xl text-center">
+                                    <p class="text-purple-300 italic text-lg">"${creature.secretReport.insight}"</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -675,16 +699,44 @@ function showResult() {
     renderRadarChart(radar);
     prepareShareTemplate(creature, secondaryCreature);
     applyCreatureTheme(winnerId);
+
+    // Handle comparison if friend data is present
+    if (friendComparisonData) {
+        const currentUserData = {
+            creatureId: winnerId,
+            secondaryCreatureId: secondaryCreature.id,
+            radarScores: radar
+        };
+        const compatibilityScore = calculateCompatibility(friendComparisonData, currentUserData);
+
+        const comparisonResultHtml = `
+            <div class="mt-12 p-8 theme-bg-tertiary/20 rounded-[2.5rem] border theme-border text-center animate-fade-in">
+                <h3 class="text-3xl font-bold theme-text-primary mb-4">
+                    ${isAr ? '⚔️ نتيجة المقارنة الأسطورية ⚔️' : '⚔️ Mythical Comparison Result ⚔️'}
+                </h3>
+                <p class="text-xl theme-text-secondary mb-6">
+                    ${isAr ? 'مدى توافقك مع صديقك هو:' : 'Your compatibility with your friend is:'}
+                </p>
+                <div class="text-6xl font-black bg-gradient-to-r from-green-400 to-teal-500 bg-clip-text text-transparent mb-6">
+                    ${compatibilityScore}%
+                </div>
+                <p class="theme-text-secondary text-lg">
+                    ${isAr 
+                        ? `أنت وصديقك ${friendComparisonData.creatureId} و ${currentUserData.creatureId} تشكلان ثنائياً أسطورياً بنسبة ${compatibilityScore}%!` 
+                        : `You and your friend, the ${friendComparisonData.creatureId} and the ${currentUserData.creatureId}, form a mythical duo with ${compatibilityScore}% compatibility!`}
+                </p>
+            </div>
+        `;
+        document.getElementById('result-container').insertAdjacentHTML('beforeend', comparisonResultHtml);
+    }
 }
 
 // ==================== RADAR CHART ====================
-
 function renderRadarChart(data) {
     const ctx = document.getElementById('radarChart').getContext('2d');
     const axesConfig = config.powerAxes[currentLang];
     const labels = Object.values(axesConfig);
     const dataValues = Object.keys(axesConfig).map(key => data[key] || 50);
-
     const isLight = document.documentElement.classList.contains('light-mode');
     const gridColor = isLight ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)';
     const textColor = isLight ? '#0f172a' : '#94a3b8';
@@ -723,18 +775,15 @@ function renderRadarChart(data) {
 }
 
 // ==================== SECRET REPORT ====================
-
 function toggleDetails() {
     const section = document.getElementById('details-section');
     const icon = document.getElementById('expand-icon');
-    
     if (section.style.maxHeight && section.style.maxHeight !== '0px') {
         section.style.maxHeight = '0px';
         icon.style.transform = 'rotate(0deg)';
     } else {
-        section.style.maxHeight = '5000px'; // Sufficient height for content
+        section.style.maxHeight = '5000px';
         icon.style.transform = 'rotate(180deg)';
-        // Scroll smoothly to details
         setTimeout(() => {
             section.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }, 300);
@@ -751,41 +800,37 @@ function unlockSecretReport() {
 }
 
 // ==================== SHARE TEMPLATE ====================
-
 function prepareShareTemplate(creature, secondary) {
     const isAr = currentLang === 'ar';
     const domImg = document.getElementById('share-creature-img-dominant');
     const secImg = document.getElementById('share-creature-img-secondary');
-    
     if (domImg) domImg.src = creature.image;
     if (secImg) secImg.src = secondary.image;
-    
+
     const domName = document.getElementById('share-creature-name-dominant');
     if (domName) domName.innerText = creature.name;
-    
+
     const secName = document.getElementById('share-creature-name-secondary');
     if (secName) secName.innerText = secondary.name;
-    
+
     const rarity = document.getElementById('share-rarity');
     if (rarity) rarity.innerText = creature.rarity;
-    
+
     const badge = document.getElementById('share-badge');
     if (badge) badge.innerText = isAr ? 'هوية هجينة' : 'Hybrid Identity';
-    
+
     const tagline = document.getElementById('share-tagline');
     if (tagline) tagline.innerText = isAr ? 'هويتي الأسطورية الهجينة' : 'My True Hybrid Essence';
-    
+
     const desc = document.getElementById('share-description');
     if (desc) desc.innerText = (creature.narrative || creature.description).substring(0, 160) + '...';
 }
 
 // ==================== DOWNLOAD & SHARE ====================
-
 async function downloadResultAsImage(btn) {
     const originalText = btn.innerHTML;
     btn.innerHTML = `<i class="fas fa-spinner animate-spin"></i> ${currentLang === 'ar' ? 'جاري التجهيز...' : 'Preparing...'}`;
     btn.disabled = true;
-
     try {
         const template = document.getElementById('share-template');
         const canvas = await html2canvas(template, {
@@ -808,11 +853,10 @@ async function downloadResultAsImage(btn) {
 }
 
 function shareResult() {
-    const text = currentLang === 'ar' 
+    const text = currentLang === 'ar'
         ? `اكتشفت كائني الأسطوري الهجين على QuizMagic! جربه الآن: `
         : `I discovered my hybrid mythical identity on QuizMagic! Try it now: `;
     const url = window.location.href;
-
     if (navigator.share) {
         navigator.share({ title: 'QuizMagic', text: text, url: url });
     } else {
@@ -821,7 +865,7 @@ function shareResult() {
 }
 
 function compareWithFriend() {
-    const { creature, secondaryCreature, radar, winnerId } = calculateResult(); // Recalculate to get fresh data
+    const { creature, secondaryCreature, radar, winnerId } = calculateResult();
     const friendData = {
         creatureId: winnerId,
         secondaryCreatureId: secondaryCreature.id,
@@ -829,7 +873,6 @@ function compareWithFriend() {
     };
     const encodedData = btoa(JSON.stringify(friendData));
     const comparisonUrl = `${window.location.origin}${window.location.pathname}?compare=${encodedData}`;
-
     const text = currentLang === 'ar'
         ? `تحداني في QuizMagic واكتشف مدى توافق هويتنا الأسطورية! ${comparisonUrl}`
         : `Challenge me on QuizMagic and discover our mythical compatibility! ${comparisonUrl}`;
@@ -845,80 +888,3 @@ function compareWithFriend() {
         });
     }
 }
-
-// Function to calculate compatibility (placeholder for now)
-function calculateCompatibility(user1Data, user2Data) {
-    // This is a simplified example. Real compatibility would involve more complex logic.
-    // For now, let's just compare dominant creatures and sum up some radar scores.
-    let score = 0;
-
-    if (user1Data.creatureId === user2Data.creatureId) {
-        score += 50; // Big bonus for same dominant creature
-    }
-    if (user1Data.secondaryCreatureId === user2Data.secondaryCreatureId) {
-        score += 20; // Bonus for same secondary creature
-    }
-
-    // Compare radar scores - simple difference
-    let radarDiff = 0;
-    for (const axis in user1Data.radarScores) {
-        radarDiff += Math.abs(user1Data.radarScores[axis] - user2Data.radarScores[axis]);
-    }
-    // Normalize radarDiff to contribute to score (smaller diff = higher score)
-    score += Math.max(0, 30 - (radarDiff / Object.keys(user1Data.radarScores).length));
-
-    return Math.min(100, Math.round(score)); // Cap at 100%
-}
-
-// Check for comparison URL parameter on page load
-let friendComparisonData = null;
-document.addEventListener('DOMContentLoaded', () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const compareParam = urlParams.get('compare');
-    if (compareParam) {
-        try {
-            friendComparisonData = JSON.parse(atob(compareParam));
-            // Optionally, clear the URL parameter to avoid re-comparison on refresh
-            history.replaceState({}, document.title, window.location.pathname);
-            alert(currentLang === 'ar' ? 'لقد تلقيت تحدي مقارنة! أكمل الاختبار لترى مدى توافقكما.' : 'You received a comparison challenge! Complete the quiz to see your compatibility.');
-        } catch (e) {
-            console.error('Failed to parse comparison data:', e);
-        }
-    }
-    // ... rest of DOMContentLoaded ...
-});
-
-// Modify showResult to handle comparison if friendComparisonData is present
-const originalShowResult = showResult;
-showResult = function() {
-    originalShowResult(); // Call the original showResult first
-
-    if (friendComparisonData) {
-        const { creature, secondaryCreature, radar, winnerId } = calculateResult();
-        const currentUserData = {
-            creatureId: winnerId,
-            secondaryCreatureId: secondaryCreature.id,
-            radarScores: radar
-        };
-        const compatibilityScore = calculateCompatibility(friendComparisonData, currentUserData);
-
-        const isAr = currentLang === 'ar';
-        const comparisonResultHtml = `
-            <div class="mt-12 p-8 theme-bg-tertiary/20 rounded-[2.5rem] border theme-border text-center animate-fade-in">
-                <h3 class="text-3xl font-bold theme-text-primary mb-4">
-                    ${isAr ? '⚔️ نتيجة المقارنة الأسطورية ⚔️' : '⚔️ Mythical Comparison Result ⚔️'}
-                </h3>
-                <p class="text-xl theme-text-secondary mb-6">
-                    ${isAr ? 'مدى توافقك مع صديقك هو:' : 'Your compatibility with your friend is:'}
-                </p>
-                <div class="text-6xl font-black bg-gradient-to-r from-green-400 to-teal-500 bg-clip-text text-transparent mb-6">
-                    ${compatibilityScore}%
-                </div>
-                <p class="theme-text-secondary text-lg">
-                    ${isAr ? `أنت وصديقك ${friendComparisonData.creatureId} و ${currentUserData.creatureId} تشكلان ثنائياً أسطورياً بنسبة ${compatibilityScore}%!` : `You and your friend, the ${friendComparisonData.creatureId} and the ${currentUserData.creatureId}, form a mythical duo with ${compatibilityScore}% compatibility!`}
-                </p>
-            </div>
-        `;
-        document.getElementById('result-container').insertAdjacentHTML('beforeend', comparisonResultHtml);
-    }
-};
