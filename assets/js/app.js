@@ -753,14 +753,28 @@ function unlockSecretReport() {
 // ==================== SHARE TEMPLATE ====================
 
 function prepareShareTemplate(creature, secondary) {
-    const img = document.getElementById('share-creature-img');
-    if (img) img.src = creature.image;
-    const name = document.getElementById('share-creature-name');
-    if (name) name.innerText = `${creature.name} × ${secondary.name}`;
+    const isAr = currentLang === 'ar';
+    const domImg = document.getElementById('share-creature-img-dominant');
+    const secImg = document.getElementById('share-creature-img-secondary');
+    
+    if (domImg) domImg.src = creature.image;
+    if (secImg) secImg.src = secondary.image;
+    
+    const domName = document.getElementById('share-creature-name-dominant');
+    if (domName) domName.innerText = creature.name;
+    
+    const secName = document.getElementById('share-creature-name-secondary');
+    if (secName) secName.innerText = secondary.name;
+    
     const rarity = document.getElementById('share-rarity');
     if (rarity) rarity.innerText = creature.rarity;
+    
+    const badge = document.getElementById('share-badge');
+    if (badge) badge.innerText = isAr ? 'هوية هجينة' : 'Hybrid Identity';
+    
     const tagline = document.getElementById('share-tagline');
-    if (tagline) tagline.innerText = currentLang === 'ar' ? 'هويتي الأسطورية الهجينة' : 'My True Hybrid Essence';
+    if (tagline) tagline.innerText = isAr ? 'هويتي الأسطورية الهجينة' : 'My True Hybrid Essence';
+    
     const desc = document.getElementById('share-description');
     if (desc) desc.innerText = (creature.narrative || creature.description).substring(0, 160) + '...';
 }
