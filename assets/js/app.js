@@ -7,13 +7,6 @@ let isQuizActive = false;
 let userStats = {};
 let friendComparisonData = null;
 
-// ==================== AUDIO TRIGGER (SAFE) ====================
-function playSfx(soundName) {
-    if (typeof audioController !== 'undefined' && audioController.isEnabled) {
-        audioController.play(soundName);
-    }
-}
-
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     const savedLang = localStorage.getItem('quiz_lang') || 'ar';
@@ -205,20 +198,21 @@ function getUserStats() {
 }
 
 function showAchievementToast(achievement) {
+    // 🎵 صوت فتح الإنجاز (جاهز للمستقبل)
+    if (window.audioManager) {
+        window.audioManager.play('achievement-unlocked');
+    }
+    
     const toast = document.getElementById('achievement-toast');
     if (!toast) return;
-    
     const isAr = currentLang === 'ar';
     const title = toast.querySelector('.toast-title');
     const message = toast.querySelector('.toast-message');
     const icon = toast.querySelector('.toast-icon');
-    
     title.textContent = isAr ? 'مبروك!' : 'Congratulations!';
     message.textContent = isAr ? `فتحت وسام "${achievement.name.ar}"` : `You unlocked "${achievement.name.en}"`;
     icon.textContent = achievement.icon;
-    
     toast.classList.add('show');
-    
     setTimeout(() => {
         toast.classList.remove('show');
     }, 4000);
@@ -498,7 +492,12 @@ function startQuiz(quizId) {
     document.getElementById('hero-section').classList.add('hidden');
     const container = document.getElementById('quiz-container');
     container.classList.remove('hidden');
-
+    
+    // 🎵 تشغيل صوت بدء الاختبار
+    if (window.audioManager) {
+        window.audioManager.play('ui-click');
+    }
+    
     showStep();
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -604,21 +603,25 @@ function updateVisualEvolution(progress) {
 }
 
 function handleLikert(value, axis) {
-    playSfx('click');
+    // 🎵 صوت الضغط
+    if (window.audioManager) {
+        window.audioManager.play('ui-click');
+    }
     const question = currentQuiz.questions[currentStepId];
     userResponses.push({ trait: question.trait, value: value, axis: axis });
     nextStep();
 }
 
 function handleVisualChoice(trait, value, axis) {
-    playSfx('click');
+    // 🎵 صوت الضغط
+    if (window.audioManager) {
+        window.audioManager.play('ui-click');
+    }
     userResponses.push({ trait: trait, value: value, axis: axis });
     nextStep();
 }
-
 function nextStep() {
     currentStepId++;
-    playSfx('whoosh');
     if (currentStepId < currentQuiz.questions.length) {
         showStep();
     } else {
@@ -1020,15 +1023,13 @@ function showResult() {
     renderRadarChart(radar);
     prepareShareTemplate(creature, secondaryCreature);
     applyCreatureTheme(winnerId);
-    
-    // ✅ تشغيل صوت كشف النتيجة
-    playSfx('reveal');
-    setTimeout(() => playSfx('confetti'), 500);
-
     setTimeout(() => {
         launchConfetti(winnerId);
+    // 🎵 صوت ظهور النتيجة السحري
+        if (window.audioManager) {
+        window.audioManager.play('magical-reveal');
+        }
     }, 300);
-
     checkAchievements();
 
     if (friendComparisonData) {
@@ -1121,14 +1122,17 @@ function toggleDetails() {
 }
 
 function unlockSecretReport() {
-    playSfx('unlock');
+    // 🎵 صوت فتح التقرير السري
+    if (window.audioManager) {
+        window.audioManager.play('unlock-secret');
+    }
+    
     const locker = document.getElementById('cpa-locker');
     const content = document.getElementById('secret-content');
     locker.style.opacity = '0';
     locker.style.pointerEvents = 'none';
     content.style.opacity = '1';
     content.style.filter = 'none';
-    
     if (!userStats.secretUnlocks) {
         userStats.secretUnlocks = 0;
     }
