@@ -2222,10 +2222,9 @@ career: `**Ideal career path:**
 • Education and guidance (because you are a role model for others)
 • Avoid: jobs requiring ethical compromises or manipulating others`,
 insight: "Your true courage is not just in fighting, but in knowing when to fight and when to forgive. You are not just a warrior, you are a guardian of values in a world that needs guardians."
-}
-}
+        }
+      }
+    ]
+  }
 ]
-}
-]
-}
 };
