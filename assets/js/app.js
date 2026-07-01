@@ -6,65 +6,6 @@ let currentTheme = 'dark';
 let isQuizActive = false;
 let userStats = {};
 let friendComparisonData = null;
-let userAchievements = {};
-
-// Achievement definitions
-const ACHIEVEMENTS = {
-    first_quiz: {
-        name: { ar: 'المستكشف الأول', en: 'First Explorer' },
-        description: { ar: 'أكمل أول اختبار', en: 'Complete your first quiz' },
-        icon: '🎭',
-        condition: (stats) => stats.totalQuizzes >= 1
-    },
-    perseverant: {
-        name: { ar: 'المثابر', en: 'Perseverant' },
-        description: { ar: 'أكمل 5 اختبارات', en: 'Complete 5 quizzes' },
-        icon: '⭐',
-        condition: (stats) => stats.totalQuizzes >= 5
-    },
-    rare_creature: {
-        name: { ar: 'الكائن النادر', en: 'Rare Creature' },
-        description: { ar: 'احصل على كائن أسطوري أو نادر جداً', en: 'Get a Legendary or Very Rare creature' },
-        icon: '💎',
-        condition: (stats) => {
-            const rareRarities = ['أسطوري', 'نادر جداً', 'Legendary', 'Very Rare'];
-            return stats.creatures && Object.keys(stats.creatures).some(id => {
-                const creature = quizzesData[currentLang].quizzes[0].results.find(r => r.id === id);
-                return creature && rareRarities.includes(creature.rarity);
-            });
-        }
-    },
-    social: {
-        name: { ar: 'الاجتماعي', en: 'Social' },
-        description: { ar: 'شارك النتيجة 3 مرات', en: 'Share result 3 times' },
-        icon: '🚀',
-        condition: (stats) => stats.shares >= 3
-    },
-    comparer: {
-        name: { ar: 'المقارن', en: 'Comparer' },
-        description: { ar: 'قارن مع صديق مرة واحدة', en: 'Compare with a friend once' },
-        icon: '⚔️',
-        condition: (stats) => stats.comparisons >= 1
-    },
-    collector: {
-        name: { ar: 'الجامع', en: 'Collector' },
-        description: { ar: 'احصل على 5 كائنات مختلفة', en: 'Get 5 different creatures' },
-        icon: '🎨',
-        condition: (stats) => stats.creatures && Object.keys(stats.creatures).length >= 5
-    },
-    loyal: {
-        name: { ar: 'المخلص', en: 'Loyal' },
-        description: { ar: 'أعد الاختبار 3 مرات', en: 'Retake quiz 3 times' },
-        icon: '🔄',
-        condition: (stats) => stats.retakes >= 3
-    },
-    deep_diver: {
-        name: { ar: 'المتعمق', en: 'Deep Diver' },
-        description: { ar: 'فتح التقرير السري 5 مرات', en: 'Unlock secret report 5 times' },
-        icon: '🔓',
-        condition: (stats) => stats.secretUnlocks >= 5
-    }
-};
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
@@ -79,7 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
     renderSocialLinks();
     updateThemeToggleIcon();
     loadUserStats();
-    loadAchievements();
     
     // Check for comparison URL parameter
     checkComparisonParam();
@@ -150,6 +90,65 @@ function launchConfetti(creatureId) {
 }
 
 // ==================== ACHIEVEMENTS SYSTEM (NEW) ====================
+let userAchievements = {};
+
+const ACHIEVEMENTS = {
+    first_quiz: {
+        name: { ar: 'المستكشف الأول', en: 'First Explorer' },
+        description: { ar: 'أكمل أول اختبار', en: 'Complete your first quiz' },
+        icon: '🎭',
+        condition: (stats) => stats.totalQuizzes >= 1
+    },
+    perseverant: {
+        name: { ar: 'المثابر', en: 'Perseverant' },
+        description: { ar: 'أكمل 5 اختبارات', en: 'Complete 5 quizzes' },
+        icon: '⭐',
+        condition: (stats) => stats.totalQuizzes >= 5
+    },
+    rare_creature: {
+        name: { ar: 'الكائن النادر', en: 'Rare Creature' },
+        description: { ar: 'احصل على كائن أسطوري أو نادر جداً', en: 'Get a Legendary or Very Rare creature' },
+        icon: '💎',
+        condition: (stats) => {
+            const rareRarities = ['أسطوري', 'نادر جداً', 'Legendary', 'Very Rare'];
+            return stats.creatures && Object.keys(stats.creatures).some(id => {
+                const creature = quizzesData[currentLang].quizzes[0].results.find(r => r.id === id);
+                return creature && rareRarities.includes(creature.rarity);
+            });
+        }
+    },
+    social: {
+        name: { ar: 'الاجتماعي', en: 'Social' },
+        description: { ar: 'شارك النتيجة 3 مرات', en: 'Share result 3 times' },
+        icon: '🚀',
+        condition: (stats) => stats.shares >= 3
+    },
+    comparer: {
+        name: { ar: 'المقارن', en: 'Comparer' },
+        description: { ar: 'قارن مع صديق مرة واحدة', en: 'Compare with a friend once' },
+        icon: '⚔️',
+        condition: (stats) => stats.comparisons >= 1
+    },
+    collector: {
+        name: { ar: 'الجامع', en: 'Collector' },
+        description: { ar: 'احصل على 5 كائنات مختلفة', en: 'Get 5 different creatures' },
+        icon: '🎨',
+        condition: (stats) => stats.creatures && Object.keys(stats.creatures).length >= 5
+    },
+    loyal: {
+        name: { ar: 'المخلص', en: 'Loyal' },
+        description: { ar: 'أعد الاختبار 3 مرات', en: 'Retake quiz 3 times' },
+        icon: '🔄',
+        condition: (stats) => stats.retakes >= 3
+    },
+    deep_diver: {
+        name: { ar: 'المتعمق', en: 'Deep Diver' },
+        description: { ar: 'فتح التقرير السري 5 مرات', en: 'Unlock secret report 5 times' },
+        icon: '🔓',
+        condition: (stats) => stats.secretUnlocks >= 5
+    }
+};
+
 function loadAchievements() {
     const saved = localStorage.getItem('quiz_achievements');
     userAchievements = saved ? JSON.parse(saved) : {};
@@ -183,7 +182,6 @@ function getUserStats() {
     const saved = localStorage.getItem('quiz_stats');
     const stats = saved ? JSON.parse(saved) : {};
     
-    // Calculate total quizzes
     let totalQuizzes = 0;
     if (stats.creatures) {
         totalQuizzes = Object.values(stats.creatures).reduce((a, b) => a + b, 0);
@@ -638,6 +636,26 @@ function showLoading() {
 }
 
 // ==================== RESULT CALCULATION ====================
+// 🎯 NEW: Balance factors to ensure all 16 creatures can appear
+const creatureBalanceFactor = {
+    dragon: 0.85,        // Reduce (appears too often)
+    phoenix: 1.0,        // Normal
+    unicorn: 1.0,        // Normal
+    sphinx: 1.0,         // Normal
+    kraken: 1.2,         // Increase (rare)
+    owl_of_athena: 1.0,  // Normal
+    centaur: 1.0,        // Normal
+    cerberus: 1.2,       // Increase (rare)
+    faun: 1.3,           // Increase (very rare)
+    golem: 1.2,          // Increase (rare)
+    hydra: 1.0,          // Normal
+    kitsune: 1.0,        // Normal
+    pegasus: 1.0,        // Normal
+    simurgh: 0.9,        // Slight reduce
+    siren: 1.3,          // Increase (very rare)
+    valkyrie: 0.85       // Reduce (appears too often)
+};
+
 function calculateResult() {
     const traitScores = {};
     const axisScores = {
@@ -686,7 +704,9 @@ function calculateResult() {
         const weights = weightedTraitToCreature[trait];
         if (weights) {
             for (const cId in weights) {
-                creatureScores[cId] = (creatureScores[cId] || 0) + (traitScores[trait] * weights[cId]);
+                // 🎯 NEW: Apply balance factor
+                const balanceFactor = creatureBalanceFactor[cId] || 1.0;
+                creatureScores[cId] = (creatureScores[cId] || 0) + (traitScores[trait] * weights[cId] * balanceFactor);
             }
         }
     }
@@ -982,7 +1002,6 @@ function showResult() {
         launchConfetti(winnerId);
     }, 300);
 
-    // Check achievements after showing result
     checkAchievements();
 
     if (friendComparisonData) {
@@ -1082,7 +1101,6 @@ function unlockSecretReport() {
     content.style.opacity = '1';
     content.style.filter = 'none';
     
-    // Track secret unlocks for achievements
     if (!userStats.secretUnlocks) {
         userStats.secretUnlocks = 0;
     }
@@ -1150,7 +1168,6 @@ function shareResult() {
         : `I discovered my hybrid mythical identity on QuizMagic! Try it now: `;
     const url = window.location.href;
     
-    // Track shares for achievements
     if (!userStats.shares) {
         userStats.shares = 0;
     }
@@ -1178,7 +1195,6 @@ function compareWithFriend() {
         ? `تحداني في QuizMagic واكتشف مدى توافق هويتنا الأسطورية! ${comparisonUrl}`
         : `Challenge me on QuizMagic and discover our mythical compatibility! ${comparisonUrl}`;
 
-    // Track comparisons for achievements
     if (!userStats.comparisons) {
         userStats.comparisons = 0;
     }
