@@ -7,6 +7,13 @@ let isQuizActive = false;
 let userStats = {};
 let friendComparisonData = null;
 
+// ==================== AUDIO TRIGGER (SAFE) ====================
+function playSfx(soundName) {
+    if (typeof audioController !== 'undefined' && audioController.isEnabled) {
+        audioController.play(soundName);
+    }
+}
+
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     const savedLang = localStorage.getItem('quiz_lang') || 'ar';
@@ -597,18 +604,21 @@ function updateVisualEvolution(progress) {
 }
 
 function handleLikert(value, axis) {
+    playSfx('click');
     const question = currentQuiz.questions[currentStepId];
     userResponses.push({ trait: question.trait, value: value, axis: axis });
     nextStep();
 }
 
 function handleVisualChoice(trait, value, axis) {
+    playSfx('click');
     userResponses.push({ trait: trait, value: value, axis: axis });
     nextStep();
 }
 
 function nextStep() {
     currentStepId++;
+    playSfx('whoosh');
     if (currentStepId < currentQuiz.questions.length) {
         showStep();
     } else {
@@ -1011,6 +1021,10 @@ function showResult() {
     prepareShareTemplate(creature, secondaryCreature);
     applyCreatureTheme(winnerId);
     
+    // ✅ تشغيل صوت كشف النتيجة
+    playSfx('reveal');
+    setTimeout(() => playSfx('confetti'), 500);
+
     setTimeout(() => {
         launchConfetti(winnerId);
     }, 300);
@@ -1107,6 +1121,7 @@ function toggleDetails() {
 }
 
 function unlockSecretReport() {
+    playSfx('unlock');
     const locker = document.getElementById('cpa-locker');
     const content = document.getElementById('secret-content');
     locker.style.opacity = '0';
