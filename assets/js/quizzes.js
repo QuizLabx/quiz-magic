@@ -2227,4 +2227,5 @@ insight: "Your true courage is not just in fighting, but in knowing when to figh
     ]
   }
 ]
+}
 };
