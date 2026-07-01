@@ -8,7 +8,7 @@ class AudioManager {
         // تعريف جميع الأصوات (الحالية والمستقبلية)
         this.sounds = {
             // 🎼 الموسيقى الخلفية
-            background: {
+            'background': {
                 path: 'assets/audio/background-fantasy.mp3',
                 volume: 0.3,
                 loop: true,
@@ -62,10 +62,8 @@ class AudioManager {
             }
         };
 
-        // كائن لحفظ عناصر Audio المحملة
         this.audioElements = {};
         
-        // إعدادات الصوت (تُحفظ في localStorage)
         this.settings = {
             musicEnabled: localStorage.getItem('quiz_music_enabled') !== 'false',
             sfxEnabled: localStorage.getItem('quiz_sfx_enabled') !== 'false'
@@ -75,18 +73,13 @@ class AudioManager {
         this.setupUserInteractionListener();
     }
 
-    /**
-     * 🎯 المستمع للتفاعل الأول (مهم جداً لتجاوز سياسة المتصفحات)
-     */
     setupUserInteractionListener() {
         const startAudio = () => {
             if (!this.userInteracted) {
                 this.userInteracted = true;
-                // تشغيل الموسيقى الخلفية تلقائياً بعد أول تفاعل (إذا كانت مفعلة)
                 if (this.settings.musicEnabled) {
                     this.play('background').catch(e => console.log('Background music blocked:', e));
                 }
-                // إزالة المستمع بعد التشغيل
                 ['click', 'touchstart', 'keydown'].forEach(evt => {
                     document.removeEventListener(evt, startAudio);
                 });
@@ -98,9 +91,6 @@ class AudioManager {
         });
     }
 
-    /**
-     * 🔊 تشغيل صوت معين
-     */
     async play(soundName) {
         const soundConfig = this.sounds[soundName];
         if (!soundConfig) {
@@ -108,5 +98,94 @@ class AudioManager {
             return;
         }
 
-        // التحقق من الإعدادات
-        if (soundConfig.type === 'music' && !this
+        if (soundConfig.type === 'music' && !this.settings.musicEnabled) return;
+        if (soundConfig.type === 'sfx' && !this.settings.sfxEnabled) return;
+
+        try {
+            if (!this.audioElements[soundName]) {
+                this.audioElements[soundName] = new Audio(soundConfig.path);
+                this.audioElements[soundName].loop = soundConfig.loop;
+                this.audioElements[soundName].volume = soundConfig.volume;
+                this.audioElements[soundName].preload = 'auto';
+            }
+
+            const audio = this.audioElements[soundName];
+            
+            if (!soundConfig.loop) {
+                audio.currentTime = 0;
+            }
+
+            await audio.play();
+        } catch (error) {
+            console.log(`🔇 تعذر تشغيل الصوت "${soundName}":`, error.message);
+        }
+    }
+
+    stop(soundName) {
+        const audio = this.audioElements[soundName];
+        if (audio) {
+            audio.pause();
+            audio.currentTime = 0;
+        }
+    }
+
+    toggleMusic() {
+        this.settings.musicEnabled = !this.settings.musicEnabled;
+        localStorage.setItem('quiz_music_enabled', this.settings.musicEnabled);
+
+        if (this.settings.musicEnabled) {
+            this.play('background');
+        } else {
+            this.stop('background');
+        }
+        
+        this.updateUI();
+        return this.settings.musicEnabled;
+    }
+
+    toggleSfx() {
+        this.settings.sfxEnabled = !this.settings.sfxEnabled;
+        localStorage.setItem('quiz_sfx_enabled', this.settings.sfxEnabled);
+        this.updateUI();
+        return this.settings.sfxEnabled;
+    }
+
+    updateUI() {
+        const musicBtn = document.getElementById('music-toggle');
+        const sfxBtn = document.getElementById('sfx-toggle');
+
+        if (musicBtn) {
+            const icon = musicBtn.querySelector('i');
+            if (icon) {
+                icon.className = this.settings.musicEnabled 
+                    ? 'fas fa-volume-up' 
+                    : 'fas fa-volume-mute';
+            }
+            musicBtn.title = this.settings.musicEnabled 
+                ? 'إيقاف الموسيقى / Mute Music' 
+                : 'تشغيل الموسيقى / Play Music';
+        }
+
+        if (sfxBtn) {
+            const icon = sfxBtn.querySelector('i');
+            if (icon) {
+                icon.className = this.settings.sfxEnabled 
+                    ? 'fas fa-bell' 
+                    : 'fas fa-bell-slash';
+            }
+            sfxBtn.title = this.settings.sfxEnabled 
+                ? 'إيقاف المؤثرات / Mute SFX' 
+                : 'تشغيل المؤثرات / Play SFX';
+        }
+    }
+
+    initButtons() {
+        this.updateUI();
+    }
+}
+
+window.audioManager = new AudioManager();
+
+document.addEventListener('DOMContentLoaded', function() {
+    window.audioManager.initButtons();
+});
