@@ -168,27 +168,26 @@ Mythical Analysis Result
 <span id="site-title">QuizMagic</span>
 </a>
 <div class="flex items-center gap-3">
-<!-- Achievements Button (NEW) -->
-<button onclick="showAchievementsModal()" class="theme-toggle-btn text-sm px-3 py-2 rounded-md border transition-all transform hover:scale-105" title="إنجازاتي / My Achievements">
-<i class="fas fa-trophy"></i>
-</button>
-<!-- Audio Toggle Button (Sound Effects) -->
-<button id="audio-toggle" onclick="toggleAudio()" class="theme-toggle-btn text-sm px-3 py-2 rounded-md border transition-all transform hover:scale-105" title="تبديل الأصوات / Toggle Sound Effects">
-    <i class="fas fa-volume-up"></i>
-</button>
-
-<!-- Background Music Toggle Button -->
-<button id="bg-music-toggle" onclick="toggleBackgroundMusic()" class="theme-toggle-btn text-sm px-3 py-2 rounded-md border transition-all transform hover:scale-105" title="الموسيقى الخلفية / Background Music">
-    <i class="fas fa-music"></i>
-</button>
-<!-- Theme Toggle Button -->
-<button id="theme-toggle" onclick="toggleTheme()" class="theme-toggle-btn text-sm px-3 py-2 rounded-md border transition-all transform hover:scale-105" title="تبديل المظهر / Toggle Theme">
-<i class="fas fa-moon"></i>
-</button>
-<!-- Language Toggle Button -->
-<button onclick="showLanguageScreen()" class="text-sm px-3 py-2 rounded-md border transition-all theme-bg-tertiary theme-border theme-text-primary">
-<i class="fas fa-globe mr-1"></i> <span id="lang-btn-text">العربية</span>
-</button>
+    <!-- 🎵 Music Toggle Button (NEW) -->
+    <button id="music-toggle" onclick="audioManager.toggleMusic()" class="theme-toggle-btn text-sm px-3 py-2 rounded-md border transition-all transform hover:scale-105" title="إيقاف الموسيقى / Mute Music">
+        <i class="fas fa-volume-up"></i>
+    </button>
+    <!-- 🔔 SFX Toggle Button (NEW) -->
+    <button id="sfx-toggle" onclick="audioManager.toggleSfx()" class="theme-toggle-btn text-sm px-3 py-2 rounded-md border transition-all transform hover:scale-105" title="إيقاف المؤثرات / Mute SFX">
+        <i class="fas fa-bell"></i>
+    </button>
+    <!-- Achievements Button -->
+    <button onclick="showAchievementsModal()" class="theme-toggle-btn text-sm px-3 py-2 rounded-md border transition-all transform hover:scale-105" title="إنجازاتي / My Achievements">
+        <i class="fas fa-trophy"></i>
+    </button>
+    <!-- Theme Toggle Button -->
+    <button id="theme-toggle" onclick="toggleTheme()" class="theme-toggle-btn text-sm px-3 py-2 rounded-md border transition-all transform hover:scale-105" title="تبديل المظهر / Toggle Theme">
+        <i class="fas fa-moon"></i>
+    </button>
+    <!-- Language Toggle Button -->
+    <button onclick="showLanguageScreen()" class="text-sm px-3 py-2 rounded-md border transition-all theme-bg-tertiary theme-border theme-text-primary">
+        <i class="fas fa-globe mr-1"></i> <span id="lang-btn-text">العربية</span>
+    </button>
 </div>
 </div>
 </header>
@@ -268,10 +267,10 @@ Mythical Analysis Result
 
 <!-- Scripts -->
 <script src="assets/js/config.js"></script>
+<script src="assets/js/audio.js"></script> 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="assets/js/quizzes.js"></script>
-<script src="assets/js/audio.js"></script> 
 <script src="assets/js/app.js"></script>
 <script>
 if ('serviceWorker' in navigator) {
