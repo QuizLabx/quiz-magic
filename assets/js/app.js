@@ -635,96 +635,109 @@ function showLoading() {
     setTimeout(showResult, delay);
 }
 
-// ==================== RESULT CALCULATION ====================
-// 🎯 NEW: Balance factors to ensure all 16 creatures can appear
-const creatureBalanceFactor = {
-    dragon: 0.85,        // Reduce (appears too often)
-    phoenix: 1.0,        // Normal
-    unicorn: 1.0,        // Normal
-    sphinx: 1.0,         // Normal
-    kraken: 1.2,         // Increase (rare)
-    owl_of_athena: 1.0,  // Normal
-    centaur: 1.0,        // Normal
-    cerberus: 1.2,       // Increase (rare)
-    faun: 1.3,           // Increase (very rare)
-    golem: 1.2,          // Increase (rare)
-    hydra: 1.0,          // Normal
-    kitsune: 1.0,        // Normal
-    pegasus: 1.0,        // Normal
-    simurgh: 0.9,        // Slight reduce
-    siren: 1.3,          // Increase (very rare)
-    valkyrie: 0.85       // Reduce (appears too often)
-};
-
+// ==================== RESULT CALCULATION (ADVANCED ALGORITHM) ====================
 function calculateResult() {
-    const traitScores = {};
+    // 1. حساب نقاط كل محور (Axis)
     const axisScores = {
         intelligence: 0, energy: 0, empathy: 0, strategy: 0, mystery: 0, willpower: 0
     };
+    const axisCounts = {
+        intelligence: 0, energy: 0, empathy: 0, strategy: 0, mystery: 0, willpower: 0
+    };
+
     userResponses.forEach(resp => {
-        traitScores[resp.trait] = (traitScores[resp.trait] || 0) + resp.value;
         if (resp.axis && axisScores.hasOwnProperty(resp.axis)) {
             axisScores[resp.axis] += resp.value;
+            axisCounts[resp.axis] += 1;
         }
     });
 
-    const weightedTraitToCreature = {
-        leadership: { dragon: 1.4, valkyrie: 0.8, simurgh: 0.7, centaur: 0.5 },
-        power: { hydra: 1.4, dragon: 1.0, valkyrie: 0.7, cerberus: 0.8 },
-        intensity: { phoenix: 1.4, dragon: 0.9, hydra: 0.7, siren: 0.5 },
-        knowledge: { owl_of_athena: 1.5, simurgh: 1.1, sphinx: 0.9, centaur: 0.6 },
-        wisdom: { owl_of_athena: 1.3, simurgh: 1.4, sphinx: 0.8, kraken: 0.5 },
-        analysis: { sphinx: 1.4, kraken: 1.2, owl_of_athena: 0.9, centaur: 0.6 },
-        mystery: { sphinx: 1.3, kraken: 1.3, siren: 1.1, kitsune: 0.8 },
-        intuition: { siren: 1.5, sphinx: 0.8, kitsune: 0.9, phoenix: 0.6 },
-        curiosity: { sphinx: 0.7, pegasus: 1.3, kraken: 0.6, simurgh: 0.8 },
-        purity: { unicorn: 1.6, phoenix: 0.8, valkyrie: 0.6, pegasus: 0.7 },
-        altruism: { unicorn: 1.4, phoenix: 0.9, faun: 0.9, valkyrie: 0.6 },
-        stability: { golem: 1.6, centaur: 0.7, faun: 0.5, kraken: 0.4 },
-        tradition: { golem: 1.4, centaur: 1.0, valkyrie: 0.6, simurgh: 0.5 },
-        social: { kitsune: 1.2, faun: 1.3, unicorn: 0.8, pegasus: 0.6 },
-        adaptation: { kitsune: 1.4, phoenix: 1.0, faun: 1.1, pegasus: 0.7 },
-        exploration: { pegasus: 1.5, kraken: 0.7, kitsune: 0.8, simurgh: 0.6 },
-        energy: { pegasus: 1.1, phoenix: 1.1, dragon: 0.7, faun: 1.0 },
-        honesty: { valkyrie: 1.5, unicorn: 0.9, dragon: 0.6, centaur: 0.6 },
-        potential: { valkyrie: 1.0, simurgh: 1.2, phoenix: 1.0, pegasus: 0.9 },
-        nature: { faun: 1.5, unicorn: 0.9, golem: 0.7, pegasus: 0.6 },
-        composure: { faun: 1.0, golem: 1.3, sphinx: 0.8, siren: 0.7 },
-        protection: { cerberus: 1.6, dragon: 0.9, valkyrie: 0.8, golem: 0.6 },
-        strategy: { centaur: 1.4, kraken: 1.0, sphinx: 0.8, kitsune: 0.7 },
-        logic: { centaur: 1.3, owl_of_athena: 0.9, sphinx: 0.8, golem: 0.6 },
-        elegance: { siren: 1.5, unicorn: 0.9, phoenix: 0.7, kitsune: 0.8 },
-        perfection: { simurgh: 1.4, phoenix: 0.8, valkyrie: 0.7, centaur: 0.6 },
-        persistence: { hydra: 1.5, phoenix: 0.9, valkyrie: 0.8, golem: 0.7 },
-        ambition: { dragon: 1.5, valkyrie: 1.2, simurgh: 1.0, phoenix: 0.8 }
-    };
-
-    const creatureScores = {};
-    for (const trait in traitScores) {
-        const weights = weightedTraitToCreature[trait];
-        if (weights) {
-            for (const cId in weights) {
-                // 🎯 NEW: Apply balance factor
-                const balanceFactor = creatureBalanceFactor[cId] || 1.0;
-                creatureScores[cId] = (creatureScores[cId] || 0) + (traitScores[trait] * weights[cId] * balanceFactor);
-            }
+    // 2. تحويل النقاط إلى نسب مئوية (0-100)
+    const axisPercentages = {};
+    for (const axis in axisScores) {
+        const maxPossible = axisCounts[axis] * 5;
+        if (maxPossible > 0) {
+            // نضمن ألا تقل النسبة عن 15% لكي يظهر الرادار بشكل جيد
+            axisPercentages[axis] = Math.max(15, (axisScores[axis] / maxPossible) * 100);
+        } else {
+            axisPercentages[axis] = 50; // قيمة افتراضية
         }
     }
 
-    const sortedCreatures = Object.keys(creatureScores).sort((a, b) => creatureScores[b] - creatureScores[a]);
-    const winnerId = sortedCreatures[0] || 'dragon';
-    const secondaryId = sortedCreatures[1] || 'phoenix';
+    // 3. حساب التوافق مع كل كائن بناءً على محاوره (Multi-Axis Matching)
+    const results = currentQuiz.results;
+    let creatureScores = [];
 
-    const normalizedAxes = {};
-    for (const axis in axisScores) {
-        normalizedAxes[axis] = Math.min(100, Math.max(20, (axisScores[axis] / 30) * 100));
-    }
+    results.forEach(creature => {
+        let totalCompatibility = 0;
+        let axesCount = 0;
+        
+        // استخدام خاصية axes الجديدة من ملف quizzes.js
+        const creatureAxes = creature.axes || [];
+        
+        if (creatureAxes.length > 0) {
+            creatureAxes.forEach(axis => {
+                if (axisPercentages[axis] !== undefined) {
+                    totalCompatibility += axisPercentages[axis];
+                    axesCount++;
+                }
+            });
+        } else {
+            totalCompatibility = 50;
+            axesCount = 1;
+        }
+
+        const avgCompatibility = totalCompatibility / axesCount;
+        
+        // استخدام خاصية multiplier الجديدة من ملف quizzes.js
+        const multiplier = creature.multiplier || 1.0;
+        const finalScore = avgCompatibility * multiplier;
+
+        creatureScores.push({
+            id: creature.id,
+            score: finalScore,
+            compatibility: avgCompatibility,
+            rarity: creature.rarity,
+            creature: creature
+        });
+    });
+
+    // 4. نظام كسر التعادل الذكي (Tiebreaker)
+    const rarityWeights = {
+        'أسطوري': 4, 'Legendary': 4,
+        'نادر جداً': 3, 'Very Rare': 3,
+        'نادر': 2, 'Rare': 2,
+        'شائع': 1, 'Common': 1
+    };
+
+    creatureScores.sort((a, b) => {
+        // الأولوية للأعلى نقاطاً
+        if (Math.abs(b.score - a.score) > 0.01) {
+            return b.score - a.score; 
+        }
+        // كسر التعادل 1: الندرة (Rarity)
+        const rarityA = rarityWeights[a.rarity] || 0;
+        const rarityB = rarityWeights[b.rarity] || 0;
+        if (rarityB !== rarityA) {
+            return rarityB - rarityA;
+        }
+        // كسر التعادل 2: عشوائي مدروس
+        return Math.random() - 0.5;
+    });
+
+    const winner = creatureScores[0];
+    const secondary = creatureScores[1];
+
+    // 5. التحقق من الحد الأدنى (Threshold)
+    const isBelowThreshold = winner.compatibility < 60;
 
     return {
-        creature: currentQuiz.results.find(r => r.id === winnerId) || currentQuiz.results[0],
-        secondaryCreature: currentQuiz.results.find(r => r.id === secondaryId) || currentQuiz.results[1],
-        radar: normalizedAxes,
-        winnerId: winnerId
+        creature: winner.creature,
+        secondaryCreature: secondary.creature,
+        radar: axisPercentages,
+        winnerId: winner.id,
+        isBelowThreshold: isBelowThreshold,
+        allScores: creatureScores
     };
 }
 
