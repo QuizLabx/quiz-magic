@@ -1,856 +1,928 @@
 const quizzesData = {
-ar: {
-title: "QuizMagic | عالم الاختبارات الأسطورية",
-heroTitle: "اكتشف كائنك الأسطوري الحقيقي",
-heroSubtitle: "رحلة في أعماق عقلك الباطن لكشف القوى القديمة التي تسكن روحك",
-footerDesc: "منصة الاختبارات النفسية الأكثر دقة في العالم العربي.",
-quizzes: [
-{
-id: "mythical-creature",
-title: "اختبار الكائن الأسطوري",
-badge: "الأكثر دقة",
-image: "assets/images/dragon.jpg",
-description: "تحليل نفسي متقدم يربط سماتك الشخصية بأساطير الكائنات القديمة.",
-questions: [
-{ id: 1, text: "أشعر بالراحة أكثر عندما أكون وحيداً مع أفكاري.", trait: "mystery", axis: "mystery", type: "likert" },
-{ id: 2, text: "أميل دائماً لتولي دور القيادة في المجموعات.", trait: "leadership", axis: "willpower", type: "likert" },
-{ id: 3, text: "أهتم بمساعدة الآخرين حتى لو كان ذلك على حساب راحتي.", trait: "altruism", axis: "empathy", type: "likert" },
-{
-id: 4,
-text: "أي من هذه البوابات تجذبك أكثر للدخول إليها؟",
-type: "visual",
-options: [
-{ label: "بوابة النور", image: "assets/images/quiz/q4_opt1.jpg", trait: "purity", axis: "empathy", value: 5 },
-{ label: "بوابة الغموض", image: "assets/images/quiz/q4_opt2.jpg", trait: "mystery", axis: "mystery", value: 5 },
-{ label: "بوابة القوة", image: "assets/images/quiz/q4_opt3.jpg", trait: "power", axis: "willpower", value: 5 },
-{ label: "بوابة الطبيعة", image: "assets/images/quiz/q4_opt4.jpg", trait: "nature", axis: "energy", value: 5 }
-]
-},
-{ id: 5, text: "أفضل التخطيط لكل شيء مسبقاً بدلاً من العفوية.", trait: "strategy", axis: "strategy", type: "likert" },
-{ id: 6, text: "لدي قدرة كبيرة على التكيف مع التغييرات المفاجئة.", trait: "adaptation", axis: "energy", type: "likert" },
-{ id: 7, text: "أبحث دائماً عن المعنى العميق وراء الأشياء.", trait: "knowledge", axis: "intelligence", type: "likert" },
-{
-id: 8,
-text: "ما هو العنصر الذي تشعر أنه يمثل طاقتك الداخلية؟",
-type: "visual",
-options: [
-{ label: "النار", image: "assets/images/quiz/q8_opt1.jpg", trait: "intensity", axis: "energy", value: 5 },
-{ label: "المياه", image: "assets/images/quiz/q8_opt2.jpg", trait: "composure", axis: "strategy", value: 5 },
-{ label: "الأرض", image: "assets/images/quiz/q8_opt3.jpg", trait: "stability", axis: "willpower", value: 5 },
-{ label: "الرياح", image: "assets/images/quiz/q8_opt4.jpg", trait: "exploration", axis: "intelligence", value: 5 }
-]
-},
-{ id: 9, text: "أجد صعوبة في مسامحة الأشخاص الذين أخطأوا في حقي.", trait: "persistence", axis: "willpower", type: "likert" },
-{ id: 10, text: "أثق بحدسي أكثر من المنطق في اتخاذ القرارات.", trait: "intuition", axis: "mystery", type: "likert" },
-{ id: 11, text: "أحب أن أكون محاطاً بالجمال والفن في حياتي.", trait: "elegance", axis: "empathy", type: "likert" },
-{
-id: 12,
-text: "أي من هذه المشاهد يمنحك شعوراً أكبر بالسلام؟",
-type: "visual",
-options: [
-{ label: "قمة جبل", image: "assets/images/quiz/q12_opt1.jpg", trait: "ambition", axis: "willpower", value: 5 },
-{ label: "مكتبة قديمة", image: "assets/images/quiz/q12_opt2.jpg", trait: "wisdom", axis: "intelligence", value: 5 },
-{ label: "حديقة سرية", image: "assets/images/quiz/q12_opt3.jpg", trait: "purity", axis: "empathy", value: 5 },
-{ label: "شاطئ مهجور", image: "assets/images/quiz/q12_opt4.jpg", trait: "mystery", axis: "mystery", value: 5 }
-]
-},
-{ id: 13, text: "أستمتع بمناقشة الأفكار الفلسفية والمعقدة.", trait: "analysis", axis: "intelligence", type: "likert" },
-{ id: 14, text: "أنا شخص صبور جداً عند التعامل مع المشاكل الطويلة.", trait: "persistence", axis: "strategy", type: "likert" },
-{ id: 15, text: "أهتم كثيراً بسمعتي وكيف يطالعني الآخرون.", trait: "potential", axis: "strategy", type: "likert" },
-{
-id: 16,
-text: "أي رمز سحري تختار ليكون تميمة حظك؟",
-type: "visual",
-options: [
-{ label: "العين", image: "assets/images/quiz/q16_opt1.jpg", trait: "knowledge", axis: "intelligence", value: 5 },
-{ label: "الخنجر", image: "assets/images/quiz/q16_opt2.jpg", trait: "protection", axis: "willpower", value: 5 },
-{ label: "الكأس", image: "assets/images/quiz/q16_opt3.jpg", trait: "altruism", axis: "empathy", value: 5 },
-{ label: "المفتاح", image: "assets/images/quiz/q16_opt4.jpg", trait: "curiosity", axis: "mystery", value: 5 }
-]
-},
-{ id: 17, text: "أفضل العمل ضمن فريق بدلاً من العمل منفرداً.", trait: "social", axis: "empathy", type: "likert" },
-{ id: 18, text: "أنا دائماً صادق مع نفسي حتى لو كان الحلم مؤلماً.", trait: "honesty", axis: "willpower", type: "likert" },
-{ id: 19, text: "أمتلك طاقة كبيرة تدفعني لتجربة أشياء جديدة دائماً.", trait: "energy", axis: "energy", type: "likert" },
-{
-id: 20,
-text: "ما هو الحيوان الذي تشعر بارتباط روحي معه؟",
-type: "visual",
-options: [
-{ label: "الذئب", image: "assets/images/quiz/q20_opt1.jpg", trait: "social", axis: "empathy", value: 5 },
-{ label: "الأفعى", image: "assets/images/quiz/q20_opt2.jpg", trait: "strategy", axis: "strategy", value: 5 },
-{ label: "النسر", image: "assets/images/quiz/q20_opt3.jpg", trait: "exploration", axis: "energy", value: 5 },
-{ label: "الفراشة", image: "assets/images/quiz/q20_opt4.jpg", trait: "adaptation", axis: "energy", value: 5 }
-]
-},
-{ id: 21, text: "أنا شخص عاطفي جداً وتؤثر فيّ القصص الإنسانية.", trait: "nature", axis: "empathy", type: "likert" },
-{ id: 22, text: "أحب التحدي والمنافسة للوصول إلى القمة.", trait: "leadership", axis: "willpower", type: "likert" },
-{ id: 23, text: "أميل للحفاظ على التقاليد والقيم القديمة.", trait: "tradition", axis: "strategy", type: "likert" },
-{
-id: 24,
-text: "أي جوهرة تشعر أنها تملك طاقة تجذبك؟",
-type: "visual",
-options: [
-{ label: "ياقوت أحمر", image: "assets/images/quiz/q24_opt1.jpg", trait: "intensity", axis: "energy", value: 5 },
-{ label: "ماس أزرق", image: "assets/images/quiz/q24_opt2.jpg", trait: "logic", axis: "intelligence", value: 5 },
-{ label: "زمرد أخضر", image: "assets/images/quiz/q24_opt3.jpg", trait: "nature", axis: "empathy", value: 5 },
-{ label: "جمشت أرجواني", image: "assets/images/quiz/q24_opt4.jpg", trait: "intuition", axis: "mystery", value: 5 }
-]
-},
-{ id: 25, text: "أستطيع التحكم في أعصابي حتى في أصعب المواقف.", trait: "composure", axis: "strategy", type: "likert" },
-{ id: 26, text: "أهتم بالتفاصيل الصغيرة التي قد لا يلاحظها الآخرون.", trait: "analysis", axis: "intelligence", type: "likert" },
-{ id: 27, text: "أنا شخص متفائل وأرى الجانب المشرق دائماً.", trait: "potential", axis: "energy", type: "likert" },
-{
-id: 28,
-text: "أي سماء تفضل أن تتأملها في الليل؟",
-type: "visual",
-options: [
-{ label: "شفق قطبي", image: "assets/images/quiz/q28_opt1.jpg", trait: "potential", axis: "energy", value: 5 },
-{ label: "كسوف كلي", image: "assets/images/quiz/q28_opt2.jpg", trait: "mystery", axis: "mystery", value: 5 },
-{ label: "سديم فضائي", image: "assets/images/quiz/q28_opt3.jpg", trait: "exploration", axis: "intelligence", value: 5 },
-{ label: "برق صامت", image: "assets/images/quiz/q28_opt4.jpg", trait: "energy", axis: "energy", value: 5 }
-]
-},
-{ id: 29, text: "أفضل الاستقرار في مكان واحد على كثرة الترحال.", trait: "stability", axis: "strategy", type: "likert" },
-{ id: 30, text: "أشعر أن لدي رسالة كبيرة يجب أن أؤديها في الحياة.", trait: "ambition", axis: "willpower", type: "likert" },
-{ id: 31, text: "أحب الغموض ولا أكشف كل أوراقي للآخرين.", trait: "mystery", axis: "mystery", type: "likert" },
-{
-id: 32,
-text: "أي وسيلة نقل أسطورية تختار لرحلتك القادمة؟",
-type: "visual",
-options: [
-{ label: "سفينة طائرة", image: "assets/images/quiz/q32_opt1.jpg", trait: "exploration", axis: "energy", value: 5 },
-{ label: "عربة نور", image: "assets/images/quiz/q32_opt2.jpg", trait: "purity", axis: "empathy", value: 5 },
-{ label: "بساط ريحي", image: "assets/images/quiz/q32_opt3.jpg", trait: "wisdom", axis: "intelligence", value: 5 },
-{ label: "تنين صغير", image: "assets/images/quiz/q32_opt4.jpg", trait: "protection", axis: "willpower", value: 5 }
-]
-},
-{ id: 33, text: "أنا شخص عملي جداً ولا أضيع وقتي في الأحلام.", trait: "logic", axis: "strategy", type: "likert" },
-{ id: 34, text: "أبحث دائماً عن المثالية في كل ما أفعل.", trait: "perfection", axis: "strategy", type: "likert" },
-{ id: 35, text: "أنا مخلص جداً لأصدقائي وعائلتي.", trait: "social", axis: "empathy", type: "likert" },
-{
-id: 36,
-text: "ما هو السلاح الذي ستختاره للدفاع عن مملكتك؟",
-type: "visual",
-options: [
-{ label: "سيف الضوء", image: "assets/images/quiz/q36_opt1.jpg", trait: "honesty", axis: "willpower", value: 5 },
-{ label: "درع الظل", image: "assets/images/quiz/q36_opt2.jpg", trait: "protection", axis: "strategy", value: 5 },
-{ label: "قوس النجوم", image: "assets/images/quiz/q36_opt3.jpg", trait: "strategy", axis: "intelligence", value: 5 },
-{ label: "عصا الحكيم", image: "assets/images/quiz/q36_opt4.jpg", trait: "knowledge", axis: "intelligence", value: 5 }
-]
-},
-{ id: 37, text: "أحب أن أكون متميزاً ومختلفاً عن الآخرين.", trait: "potential", axis: "energy", type: "likert" },
-{ id: 38, text: "أنا شخص مرن جداً في تفكيري.", trait: "adaptation", axis: "energy", type: "likert" },
-{ id: 39, text: "أؤمن أن القوة الحقيقية تأتي من الداخل.", trait: "power", axis: "willpower", type: "likert" },
-{
-id: 40,
-text: "أي نهاية تفضل أن تختم بها قصة حياتك؟",
-type: "visual",
-options: [
-{ label: "عرش ذهبي", image: "assets/images/quiz/q40_opt1.jpg", trait: "leadership", axis: "willpower", value: 5 },
-{ label: "كوخ هادئ", image: "assets/images/quiz/q40_opt2.jpg", trait: "nature", axis: "empathy", value: 5 },
-{ label: "رحلة أبدية", image: "assets/images/quiz/q40_opt3.jpg", trait: "curiosity", axis: "energy", value: 5 },
-{ label: "اتحاد كوني", image: "assets/images/quiz/q40_opt4.jpg", trait: "mystery", axis: "mystery", value: 5 }
-]
-}
-],
-results: [
-{
-id: "dragon",
-name: "التنين العظيم",
-rarity: "أسطوري",
-image: "assets/images/dragon.jpg",
-description: "أنت تجسيد للقوة والقيادة. تمتلك روحاً نارية لا تقهر وطموحاً يتجاوز السحاب.",
-narrative: "في أعماق الجبال القديمة، حيث تلامس القمم السماء، ولدت روحك. أنت اللهب الذي لا ينطفئ، والقائد الذي لا ينحني. يرى العالم فيك هيبة الملوك وشجاعة المحاربين.",
-advice: "تذكر أن القوة الحقيقية تكمن في كبح جماح نارك واستخدامها للتدفئة بدلاً من الحرق.",
-badge: "المفكر الأسطوري",
-article: "يُعتبر التنين في جميع الثقافات رمزاً للقوة المطلقة والحكمة القديمة. أصحاب هذه الشخصية هم قادة طبيعيون، يمتلكون رؤية بعيدة المدى وقدرة على مواجهة أصعب التحديات دون خوف.",
-secretReport: {
-strengths: "كاريزما طاغية، شجاعة استثنائية، وقدرة على حماية من تحب بكل قوتك.",
-challenges: "قد تميل أحياناً للسيطرة المفرطة أو الغضب السريع عندما لا تسير الأمور كما خططت.",
-insight: "قوتك الحقيقية تكمن في كبح جماح نارك واستخدامها للتدفئة بدلاً من الحرق."
-}
-},
-{
-id: "phoenix",
-name: "طائر العنقاء",
-rarity: "نادر جداً",
-image: "assets/images/phoenix.jpg",
-description: "أنت رمز للتجدد والأمل. تمتلك قدرة مذهلة على النهوض من الرماد أقوى من ذي قبل.",
-narrative: "في لحظة الاحتراق الأخيرة، عندما ظن العالم أنك انتهيت، أشرقت من رمادك روح العنقاء. لستَ مجرد ناجٍ من العواصف، بل أنت العاصفة نفسها التي تتجدد. كل خسارة علّمتك درساً، كل فشل بنى فيك حكمة، وكل دموع سقتها أرض روحك لتزهر من جديد.\n\nأنت لا تعرف معنى الاستسلام، فالكلمة غير موجودة في قاموسك. عندما يسقط الآخرون، أنت تنهض أقوى. عندما يُغلق باب، تفتح نافذة. عندما يظلم العالم، تصبح أنت النور.\n\nلكن تذكر: حتى العنقاء تحتاج للراحة بين دورات التجديد. لا تحرق نفسك باستمرار إثباتاً لقوتك، فالنور الهادئ المستدام أقوى من اللهب العنيف الزائل.",
-advice: "تذكر أنك لست مضطراً للاحتراق دائماً لتثبت وجودك؛ النور الهادئ يدوم أطول.",
-badge: "الروح المتجددة",
-article: "العنقاء (Phoenix) هي واحدة من أكثر الكائنات الأسطورية انتشاراً في ثقافات العالم القديم. ظهرت أولاً في الأساطير المصرية القديمة تحت اسم 'بينو' (Benu)، حيث كانت مرتبطة بعبادة الشمس والبعث بعد الموت. انتقلت الأسطورة لاحقاً إلى الحضارة اليونانية، حيث وصفها هيرودوت بأنها طائر مذهل يعيش في الصحراء العربية لمدة 500 عام قبل أن يحرق نفسه ويعود للحياة من رماده.\n\nفي الثقافة الصينية، تُعرف العنقاء باسم 'فنغ هوانغ' (Fenghuang)، وهي رمز للإمبراطورة والفضائل النبيلة. أما في الثقافة اليابانية، فتُسمى 'هـ-أو' (Hō-ō) وتظهر فقط في أوقات السلام والازدهار.\n\n**التحليل النفسي:**\nأصحاب شخصية العنقاء يمتلكون ما يُسمى في علم النفس 'المرونة النفسية' (Psychological Resilience)، وهي القدرة على التعافي من الصدمات والنمو من خلالها. الدراسات الحديثة في علم النفس الإيجابي تُظهر أن هؤلاء الأشخاص يمتلكون:\n\n• **نمو ما بعد الصدمة** (Post-Traumatic Growth): لا يكتفون بالعودة لنقطة الصفر، بل يتطورون\n• **تحويل الألم إلى وقود**: يستخدمون التجارب الصعبة كحافز للإبداع\n• **التفاؤل الواقعي**: يرون الجانب المشرق دون إنكار الواقع\n• **القدرة على التجديد**: يعرفون متى ينهون مرحلة ويبدأون أخرى\n\nلكن هذه القوة لها ثمن: قد يميلون للاحتراق الذاتي (Burnout) في محاولة مستمرة للتجدد، أو يقعون في فخ 'إدمان الأدرينالين' بالبحث المستمر عن التحديات.",
-secretReport: {
-strengths: "• **المرونة النفسية الاستثنائية**: قدرتك على التعافي من الصدمات تفوق المتوسط بـ 3 أضعاف\n• **التحويل الإبداعي للألم**: تحول التجارب الصعبة إلى فن، كتابة، أو مشاريع ملهمة\n• **القيادة في الأزمات**: عندما يفقد الآخرون الأمل، تصبح مصدر إلهامهم\n• **التفاؤل الواقعي**: ترى الإمكانيات حيث يرى الآخرون المستحيل",
-challenges: "• **متلازمة الاحتراق**: ميلك للتجديد المستمر قد يؤدي لإرهاق جسدي ونفسي\n• **صعوبة الاستقرار**: قد تجد صعوبة في الالتزام بعلاقات أو مشاريع طويلة المدى\n• **توقع التجديد من الآخرين**: قد تحبط عندما لا يتغير الآخرون بسرعة مثلك\n• **إدمان الدراما**: لا شعورياً، قد تجذب نفسك لمواقف صعبة لتشعر بأنك 'حي'",
-growthPath: "**مسار التطور الشخصي:**\n1. تعلم 'الراحة الفعالة': التجديد لا يعني الحركة المستمرة\n2. ابنِ أنظمة دعم: لا تحاول النهوض من الرماد وحدك دائماً\n3. مارس 'الاستقرار الديناميكي': يمكن أن تتغير وتنمو دون أن تتخلى عن كل شيء\n4. طور 'الصبر الاستراتيجي': ليس كل شيء يحتاج لتجديد فوري",
-relationships: "**في العلاقات:**\n• تحتاج شريكاً يفهم دوراتك الطبيعية في التجديد\n• قد تكون 'المنقذ' في العلاقات، احذر من إنقاذ من لا يريد الإنقاذ\n• أفضل التوافق: مع كائنات مستقرة (الجولم، القنطور) توازن تقلباتك\n• تجنب: العلاقات السامة التي تستنزف طاقتك المتجددة",
-career: "**المسار المهني المثالي:**\n• ريادة الأعمال (خاصة في مجالات التجديد والتحول)\n• العلاج النفسي والاستشارات (لأنك تفهم الألم والتعافي)\n• الفنون الإبداعية (كتابة، موسيقى، فنون بصرية)\n• القيادة في المنظمات التي تمر بأزمات\n• تجنب: الوظائف الروتينية المتكررة التي تقتل روح التجديد فيك",
-insight: "قوتك الحقيقية ليست في القدرة على النهوض من الرماد فحسب، بل في الحكمة التي تجمعها من كل دورة حياة. أنت لست طائراً يحترق، أنت حكمة تتجسد في كل ولادة جديدة."
-}
-},
-{
-id: "unicorn",
-name: "وحيد القرن النقي",
-rarity: "نادر",
-image: "assets/images/unicorn.jpg",
-description: "أنت تجسيد للنقاء واللطف. تمتلك روحاً بريئة تهدف دائماً لنشر الخير والجمال.",
-narrative: "في غابة مسحورة لم تطأها قدم بشر، تسكن روحك النقية. أنت النور الذي يطرد الظلام بابتسامة، والبلسم الذي يشفي جروح القلوب المتعبة.",
-advice: "نقاء قلبك هو أقوى درع تملكه، لا تسمح للعالم أن يغير جوهرك.",
-badge: "حارس النقاء",
-article: "وحيد القرن هو رمز الطهارة والشفاء. أصحاب هذه الشخصية هم بلسم لجروح الآخرين، يمتلكون حدساً نقياً وقدرة على رؤية الجمال في أبسط الأشياء.",
-secretReport: {
-strengths: "صدق مطلق، قدرة على التعاطف العميق، ونية صافية تجذب الناس إليك.",
-challenges: "حساسيتك المفرطة قد تجعلك عرضة للجروح من العالم القاسي من حولك.",
-insight: "نقاء قلبك هو أقوى درع تملكه، لا تسمح للعالم أن يغير جوهرك."
-}
-},
-{
-id: "sphinx",
-name: "أبو الهول الغامض",
-rarity: "أسطوري",
-image: "assets/images/sphinx.jpg",
-description: "أنت حارس الأسرار والحكمة. تمتلك عقلاً تحليلياً يرى ما وراء الستار ويحل أعقد الألغاز.",
-narrative: "بين رمال الزمن وأسرار الحضارات، تقف روحك صامدة كتمثال أبو الهول. أنت اللغز الذي لا يحل، والعين التي ترى ما لا يراه الآخرون. صمتك حكمة وكلامك حقيقة.\n\nفي عالم يصرخ فيه الجميع ليجذب الانتباه، أنت تفضل المراقبة الصامتة. تزن كل كلمة قبل أن تنطقها، وتحلل كل موقف قبل أن تتفاعل معه. هذه ليست عزلة، بل هي استراتيجية حياة.\n\nلكن تذكر: الحكمة التي لا تُشارك تصبح عبئاً. أحياناً، كسر الصمت وفتح قلبك لشخص واحد يستحق الثقة، أقوى من حل ألف لغز.",
-advice: "مشاركة جزء من أسرارك قد يفتح لك أبواباً من الصداقة لم تكن تتوقعها.",
-badge: "سيد الألغاز",
-article: "أبو الهول (Sphinx) هو واحد من أكثر الكائنات الأسطورية غموضاً في التاريخ، حيث ظهر في الأساطير المصرية واليونانية. في مصر القديمة، كان يُعتبر حارساً للمقابر والمعابد، برأس إنسان وجسد أسد، مما يرمز لاتحاد الحكمة والقوة. في الأساطير اليونانية، كان يطرح ألغازاً على المسافرين؛ ومن فشل في حلها كان مصيره الهلاك.\n\nأشهر لغز لأبو الهول اليوناني كان: 'ما هو الشيء الذي يمشي على أربع في الصباح، وعلى اثنتين في الظهر، وعلى ثلاث في المساء؟' الإجابة: الإنسان (طفلاً، شاباً، ثم عجوزاً).\n\n**التحليل النفسي:**\nأصحاب شخصية أبو الهول يمتلكون ما يُسمى في علم النفس 'الذكاء التحليلي' (Analytical Intelligence)، وهو القدرة على تفكيك المشكلات المعقدة إلى أجزاء صغيرة وحلها. الدراسات تُظهر أن هؤلاء الأشخاص يمتلكون:\n\n• **التفكير النقدي**: لا يقبلون المعلومات دون تحليل عميق\n• **الصبر الاستراتيجي**: ينتظرون اللحظة المناسبة للكشف عن الحقيقة\n• **القدرة على قراءة البشر**: يلاحظون التفاصيل الدقيقة في لغة الجسد والكلام\n• **الحكمة الصامتة**: يتحدثون فقط عندما يملكون شيئاً قيماً ليقولوه\n\nلكن هذه القوة لها ثمن: قد يميلون للعزلة الزائدة، أو يجدون صعوبة في الثقة بالآخرين، أو يقعون في فخ 'التحليل المفرط' (Analysis Paralysis) حيث يفكرون كثيراً ولا يتصرفون.",
-secretReport: {
-strengths: "• **الذكاء التحليلي الحاد**: قدرتك على تفكيك المشكلات المعقدة تفوق المتوسط بـ 4 أضعاف\n• **القراءة العميقة للبشر**: تلاحظ التفاصيل التي يفوتها 90% من الناس\n• **الصبر الاستراتيجي**: تنتظر اللحظة المناسبة بدلاً من التصرف باندفاع\n• **الحكمة الصامتة**: كلامك قليل لكنه قيم ومؤثر",
-challenges: "• **العزلة الزائدة**: ميلك للصمت والغموض قد يجعل الآخرين يجدون صعوبة في التقرب منك\n• **التحليل المفرط**: قد تفكر كثيراً ولا تتصرف، مما يفوت عليك فرصاً مهمة\n• **صعوبة الثقة**: قد تجد صعوبة في فتح قلبك للآخرين حتى لمن يستحقون\n• **التوقعات العالية**: قد تحبط عندما لا يفهم الآخرون تفكيرك العميق",
-growthPath: "**مسار التطور الشخصي:**\n1. مارس 'الانفتاح المدروس': شارك أفكارك مع شخص واحد تثق به أسبوعياً\n2. تعلم 'التصرف السريع': ليس كل قرار يحتاج تحليلاً عميقاً\n3. ابنِ 'جسور الثقة': ابدأ بمشاركات صغيرة وزد تدريجياً\n4. تقبل 'عدم الكمال': ليس كل شيء يحتاج لفهم كامل قبل التصرف",
-relationships: "**في العلاقات:**\n• تحتاج شريكاً يحترم صمتك ويفهم حاجتك للوحدة أحياناً\n• قد تكون 'المستشار' في العلاقات، احذر من إعطاء النصائح دون طلب\n• أفضل التوافق: مع كائنات اجتماعية (الفون، الكيتسوني) تخرجك من عزلتك\n• تجنب: الأشخاص السطحيين الذين لا يقدرون عمقك الفكري",
-career: "**المسار المهني المثالي:**\n• البحث العلمي والأكاديمي (لأنك تحب التحليل العميق)\n• الاستشارات الاستراتيجية (لأنك ترى ما لا يراه الآخرون)\n• الكتابة والتأليف (لأنك تعبر عن أفكارك المعقدة بشكل أفضل كتابة)\n• التحقيق والتحليل الجنائي\n• تجنب: الوظائف التي تتطلب تفاعلاً اجتماعياً مستمراً وسطحياً",
-insight: "حكمتك الحقيقية ليست في حل الألغاز فحسب، بل في معرفة متى تشارك الإجابة ومتى تبقيها سراً. أنت لست لغزاً مغلقاً، أنت كتاب ينتظر القارئ المناسب."
-}
-},
-{
-id: "kraken",
-name: "الكراكن العظيم",
-rarity: "نادر جداً",
-image: "assets/images/kraken.jpg",
-description: "أنت قوة الأعماق الغامضة. تمتلك نفوذاً واسعاً وقدرة على التحكم في الأمور من خلف الكواليس.",
-narrative: "في المحيطات المظلمة حيث لا يصل النور، تتحرك روحك بعظمة وهدوء. أنت القوة التي لا يستهان بها، والمخطط الذي يدير الدفة من خلف الستار.",
-advice: "الأعماق جميلة، لكن لا تنسَ الصعود للسطح أحياناً لتستمتع بنور الشمس.",
-badge: "سيد الأعماق",
-article: "الكراكن هو سيد المحيطات المظلمة. أصحاب هذه الشخصية يمتلكون شخصية معقدة وعميقة، يفضلون العمل في صمت وتأثيرهم يظهر فجأة وبقوة هائلة.",
-secretReport: {
-strengths: "تخطيط استراتيجي، قوة إرادة جبارة، وقدرة على إدارة الأزمات الكبرى.",
-challenges: "قد تميل للغموض الزائد الذي قد يتحول إلى رغبة في السيطرة الخفية.",
-insight: "الأعماق جميلة، لكن لا تنسَ الصعود للسطح أحياناً لتستمتع بنور الشمس."
-}
-},
-{
-id: "owl_of_athena",
-name: "بومة أثينا",
-rarity: "نادر",
-image: "assets/images/owl_of_athena.jpg",
-description: "أنت رمز الحكمة والمعرفة. ترى في الظلام ما يعجز الآخرون عن رؤيته في وضح النهار.",
-narrative: "في سكون الليل وتحت ضوء النجوم، تحلق روحك باحثة عن الحقيقة. أنت البصيرة النافذة التي تحول الجهل إلى نور، والمنطق الذي لا يخطئ.",
-advice: "الحكمة الحقيقية هي التي تجمع بين ذكاء العقل ورحمة القلب.",
-badge: "عين الحقيقة",
-article: "بومة أثينا كانت ترافق آلهة الحكمة دائماً. أصحاب هذه الشخصية هم باحثون عن الحقيقة، يقدرون العلم والمنطق ويمتلكون بصيرة نافذة.",
-secretReport: {
-strengths: "تركيز عالٍ، قدرة على التعلم السريع، وحكمة تسبق سنك بكثير.",
-challenges: "ميلك للمنطق الجاف قد يجعلك تهمل الجانب العاطفي في علاقاتك.",
-insight: "الحكمة الحقيقية هي التي تجمع بين ذكاء العقل ورحمة القلب."
-}
-},
-{
-id: "centaur",
-name: "القنطور الحكيم",
-rarity: "نادر",
-image: "assets/images/centaur.jpg",
-description: "أنت رمز للتوازن بين العقل والقوة البدنية. تمتلك حكمة فطرية وروحاً حرة.",
-narrative: "بين الغابات والسهول، تجري روحك بحرية لا تعرف القيود. أنت الحكيم الذي يحمل القوس، والمفكر الذي لا يخشى المواجهة. توازنك هو سر عظمتك.",
-advice: "توازنك هو سر قوتك، لا تترك جانباً يطغى على الآخر.",
-badge: "المحارب الحكيم",
-article: "القنطور يمثل الجانب البري والحكيم في الطبيعة البشرية. أصحاب هذه الشخصية هم استراتيجيون بالفطرة، يقدرون الحرية والمنطق.",
-secretReport: {
-strengths: "تفكير منطقي، قدرة على التحمل، ورؤية فلسفية للحياة.",
-challenges: "قد تجد صعوبة في الالتزام بالقواعد الصارمة التي تحد من حريتك.",
-insight: "توازنك هو سر قوتك، لا تترك جانباً يطغى على الآخر."
-}
-},
-{
-id: "cerberus",
-name: "سيربيروس الحارس",
-rarity: "نادر جداً",
-image: "assets/images/cerberus.jpg",
-description: "أنت الحامي الوفي والدرع المنيع. تمتلك يقظة دائمة وقدرة على حماية ما هو ثمين.",
-narrative: "على بوابات ما هو مقدس، تقف روحك حارساً لا يغفل. ولاؤك هو عهدك، وقوتك هي درع لمن تحب. أنت اليقظة التي لا تعرف التعب.",
-advice: "الحماية لا تعني دائماً القسوة؛ أحياناً يكون اللين هو أقوى دفاع.",
-badge: "الدرع المنيع",
-article: "سيربيروس هو حارس البوابات العظيم. أصحاب هذه الشخصية يمتلكون ولاءً لا يتزعزع وقدرة على رصد الأخطار قبل وقوعها.",
-secretReport: {
-strengths: "ولاء مطلق، يقظة عالية، وقدرة على حماية من تحب.",
-challenges: "قد تكون مفرطاً في الحماية أو تجد صعوبة في الثقة بالغرباء.",
-insight: "الحماية لا تعني دائماً القسوة؛ أحياناً يكون اللين هو أقوى دفاع."
-}
-},
-{
-id: "faun",
-name: "الفون الطبيعي",
-rarity: "شائع",
-image: "assets/images/faun.jpg",
-description: "أنت روح الطبيعة والمرح. تمتلك قدرة على الاستمتاع بالحياة ونشر البهجة من حولك.",
-narrative: "مع أنغام الناي ورقصات الطبيعة، تتمايل روحك بمرح. أنت البهجة في يوم غائم، والعفوية التي تعيد الحياة للأشياء الجامدة من حولك.\n\nفي عالم جاد جداً، أنت التذكير بأن الحياة يجب أن تُعاش لا أن تُحلل. ضحكتك معدية، وروحك المرحة تحول أي Gathering إلى احتفال. لا تحتاج سبباً للفرح، فالفرح هو حالتك الطبيعية.\n\nلكن تذكر: المرح وحده لا يبني مستقبلاً. أحياناً، تحتاج للجلوس بجدية والتخطيط لأحلامك الكبرى. التوازن بين المرح والمسؤولية هو سر نجاحك.",
-advice: "المرح ضروري، لكن القليل من الجدية يساعدك على تحقيق أحلامك الكبرى.",
-badge: "روح المرح",
-article: "الفون (Faun) هو كائن أسطوري من الأساطير الرومانية، يجمع بين ميزات الإنسان والماعز. يُعرف بروح الغابات والحقول، وهو مرتبط بالموسيقى والرقص والفرح. يمثل الفون الجانب الفطري والعفوي من الإنسان، والارتباط الوثيق بالطبيعة، والعيش في اللحظة الحالية بعيداً عن تعقيدات الحضارة.\n\nفي الأساطير اليونانية، يُقابل الفون كائن 'بان' (Pan)، إله الرعاة والقطعان، الذي كان يعزف على الناي ويملأ الغابات بالموسيقى. كان يُعتقد أن صراخه المفاجئ يسبب ذعراً لا سبب له (ومن هنا جاءت كلمة 'panic').\n\n**التحليل النفسي:**\nأصحاب شخصية الفون يمتلكون ما يُسمى في علم النفس 'الانبساط الطبيعي' (Natural Extroversion)، وهو القدرة على الاستمتاع باللحظة الحالية والتواصل التلقائي مع الآخرين. الدراسات تُظهر أن هؤلاء الأشخاص يمتلكون:\n\n• **الذكاء الاجتماعي**: قدرة فطرية على الاندماج في أي مجموعة\n• **الإبداع العفوي**: يفكرون خارج الصندوق بشكل طبيعي\n• **المرونة العاطفية**: يتعافون بسرعة من المشاعر السلبية\n• **الارتباط بالطبيعة**: يجدون السلام و inspiration في الأماكن الطبيعية\n\nلكن هذه القوة لها ثمن: قد يميلون للتسويف، أو يجدون صعوبة في الالتزام بالمسؤوليات الجادة، أو يقعون في فخ 'الهروب من الواقع' عبر المرح المستمر.",
-secretReport: {
-strengths: "• **الذكاء الاجتماعي الفطري**: قدرتك على الاندماج مع أي شخص تفوق المتوسط بـ 3 أضعاف\n• **الإبداع العفوي**: تولد أفكاراً مبتكرة بشكل طبيعي دون تخطيط\n• **المرونة العاطفية**: تتعافى من المشاعر السلبية بسرعة مذهلة\n• **الطاقة المعدية**: حضورك يرفع معنويات من حولك تلقائياً",
-challenges: "• **التسويف المزمن**: ميلك للمتعة الفورية قد يؤجل مهامك المهمة\n• **صعوبة الالتزام**: قد تجد صعوبة في إكمال مشاريع طويلة المدى\n• **الهروب من الجدية**: أحياناً تستخدم المرح كآلية هروب من المشاكل الحقيقية\n• **السطحية العرضية**: قد تتجنب المحادثات العميقة لأنها 'جادة جداً'",
-growthPath: "**مسار التطور الشخصي:**\n1. مارس 'المرح المنضبط': خصص وقتاً للعمل الجاد قبل المتعة\n2. استخدم 'قاعدة الدقيقتين': إذا كانت المهمة تأخذ أقل من دقيقتين، افعلها الآن\n3. ابنِ 'أنظمة المتابعة': استخدم تطبيقات التذكير لمتابعة مهامك\n4. تعلم 'العمق المؤقت': خصص 30 دقيقة يومياً للتفكير الجاد في أهدافك",
-relationships: "**في العلاقات:**\n• تحتاج شريكاً يشاركك روحك المرحة لكنه يذكرك بالمسؤوليات أحياناً\n• قد تكون 'مهرج المجموعة'، احذر من أن يأخذك الآخرون على محمل الجد فقط في المرح\n• أفضل التوافق: مع كائنات جادة (الجولم، أبو الهول) توازن عفويتك\n• تجنب: الأشخاص السلبيين الذين يطفئون طاقتك الإيجابية",
-career: "**المسار المهني المثالي:**\n• الفنون الترفيهية (موسيقى، مسرح، كوميديا)\n• التسويق والإعلان (لأنك تفهم ما يسعد الناس)\n• العمل مع الأطفال أو في مجالات الترفيه\n• ريادة الأعمال في مجالات الإبداع\n• تجنب: الوظائف المكتبية الروتينية التي تقتل روحك المرحة",
-insight: "فرحك الحقيقي ليس في الهروب من الجدية، بل في إيجاد التوازن بين المرح والمسؤولية. أنت لست طفلاً أبدياً، أنت حكيم يعرف كيف يستمتع بالحياة بوعي."
-}
-},
-{
-id: "golem",
-name: "الجولم الصخري",
-rarity: "نادر",
-image: "assets/images/golem.jpg",
-description: "أنت رمز للاستقرار والصلابة. تمتلك إرادة من حجر وقدرة على تحمل أصعب الظروف.",
-narrative: "من طين الأرض وقوة الجبال، صُيغت روحك الصابرة. أنت الجبل الذي لا تهزه الرياح، والسند الذي يعتمد عليه الجميع في أوقات العواصف.",
-advice: "حتى الصخر يمكن أن ينبت منه الزهر؛ لا تخشَ إظهار جانبك اللين.",
-badge: "الجبل الصامد",
-article: "الجولم هو الكائن المصنوع من الأرض، وهو يمثل الثبات. أصحاب هذه الشخصية هم أشخاص يعتمد عليهم، صبورون وهادئون.",
-secretReport: {
-strengths: "صبر أيوب، صلابة نفسية، ووفاء بالوعود مهما كلف الأمر.",
-challenges: "قد تجد صعوبة في التعبير عن مشاعرك أو التكيف مع التغييرات السريعة.",
-insight: "حتى الصخر يمكن أن ينبت منه الزهر؛ لا تخشَ إظهار جانبك اللين."
-}
-},
-{
-id: "hydra",
-name: "الهيدرا المتجددة",
-rarity: "أسطوري",
-image: "assets/images/hydra.jpg",
-description: "أنت رمز للإصرار والتعددية. كلما واجهت تحدياً، خرجت منه بأفكار وحلول أكثر.",
-narrative: "في مواجهة الصعاب، تتضاعف قوتك. أنت الروح التي لا تستسلم، فكل ضربة تتلقاها تزيدك قوة وذكاءً. أنت المثابرة في أبهى صورها.",
-advice: "تركيز كل رؤوسك على هدف واحد سيجعلك لا تقهر.",
-badge: "المثابر الذي لا يقهر",
-article: "الهيدرا كائن ينمو له رأسان كلما قطع واحد. أصحاب هذه الشخصية هم أشخاص مثابرون جداً، لا يعرفون الاستسلام أبداً.",
-secretReport: {
-strengths: "إصرار لا يلين، تعدد المواهب، وقدرة على التعافي السريع من الفشل.",
-challenges: "قد تشتت نفسك في الكثير من الاتجاهات في وقت واحد.",
-insight: "تركيز كل رؤوسك على هدف واحد سيجعلك لا تقهر."
-}
-},
-{
-id: "kitsune",
-name: "الكيتسوني الماكر",
-rarity: "نادر جداً",
-image: "assets/images/kitsune.jpg",
-description: "أنت رمز للذكاء التكيفي والسحر. تمتلك قدرة على تغيير شكلك وأسلوبك حسب الموقف.",
-narrative: "بألف وجه ووجه، وبذكاء يسبق الريح، تتلاعب روحك بالواقع. أنت السحر والغموض، والقدرة المذهلة على التكيف مع أي عالم تدخل إليه.",
-advice: "الذكاء موهبة، استخدمها لبناء الجسور وليس فقط لخداع العابرين.",
-badge: "سيد التكيف",
-article: "الكيتسوني هو الثعلب الأسطوري الياباني. أصحاب هذه الشخصية هم أذكياء جداً، يمتلكون جاذبية غامضة وقدرة على الإقناع.",
-secretReport: {
-strengths: "ذكاء اجتماعي، قدرة على الإقناع، ومرونة عالية في التفكير.",
-challenges: "قد يجد الآخرون صعوبة في معرفة وجهك الحقيقي أو نواياك الصادقة.",
-insight: "الذكاء موهبة، استخدمها لبناء الجسور وليس فقط لخداع العابرين."
-}
-},
-{
-id: "pegasus",
-name: "بيجاسوس المجنح",
-rarity: "نادر",
-image: "assets/images/pegasus.jpg",
-description: "أنت رمز للحرية والإلهام. تمتلك روحاً تحلق فوق المصاعب وتسعى دائماً للأفق البعيد.",
-narrative: "بجناحين من خيال، تحلق روحك فوق قيود الواقع. أنت الإلهام الذي يزور المبدعين، والحرية التي لا يمكن حبسها في قفص. عالمك هو الأفق.",
-advice: "جناحاك يحملانك للسماء، لكن حوافرك هي التي تثبتك على الأرض؛ اعتني بكليهما.",
-badge: "الملهم الطائر",
-article: "بيجاسوس هو الحصان المجنح الذي يمثل الخيال. أصحاب هذه الشخصية هم حالمون، يمتلكون طاقة إيجابية ورغبة في الاستكشاف.",
-secretReport: {
-strengths: "خيال واسع، طاقة إيجابية، ورغبة مستمرة في التطور والحرية.",
-challenges: "قد تجد صعوبة في التعامل مع الواقع المادي والقيود اليومية.",
-insight: "جناحاك يحملانك للسماء، لكن حوافرك هي التي تثبتك على الأرض؛ اعتني بكليهما."
-}
-},
-{
-id: "simurgh",
-name: "السيمرغ الحكيم",
-rarity: "أسطوري",
-image: "assets/images/simurgh.jpg",
-description: "أنت رمز للكمال والمعرفة الشاملة. تمتلك رؤية شاملة للكون وتفهم ترابط الأشياء.",
-narrative: "من قمة جبل 'قاف' الأسطوري، تطل روحك على حكمة العصور. أنت الجامع بين الأضداد، والروح التي وصلت لدرجة من السلام والكمال يطمح إليها الجميع.",
-advice: "المثالية هدف جميل، لكن تقبل النقص البشري هو قمة الحكمة.",
-badge: "الحكيم المطلق",
-article: "السيمرغ هو الطائر الأسطوري الفارسي الذي يملك علم كل العصور. أصحاب هذه الشخصية هم حكماء، يسعون للكمال الروحي والمعرفي.",
-secretReport: {
-strengths: "معرفة واسعة، هدوء نفسي، وقدرة على تقديم النصيحة الحكيمة.",
-challenges: "قد تميل للمثالية الزائدة التي قد تجعلك تشعر بخيبة أمل من الواقع.",
-insight: "المثالية هدف جميل، لكن تقبل النقص البشري هو قمة الحكمة."
-}
-},
-{
-id: "siren",
-name: "الساحرة البحرية",
-rarity: "نادر جداً",
-image: "assets/images/siren.jpg",
-description: "أنت رمز للجاذبية والحدس. تمتلك صوتاً يسحر العقول وقدرة على قراءة المشاعر.",
-narrative: "من أعماق البحار الأسطورية، يصدح صوتك الساحر. أنت الجاذبية التي لا تُقاوم، والحدس الذي يرى ما لا يراه الآخرون.",
-advice: "استخدم جاذبيتك لبناء علاقات حقيقية، وليس فقط للإغواء.",
-badge: "ساحرة الأعماق",
-article: "الساحرة البحرية هي كائن بحري أسطوري بصوت ساحر. أصحاب هذه الشخصية يمتلكون جاذبية طبيعية وحدساً قوياً.",
-secretReport: {
-strengths: "جاذبية طبيعية، حدس قوي، وقدرة على التأثير في الآخرين.",
-challenges: "قد تستخدم سحرك للتلاعب بدلاً من البناء.",
-insight: "استخدم جاذبيتك لبناء علاقات حقيقية، وليس فقط للإغواء."
-}
-},
-{
-id: "valkyrie",
-name: "الفالكيري المحاربة",
-rarity: "نادر جداً",
-image: "assets/images/valkyrie.jpg",
-description: "أنت رمز للشرف والشجاعة. تمتلك روحاً مقاتلة تدافع عن الحق وتختار طريق الأبطال.",
-narrative: "في ساحات الشرف، تلمع روحك كالسيف الصقيل. أنت الشجاعة التي لا تهاب، والعدل الذي لا يميل. اختيارك دائماً هو طريق الأبطال مهما كان صعباً.\n\nلستَ من يختار المعركة السهلة، بل تختار المعركة الصحيحة. عندما يصمت الآخرون عن الظلم، أنت تتحدث. عندما ينحني الآخرون للخوف، أنت تقف. شرفك ليس كلمة تقال، بل هو طريقة تعيش بها كل لحظة.\n\nلكن تذكر: الشجاعة الحقيقية ليست في القتال فقط، بل في معرفة متى تقاتل ومتى تسامح. أحياناً، القوة الحقيقية تكمن في خفض السيف لا في رفعه.",
-advice: "الشجاعة ليست غياب الخوف، بل هي المضي قدماً رغم وجوده.",
-badge: "حارس الشرف",
-article: "الفالكيري (Valkyrie) هن محاربات أسطوريات من الأساطير الاسكندنافية، خدامات الإله أودين. كانت مهمتهن اختيار أنصاف المعارك في ساحات القتال واصطحاب أرواح المحاربين الشجعان إلى فالهالا (قاعة الأبطال).\n\nكلمة 'Valkyrie' تعني حرفياً 'مختارات القتلى' (Old Norse: valkyrja). كانت الفالكيري يُصورن كمحاربات جميلات يركبن الخيول ويطرن في السماء، يرتدين الدروع ويحملن الرماح.\n\n**التحليل النفسي:**\nأصحاب شخصية الفالكيري يمتلكون ما يُسمى في علم النفس 'الأخلاق المبدئية' (Principled Morality)، وهو الالتزام القوي بالقيم والمبادئ حتى في أصعب الظروف. الدراسات تُظهر أن هؤلاء الأشخاص يمتلكون:\n\n• **الشجاعة الأخلاقية**: يدافعون عن الحق حتى لو كان ذلك ضد الأغلبية\n• **القيادة بالقدوة**: لا يطلبون من الآخرين ما لا يفعلونه هم أنفسهم\n• **العدالة الفطرية**: يميزون بين الصواب والخطأ بوضوح\n• **الحماية الفطرية**: يدافعون عن الضعفاء والمظلومين\n\nلكن هذه القوة لها ثمن: قد يميلون للصرامة الزائدة مع أنفسهم والآخرين، أو يجدون صعوبة في تقبل 'المنطقة الرمادية' في الحياة، أو يقعون في فخ 'الكمالية الأخلاقية' التي تجعلهم يحكمون على الآخرين بقسوة.",
-secretReport: {
-strengths: "• **الشجاعة الأخلاقية الاستثنائية**: تدافع عن مبادئك حتى لو وقفت وحدك\n• **القيادة بالقدوة**: لا تطلب من الآخرين ما لا تفعله أنت نفسك\n• **العدالة الفطرية**: تميز بين الصواب والخطأ بوضوح مذهل\n• **الحماية الفطرية**: تدافع عن الضعفاء والمظلومين بغريزة طبيعية",
-challenges: "• **الصرامة الزائدة**: قد تكون قاسياً جداً مع نفسك والآخرين في اتباع المبادئ\n• **صعوبة تقبل المنطقة الرمادية**: ترى العالم أبيض أو أسود، مما يجعلك تحبط من تعقيدات الحياة\n• **الكمالية الأخلاقية**: قد تحكم على الآخرين بقسوة عندما لا يعيشون حسب معاييرك\n• **الإرهاق الأخلاقي**: حمل هموم العدالة قد يستنزف طاقتك النفسية",
-growthPath: "**مسار التطور الشخصي:**\n1. تعلم 'الرحمة الأخلاقية': المبادئ مهمة، لكن الرحمة أهم أحياناً\n2. تقبل 'المنطقة الرمادية': الحياة ليست أبيض وأسود دائماً\n3. مارس 'التسامح الانتقائي': ليس كل خطأ يستحق العقاب\n4. ابنِ 'أنظمة الدعم': حتى المحاربون يحتاجون لمن يساعدهم أحياناً",
-relationships: "**في العلاقات:**\n• تحتاج شريكاً يشاركك مبادئك لكنه يذكرك بالرحمة أحياناً\n• قد تكون 'الحامي' في العلاقات، احذر من الحماية المفرطة التي تخنق الآخرين\n• أفضل التوافق: مع كائنات حكيمة (أبو الهول، السيمرغ) توازن شجاعتك بحكمتهم\n• تجنب: الأشخاص الانتهازيين الذين لا مبادئ لهم",
-career: "**المسار المهني المثالي:**\n• القانون والقضاء (لأنك تؤمن بالعدالة)\n• العمل الإنساني وحقوق الإنسان\n• القيادة في المنظمات التي تحتاج لإصلاحات أخلاقية\n• التعليم والتوجيه (لأنك قدوة للآخرين)\n• تجنب: الوظائف التي تتطلب compromises أخلاقية أو التلاعب بالآخرين",
-insight: "شجاعتك الحقيقية ليست في القتال فحسب، بل في معرفة متى تقاتل ومتى تسامح. أنت لست محارباً فقط، أنت حارس للقيم في عالم يحتاج للحراس."
-}
-}
-]
-}
-]
-},
-en: {
-title: "QuizMagic | World of Mythical Quizzes",
-heroTitle: "Discover Your True Mythical Essence",
-heroSubtitle: "A journey into your subconscious to reveal the ancient powers within",
-footerDesc: "The most accurate psychological quiz platform in the world.",
-quizzes: [
-{
-id: "mythical-creature",
-title: "Mythical Creature Quiz",
-badge: "Most Accurate",
-image: "assets/images/dragon.jpg",
-description: "Advanced psychological analysis mapping your traits to ancient legends.",
-questions: [
-{ id: 1, text: "I feel more comfortable being alone with my thoughts.", trait: "mystery", axis: "mystery", type: "likert" },
-{ id: 2, text: "I always tend to take the leadership role in groups.", trait: "leadership", axis: "willpower", type: "likert" },
-{ id: 3, text: "I care about helping others even at the expense of my comfort.", trait: "altruism", axis: "empathy", type: "likert" },
-{
-id: 4,
-text: "Which of these portals attracts you most to enter?",
-type: "visual",
-options: [
-{ label: "Portal of Light", image: "assets/images/quiz/q4_opt1.jpg", trait: "purity", axis: "empathy", value: 5 },
-{ label: "Portal of Mystery", image: "assets/images/quiz/q4_opt2.jpg", trait: "mystery", axis: "mystery", value: 5 },
-{ label: "Portal of Power", image: "assets/images/quiz/q4_opt3.jpg", trait: "power", axis: "willpower", value: 5 },
-{ label: "Portal of Nature", image: "assets/images/quiz/q4_opt4.jpg", trait: "nature", axis: "energy", value: 5 }
-]
-},
-{ id: 5, text: "I prefer planning everything in advance rather than spontaneity.", trait: "strategy", axis: "strategy", type: "likert" },
-{ id: 6, text: "I have a great ability to adapt to sudden changes.", trait: "adaptation", axis: "energy", type: "likert" },
-{ id: 7, text: "I always look for the deeper meaning behind things.", trait: "knowledge", axis: "intelligence", type: "likert" },
-{
-id: 8,
-text: "What element do you feel represents your inner energy?",
-type: "visual",
-options: [
-{ label: "Fire", image: "assets/images/quiz/q8_opt1.jpg", trait: "intensity", axis: "energy", value: 5 },
-{ label: "Water", image: "assets/images/quiz/q8_opt2.jpg", trait: "composure", axis: "strategy", value: 5 },
-{ label: "Earth", image: "assets/images/quiz/q8_opt3.jpg", trait: "stability", axis: "willpower", value: 5 },
-{ label: "Wind", image: "assets/images/quiz/q8_opt4.jpg", trait: "exploration", axis: "intelligence", value: 5 }
-]
-},
-{ id: 9, text: "I find it difficult to forgive people who have wronged me.", trait: "persistence", axis: "willpower", type: "likert" },
-{ id: 10, text: "I trust my intuition more than logic in making decisions.", trait: "intuition", axis: "mystery", type: "likert" },
-{ id: 11, text: "I love being surrounded by beauty and art in my life.", trait: "elegance", axis: "empathy", type: "likert" },
-{
-id: 12,
-text: "Which of these scenes gives you a greater sense of peace?",
-type: "visual",
-options: [
-{ label: "Mountain Peak", image: "assets/images/quiz/q12_opt1.jpg", trait: "ambition", axis: "willpower", value: 5 },
-{ label: "Old Library", image: "assets/images/quiz/q12_opt2.jpg", trait: "wisdom", axis: "intelligence", value: 5 },
-{ label: "Secret Garden", image: "assets/images/quiz/q12_opt3.jpg", trait: "purity", axis: "empathy", value: 5 },
-{ label: "Deserted Beach", image: "assets/images/quiz/q12_opt4.jpg", trait: "mystery", axis: "mystery", value: 5 }
-]
-},
-{ id: 13, text: "I enjoy discussing philosophical and complex ideas.", trait: "analysis", axis: "intelligence", type: "likert" },
-{ id: 14, text: "I am a very patient person when dealing with long-term problems.", trait: "persistence", axis: "strategy", type: "likert" },
-{ id: 15, text: "I care a lot about my reputation and how others view me.", trait: "potential", axis: "strategy", type: "likert" },
-{
-id: 16,
-text: "Which magical symbol would you choose as your lucky charm?",
-type: "visual",
-options: [
-{ label: "The Eye", image: "assets/images/quiz/q16_opt1.jpg", trait: "knowledge", axis: "intelligence", value: 5 },
-{ label: "The Dagger", image: "assets/images/quiz/q16_opt2.jpg", trait: "protection", axis: "willpower", value: 5 },
-{ label: "The Cup", image: "assets/images/quiz/q16_opt3.jpg", trait: "altruism", axis: "empathy", value: 5 },
-{ label: "The Key", image: "assets/images/quiz/q16_opt4.jpg", trait: "curiosity", axis: "mystery", value: 5 }
-]
-},
-{ id: 17, text: "I prefer working in a team rather than working alone.", trait: "social", axis: "empathy", type: "likert" },
-{ id: 18, text: "I am always honest with myself even if the dream is painful.", trait: "honesty", axis: "willpower", type: "likert" },
-{ id: 19, text: "I have a lot of energy that pushes me to try new things always.", trait: "energy", axis: "energy", type: "likert" },
-{
-id: 20,
-text: "Which animal do you feel a spiritual connection with?",
-type: "visual",
-options: [
-{ label: "Wolf", image: "assets/images/quiz/q20_opt1.jpg", trait: "social", axis: "empathy", value: 5 },
-{ label: "Snake", image: "assets/images/quiz/q20_opt2.jpg", trait: "strategy", axis: "strategy", value: 5 },
-{ label: "Eagle", image: "assets/images/quiz/q20_opt3.jpg", trait: "exploration", axis: "energy", value: 5 },
-{ label: "Butterfly", image: "assets/images/quiz/q20_opt4.jpg", trait: "adaptation", axis: "energy", value: 5 }
-]
-},
-{ id: 21, text: "I am a very emotional person and human stories affect me.", trait: "nature", axis: "empathy", type: "likert" },
-{ id: 22, text: "I love challenge and competition to reach the top.", trait: "leadership", axis: "willpower", type: "likert" },
-{ id: 23, text: "I tend to maintain old traditions and values.", trait: "tradition", axis: "strategy", type: "likert" },
-{
-id: 24,
-text: "Which gemstone do you feel has an energy that attracts you?",
-type: "visual",
-options: [
-{ label: "Ruby", image: "assets/images/quiz/q24_opt1.jpg", trait: "intensity", axis: "energy", value: 5 },
-{ label: "Blue Diamond", image: "assets/images/quiz/q24_opt2.jpg", trait: "logic", axis: "intelligence", value: 5 },
-{ label: "Emerald", image: "assets/images/quiz/q24_opt3.jpg", trait: "nature", axis: "empathy", value: 5 },
-{ label: "Amethyst", image: "assets/images/quiz/q24_opt4.jpg", trait: "intuition", axis: "mystery", value: 5 }
-]
-},
-{ id: 25, text: "I can control my temper even in the most difficult situations.", trait: "composure", axis: "strategy", type: "likert" },
-{ id: 26, text: "I care about small details that others might not notice.", trait: "analysis", axis: "intelligence", type: "likert" },
-{ id: 27, text: "I am an optimistic person and always see the bright side.", trait: "potential", axis: "energy", type: "likert" },
-{
-id: 28,
-text: "Which sky do you prefer to contemplate at night?",
-type: "visual",
-options: [
-{ label: "Aurora", image: "assets/images/quiz/q28_opt1.jpg", trait: "potential", axis: "energy", value: 5 },
-{ label: "Total Eclipse", image: "assets/images/quiz/q28_opt2.jpg", trait: "mystery", axis: "mystery", value: 5 },
-{ label: "Nebula", image: "assets/images/quiz/q28_opt3.jpg", trait: "exploration", axis: "intelligence", value: 5 },
-{ label: "Silent Lightning", image: "assets/images/quiz/q28_opt4.jpg", trait: "energy", axis: "energy", value: 5 }
-]
-},
-{ id: 29, text: "I prefer staying in one place over frequent traveling.", trait: "stability", axis: "strategy", type: "likert" },
-{ id: 30, text: "I feel that I have a great mission to fulfill in life.", trait: "ambition", axis: "willpower", type: "likert" },
-{ id: 31, text: "I love mystery and don't reveal all my cards to others.", trait: "mystery", axis: "mystery", type: "likert" },
-{
-id: 32,
-text: "Which mythical transport would you choose for your next journey?",
-type: "visual",
-options: [
-{ label: "Flying Ship", image: "assets/images/quiz/q32_opt1.jpg", trait: "exploration", axis: "energy", value: 5 },
-{ label: "Chariot of Light", image: "assets/images/quiz/q32_opt2.jpg", trait: "purity", axis: "empathy", value: 5 },
-{ label: "Flying Carpet", image: "assets/images/quiz/q32_opt3.jpg", trait: "wisdom", axis: "intelligence", value: 5 },
-{ label: "Small Dragon", image: "assets/images/quiz/q32_opt4.jpg", trait: "protection", axis: "willpower", value: 5 }
-]
-},
-{ id: 33, text: "I am a very practical person and don't waste time on dreams.", trait: "logic", axis: "strategy", type: "likert" },
-{ id: 34, text: "I always look for perfection in everything I do.", trait: "perfection", axis: "strategy", type: "likert" },
-{ id: 35, text: "I am very loyal to my friends and family.", trait: "social", axis: "empathy", type: "likert" },
-{
-id: 36,
-text: "What weapon would you choose to defend your kingdom?",
-type: "visual",
-options: [
-{ label: "Sword of Light", image: "assets/images/quiz/q36_opt1.jpg", trait: "honesty", axis: "willpower", value: 5 },
-{ label: "Shield of Shadow", image: "assets/images/quiz/q36_opt2.jpg", trait: "protection", axis: "strategy", value: 5 },
-{ label: "Bow of Stars", image: "assets/images/quiz/q36_opt3.jpg", trait: "strategy", axis: "intelligence", value: 5 },
-{ label: "Sage's Staff", image: "assets/images/quiz/q36_opt4.jpg", trait: "knowledge", axis: "intelligence", value: 5 }
-]
-},
-{ id: 37, text: "I like being unique and different from others.", trait: "potential", axis: "energy", type: "likert" },
-{ id: 38, text: "I am a very flexible person in my thinking.", trait: "adaptation", axis: "energy", type: "likert" },
-{ id: 39, text: "I believe true power comes from within.", trait: "power", axis: "willpower", type: "likert" },
-{
-id: 40,
-text: "What ending would you prefer to conclude your life story?",
-type: "visual",
-options: [
-{ label: "Golden Throne", image: "assets/images/quiz/q40_opt1.jpg", trait: "leadership", axis: "willpower", value: 5 },
-{ label: "Quiet Cottage", image: "assets/images/quiz/q40_opt2.jpg", trait: "nature", axis: "empathy", value: 5 },
-{ label: "Eternal Journey", image: "assets/images/quiz/q40_opt3.jpg", trait: "curiosity", axis: "energy", value: 5 },
-{ label: "Cosmic Union", image: "assets/images/quiz/q40_opt4.jpg", trait: "mystery", axis: "mystery", value: 5 }
-]
-}
-],
-results: [
-{
-id: "dragon",
-name: "The Great Dragon",
-rarity: "Legendary",
-image: "assets/images/dragon.jpg",
-description: "You are the embodiment of power and leadership. You possess an indomitable fiery spirit and ambition that exceeds the clouds.",
-narrative: "In the depths of ancient mountains, where peaks touch the sky, your soul was born. You are the flame that never goes out, the leader who never bows. The world sees in you the prestige of kings and the courage of warriors.",
-advice: "Remember that true power lies in restraining your fire and using it for warmth instead of burning.",
-badge: "Mythical Thinker",
-article: "The dragon is considered in all cultures a symbol of absolute power and ancient wisdom. Owners of this personality are natural leaders, possessing long-term vision and the ability to face the most difficult challenges without fear.",
-secretReport: {
-strengths: "Overwhelming charisma, exceptional courage, and the ability to protect those you love with all your might.",
-challenges: "You may sometimes tend toward excessive control or quick anger when things don't go as planned.",
-insight: "Your true power lies in restraining your fire and using it for warmth instead of burning."
-}
-},
-{
-id: "phoenix",
-name: "The Phoenix",
-rarity: "Very Rare",
-image: "assets/images/phoenix.jpg",
-description: "You are a symbol of renewal and hope. You have an amazing ability to rise from the ashes stronger than before.",
-narrative: "In the moment of final burning, when the world thought you were finished, the spirit of the phoenix rose from your ashes. You are not just a survivor of storms, you are the storm itself that renews. Every loss taught you a lesson, every failure built wisdom within you, and every tear watered the soil of your soul to bloom anew.\n\nYou do not know the meaning of surrender, for the word does not exist in your dictionary. When others fall, you rise stronger. When a door closes, you open a window. When the world darkens, you become the light.\n\nBut remember: even the phoenix needs rest between cycles of renewal. Do not burn yourself constantly to prove your strength, for a calm sustained light is stronger than a violent fleeting flame.",
-advice: "Remember that you don't always have to burn to prove your existence; a calm light lasts longer.",
-badge: "Renewed Spirit",
-article: "The Phoenix is one of the most widespread mythical creatures in ancient world cultures. It first appeared in ancient Egyptian mythology under the name 'Benu', where it was associated with sun worship and resurrection after death. The legend later transferred to Greek civilization, where Herodotus described it as an amazing bird that lives in the Arabian desert for 500 years before burning itself and returning to life from its ashes.\n\nIn Chinese culture, the phoenix is known as 'Fenghuang', a symbol of the empress and noble virtues. In Japanese culture, it is called 'Hō-ō' and appears only in times of peace and prosperity.\n\n**Psychological Analysis:**\nPhoenix personality owners possess what is called in psychology 'Psychological Resilience', the ability to recover from traumas and grow through them. Modern studies in positive psychology show that these people possess:\n\n• **Post-Traumatic Growth**: They do not just return to zero, they evolve\n• **Transforming pain into fuel**: They use difficult experiences as motivation for creativity\n• **Realistic optimism**: They see the bright side without denying reality\n• **Ability to renew**: They know when to end a phase and start another\n\nBut this power has a price: they may tend toward self-burnout in a constant attempt to renew, or fall into the trap of 'adrenaline addiction' by constantly seeking challenges.",
-secretReport: {
-strengths: "• **Exceptional psychological resilience**: Your ability to recover from traumas exceeds the average by 3 times\n• **Creative transformation of pain**: You transform difficult experiences into art, writing, or inspiring projects\n• **Leadership in crises**: When others lose hope, you become their source of inspiration\n• **Realistic optimism**: You see possibilities where others see the impossible",
-challenges: "• **Burnout syndrome**: Your tendency for constant renewal may lead to physical and psychological exhaustion\n• **Difficulty with stability**: You may find it hard to commit to long-term relationships or projects\n• **Expecting renewal from others**: You may become frustrated when others don't change as quickly as you do\n• **Drama addiction**: Unconsciously, you may attract yourself to difficult situations to feel 'alive'",
-growthPath: "**Personal development path:**\n1. Learn 'effective rest': renewal does not mean constant movement\n2. Build support systems: do not try to rise from ashes alone always\n3. Practice 'dynamic stability': you can change and grow without giving up everything\n4. Develop 'strategic patience': not everything needs immediate renewal",
-relationships: "**In relationships:**\n• You need a partner who understands your natural cycles of renewal\n• You may be 'the rescuer' in relationships, beware of rescuing those who don't want rescue\n• Best compatibility: with stable creatures (Golem, Centaur) that balance your fluctuations\n• Avoid: toxic relationships that drain your renewable energy",
-career: "**Ideal career path:**\n• Entrepreneurship (especially in renewal and transformation fields)\n• Psychotherapy and counseling (because you understand pain and recovery)\n• Creative arts (writing, music, visual arts)\n• Leadership in organizations going through crises\n• Avoid: routine repetitive jobs that kill your spirit of renewal",
-insight: "Your true power is not just in the ability to rise from ashes, but in the wisdom you gather from each life cycle. You are not a bird that burns, you are wisdom embodied in each new birth."
-}
-},
-{
-id: "unicorn",
-name: "The Pure Unicorn",
-rarity: "Rare",
-image: "assets/images/unicorn.jpg",
-description: "You are the embodiment of purity and kindness. You possess a pure soul that always aims to spread goodness and beauty.",
-narrative: "In an enchanted forest where no human foot has stepped, your pure soul dwells. You are the light that dispels darkness with a smile, the balm that heals the wounds of tired hearts.",
-advice: "The purity of your heart is the strongest shield you own, don't let the world change your essence.",
-badge: "Guardian of Purity",
-article: "The unicorn is a symbol of purity and healing. Owners of this personality are a balm for others' wounds, possessing pure intuition and the ability to see beauty in the simplest things.",
-secretReport: {
-strengths: "Absolute honesty, ability for deep empathy, and a pure intention that attracts people to you.",
-challenges: "Your excessive sensitivity may make you vulnerable to wounds from the harsh world around you.",
-insight: "The purity of your heart is the strongest shield you own, don't let the world change your essence."
-}
-},
-{
-id: "sphinx",
-name: "The Mysterious Sphinx",
-rarity: "Legendary",
-image: "assets/images/sphinx.jpg",
-description: "You are the guardian of secrets and wisdom. You possess an analytical mind that sees behind the curtain and solves the most complex puzzles.",
-narrative: "Between the sands of time and the secrets of civilizations, your soul stands firm like the Sphinx statue. You are the riddle that cannot be solved, the eye that sees what others do not. Your silence is wisdom and your words are truth.\n\nIn a world where everyone screams to attract attention, you prefer silent observation. You weigh every word before speaking, and analyze every situation before reacting. This is not isolation, but a life strategy.\n\nBut remember: wisdom that is not shared becomes a burden. Sometimes, breaking silence and opening your heart to one trustworthy person is stronger than solving a thousand riddles.",
-advice: "Sharing part of your secrets may open doors of friendship you didn't expect.",
-badge: "Master of Riddles",
-article: "The Sphinx is one of history's most enigmatic mythical creatures, appearing in Egyptian and Greek mythologies. In ancient Egypt, it was seen as a guardian of tombs and temples, with a human head and a lion's body, symbolizing the union of wisdom and strength. In Greek mythology, it posed riddles to travelers; those who failed to solve them met their doom.\n\nThe most famous riddle of the Greek Sphinx was: 'What walks on four legs in the morning, two at noon, and three in the evening?' The answer: man (as a child, youth, then elder).\n\n**Psychological Analysis:**\nSphinx personality owners possess what is called in psychology 'Analytical Intelligence', the ability to break down complex problems into small parts and solve them. Studies show that these people possess:\n\n• **Critical thinking**: They do not accept information without deep analysis\n• **Strategic patience**: They wait for the right moment to reveal truth\n• **Ability to read people**: They notice subtle details in body language and speech\n• **Silent wisdom**: They speak only when they have something valuable to say\n\nBut this power has a price: they may tend toward excessive isolation, or find it difficult to trust others, or fall into the trap of 'Analysis Paralysis' where they think too much and do not act.",
-secretReport: {
-strengths: "• **Sharp analytical intelligence**: Your ability to break down complex problems exceeds the average by 4 times\n• **Deep reading of people**: You notice details that 90% of people miss\n• **Strategic patience**: You wait for the right moment instead of acting impulsively\n• **Silent wisdom**: Your words are few but valuable and influential",
-challenges: "• **Excessive isolation**: Your tendency for silence and mystery may make others find it difficult to get close to you\n• **Over-analysis**: You may think too much and not act, missing important opportunities\n• **Difficulty trusting**: You may find it hard to open your heart to others even to those who deserve it\n• **High expectations**: You may become frustrated when others don't understand your deep thinking",
-growthPath: "**Personal development path:**\n1. Practice 'calculated openness': share your thoughts with one trusted person weekly\n2. Learn 'quick action': not every decision needs deep analysis\n3. Build 'bridges of trust': start with small shares and increase gradually\n4. Accept 'imperfection': not everything needs complete understanding before acting",
-relationships: "**In relationships:**\n• You need a partner who respects your silence and understands your need for solitude sometimes\n• You may be 'the advisor' in relationships, beware of giving advice without being asked\n• Best compatibility: with social creatures (Faun, Kitsune) that bring you out of isolation\n• Avoid: superficial people who don't value your intellectual depth",
-career: "**Ideal career path:**\n• Scientific and academic research (because you love deep analysis)\n• Strategic consulting (because you see what others don't)\n• Writing and authoring (because you express complex thoughts better in writing)\n• Investigation and criminal analysis\n• Avoid: jobs requiring constant superficial social interaction",
-insight: "Your true wisdom is not just in solving riddles, but in knowing when to share the answer and when to keep it secret. You are not a closed riddle, you are a book waiting for the right reader."
-}
-},
-{
-id: "kraken",
-name: "The Great Kraken",
-rarity: "Very Rare",
-image: "assets/images/kraken.jpg",
-description: "You are the power of the mysterious depths. You possess wide influence and the ability to control things from behind the scenes.",
-narrative: "In the dark oceans where light does not reach, your soul moves with majesty and calm. You are the power not to be underestimated, the planner who manages the helm from behind the curtain.",
-advice: "The depths are beautiful, but don't forget to come to the surface sometimes to enjoy the sunlight.",
-badge: "Master of Depths",
-article: "The Kraken is the master of the dark oceans. Owners of this personality possess a complex and deep personality, preferring to work in silence and their influence appears suddenly and with enormous power.",
-secretReport: {
-strengths: "Strategic planning, powerful willpower, and ability to manage major crises.",
-challenges: "You may tend toward excessive mystery which may turn into a desire for hidden control.",
-insight: "The depths are beautiful, but don't forget to come to the surface sometimes to enjoy the sunlight."
-}
-},
-{
-id: "owl_of_athena",
-name: "The Owl of Athena",
-rarity: "Rare",
-image: "assets/images/owl_of_athena.jpg",
-description: "You are a symbol of wisdom and knowledge. You see in the dark what others fail to see in broad daylight.",
-narrative: "In the silence of the night and under the starlight, your soul flies seeking the truth. You are the penetrating insight that transforms ignorance into light, the logic that never fails.",
-advice: "True wisdom is that which combines mind intelligence and heart mercy.",
-badge: "Eye of Truth",
-article: "The Owl of Athena always accompanied the goddess of wisdom. Owners of this personality are truth seekers, valuing science and logic and possessing penetrating insight.",
-secretReport: {
-strengths: "High focus, ability for rapid learning, and wisdom that far precedes your age.",
-challenges: "Your tendency toward dry logic may make you neglect the emotional side in your relationships.",
-insight: "True wisdom is that which combines mind intelligence and heart mercy."
-}
-},
-{
-id: "centaur",
-name: "The Wise Centaur",
-rarity: "Rare",
-image: "assets/images/centaur.jpg",
-description: "You are a symbol of balance between mind and physical strength. You possess innate wisdom and a free spirit.",
-narrative: "Between forests and plains, your soul runs with a freedom that knows no bounds. You are the wise one who carries the bow, the thinker who does not fear confrontation. Your balance is your greatness.",
-advice: "Your balance is your strength, don't let one side dominate the other.",
-badge: "Wise Warrior",
-article: "The Centaur represents the wild and wise side of human nature. Owners of this personality are natural strategists, valuing freedom and logic.",
-secretReport: {
-strengths: "Logical thinking, endurance, and a philosophical vision of life.",
-challenges: "You may find it difficult to commit to strict rules that limit your freedom.",
-insight: "Your balance is your strength, don't let one side dominate the other."
-}
-},
-{
-id: "cerberus",
-name: "Cerberus the Guardian",
-rarity: "Very Rare",
-image: "assets/images/cerberus.jpg",
-description: "You are the loyal protector and the impenetrable shield. You possess constant vigilance and the ability to protect what is precious.",
-narrative: "On the gates of what is sacred, your soul stands as a guardian who never slumbers. Your loyalty is your covenant, and your strength is a shield for those you love. You are the vigilance that knows no fatigue.",
-advice: "Protection doesn't always mean harshness; sometimes softness is the strongest defense.",
-badge: "Impenetrable Shield",
-article: "Cerberus is the legendary three-headed dog that guards the gates of the Underworld in Greek mythology. His task was to prevent the dead from leaving and the living from entering without permission. Cerberus symbolizes total vigilance, absolute loyalty, and the ability to monitor multiple aspects at once. Psychologically, he represents the protective side of a personality that sets firm boundaries to guard their inner world and loved ones.",
-secretReport: {
-strengths: "Absolute loyalty, high vigilance, and ability to protect those you love.",
-challenges: "You may be overprotective or find it difficult to trust strangers.",
-insight: "Protection doesn't always mean harshness; sometimes softness is the strongest defense."
-}
-},
-{
-id: "faun",
-name: "The Natural Faun",
-rarity: "Common",
-image: "assets/images/faun.jpg",
-description: "You are the spirit of nature and fun. You have the ability to enjoy life and spread joy around you.",
-narrative: "With flute melodies and nature dances, your soul sways with fun. You are the joy on a cloudy day, the spontaneity that brings life back to the static things around you.\n\nIn a very serious world, you are the reminder that life should be lived not analyzed. Your laughter is contagious, and your cheerful spirit turns any gathering into a celebration. You don't need a reason for joy, for joy is your natural state.\n\nBut remember: fun alone does not build a future. Sometimes, you need to sit seriously and plan for your big dreams. The balance between fun and responsibility is the secret of your success.",
-advice: "Fun is necessary, but a little seriousness helps you achieve your big dreams.",
-badge: "Spirit of Fun",
-article: "The Faun is a mythical creature from Roman mythology, combining human and goat features. Known as the spirit of forests and fields, he is associated with music, dance, and joy. The Faun represents the innate and spontaneous side of humans, a close connection with nature, and living in the present away from the complexities of civilization.\n\nIn Greek mythology, the Faun corresponds to 'Pan', the god of shepherds and flocks, who played the flute and filled forests with music. It was believed that his sudden scream caused causeless terror (hence the word 'panic').\n\n**Psychological Analysis:**\nFaun personality owners possess what is called in psychology 'Natural Extroversion', the ability to enjoy the present moment and spontaneously connect with others. Studies show that these people possess:\n\n• **Social intelligence**: Natural ability to blend into any group\n• **Spontaneous creativity**: They think outside the box naturally\n• **Emotional flexibility**: They recover quickly from negative emotions\n• **Connection with nature**: They find peace and inspiration in natural places\n\nBut this power has a price: they may tend toward procrastination, or find it difficult to commit to serious responsibilities, or fall into the trap of 'escaping reality' through constant fun.",
-secretReport: {
-strengths: "• **Natural social intelligence**: Your ability to blend with anyone exceeds the average by 3 times\n• **Spontaneous creativity**: You generate innovative ideas naturally without planning\n• **Emotional flexibility**: You recover from negative emotions at an amazing speed\n• **Contagious energy**: Your presence automatically lifts the morale of those around you",
-challenges: "• **Chronic procrastination**: Your tendency for immediate pleasure may delay your important tasks\n• **Difficulty committing**: You may find it hard to complete long-term projects\n• **Escaping seriousness**: Sometimes you use fun as a mechanism to escape real problems\n• **Occasional superficiality**: You may avoid deep conversations because they are 'too serious'",
-growthPath: "**Personal development path:**\n1. Practice 'disciplined fun': allocate time for serious work before pleasure\n2. Use the '2-minute rule': if a task takes less than 2 minutes, do it now\n3. Build 'follow-up systems': use reminder apps to track your tasks\n4. Learn 'temporary depth': dedicate 30 minutes daily to serious thinking about your goals",
-relationships: "**In relationships:**\n• You need a partner who shares your cheerful spirit but reminds you of responsibilities sometimes\n• You may be 'the group clown', beware of being taken seriously only in fun\n• Best compatibility: with serious creatures (Golem, Sphinx) that balance your spontaneity\n• Avoid: negative people who extinguish your positive energy",
-career: "**Ideal career path:**\n• Entertainment arts (music, theater, comedy)\n• Marketing and advertising (because you understand what makes people happy)\n• Working with children or in entertainment fields\n• Entrepreneurship in creative fields\n• Avoid: routine office jobs that kill your cheerful spirit",
-insight: "Your true joy is not in escaping seriousness, but in finding balance between fun and responsibility. You are not an eternal child, you are a wise person who knows how to enjoy life consciously."
-}
-},
-{
-id: "golem",
-name: "The Stone Golem",
-rarity: "Rare",
-image: "assets/images/golem.jpg",
-description: "You are a symbol of stability and solidity. You possess a will of stone and the ability to endure the most difficult conditions.",
-narrative: "From the earth's clay and the mountains' strength, your patient soul was forged. You are the mountain that the winds do not shake, the support that everyone relies on in times of storms.",
-advice: "Even stone can grow flowers; don't fear showing your soft side.",
-badge: "Solid Mountain",
-article: "The Golem is the being made of earth, representing stability. Owners of this personality are reliable people, patient and calm.",
-secretReport: {
-strengths: "Patience of Job, psychological solidity, and keeping promises no matter the cost.",
-challenges: "You may find it difficult to express your feelings or adapt to rapid changes.",
-insight: "Even stone can grow flowers; don't fear showing your soft side."
-}
-},
-{
-id: "hydra",
-name: "The Renewing Hydra",
-rarity: "Legendary",
-image: "assets/images/hydra.jpg",
-description: "You are a symbol of persistence and plurality. Every time you face a challenge, you come out of it with more ideas and solutions.",
-narrative: "In the face of hardships, your strength multiplies. You are the soul that does not give up, for every blow you receive increases your strength and intelligence. You are persistence in its finest form.",
-advice: "Focusing all your heads on one goal will make you invincible.",
-badge: "Invincible Persister",
-article: "The Hydra is a being that grows two heads every time one is cut. Owners of this personality are very persistent people, they never know surrender.",
-secretReport: {
-strengths: "Unwavering persistence, multiple talents, and ability for rapid recovery from failure.",
-challenges: "You may scatter yourself in many directions at once.",
-insight: "Focusing all your heads on one goal will make you invincible."
-}
-},
-{
-id: "kitsune",
-name: "The Cunning Kitsune",
-rarity: "Very Rare",
-image: "assets/images/kitsune.jpg",
-description: "You are a symbol of adaptive intelligence and magic. You possess the ability to change your shape and style according to the situation.",
-narrative: "With a thousand faces, and intelligence that precedes the wind, your soul plays with reality. You are magic and mystery, and the amazing ability to adapt to any world you enter.",
-advice: "Intelligence is a talent, use it to build bridges and not just to deceive passersby.",
-badge: "Master of Adaptation",
-article: "The Kitsune is the legendary Japanese fox. Owners of this personality are very intelligent, possessing a mysterious charisma and persuasive ability.",
-secretReport: {
-strengths: "Social intelligence, persuasive ability, and high flexibility in thinking.",
-challenges: "Others may find it difficult to know your true face or sincere intentions.",
-insight: "Intelligence is a talent, use it to build bridges and not just to deceive passersby."
-}
-},
-{
-id: "pegasus",
-name: "The Winged Pegasus",
-rarity: "Rare",
-image: "assets/images/pegasus.jpg",
-description: "You are a symbol of freedom and inspiration. You possess a soul that flies above difficulties and always seeks the distant horizon.",
-narrative: "With wings of imagination, your soul flies above the constraints of reality. You are the inspiration that visits creators, the freedom that cannot be caged. Your world is the horizon.",
-advice: "Your wings carry you to the sky, but your hooves are what ground you; take care of both.",
-badge: "Flying Inspirer",
-article: "Pegasus is the winged horse representing imagination. Owners of this personality are dreamers, possessing positive energy and a desire for exploration.",
-secretReport: {
-strengths: "Wide imagination, positive energy, and a constant desire for development and freedom.",
-challenges: "You may find it difficult to deal with physical reality and daily constraints.",
-insight: "Your wings carry you to the sky, but your hooves are what ground you; take care of both."
-}
-},
-{
-id: "simurgh",
-name: "The Wise Simurgh",
-rarity: "Legendary",
-image: "assets/images/simurgh.jpg",
-description: "You are a symbol of perfection and comprehensive knowledge. You possess a comprehensive vision of the universe and understand the interconnectedness of things.",
-narrative: "From the peak of the legendary 'Qaf' mountain, your soul overlooks the wisdom of the ages. You are the gatherer of opposites, the soul that reached a degree of peace and perfection that everyone aspires to.",
-advice: "Perfection is a beautiful goal, but accepting human imperfection is the peak of wisdom.",
-badge: "Absolute Sage",
-article: "The Simurgh is the Persian legendary bird that possesses the knowledge of all ages. Owners of this personality are sages, seeking spiritual and cognitive perfection.",
-secretReport: {
-strengths: "Wide knowledge, psychological calm, and ability to provide wise advice.",
-challenges: "You may tend toward excessive perfectionism which may make you feel disappointed with reality.",
-insight: "Perfection is a beautiful goal, but accepting human imperfection is the peak of wisdom."
-}
-},
-{
-id: "siren",
-name: "The Enchanting Siren",
-rarity: "Very Rare",
-image: "assets/images/siren.jpg",
-description: "You are a symbol of allure and intuition. You possess a voice that enchants minds and the ability to read emotions.",
-narrative: "From the depths of legendary seas, your enchanting voice resounds. You are the irresistible allure, the intuition that sees what others do not.",
-advice: "Use your allure to build genuine relationships, not just to seduce passersby.",
-badge: "Enchantress of the Depths",
-article: "The Siren is a legendary sea creature with an enchanting voice. Owners of this personality possess natural allure and strong intuition.",
-secretReport: {
-strengths: "Natural allure, strong intuition, and ability to influence others.",
-challenges: "You may use your charm for manipulation rather than building.",
-insight: "Use your allure to build genuine relationships, not just to seduce passersby."
-}
-},
-{
-id: "valkyrie",
-name: "The Valkyrie Warrior",
-rarity: "Very Rare",
-image: "assets/images/valkyrie.jpg",
-description: "You are a symbol of honor and courage. You possess a fighting spirit that defends the right and chooses the path of heroes.",
-narrative: "In the arenas of honor, your soul shines like a polished sword. You are the courage that does not fear, the justice that does not lean. Your choice is always the path of heroes no matter how difficult.\n\nYou are not one who chooses the easy battle, but you choose the right battle. When others are silent about injustice, you speak. When others bow to fear, you stand. Your honor is not a word spoken, but a way you live every moment.\n\nBut remember: true courage is not just in fighting, but in knowing when to fight and when to forgive. Sometimes, true strength lies in lowering the sword not raising it.",
-advice: "Courage is not the absence of fear, but moving forward despite its presence.",
-badge: "Guardian of Honor",
-article: "Valkyries are mythical warriors from Norse mythology, servants of the god Odin. Their task was to choose half of the slain in battlefields and bring the souls of brave warriors to Valhalla (Hall of Heroes).\n\nThe word 'Valkyrie' literally means 'choosers of the slain' (Old Norse: valkyrja). Valkyries were depicted as beautiful warriors riding horses and flying in the sky, wearing armor and carrying spears.\n\n**Psychological Analysis:**\nValkyrie personality owners possess what is called in psychology 'Principled Morality', strong commitment to values and principles even in the most difficult conditions. Studies show that these people possess:\n\n• **Moral courage**: They defend the right even if it is against the majority\n• **Leading by example**: They do not ask others what they do not do themselves\n• **Innate justice**: They distinguish between right and wrong clearly\n• **Innate protection**: They defend the weak and oppressed\n\nBut this power has a price: they may tend toward excessive strictness with themselves and others, or find it difficult to accept 'gray areas' in life, or fall into the trap of 'moral perfectionism' that makes them judge others harshly.",
-secretReport: {
-strengths: "• **Exceptional moral courage**: You defend your principles even if you stand alone\n• **Leading by example**: You do not ask others what you do not do yourself\n• **Innate justice**: You distinguish between right and wrong with amazing clarity\n• **Innate protection**: You defend the weak and oppressed with natural instinct",
-challenges: "• **Excessive strictness**: You may be very harsh with yourself and others in following principles\n• **Difficulty accepting gray areas**: You see the world as black or white, making you frustrated with life's complexities\n• **Moral perfectionism**: You may judge others harshly when they don't live by your standards\n• **Moral exhaustion**: Carrying the burdens of justice may drain your psychological energy",
-growthPath: "**Personal development path:**\n1. Learn 'moral mercy': principles are important, but mercy is more important sometimes\n2. Accept 'gray areas': life is not always black and white\n3. Practice 'selective forgiveness': not every mistake deserves punishment\n4. Build 'support systems': even warriors need help sometimes",
-relationships: "**In relationships:**\n• You need a partner who shares your principles but reminds you of mercy sometimes\n• You may be 'the protector' in relationships, beware of overprotection that stifles others\n• Best compatibility: with wise creatures (Sphinx, Simurgh) that balance your courage with their wisdom\n• Avoid: opportunistic people who have no principles",
-career: "**Ideal career path:**\n• Law and judiciary (because you believe in justice)\n• Humanitarian work and human rights\n• Leadership in organizations needing ethical reforms\n• Education and guidance (because you are a role model for others)\n• Avoid: jobs requiring ethical compromises or manipulating others",
-insight: "Your true courage is not just in fighting, but in knowing when to fight and when to forgive. You are not just a warrior, you are a guardian of values in a world that needs guardians."
-}
-}
-]
-}
-]
-}
+  ar: {
+    title: "QuizMagic | عالم الاختبارات الأسطورية",
+    heroTitle: "اكتشف كائنك الأسطوري الحقيقي",
+    heroSubtitle: "رحلة في أعماق عقلك الباطن لكشف القوى القديمة التي تسكن روحك",
+    footerDesc: "منصة الاختبارات النفسية الأكثر دقة في العالم العربي.",
+    quizzes: [
+      {
+        id: "mythical-creature",
+        title: "اختبار الكائن الأسطوري",
+        badge: "الأكثر دقة",
+        image: "assets/images/dragon.jpg",
+        description: "تحليل نفسي متقدم يربط سماتك الشخصية بأساطير الكائنات القديمة.",
+        questions: [
+          { id: 1, text: "أشعر بالراحة أكثر عندما أكون وحيداً مع أفكاري.", trait: "mystery", axis: "mystery", type: "likert" },
+          { id: 2, text: "أميل دائماً لتولي دور القيادة في المجموعات.", trait: "leadership", axis: "willpower", type: "likert" },
+          { id: 3, text: "أهتم بمساعدة الآخرين حتى لو كان ذلك على حساب راحتي.", trait: "altruism", axis: "empathy", type: "likert" },
+          {
+            id: 4,
+            text: "أي من هذه البوابات تجذبك أكثر للدخول إليها؟",
+            type: "visual",
+            options: [
+              { label: "بوابة النور", image: "assets/images/quiz/q4_opt1.jpg", trait: "purity", axis: "empathy", value: 5 },
+              { label: "بوابة الغموض", image: "assets/images/quiz/q4_opt2.jpg", trait: "mystery", axis: "mystery", value: 5 },
+              { label: "بوابة القوة", image: "assets/images/quiz/q4_opt3.jpg", trait: "power", axis: "willpower", value: 5 },
+              { label: "بوابة الطبيعة", image: "assets/images/quiz/q4_opt4.jpg", trait: "nature", axis: "energy", value: 5 }
+            ]
+          },
+          { id: 5, text: "أفضل التخطيط لكل شيء مسبقاً بدلاً من العفوية.", trait: "strategy", axis: "strategy", type: "likert" },
+          { id: 6, text: "لدي قدرة كبيرة على التكيف مع التغييرات المفاجئة.", trait: "adaptation", axis: "energy", type: "likert" },
+          { id: 7, text: "أبحث دائماً عن المعنى العميق وراء الأشياء.", trait: "knowledge", axis: "intelligence", type: "likert" },
+          {
+            id: 8,
+            text: "ما هو العنصر الذي تشعر أنه يمثل طاقتك الداخلية؟",
+            type: "visual",
+            options: [
+              { label: "النار", image: "assets/images/quiz/q8_opt1.jpg", trait: "intensity", axis: "energy", value: 5 },
+              { label: "المياه", image: "assets/images/quiz/q8_opt2.jpg", trait: "composure", axis: "strategy", value: 5 },
+              { label: "الأرض", image: "assets/images/quiz/q8_opt3.jpg", trait: "stability", axis: "willpower", value: 5 },
+              { label: "الرياح", image: "assets/images/quiz/q8_opt4.jpg", trait: "exploration", axis: "intelligence", value: 5 }
+            ]
+          },
+          { id: 9, text: "أجد صعوبة في مسامحة الأشخاص الذين أخطأوا في حقي.", trait: "persistence", axis: "willpower", type: "likert" },
+          { id: 10, text: "أثق بحدسي أكثر من المنطق في اتخاذ القرارات.", trait: "intuition", axis: "mystery", type: "likert" },
+          { id: 11, text: "أحب أن أكون محاطاً بالجمال والفن في حياتي.", trait: "elegance", axis: "empathy", type: "likert" },
+          {
+            id: 12,
+            text: "أي من هذه المشاهد يمنحك شعوراً أكبر بالسلام؟",
+            type: "visual",
+            options: [
+              { label: "قمة جبل", image: "assets/images/quiz/q12_opt1.jpg", trait: "ambition", axis: "willpower", value: 5 },
+              { label: "مكتبة قديمة", image: "assets/images/quiz/q12_opt2.jpg", trait: "wisdom", axis: "intelligence", value: 5 },
+              { label: "حديقة سرية", image: "assets/images/quiz/q12_opt3.jpg", trait: "purity", axis: "empathy", value: 5 },
+              { label: "شاطئ مهجور", image: "assets/images/quiz/q12_opt4.jpg", trait: "mystery", axis: "mystery", value: 5 }
+            ]
+          },
+          { id: 13, text: "أستمتع بمناقشة الأفكار الفلسفية والمعقدة.", trait: "analysis", axis: "intelligence", type: "likert" },
+          { id: 14, text: "أنا شخص صبور جداً عند التعامل مع المشاكل الطويلة.", trait: "persistence", axis: "strategy", type: "likert" },
+          { id: 15, text: "أهتم كثيراً بسمعتي وكيف يطالعني الآخرون.", trait: "potential", axis: "strategy", type: "likert" },
+          {
+            id: 16,
+            text: "أي رمز سحري تختار ليكون تميمة حظك؟",
+            type: "visual",
+            options: [
+              { label: "العين", image: "assets/images/quiz/q16_opt1.jpg", trait: "knowledge", axis: "intelligence", value: 5 },
+              { label: "الخنجر", image: "assets/images/quiz/q16_opt2.jpg", trait: "protection", axis: "willpower", value: 5 },
+              { label: "الكأس", image: "assets/images/quiz/q16_opt3.jpg", trait: "altruism", axis: "empathy", value: 5 },
+              { label: "المفتاح", image: "assets/images/quiz/q16_opt4.jpg", trait: "curiosity", axis: "mystery", value: 5 }
+            ]
+          },
+          { id: 17, text: "أفضل العمل ضمن فريق بدلاً من العمل منفرداً.", trait: "social", axis: "empathy", type: "likert" },
+          { id: 18, text: "أنا دائماً صادق مع نفسي حتى لو كان الحلم مؤلماً.", trait: "honesty", axis: "willpower", type: "likert" },
+          { id: 19, text: "أمتلك طاقة كبيرة تدفعني لتجربة أشياء جديدة دائماً.", trait: "energy", axis: "energy", type: "likert" },
+          {
+            id: 20,
+            text: "ما هو الحيوان الذي تشعر بارتباط روحي معه؟",
+            type: "visual",
+            options: [
+              { label: "الذئب", image: "assets/images/quiz/q20_opt1.jpg", trait: "social", axis: "empathy", value: 5 },
+              { label: "الأفعى", image: "assets/images/quiz/q20_opt2.jpg", trait: "strategy", axis: "strategy", value: 5 },
+              { label: "النسر", image: "assets/images/quiz/q20_opt3.jpg", trait: "exploration", axis: "energy", value: 5 },
+              { label: "الفراشة", image: "assets/images/quiz/q20_opt4.jpg", trait: "adaptation", axis: "energy", value: 5 }
+            ]
+          },
+          { id: 21, text: "أنا شخص عاطفي جداً وتؤثر فيّ القصص الإنسانية.", trait: "nature", axis: "empathy", type: "likert" },
+          { id: 22, text: "أحب التحدي والمنافسة للوصول إلى القمة.", trait: "leadership", axis: "willpower", type: "likert" },
+          { id: 23, text: "أميل للحفاظ على التقاليد والقيم القديمة.", trait: "tradition", axis: "strategy", type: "likert" },
+          {
+            id: 24,
+            text: "أي جوهرة تشعر أنها تملك طاقة تجذبك؟",
+            type: "visual",
+            options: [
+              { label: "ياقوت أحمر", image: "assets/images/quiz/q24_opt1.jpg", trait: "intensity", axis: "energy", value: 5 },
+              { label: "ماس أزرق", image: "assets/images/quiz/q24_opt2.jpg", trait: "logic", axis: "intelligence", value: 5 },
+              { label: "زمرد أخضر", image: "assets/images/quiz/q24_opt3.jpg", trait: "nature", axis: "empathy", value: 5 },
+              { label: "جمشت أرجواني", image: "assets/images/quiz/q24_opt4.jpg", trait: "intuition", axis: "mystery", value: 5 }
+            ]
+          },
+          { id: 25, text: "أستطيع التحكم في أعصابي حتى في أصعب المواقف.", trait: "composure", axis: "strategy", type: "likert" },
+          { id: 26, text: "أهتم بالتفاصيل الصغيرة التي قد لا يلاحظها الآخرون.", trait: "analysis", axis: "intelligence", type: "likert" },
+          { id: 27, text: "أنا شخص متفائل وأرى الجانب المشرق دائماً.", trait: "potential", axis: "energy", type: "likert" },
+          {
+            id: 28,
+            text: "أي سماء تفضل أن تتأملها في الليل؟",
+            type: "visual",
+            options: [
+              { label: "شفق قطبي", image: "assets/images/quiz/q28_opt1.jpg", trait: "potential", axis: "energy", value: 5 },
+              { label: "كسوف كلي", image: "assets/images/quiz/q28_opt2.jpg", trait: "mystery", axis: "mystery", value: 5 },
+              { label: "سديم فضائي", image: "assets/images/quiz/q28_opt3.jpg", trait: "exploration", axis: "intelligence", value: 5 },
+              { label: "برق صامت", image: "assets/images/quiz/q28_opt4.jpg", trait: "energy", axis: "energy", value: 5 }
+            ]
+          },
+          { id: 29, text: "أفضل الاستقرار في مكان واحد على كثرة الترحال.", trait: "stability", axis: "strategy", type: "likert" },
+          { id: 30, text: "أشعر أن لدي رسالة كبيرة يجب أن أؤديها في الحياة.", trait: "ambition", axis: "willpower", type: "likert" },
+          { id: 31, text: "أحب الغموض ولا أكشف كل أوراقي للآخرين.", trait: "mystery", axis: "mystery", type: "likert" },
+          {
+            id: 32,
+            text: "أي وسيلة نقل أسطورية تختار لرحلتك القادمة؟",
+            type: "visual",
+            options: [
+              { label: "سفينة طائرة", image: "assets/images/quiz/q32_opt1.jpg", trait: "exploration", axis: "energy", value: 5 },
+              { label: "عربة نور", image: "assets/images/quiz/q32_opt2.jpg", trait: "purity", axis: "empathy", value: 5 },
+              { label: "بساط ريحي", image: "assets/images/quiz/q32_opt3.jpg", trait: "wisdom", axis: "intelligence", value: 5 },
+              { label: "تنين صغير", image: "assets/images/quiz/q32_opt4.jpg", trait: "protection", axis: "willpower", value: 5 }
+            ]
+          },
+          { id: 33, text: "أنا شخص عملي جداً ولا أضيع وقتي في الأحلام.", trait: "logic", axis: "strategy", type: "likert" },
+          { id: 34, text: "أبحث دائماً عن المثالية في كل ما أفعل.", trait: "perfection", axis: "strategy", type: "likert" },
+          { id: 35, text: "أنا مخلص جداً لأصدقائي وعائلتي.", trait: "social", axis: "empathy", type: "likert" },
+          {
+            id: 36,
+            text: "ما هو السلاح الذي ستختاره للدفاع عن مملكتك؟",
+            type: "visual",
+            options: [
+              { label: "سيف الضوء", image: "assets/images/quiz/q36_opt1.jpg", trait: "honesty", axis: "willpower", value: 5 },
+              { label: "درع الظل", image: "assets/images/quiz/q36_opt2.jpg", trait: "protection", axis: "strategy", value: 5 },
+              { label: "قوس النجوم", image: "assets/images/quiz/q36_opt3.jpg", trait: "strategy", axis: "intelligence", value: 5 },
+              { label: "عصا الحكيم", image: "assets/images/quiz/q36_opt4.jpg", trait: "knowledge", axis: "intelligence", value: 5 }
+            ]
+          },
+          { id: 37, text: "أحب أن أكون متميزاً ومختلفاً عن الآخرين.", trait: "potential", axis: "energy", type: "likert" },
+          { id: 38, text: "أنا شخص مرن جداً في تفكيري.", trait: "adaptation", axis: "energy", type: "likert" },
+          { id: 39, text: "أؤمن أن القوة الحقيقية تأتي من الداخل.", trait: "power", axis: "willpower", type: "likert" },
+          {
+            id: 40,
+            text: "أي نهاية تفضل أن تختم بها قصة حياتك؟",
+            type: "visual",
+            options: [
+              { label: "عرش ذهبي", image: "assets/images/quiz/q40_opt1.jpg", trait: "leadership", axis: "willpower", value: 5 },
+              { label: "كوخ هادئ", image: "assets/images/quiz/q40_opt2.jpg", trait: "nature", axis: "empathy", value: 5 },
+              { label: "رحلة أبدية", image: "assets/images/quiz/q40_opt3.jpg", trait: "curiosity", axis: "energy", value: 5 },
+              { label: "اتحاد كوني", image: "assets/images/quiz/q40_opt4.jpg", trait: "mystery", axis: "mystery", value: 5 }
+            ]
+          }
+        ],
+        results: [
+          {
+            id: "dragon",
+            name: "التنين العظيم",
+            rarity: "أسطوري",
+            image: "assets/images/dragon.jpg",
+            description: "أنت تجسيد للقوة والقيادة. تمتلك روحاً نارية لا تقهر وطموحاً يتجاوز السحاب.",
+            narrative: "في أعماق الجبال القديمة، حيث تلامس القمم السماء وتُخفي كنوز العصور، استيقظت روحك من سباتها الأبدي. أنت التنين الذي لا يُقهر، الملك الذي يحمل في عينيه حكمة ألف عام وفي قلبه نار لا تنطفئ. كل خطوة تخطوها تهز الأرض، وكل نظرة منك تحمل سلطة الملوك وشجاعة الفرسان الذين لا يعرفون التراجع.\n\nلست مجرد كائن قوي، بل أنت تجسيد للقوة التي تحكمها الحكمة. رؤيتك تتجاوز الأفق، وطموحك لا تعرف الحدود. عندما تتحدث، تصغي الجبال، وعندما تقرر، تتحرك الأمم. الناس ينجذبون إليك كالفراشات نحو النور، يرون فيك القائد الطبيعي الذي يولد مرة كل ألف عام.\n\nلكن تذكر أيها التنين العظيم: القوة الحقيقية ليست في السيطرة على الآخرين، بل في السيطرة على الذات. النار التي تحرق كل ما حولها تترك رماداً، لكن النار التي تدفئ وتُنير تبني ممالك. استخدم لهبك بحكمة، فالتنين الحكيم أعظم من التنين القوي.",
+            advice: "تذكر أن القوة الحقيقية تكمن في كبح جماح نارك واستخدامها للتدفئة بدلاً من الحرق.",
+            badge: "المفكر الأسطوري",
+            article: "يُعتبر التنين (Dragon) من أكثر الكائنات الأسطورية انتشاراً وتعقيداً في تاريخ البشرية، حيث يظهر في ثقافات متباعدة جغرافياً بشكل لافت للنظر. في الثقافة الصينية، يُسمى 'لونغ' (龍) ويُعتبر رمزاً للقوة الإمبراطورية والحظ السعيد والسلطة الإلهية. الأباطرة الصينيون كانوا يُلقبون بـ'أبناء التنين'، وكان التنين ذو المخالب الخمسة حكراً على الإمبراطور فقط.\n\nفي الأساطير الأوروبية، اختلفت الصورة تماماً، حيث أصبح التنين كائناً شريراً يجب على الفارس الشجاع قتله، كما في أسطورة القديس جرجس والتنين. هذا التنين يمثل الفوضى والشر الذي يجب ترويضه. أما في الفارسية، فيظهر كـ'أژدها' (Azhdaha) كائن ضخم يمثل القوى البدائية للطبيعة.\n\nفي اليابان، التنانين كائنات مائية حكيمة مرتبطة بالمطر والأنهار، وفي حضارة الأزتيك كان 'كيتزالكواتل' (Quetzalcoatl) الثعبان المصقور إلهاً خالقاً.\n\n**التحليل النفسي:**\nأصحاب شخصية التنين يمتلكون ما يُسمى في علم النفس 'الكاريزما التحويلية' (Transformational Charisma)، وهي القدرة على إلهام الآخرين وقيادتهم نحو رؤية مشتركة. الدراسات تُظهر أن هؤلاء الأشخاص يمتلكون:\n\n• **القيادة الطبيعية**: يولدون بقدرة فطرية على تولي زمام المبادرة\n• **الرؤية الاستراتيجية**: يرون الصورة الكبيرة بينما يركز الآخرون على التفاصيل\n• **الشجاعة الأخلاقية**: يدافعون عن قناعاتهم حتى ضد التيار\n• **الحضور الطاغي**: يدخلون الغرفة فيشعر الجميع بوجودهم\n\nلكن هذه القوة لها ثمن: قد يميلون للسلطوية والسيطرة المفرطة، أو يجدون صعوبة في تقبل النقد، أو يقعون في فخ 'متلازمة الإمبراطور' حيث يعتقدون أنهم دائماً على حق.",
+            secretReport: {
+              strengths: "• **الكاريزما القيادية الفطرية**: قدرتك على إلهام الآخرين تفوق المتوسط بـ 4 أضعاف، الناس ينجذبون إليك بشكل طبيعي\n• **الرؤية الاستراتيجية الشاملة**: ترى الصورة الكبيرة والنتائج البعيدة بينما يركز الآخرون على الحاضر\n• **الشجاعة الاستثنائية**: لا تتردد في مواجهة التحديات التي يرهبها الآخرون\n• **الحضور الطاغي**: دخولك أي مكان يغير طاقته، وجودك يشعر الآخرين بالأمان والقوة\n• **الحماية الفطرية**: تدافع بشراسة عن من تحب ومن تؤمن بهم",
+              challenges: "• **النزعة السلطوية**: ميلك للسيطرة قد يجعلك تتجاهل آراء الآخرين المهمة\n• **الغطرسة غير المقصودة**: ثقتك العالية قد تُفسر على أنها تكبر من قبل الآخرين\n• **الغضب السريع**: نارك الداخلية قد تشتعل بسرعة عندما لا تسير الأمور كما تريد\n• **صعوبة تفويض المهام**: تعتقد أنك الأفضل دائماً، مما يستنزف طاقتك\n• **التوقعات العالية**: تضع معايير عالية لنفسك وللآخرين مما يسبب إحباطاً مستمراً",
+              growthPath: "**مسار التطور الشخصي:**\n1. مارس 'القيادة الخادمة': القوة الحقيقية في تمكين الآخرين لا السيطرة عليهم\n2. تعلم 'فن الاستماع': أحياناً أفضل قرار يأتي من أصغر عضو في الفريق\n3. طور 'التواضع الاستراتيجي': الاعتراف بالخطأ يزيد من احترام الآخرين لك\n4. ابنِ 'مجلس استشاري': أحط نفسك بأشخاص يجرؤون على تحدي أفكارك\n5. مارس 'التفويض الذكي': ثق بالآخرين وامنحهم مساحة للنمو",
+              relationships: "**في العلاقات:**\n• تحتاج شريكاً قوياً لا يخافك، بل يكملك بحكمته\n• قد تكون 'الحامي المسيطر' في العلاقات، احذر من خنق شريكك بحمايتك الزائدة\n• أفضل التوافق: مع أبو الهول (الحكمة تكمل القوة)، السيمرغ (الرؤية الشاملة)\n• توافق جيد: مع الفالكيري (الشرف المشترك)، القنطور (التوازن)\n• تجنب: العلاقات مع الأشخاص الضعفاء الذين يستسلمون دائماً، أو الكيتسوني الذي قد يتلاعب بك",
+              career: "**المسار المهني المثالي:**\n• الرئيس التنفيذي (CEO) وريادة الأعمال الكبرى\n• القيادة العسكرية والأمنية الاستراتيجية\n• السياسة والدبلوماسية رفيعة المستوى\n• إدارة الأزمات والكوارث الكبرى\n• المحاماة في القضايا الكبرى\n• الإخراج السينمائي والإنتاج الضخم\n• تجنب: الوظائف الإدارية المتوسطة، العمل تحت سلطة من لا تحترم، المهام التفصيلية المملة",
+              insight: "قوتك الحقيقية ليست في النار التي تحرق، بل في الحكمة التي تعرف متى تشعلها ومتى تُخفيها. التنين الأعظم ليس من يخافه الجميع، بل من يحترمه الجميع."
+            }
+          },
+          {
+            id: "phoenix",
+            name: "طائر العنقاء",
+            rarity: "نادر جداً",
+            image: "assets/images/phoenix.jpg",
+            description: "أنت رمز للتجدد والأمل. تمتلك قدرة مذهلة على النهوض من الرماد أقوى من ذي قبل.",
+            narrative: "في لحظة الاحتراق الأخيرة، عندما ظن العالم أنك انتهيت، أشرقت من رمادك روح العنقاء. لستَ مجرد ناجٍ من العواصف، بل أنت العاصفة نفسها التي تتجدد. كل خسارة علّمتك درساً، كل فشل بنى فيك حكمة، وكل دموع سقتها أرض روحك لتزهر من جديد.\n\nأنت لا تعرف معنى الاستسلام، فالكلمة غير موجودة في قاموسك. عندما يسقط الآخرون، أنت تنهض أقوى. عندما يُغلق باب، تفتح نافذة. عندما يظلم العالم، تصبح أنت النور.\n\nلكن تذكر: حتى العنقاء تحتاج للراحة بين دورات التجديد. لا تحرق نفسك باستمرار إثباتاً لقوتك، فالنور الهادئ المستدام أقوى من اللهب العنيف الزائل.",
+            advice: "تذكر أنك لست مضطراً للاحتراق دائماً لتثبت وجودك؛ النور الهادئ يدوم أطول.",
+            badge: "الروح المتجددة",
+            article: "العنقاء (Phoenix) هي واحدة من أكثر الكائنات الأسطورية انتشاراً في ثقافات العالم القديم. ظهرت أولاً في الأساطير المصرية القديمة تحت اسم 'بينو' (Benu)، حيث كانت مرتبطة بعبادة الشمس والبعث بعد الموت. انتقلت الأسطورة لاحقاً إلى الحضارة اليونانية، حيث وصفها هيرودوت بأنها طائر مذهل يعيش في الصحراء العربية لمدة 500 عام قبل أن يحرق نفسه ويعود للحياة من رماده.\n\nفي الثقافة الصينية، تُعرف العنقاء باسم 'فنغ هوانغ' (Fenghuang)، وهي رمز للإمبراطورة والفضائل النبيلة. أما في الثقافة اليابانية، فتُسمى 'هـ-أو' (Hō-ō) وتظهر فقط في أوقات السلام والازدهار.\n\n**التحليل النفسي:**\nأصحاب شخصية العنقاء يمتلكون ما يُسمى في علم النفس 'المرونة النفسية' (Psychological Resilience)، وهي القدرة على التعافي من الصدمات والنمو من خلالها. الدراسات الحديثة في علم النفس الإيجابي تُظهر أن هؤلاء الأشخاص يمتلكون:\n\n• **نمو ما بعد الصدمة** (Post-Traumatic Growth): لا يكتفون بالعودة لنقطة الصفر، بل يتطورون\n• **تحويل الألم إلى وقود**: يستخدمون التجارب الصعبة كحافز للإبداع\n• **التفاؤل الواقعي**: يرون الجانب المشرق دون إنكار الواقع\n• **القدرة على التجديد**: يعرفون متى ينهون مرحلة ويبدأون أخرى\n\nلكن هذه القوة لها ثمن: قد يميلون للاحتراق الذاتي (Burnout) في محاولة مستمرة للتجدد، أو يقعون في فخ 'إدمان الأدرينالين' بالبحث المستمر عن التحديات.",
+            secretReport: {
+              strengths: "• **المرونة النفسية الاستثنائية**: قدرتك على التعافي من الصدمات تفوق المتوسط بـ 3 أضعاف\n• **التحويل الإبداعي للألم**: تحول التجارب الصعبة إلى فن، كتابة، أو مشاريع ملهمة\n• **القيادة في الأزمات**: عندما يفقد الآخرون الأمل، تصبح مصدر إلهامهم\n• **التفاؤل الواقعي**: ترى الإمكانيات حيث يرى الآخرون المستحيل",
+              challenges: "• **متلازمة الاحتراق**: ميلك للتجديد المستمر قد يؤدي لإرهاق جسدي ونفسي\n• **صعوبة الاستقرار**: قد تجد صعوبة في الالتزام بعلاقات أو مشاريع طويلة المدى\n• **توقع التجديد من الآخرين**: قد تحبط عندما لا يتغير الآخرون بسرعة مثلك\n• **إدمان الدراما**: لا شعورياً، قد تجذب نفسك لمواقف صعبة لتشعر بأنك 'حي'",
+              growthPath: "**مسار التطور الشخصي:**\n1. تعلم 'الراحة الفعالة': التجديد لا يعني الحركة المستمرة\n2. ابنِ أنظمة دعم: لا تحاول النهوض من الرماد وحدك دائماً\n3. مارس 'الاستقرار الديناميكي': يمكن أن تتغير وتنمو دون أن تتخلى عن كل شيء\n4. طور 'الصبر الاستراتيجي': ليس كل شيء يحتاج لتجديد فوري",
+              relationships: "**في العلاقات:**\n• تحتاج شريكاً يفهم دوراتك الطبيعية في التجديد\n• قد تكون 'المنقذ' في العلاقات، احذر من إنقاذ من لا يريد الإنقاذ\n• أفضل التوافق: مع كائنات مستقرة (الجولم، القنطور) توازن تقلباتك\n• تجنب: العلاقات السامة التي تستنزف طاقتك المتجددة",
+              career: "**المسار المهني المثالي:**\n• ريادة الأعمال (خاصة في مجالات التجديد والتحول)\n• العلاج النفسي والاستشارات (لأنك تفهم الألم والتعافي)\n• الفنون الإبداعية (كتابة، موسيقى، فنون بصرية)\n• القيادة في المنظمات التي تمر بأزمات\n• تجنب: الوظائف الروتينية المتكررة التي تقتل روح التجديد فيك",
+              insight: "قوتك الحقيقية ليست في القدرة على النهوض من الرماد فحسب، بل في الحكمة التي تجمعها من كل دورة حياة. أنت لست طائراً يحترق، أنت حكمة تتجسد في كل ولادة جديدة."
+            }
+          },
+          {
+            id: "unicorn",
+            name: "وحيد القرن النقي",
+            rarity: "نادر",
+            image: "assets/images/unicorn.jpg",
+            description: "أنت تجسيد للنقاء واللطف. تمتلك روحاً بريئة تهدف دائماً لنشر الخير والجمال.",
+            narrative: "في غابة مسحورة لم تطأها قدم بشر، حيث تتراقص أشعة الشمس بين أغصان الأشجار القديمة، تسكن روحك النقية كقطرة ندى على بتلة ورد. أنت وحيد القرن الذي لا يظهر إلا للقلوب الطاهرة، ذلك الكائن الذي يمشي على الأرض دون أن يثقلها، ويلمس القلوب دون أن يجرحها.\n\nضوء قلبك ينير الدروب المظلمة للآخرين، ولمسة يديك تشفي جروحاً لا يراها أحد. في عالم مليء بالضجيج والزيف، أنت الحقيقة الهادئة التي يبحث عنها الجميع. براءتك ليست ضعفاً، بل هي أقوى درع في الكون، لأنها لا تعرف الخداع ولا تحمل الحقد.\n\nالناس يأتون إليك عندما تنكسر قلوبهم، لأنهم يعرفون أنك لن تحكم عليهم، بل ستحتضنهم كما تحتضن الأم طفلاً باكياً. لكن تذكر أيها النقي: العالم ليس كله طيباً مثلك. هناك من سيحاول استغلال نقاء قلبك، وهناك من لا يستحق دموعك الثمينة. تعلم أن تحمي ضوءك الداخلي دون أن تخفيه، فالحكمة تكمن في معرفة من يستحق أن يرى جمالك الحقيقي.",
+            advice: "نقاء قلبك هو أقوى درع تملكه، لا تسمح للعالم أن يغير جوهرك.",
+            badge: "حارس النقاء",
+            article: "وحيد القرن (Unicorn) هو من أكثر الكائنات الأسطورية إثارة للدهشة في تاريخ البشرية. ظهر لأول مرة في حضارة وادي السند قبل 4000 عام، حيث نُقش على الأختام الحجرية. لكن شهرته الحقيقية جاءت من القرون الوسطى في أوروبا، حيث أصبح رمزاً للمسيح والنقاء والطهارة.\n\nفي التراث المسيحي، قيل إن وحيد القرن لا يمكن صيده إلا بواسطة عذراء نقية، مما جعله رمزاً للتجسد الإلهي. ظهرت هذه الأسطورة في 'Bestiaries' (كتب الحيوانات) في العصور الوسطى، وفي سلسلة 'The Hunt of the Unicorn' الفنية الشهيرة الموجودة حالياً في متحف Cloisters بنيويورك.\n\nفي الثقافة الصينية، يوجد كائن مشابه يُسمى 'Qilin' (麒麟)، وهو رمز للرخاء والحكمة، ويُقال إنه ظهر عند ولادة كونفوشيوس. وفي اليابان، يُعرف بـ'Kirin' ويظهر في أوقات العدل والسلام.\n\nفي الهند القديمة، ورد في 'Mahabharata' شخصية 'Rishyasringa' الحكيم الذي نشأ وحيداً في الغابة، وقرنه يمنح القوة الروحية.\n\n**التحليل النفسي:**\nأصحاب شخصية وحيد القرن يمتلكون ما يُسمى في علم النفس 'الحساسية العالية' (Highly Sensitive Person - HSP)، وهي سمة موجودة لدى 15-20% من البشر. الدراسات تُظهر أن هؤلاء الأشخاص يمتلكون:\n\n• **التعاطف العميق**: يشعرون بمشاعر الآخرين كأنها مشاعرهم\n• **الإدراك الحدسي**: يلاحظون التفاصيل الدقيقة التي يفوتها الآخرون\n• **المثالية الأخلاقية**: يؤمنون بقيم عليا ويعيشون حسبها\n• **الإبداع الفطري**: يرون الجمال في أبسط الأشياء\n\nلكن هذه الحساسية لها ثمن: قد يعانون من الإرهاق العاطفي، ويجدون صعوبة في وضع الحدود، ويقعون ضحية للاستغلال من قبل الأشخاص الأنانيين.",
+            secretReport: {
+              strengths: "• **التعاطف العميق الفطري**: قدرتك على فهم مشاعر الآخرين تفوق المتوسط بـ 5 أضعاف، تشعر بما يشعرون\n• **الصدق المطلق**: لا تعرف النفاق، ما في قلبك هو ما على لسانك\n• **القدرة على الشفاء**: حضورك وحده يشفي جراح الآخرين النفسية\n• **رؤية الجمال**: ترى الجمال والإمكانيات حيث يرى الآخرون العادي\n• **النقاء الروحي**: قلبك نظيف من الحقد والكراهية",
+              challenges: "• **الحساسية المفرطة**: الكلمات القاسية تؤذيك أكثر مما ينبغي، وتبقى في ذهنك طويلاً\n• **صعوبة قول 'لا'**: توافق على أشياء لا تريدها خوفاً من إيذاء مشاعر الآخرين\n• **السذاجة العاطفية**: تثق بالجميع بسهولة، مما يعرضك للاستغلال\n• **التضحية الذاتية**: تضع احتياجات الآخرين فوق احتياجاتك دائماً حتى تنهار\n• **المثالية المُحبِطة**: عندما يخيب ظنك بشخص، تشعر بخيبة أمل عميقة",
+              growthPath: "**مسار التطور الشخصي:**\n1. تعلم 'فن وضع الحدود': حماية نفسك ليست أنانية، بل ضرورة\n2. مارس 'الذكاء العاطفي': تعلم التمييز بين من يستحق قلبك ومن لا يستحق\n3. ابنِ 'درعاً من الحكمة': حافظ على نقائك دون أن تكون ساذجاً\n4. طور 'الأنانية الصحية': اهتم بنفسك أولاً، لا يمكنك إعطاء ما لا تملك\n5. تعلم 'فن المسامحة الانتقائية': ليس كل خطأ يستحق مسامحتك",
+              relationships: "**في العلاقات:**\n• تحتاج شريكاً يحمي نقاءك دون أن يستغله\n• قد تكون 'المنقذ العاطفي' في العلاقات، احذر من العلاقات غير المتوازنة\n• أفضل التوافق: مع الفون (المرح يحمي نقاءك)، بيجاسوس (الإلهام المشترك)\n• توافق جيد: مع الجولم (الثبات يحميك)، القنطور (التوازن)\n• تجنب: الكيتسوني (قد يتلاعب بك)، السيرين (قد يستنزف عاطفتك)، التنين (قد يسيطر عليك)",
+              career: "**المسار المهني المثالي:**\n• العلاج النفسي والإرشاد الأسري\n• العمل الإنساني والإغاثي\n• الفنون العلاجية (موسيقى، رسم، كتابة)\n• الطب البيطري ورعاية الحيوانات\n• التدريس للأطفال (خاصة ذوي الاحتياجات الخاصة)\n• تصميم الأزياء والديكور الفاخر\n• تجنب: الوظائف التنافسية القاسية، المبيعات العدوانية، البيئات السامة",
+              insight: "قوتك الحقيقية ليست في نقائك الذي يحميك، بل في شجاعتك التي تسمح لك بالبقاء نقياً في عالم قاسٍ. أنت لست ضعيفاً لأنك طيب، أنت أقوى من الجميع لأنك اخترت الطيبة رغم كل شيء."
+            }
+          },
+          {
+            id: "sphinx",
+            name: "أبو الهول الغامض",
+            rarity: "أسطوري",
+            image: "assets/images/sphinx.jpg",
+            description: "أنت حارس الأسرار والحكمة. تمتلك عقلاً تحليلياً يرى ما وراء الستار ويحل أعقد الألغاز.",
+            narrative: "بين رمال الزمن وأسرار الحضارات، تقف روحك صامدة كتمثال أبو الهول. أنت اللغز الذي لا يحل، والعين التي ترى ما لا يراه الآخرون. صمتك حكمة وكلامك حقيقة.\n\nفي عالم يصرخ فيه الجميع ليجذب الانتباه، أنت تفضل المراقبة الصامتة. تزن كل كلمة قبل أن تنطقها، وتحلل كل موقف قبل أن تتفاعل معه. هذه ليست عزلة، بل هي استراتيجية حياة.\n\nلكن تذكر: الحكمة التي لا تُشارك تصبح عبئاً. أحياناً، كسر الصمت وفتح قلبك لشخص واحد يستحق الثقة، أقوى من حل ألف لغز.",
+            advice: "مشاركة جزء من أسرارك قد يفتح لك أبواباً من الصداقة لم تكن تتوقعها.",
+            badge: "سيد الألغاز",
+            article: "أبو الهول (Sphinx) هو واحد من أكثر الكائنات الأسطورية غموضاً في التاريخ، حيث ظهر في الأساطير المصرية واليونانية. في مصر القديمة، كان يُعتبر حارساً للمقابر والمعابد، برأس إنسان وجسد أسد، مما يرمز لاتحاد الحكمة والقوة. في الأساطير اليونانية، كان يطرح ألغازاً على المسافرين؛ ومن فشل في حلها كان مصيره الهلاك.\n\nأشهر لغز لأبو الهول اليوناني كان: 'ما هو الشيء الذي يمشي على أربع في الصباح، وعلى اثنتين في الظهر، وعلى ثلاث في المساء؟' الإجابة: الإنسان (طفلاً، شاباً، ثم عجوزاً).\n\n**التحليل النفسي:**\nأصحاب شخصية أبو الهول يمتلكون ما يُسمى في علم النفس 'الذكاء التحليلي' (Analytical Intelligence)، وهو القدرة على تفكيك المشكلات المعقدة إلى أجزاء صغيرة وحلها. الدراسات تُظهر أن هؤلاء الأشخاص يمتلكون:\n\n• **التفكير النقدي**: لا يقبلون المعلومات دون تحليل عميق\n• **الصبر الاستراتيجي**: ينتظرون اللحظة المناسبة للكشف عن الحقيقة\n• **القدرة على قراءة البشر**: يلاحظون التفاصيل الدقيقة في لغة الجسد والكلام\n• **الحكمة الصامتة**: يتحدثون فقط عندما يملكون شيئاً قيماً ليقولوه\n\nلكن هذه القوة لها ثمن: قد يميلون للعزلة الزائدة، أو يجدون صعوبة في الثقة بالآخرين، أو يقعون في فخ 'التحليل المفرط' (Analysis Paralysis) حيث يفكرون كثيراً ولا يتصرفون.",
+            secretReport: {
+              strengths: "• **الذكاء التحليلي الحاد**: قدرتك على تفكيك المشكلات المعقدة تفوق المتوسط بـ 4 أضعاف\n• **القراءة العميقة للبشر**: تلاحظ التفاصيل التي يفوتها 90% من الناس\n• **الصبر الاستراتيجي**: تنتظر اللحظة المناسبة بدلاً من التصرف باندفاع\n• **الحكمة الصامتة**: كلامك قليل لكنه قيم ومؤثر",
+              challenges: "• **العزلة الزائدة**: ميلك للصمت والغموض قد يجعل الآخرين يجدون صعوبة في التقرب منك\n• **التحليل المفرط**: قد تفكر كثيراً ولا تتصرف، مما يفوت عليك فرصاً مهمة\n• **صعوبة الثقة**: قد تجد صعوبة في فتح قلبك للآخرين حتى لمن يستحقون\n• **التوقعات العالية**: قد تحبط عندما لا يفهم الآخرون تفكيرك العميق",
+              growthPath: "**مسار التطور الشخصي:**\n1. مارس 'الانفتاح المدروس': شارك أفكارك مع شخص واحد تثق به أسبوعياً\n2. تعلم 'التصرف السريع': ليس كل قرار يحتاج تحليلاً عميقاً\n3. ابنِ 'جسور الثقة': ابدأ بمشاركات صغيرة وزد تدريجياً\n4. تقبل 'عدم الكمال': ليس كل شيء يحتاج لفهم كامل قبل التصرف",
+              relationships: "**في العلاقات:**\n• تحتاج شريكاً يحترم صمتك ويفهم حاجتك للوحدة أحياناً\n• قد تكون 'المستشار' في العلاقات، احذر من إعطاء النصائح دون طلب\n• أفضل التوافق: مع كائنات اجتماعية (الفون، الكيتسوني) تخرجك من عزلتك\n• تجنب: الأشخاص السطحيين الذين لا يقدرون عمقك الفكري",
+              career: "**المسار المهني المثالي:**\n• البحث العلمي والأكاديمي (لأنك تحب التحليل العميق)\n• الاستشارات الاستراتيجية (لأنك ترى ما لا يراه الآخرون)\n• الكتابة والتأليف (لأنك تعبر عن أفكارك المعقدة بشكل أفضل كتابة)\n• التحقيق والتحليل الجنائي\n• تجنب: الوظائف التي تتطلب تفاعلاً اجتماعياً مستمراً وسطحياً",
+              insight: "حكمتك الحقيقية ليست في حل الألغاز فحسب، بل في معرفة متى تشارك الإجابة ومتى تبقيها سراً. أنت لست لغزاً مغلقاً، أنت كتاب ينتظر القارئ المناسب."
+            }
+          },
+          {
+            id: "kraken",
+            name: "الكراكن العظيم",
+            rarity: "نادر جداً",
+            image: "assets/images/kraken.jpg",
+            description: "أنت قوة الأعماق الغامضة. تمتلك نفوذاً واسعاً وقدرة على التحكم في الأمور من خلف الكواليس.",
+            narrative: "في المحيطات المظلمة حيث لا يصل النور، حيث الضغط يسحق كل شيء ضعيف، تتحرك روحك بعظمة وهدوء الكراكن العظيم. أنت القوة التي لا تُرى لكن الجميع يشعر بها، المخطط الذي يدير الدفة من خلف الستار بينما يظن الآخرون أنهم يقودون السفينة.\n\nأعماقك لا حدود لها، وأسرارك أكثر من نجوم السماء. كل مجس من مجساتك يمثل استراتيجية مختلفة، وكل حركة تخطط لها بعناية تفوق إدراك الآخرين. أنت لا تحتاج للصراخ لتُسمع، فصمتك أقوى من ألف صرخة.\n\nفي عالم سطحي يسعى الجميع فيه للظهور، أنت تعرف أن القوة الحقيقية تكمن في الخفاء. الذين يرونك يظنون أنهم فهموك، لكنهم رأوا فقط ما أردت أن يروه. أنت اللغز الذي لا يُحل، واللاعب الذي يحرك القطع دون أن يراه أحد.\n\nلكن تذكر أيها العملاق: الأعماق جميلة لكنها باردة ومظلمة. لا تنسَ الصعود للسطح أحياناً لتشعر بدفء الشمس وترى وجوه من تحبهم بوضوح. القوة الحقيقية ليست في السيطرة الخفية، بل في القدرة على الظهور والثقة بالآخرين.",
+            advice: "الأعماق جميلة، لكن لا تنسَ الصعود للسطح أحياناً لتستمتع بنور الشمس.",
+            badge: "سيد الأعماق",
+            article: "الكراكن (Kraken) هو وحش بحري أسطوري من الفولكلور الاسكندنافية، ذُكر لأول مرة في مخطوطة 'Konungs skuggsjá' النرويجية عام 1250م، والتي تصف كائناً بحرياً ضخماً بحجم جزيرة. لكن أشهر وصف للكراكن جاء على يد الأسقف الدنماركي Erik Pontoppidan في كتابه 'Natural History of Norway' عام 1752.\n\nيُعتقد أن أسطورة الكراكن مستوحاة من مشاهدات حقيقية للحبار العملاق (Architeuthis dux)، الذي يمكن أن يصل طوله إلى 13 متراً. في التراث البحري الاسكندنافي، كان البحارة يخشون الكراكن لأنه يستطيع سحب السفن بأكملها إلى الأعماق بمجساته الضخمة.\n\nفي الثقافة الشعبية الحديثة، ظهر الكراكن في فيلم 'Clash of the Titans' وأصبح رمزاً للقوة الخفية التي لا يمكن مقاومتها. عبارة 'Release the Kraken!' أصبحت شهيرة عالمياً.\n\n**التحليل النفسي:**\nأصحاب شخصية الكراكن يمتلكون ما يُسمى في علم النفس 'الذكاء الاستراتيجي المخفي' (Covert Strategic Intelligence)، وهم أشخاص يعملون في الخفاء ويحققون نتائج ضخمة. الدراسات تُظهر:\n\n• **التخطيط طويل المدى**: يفكرون 10 خطوات للأمام\n• **السيطرة العاطفية**: لا يظهرون مشاعرهم الحقيقية بسهولة\n• **القراءة الاستراتيجية**: يفهمون ديناميكيات القوة في أي مجموعة\n• **الصبر الجليدي**: ينتظرون اللحظة المناسبة لأي تحرك\n\nلكن هذه القوة لها ثمن: قد يعانون من العزلة العاطفية، ويجدون صعوبة في الثقة بالآخرين، ويقعون في فخ 'السيطرة الخفية' التي تدمر العلاقات.",
+            secretReport: {
+              strengths: "• **التخطيط الاستراتيجي الفائق**: قدرتك على التخطيط طويل المدى تفوق المتوسط بـ 5 أضعاف\n• **القوة الخفية**: تؤثر في الأمور دون أن يلاحظ أحد، وهذا أخطر أنواع القوة\n• **السيطرة العاطفية المطلقة**: لا أحد يستطيع قراءة مشاعرك الحقيقية\n• **إدارة الأزمات الكبرى**: تتألق عندما يفقد الآخرون السيطرة\n• **الذاكرة الاستراتيجية**: لا تنسى أبداً من وقف معك أو ضدك",
+              challenges: "• **الغموض المرضي**: قد تخفي كثيراً حتى عن أقرب الناس إليك\n• **النزعة للسيطرة الخفية**: تحاول توجيه الآخرين دون أن يعلموا\n• **العزلة العاطفية**: أعماقك مظلمة وباردة، وقد تنسى كيف تشعر بالدفء\n• **صعوبة الثقة**: تشك في نوايا الجميع، حتى المخلصين منهم\n• **الانتقام البارد**: عندما تُخان، لا تنسى ولا تسامح أبداً",
+              growthPath: "**مسار التطور الشخصي:**\n1. تعلم 'الانفتاح الانتقائي': شارك جزءاً من أسرارك مع شخص تثق به\n2. مارس 'التحكم الواعي': استخدم قوتك للتمكين لا للسيطرة\n3. ابنِ 'جزر الدفء': خصص وقتاً يومياً للتواصل العاطفي الحقيقي\n4. طور 'فن المسامحة': حمل الأحقاد يستنزف طاقتك\n5. تعلم 'طلب المساعدة': حتى الكراكن يحتاج لمن يسنده أحياناً",
+              relationships: "**في العلاقات:**\n• تحتاج شريكاً ذكياً يستطيع فهم صمتك وقراءة إشاراتك الخفية\n• قد تكون 'اللاعب الخفي' في العلاقات، احذر من التلاعب بشريكك\n• أفضل التوافق: مع أبو الهول (غموض متبادل)، التنين (قوة تكمل قوة)\n• توافق جيد: مع الهيدرا (تعددية استراتيجية)، السيمرغ (رؤية شاملة)\n• تجنب: الأشخاص السطحيين، الفون (مرحه يزعجك)، الجولم (شفافيته تربكك)",
+              career: "**المسار المهني المثالي:**\n• الاستخبارات والأمن القومي\n• الاستراتيجيات السياسية والدبلوماسية\n• إدارة الشركات الكبرى من خلف الكواليس\n• التحليل المالي والاستثمار الاستراتيجي\n• البرمجة وهندسة الأنظمة المعقدة\n• البحث العلمي في المجالات الحساسة\n• تجنب: الوظائف التي تتطلب شفافية كاملة، العمل في الواجهة العامة",
+              insight: "قوتك الحقيقية ليست في قدرتك على الاختباء في الأعماق، بل في شجاعتك للصعود للسطح أحياناً. الكراكن الأعظم ليس من يتحكم في الجميع، بل من يختار متى يكشف عن عظمته."
+            }
+          },
+          {
+            id: "owl_of_athena",
+            name: "بومة أثينا",
+            rarity: "نادر",
+            image: "assets/images/owl_of_athena.jpg",
+            description: "أنت رمز الحكمة والمعرفة. ترى في الظلام ما يعجز الآخرون عن رؤيته في وضح النهار.",
+            narrative: "في سكون الليل العميق، عندما ينام العالم وتهدأ الأصوات، تحلق روحك تحت ضوء النجوم باحثة عن الحقيقة المطلقة. أنت بومة أثينا، عيناك تخترقان الظلام لترى ما يخفى على الآخرين، وعقلك يحلل كل شيء بدقة جراح ماهر.\n\nفي مكتبة الكون اللامتناهية، أنت القارئ الأبدي الذي لا يشبع. كل معلومة تلتقطها، كل فكرة تحللها، كل لغز تفككه يضيف طبقة أخرى من الحكمة إلى روحك. الناس يأتون إليك عندما يحتارون، لأنهم يعرفون أن لديك الإجابة، أو على الأقل الطريقة الصحيحة للوصول إليها.\n\nصمتك ليس فراغاً، بل هو تأمل عميق. كلامك ليس ثرثرة، بل هو خلاصة التفكير. أنت الحكيم الذي يعرف أن الحقيقة ليست دائماً جميلة، لكنها دائماً ضرورية.\n\nلكن تذكر أيها الحكيم: الحكمة التي لا ترحم قاسية كالسيف. أحياناً، يحتاج الناس للكذبة الجميلة أكثر من الحقيقة المؤلمة. تعلم متى تتحدث بالمنطق ومتى تتحدث بالقلب. فالحكمة الحقيقية هي التي تجمع بين ذكاء العقل ورحمة القلب.",
+            advice: "الحكمة الحقيقية هي التي تجمع بين ذكاء العقل ورحمة القلب.",
+            badge: "عين الحقيقة",
+            article: "بومة أثينا (Owl of Athena) هي الرمز الأشهر للحكمة في الحضارة الغربية. في الأساطير اليونانية، كانت البومة الصغيرة (Athene noctua) ترافق أثينا، آلهة الحكمة والحرب الاستراتيجية والفنون. كانت تُسمى 'Glaukopis' أي 'ذات العيون المتلألئة'.\n\nظهرت البومة على العملات الأثينية القديمة (الدراخما) منذ القرن الخامس قبل الميلاد، وكانت تُعرف بـ'Γλαύξ' (Glaux). عبارة 'γλαῦκ' εἰς Ἀθήνας' (بومة إلى أثينا) أصبحت مثلاً يُضرب للشيء الذي لا حاجة له، لأن أثينا كانت مليئة بالبوم.\n\nفي فلسفة هيجل، استخدم بومة أثينا كرمز للفلسفة التي 'تحلق عند الغسق'، أي تفهم الأحداث بعد حدوثها. هذه الفكرة أصبحت من أهم المفاهيم في فلسفة التاريخ.\n\nفي الثقافات الأخرى، كانت البومة تُعتبر رمزاً للحكمة عند الرومان (بومة مينيرفا)، لكن في بعض الثقافات كانت نذير شؤم (عند الرومان والشرق أوسطيين)، بينما في اليابان تُسمى 'Fukuro' وتعني 'الحظ السعيد'.\n\n**التحليل النفسي:**\nأصحاب شخصية بومة أثينا يمتلكون ما يُسمى في علم النفس 'الذكاء التحليلي النقدي' (Critical Analytical Intelligence)، والذين يتميزون بـ:\n\n• **التفكير المنطقي الصارم**: يحللون كل شيء بدقة\n• **الفضول المعرفي**: لا يتوقفون عن التعلم\n• **الحكم المبني على الأدلة**: لا يقبلون الادعاءات دون إثبات\n• **الرؤية في الظلام**: يفهمون الأمور المعقدة التي تربك الآخرين\n\nلكن هذه القوة لها ثمن: قد يعانون من 'العقلانية المفرطة' التي تجعلهم يهملون الجانب العاطفي، ويجدون صعوبة في التعامل مع المواقف التي تتطلب الحدس بدلاً من المنطق.",
+            secretReport: {
+              strengths: "• **الذكاء التحليلي الاستثنائي**: قدرتك على التحليل المنطقي تفوق المتوسط بـ 5 أضعاف\n• **الرؤية في الظلام**: ترى الحقائق التي يخفيها الآخرون أو يخفونها عن أنفسهم\n• **الذاكرة الموسوعية**: تخزن كميات هائلة من المعلومات وتستدعيها عند الحاجة\n• **الحكم الموضوعي**: لا تتأثر بالعواطف عند اتخاذ القرارات المهمة\n• **القدرة على التعلم السريع**: تفهم المفاهيم المعقدة في وقت قياسي",
+              challenges: "• **المنطق الجاف**: قد تهمل المشاعر لصالح الحقائق، مما يجرح الآخرين\n• **التفوق الفكري**: قد تبدو متعالياً على من لا يفكرون بنفس عمقك\n• **صعوبة في الحدس**: تثق بالمنطق فقط وتتجاهل الإشارات الداخلية\n• **العزلة الفكرية**: تجد صعوبة في التواصل مع الأشخاص 'العاديين'\n• **التحليل المفرط**: تحلل كل شيء لدرجة تفقد المتعة في الحياة",
+              growthPath: "**مسار التطور الشخصي:**\n1. طور 'الذكاء العاطفي': تعلم فهم مشاعرك ومشاعر الآخرين\n2. مارس 'الاستماع بلا حكم': أحياناً يحتاج الناس للأذن لا للحل\n3. ابنِ 'جسور العاطفة': شارك مشاعرك مع الآخرين، لا أفكارك فقط\n4. تعلم 'فن التبسيط': ليس كل شيء يحتاج تحليلاً عميقاً\n5. مارس 'الحكمة الرحيمَة': أحياناً الصمت ألطف من الحقيقة",
+              relationships: "**في العلاقات:**\n• تحتاج شريكاً ذكياً يستطيع مواكبة تفكيرك دون أن يشعر بالدونية\n• قد تكون 'المحلل' في العلاقات، احذر من تحليل شريكك وكأنه لغز يجب حله\n• أفضل التوافق: مع السيمرغ (حكمة شاملة)، أبو الهول (عمق فكري)\n• توافق جيد: مع القنطور (توازن)، الجولم (ثبات)\n• تجنب: الأشخاص السطحيين، الفون (عشوائيته تربكك)، الكيتسوني (غموضه يزعجك)",
+              career: "**المسار المهني المثالي:**\n• البحث العلمي والأكاديمي\n• الفلسفة والتدريس الجامعي\n• الطب التشخيصي (خاصة الأشعة والأمراض النادرة)\n• التحليل الاستراتيجي والاستشارات\n• البرمجة وهندسة البرمجيات المعقدة\n• القضاء والتحكيم\n• المكتبات والأرشيف\n• تجنب: الوظائف العاطفية (التمريض)، المبيعات، الترفيه",
+              insight: "حكمتك الحقيقية ليست في قدرتك على رؤية الحقيقة فحسب، بل في معرفتك متى تشاركها ومتى تحتفظ بها. أنت لست عيناً باردة تحلل كل شيء، أنت نور ينير الدروب بحكمة ورحمة."
+            }
+          },
+          {
+            id: "centaur",
+            name: "القنطور الحكيم",
+            rarity: "نادر",
+            image: "assets/images/centaur.jpg",
+            description: "أنت رمز للتوازن بين العقل والقوة البدنية. تمتلك حكمة فطرية وروحاً حرة.",
+            narrative: "بين الغابات الكثيفة والسهول الواسعة، تجري روحك بحرية لا تعرف القيود كالقنطور الحكيم. نصفك إنسان يحمل الحكمة والعقل، ونصفك الآخر حصان يرمز للقوة والحرية الغريزية. أنت التوازن النادر الذي يحققه قلة من البشر.\n\nفي عالم يقسم الناس إلى عقليين وعاطفيين، إلى حضريين وبدو، أنت تجمع النقيضين في تناغم مذهل. تحمل قوسك الذي لا يخطئ الهدف، وعقلك الذي لا يخطئ الحكم. معلمك هو الطبيعة، ومدرستك هي الحياة نفسها.\n\nأنت الفيلسوف الذي لا يحتاج قاعات محاضرات، والمحارب الذي لا يحتاج ساحات قتال. حكمتك تأتي من مراقبة النجوم في الليل، وقوتك تأتي من الجري مع الرياح في النهار. لا تتبع قواعد الآخرين، بل تصنع قواعده الخاصة من خبرتك وتجاربك.\n\nلكن تذكر أيها القنطور: حريتك كنز لا يقدر بثمن، لكن الحرية دون مسؤولية تتحول إلى فوضى. أحياناً، القيود التي نختارها بأنفسنا أقوى من القيود التي تُفرض علينا. تعلم أن تلتزم بشيء ما دون أن تفقد جوهر الحرية فيك.",
+            advice: "توازنك هو سر قوتك، لا تترك جانباً يطغى على الآخر.",
+            badge: "المحارب الحكيم",
+            article: "القنطور (Centaur) هو كائن أسطوري من الأساطير اليونانية، نصفه إنسان ونصفه الآخر حصان. أشهر القنطور في الأساطير هو 'كيرون' (Chiron)، الذي كان حكيماً ومعلماً للأبطال العظام مثل هرقل، أخيل، وجايسون.\n\nكيرون لم يكن مثل باقي القنطور الذين كانوا معروفين بالعنف والسكر، بل كان معلماً للطب والموسيقى والرماية. كان يعيش في كهف جبل بيليون، وقد ضحى بنفسه في النهاية لإنقاذ بروميثيوس من عقاب زيوس.\n\nفي التراث الروماني، ظهر القنطور في أعمال فيرجيل وأوفيد، وأصبح رمزاً للصراع بين الطبيعة البرية والحضارة. في الفن الإسلامي، ظهر القنطور في المخطوطات الفارسية والعثمانية، خاصة في قصص الشاهنامة.\n\nفي علم الفلك، توجد كوكبة 'Centaurus' التي تضم أقرب نجم إلى الأرض (Alpha Centauri)، مما يرمز لاتصال هذا الكائن بالكون.\n\n**التحليل النفسي:**\nأصحاب شخصية القنطور يمتلكون ما يُسمى في علم النفس 'التكامل الشخصي' (Personal Integration)، وهو القدرة على دمج جوانب مختلفة من الشخصية في وحدة متناغمة:\n\n• **التوازن الديناميكي**: يجمعون بين العقل والعاطفة، القوة والرحمة\n• **الذكاء الطبيعي**: يتعلمون من التجربة أكثر من الكتب\n• **الحرية المسؤولة**: يحبون الحرية لكنهم يلتزمون بقيمهم\n• **الحكمة العملية**: يطبقون المعرفة في الحياة اليومية\n\nلكن هذا التوازن له تحدياته: قد يجدون صعوبة في الالتزام بالأنظمة الصارمة، ويصطدمون مع المؤسسات البيروقراطية.",
+            secretReport: {
+              strengths: "• **التوازن الفريد**: تجمع بين الحكمة والقوة، العقل والغريزة في تناغم نادر\n• **الذكاء الطبيعي**: تتعلم من التجربة والحياة أكثر من الكتب والنظريات\n• **الحرية الداخلية**: لا يمكن لأحد أن يسجن عقلك أو روحك\n• **الرماية الدقيقة**: تعرف بالضبط ما تريد وتصل إليه\n• **الحكمة العملية**: نصائحك قابلة للتطبيق وفعّالة",
+              challenges: "• **صعوبة الالتزام**: تميل للهروب عندما تصبح الأمور جدية جداً\n• **التمرد على القواعد**: تكره الأنظمة الصارمة حتى لو كانت ضرورية\n• **الازدواجية الداخلية**: أحياناً يتصارع جانبك العقلاني مع جانبك الغريزي\n• **صعوبة الاستقرار**: تميل للترحال النفسي والجسدي\n• **الاحتقار للبيروقراطية**: قد ترفض فرصاً جيدة بسبب كراهيتك للروتين",
+              growthPath: "**مسار التطور الشخصي:**\n1. تعلم 'الالتزام الاختياري': اختر ما تلتزم به بحرية، لا إجباراً\n2. ابنِ 'أنظمة مرنة': صمم حياتك بطريقتك الخاصة لكن بانضباط\n3. مارس 'التكامل الواعي': تعرف على جوانبك المتصارعة وصالح بينها\n4. طور 'الصبر الاستراتيجي': أحياناً الطريق الطويل هو الأقصر\n5. تعلم 'الحكمة المؤسسية': ليس كل نظام عدواً للحرية",
+              relationships: "**في العلاقات:**\n• تحتاج شريكاً يحترم حريتك ولا يحاول تقييدك\n• قد تكون 'الهارب' في العلاقات عندما تصبح الأمور جدية جداً\n• أفضل التوافق: مع الجولم (الثبات يكمل حريتك)، الفالكيري (الشرف المشترك)\n• توافق جيد: مع العنقاء (التجدد)، القنطور الآخر (التفاهم المتبادل)\n• تجنب: الأشخاص المتسلطين، الكراكن (سيحاول السيطرة عليك)، الجولم الصارم",
+              career: "**المسار المهني المثالي:**\n• التدريس والتدريب (خاصة في الهواء الطلق)\n• الإرشاد البيئي والحياة البرية\n• الرياضة الاحترافية والتدريب الرياضي\n• الاستشارات الحرة (Freelance Consulting)\n• الطب البديل والعلاجات الطبيعية\n• الكتابة والصحافة الاستقصائية\n• تجنب: الوظائف المكتبية المقيدة، البيروقراطية الحكومية، العمل تحت ضغط شديد",
+              insight: "حكمتك الحقيقية ليست في قدرتك على الجري بعيداً، بل في معرفتك متى تتوقف وأين تستقر. أنت لست هارباً من القيود، أنت مختار بحكمة لما تلتزم به."
+            }
+          },
+          {
+            id: "cerberus",
+            name: "سيربيروس الحارس",
+            rarity: "نادر جداً",
+            image: "assets/images/cerber.jpg",
+            description: "أنت الحامي الوفي والدرع المنيع. تمتلك يقظة دائمة وقدرة على حماية ما هو ثمين.",
+            narrative: "على بوابات ما هو مقدس، حيث يلتقي العالم المرئي بعالم الأسرار، تقف روحك حارساً لا يغفل كسيربيروس العظيم. ثلاث رؤوس لك، كل واحدة تراقب اتجاهاً مختلفاً، لا يفوتها شيء، ولا يغفل طرفها لحظة واحدة.\n\nأنت اليقظة التي لا تعرف النوم، والولاء الذي لا يتزعزع. عندما ينام الجميع، أنت ساهر تحميهم. عندما يثق الجميع، أنت تشك لتحميهم. عندما يستسلم الجميع، أنت تقف لتدافع عنهم. درعك ليس من حديد، بل من إيمانك الراسخ بأن ما تحميه يستحق كل هذا التضحية.\n\nالناس قد يخافون من مظهرك الصارم، لكنهم ينامون ملء جفونهم لأنهم يعرفون أنك هناك. أنت الحارس الذي لا ينتظر شكوراً، لأن حماية ما تحبه هو أعظم شكر لنفسك.\n\nلكن تذكر أيها الحارس: ليس كل الغرباء أعداء، وليس كل اقتراب خطر. أحياناً، الحماية المفرطة تصبح سجناً لمن تحميهم. تعلم أن تفرق بين التهديد الحقيقي والوهمي. القوة الحقيقية ليست في منع كل دخول، بل في معرفة من يستحق العبور.",
+            advice: "الحماية لا تعني دائماً القسوة؛ أحياناً يكون اللين هو أقوى دفاع.",
+            badge: "الدرع المنيع",
+            article: "سيربيروس (Cerberus) هو الكلب الأسطوري ذو الرؤوس الثلاثة الذي يحرس بوابة العالم السفلي في الأساطير اليونانية. مهمته كانت منع الموتى من المغادرة والأحياء من الدخول دون إذن. والدا سيربيروس هما الوحشان 'تايفون' و'إيكيدنا'، مما يجعله أخاً لعدة وحوش أسطورية أخرى مثل الهيدرا والسفينكس.\n\nأشهر مواجهة مع سيربيروس كانت عندما كلف يوريديوس البطل هرقل (هرقل) بمهمته الثانية عشرة والأخيرة: إحضار سيربيروس حياً من العالم السفلي. نجح هرقل في ذلك باستخدام قوته الهائلة دون weapons، مما أثار إعجاب هاديس إله العالم السفلي.\n\nفي الأسطورة، كان سيربيروس يسمح للأرواح بالدخول لكن لا يسمح لها بالمغادرة، مما يجعله رمزاً للانتقال الذي لا رجعة فيه. كما ورد في 'الإلياذة' و'الأوديسة' لهوميروس، وفي 'الإنيادة' لفيرجيل.\n\nفي الثقافة الشعبية الحديثة، يظهر سيربيروس في سلسلة 'Harry Potter' كـ'Fluffy' الكلب ثلاثي الرؤوس الذي يحرس حجر الفيلسوف.\n\n**التحليل النفسي:**\nأصحاب شخصية سيربيروس يمتلكون ما يُسمى في علم النفس 'يقظة الحماية' (Protective Vigilance)، وهي سمة نفسية تتطور عادة لدى الأشخاص الذين تحملوا مسؤوليات كبيرة في سن مبكرة:\n\n• **الولاء المطلق**: يدافعون عن من يحبون حتى الموت\n• **القدرة على الرصد**: يلاحظون التهديدات قبل أن تحدث\n• **تعدد المهام**: يستطيعون مراقبة عدة جوانب في وقت واحد\n• **الحماية الفطرية**: يدافعون عن الضعفاء دون أن يُطلب منهم\n\nلكن هذه القوة لها ثمن: قد يعانون من القلق المزمن، ويجدون صعوبة في الثقة بالآخرين، ويقعون في فخ 'الحماية المفرطة' التي تخنق من يحبونهم.",
+            secretReport: {
+              strengths: "• **الولاء المطلق الذي لا يتزعزع**: عندما تلتزم بشخص أو قضية، تدافع عنها حتى النهاية\n• **اليقظة العالية**: تلاحظ التهديدات قبل أن يراها الآخرون بوقت طويل\n• **القدرة على تعدد المهام**: تستطيع مراقبة عدة جوانب وحمايتها في وقت واحد\n• **القوة الدفاعية**: عندما يُهدد من تحب، تتحول إلى قوة لا تُقهر\n• **الإخلاص الصامت**: لا تحتاج لشكر أو تقدير، حمايتك بحد ذاتها مكافأة",
+              challenges: "• **الحماية المفرطة**: قد تخنق من تحبهم بحمايتك الزائدة\n• **صعوبة الثقة**: تشك في نوايا الجميع، حتى المخلصين\n• **القلق المزمن**: عقلك دائماً في حالة تأهب، مما يستنزف طاقتك\n• **الصرامة الزائدة**: قد تكون قاسياً أكثر من اللازم مع من تحميهم\n• **صعوبة الاسترخاء**: لا تعرف كيف تريح حراسك الداخلي",
+              growthPath: "**مسار التطور الشخصي:**\n1. تعلم 'الثقة الانتقائية': ليس كل الناس تهديداً، تعلم من يستحق ثقتك\n2. مارس 'الحماية الواعية': اسأل نفسك هل هذا تهديد حقيقي أم مجرد قلق؟\n3. ابنِ 'أوقات الراحة': خصص وقتاً يومياً لتريح حراسك الداخلي\n4. طور 'اللين الاستراتيجي': أحياناً السماح بالتجربة هو أفضل حماية\n5. تعلم 'طلب المساعدة': حتى الحراس يحتاجون لمن يحرسهم أحياناً",
+              relationships: "**في العلاقات:**\n• تحتاج شريكاً يفهم حاجتك للحماية ويثق في نواياك\n• قد تكون 'الحامي المسيطر' في العلاقات، احذر من خنق شريكك\n• أفضل التوافق: مع الفالكيري (الشرف المشترك)، الجولم (الثبات المتبادل)\n• توافق جيد: مع التنين (قوة تكمل قوة)، القنطور (التوازن)\n• تجنب: الكيتسوني (سيحاول التلاعب بحماستك)، السيرين (سيستنزف طاقتك)",
+              career: "**المسار المهني المثالي:**\n• الأمن القومي والاستخبارات\n• القوات الخاصة والأمن الشخصي\n• الأمن السيبراني وحماية البيانات\n• الطب (خاصة أقسام الطوارئ والعناية المركزة)\n• المحاماة والدفاع عن الضعفاء\n• إدارة المخاطر والكوارث\n• تجنب: الوظائف التي تتطلب ثقة عمياء بالآخرين، المبيعات، العلاقات العامة",
+              insight: "قوتك الحقيقية ليست في قدرتك على منع كل تهديد، بل في حكمتك لمعرفة ما يستحق الحماية وما لا يستحق. أنت لست حارساً يخاف من العالم، أنت حارس يحب العالم بما يكفي ليحميه."
+            }
+          },
+          {
+            id: "faun",
+            name: "الفون الطبيعي",
+            rarity: "شائع",
+            image: "assets/images/faun.jpg",
+            description: "أنت روح الطبيعة والمرح. تمتلك قدرة على الاستمتاع بالحياة ونشر البهجة من حولك.",
+            narrative: "مع أنغام الناي ورقصات الطبيعة، تتمايل روحك بمرح. أنت البهجة في يوم غائم، والعفوية التي تعيد الحياة للأشياء الجامدة من حولك.\n\nفي عالم جاد جداً، أنت التذكير بأن الحياة يجب أن تُعاَش لا أن تُحلل. ضحكتك معدية، وروحك المرحة تحول أي Gathering إلى احتفال. لا تحتاج سبباً للفرح، فالفرح هو حالتك الطبيعية.\n\nلكن تذكر: المرح وحده لا يبني مستقبلاً. أحياناً، تحتاج للجلوس بجدية والتخطيط لأحلامك الكبرى. التوازن بين المرح والمسؤولية هو سر نجاحك.",
+            advice: "المرح ضروري، لكن القليل من الجدية يساعدك على تحقيق أحلامك الكبرى.",
+            badge: "روح المرح",
+            article: "الفون (Faun) هو كائن أسطوري من الأساطير الرومانية، يجمع بين ميزات الإنسان والماعز. يُعرف بروح الغابات والحقول، وهو مرتبط بالموسيقى والرقص والفرح. يمثل الفون الجانب الفطري والعفوي من الإنسان، والارتباط الوثيق بالطبيعة، والعيش في اللحظة الحالية بعيداً عن تعقيدات الحضارة.\n\nفي الأساطير اليونانية، يُقابل الفون كائن 'بان' (Pan)، إله الرعاة والقطعان، الذي كان يعزف على الناي ويملأ الغابات بالموسيقى. كان يُعتقد أن صراخه المفاجئ يسبب ذعراً لا سبب له (ومن هنا جاءت كلمة 'panic').\n\n**التحليل النفسي:**\nأصحاب شخصية الفون يمتلكون ما يُسمى في علم النفس 'الانبساط الطبيعي' (Natural Extroversion)، وهو القدرة على الاستمتاع باللحظة الحالية والتواصل التلقائي مع الآخرين. الدراسات تُظهر أن هؤلاء الأشخاص يمتلكون:\n\n• **الذكاء الاجتماعي**: قدرة فطرية على الاندماج في أي مجموعة\n• **الإبداع العفوي**: يفكرون خارج الصندوق بشكل طبيعي\n• **المرونة العاطفية**: يتعافون بسرعة من المشاعر السلبية\n• **الارتباط بالطبيعة**: يجدون السلام و inspiration في الأماكن الطبيعية\n\nلكن هذه القوة لها ثمن: قد يميلون للتسويف، أو يجدون صعوبة في الالتزام بالمسؤوليات الجادة، أو يقعون في فخ 'الهروب من الواقع' عبر المرح المستمر.",
+            secretReport: {
+              strengths: "• **الذكاء الاجتماعي الفطري**: قدرتك على الاندماج مع أي شخص تفوق المتوسط بـ 3 أضعاف\n• **الإبداع العفوي**: تولد أفكاراً مبتكرة بشكل طبيعي دون تخطيط\n• **المرونة العاطفية**: تتعافى من المشاعر السلبية بسرعة مذهلة\n• **الطاقة المعدية**: حضورك يرفع معنويات من حولك تلقائياً",
+              challenges: "• **التسويف المزمن**: ميلك للمتعة الفورية قد يؤجل مهامك المهمة\n• **صعوبة الالتزام**: قد تجد صعوبة في إكمال مشاريع طويلة المدى\n• **الهروب من الجدية**: أحياناً تستخدم المرح كآلية هروب من المشاكل الحقيقية\n• **السطحية العرضية**: قد تتجنب المحادثات العميقة لأنها 'جادة جداً'",
+              growthPath: "**مسار التطور الشخصي:**\n1. مارس 'المرح المنضبط': خصص وقتاً للعمل الجاد قبل المتعة\n2. استخدم 'قاعدة الدقيقتين': إذا كانت المهمة تأخذ أقل من دقيقتين، افعلها الآن\n3. ابنِ 'أنظمة المتابعة': استخدم تطبيقات التذكير لمتابعة مهامك\n4. تعلم 'العمق المؤقت': خصص 30 دقيقة يومياً للتفكير الجاد في أهدافك",
+              relationships: "**في العلاقات:**\n• تحتاج شريكاً يشاركك روحك المرحة لكنه يذكرك بالمسؤوليات أحياناً\n• قد تكون 'مهرج المجموعة'، احذر من أن يأخذك الآخرون على محمل الجد فقط في المرح\n• أفضل التوافق: مع كائنات جادة (الجولم، أبو الهول) توازن عفويتك\n• تجنب: الأشخاص السلبيين الذين يطفئون طاقتك الإيجابية",
+              career: "**المسار المهني المثالي:**\n• الفنون الترفيهية (موسيقى، مسرح، كوميديا)\n• التسويق والإعلان (لأنك تفهم ما يسعد الناس)\n• العمل مع الأطفال أو في مجالات الترفيه\n• ريادة الأعمال في مجالات الإبداع\n• تجنب: الوظائف المكتبية الروتينية التي تقتل روحك المرحة",
+              insight: "فرحك الحقيقي ليس في الهروب من الجدية، بل في إيجاد التوازن بين المرح والمسؤولية. أنت لست طفلاً أبدياً، أنت حكيم يعرف كيف يستمتع بالحياة بوعي."
+            }
+          },
+          {
+            id: "golem",
+            name: "الجولم الصخري",
+            rarity: "نادر",
+            image: "assets/images/golem.jpg",
+            description: "أنت رمز للاستقرار والصلابة. تمتلك إرادة من حجر وقدرة على تحمل أصعب الظروف.",
+            narrative: "من طين الأرض وقوة الجبال، صُيغت روحك الصابرة كالجولم الذي لا يتزعزع. أنت الجبل الذي لا تهزه الرياح، والسند الذي يعتمد عليه الجميع في أوقات العواصف. عندما ينهار كل شيء من حولك، أنت تبقى ثابتاً كالجذور العميقة للأشجار القديمة.\n\nكلمتك عهد، ووعدك قانون. عندما تقول شيئاً، تفعله مهما كلف الأمر. الناس يعرفون أنك الصخرة التي يمكنهم البناء عليها، والحائط الذي يحمي ظهورهم. أنت لا تعد كثيراً، لكن ما تعد به تنفذه بدقة.\n\nصبرك ليس ضعفاً، بل هو قوة من نوع خاص. أنت تعرف أن الأشياء العظيمة تأخذ وقتاً، وأن الجبال لم تُبنَ في يوم واحد. لا تستعجل النتائج، ولا تيأس من الطريق الطويل. أنت تعرف أن الثبات هو الذي يصنع التاريخ، لا السرعة.\n\nلكن تذكر أيها الصخر: حتى الجبال تتآكل مع الزمن، وحتى الصخر يمكن أن ينبت منه الزهر. لا تخشَ إظهار جانبك اللين أحياناً. القوة الحقيقية ليست في أن تكون دائماً قاسياً، بل في أن تعرف متى تكون قوياً ومتى تكون لطيفاً. أحياناً، البكاء أقوى من الصمود.",
+            advice: "حتى الصخر يمكن أن ينبت منه الزهر؛ لا تخشَ إظهار جانبك اللين.",
+            badge: "الجبل الصامد",
+            article: "الجولم (Golem) هو كائن أسطوري من التراث اليهودي، يُصنع من الطين أو الطمي ويُمنح الحياة من خلال طقوس سحرية وكلمات سرية. أشهر قصة للجولم هي 'جولم براغ' الذي صنعه الحاخام يهودا لو بن بيزاليل في القرن السادس عشر لحماية اليهود من الاضطهاد.\n\nكلمة 'Golem' في العبرية تعني 'الكتلة غير المشكّلة'، وتُذكر في المزمور 139:16 من التوراة. في القبالة اليهودية، كان يُعتقد أن الحاخامات الحكماء يستطيعون خلق حياة من خلال استخدام 'سيفر ييتزيرا' (كتاب الخلق).\n\nالجولم في الأسطورة لا يتكلم، ويطيع أوامر سيده حرفياً. لإيقافه، كان يكفي إزالة الكلمة السحرية 'אמת' (Emet - الحقيقة) من جبهته، لتصبح 'מת' (Met - الموت).\n\nفي الثقافة الحديثة، أصبح الجولم رمزاً للقوة العمياء التي لا تفكر، وألهم العديد من الأعمال الأدبية مثل 'Frankenstein' لماري شيلي، وشخصية 'The Hulk' في الكوميكس.\n\n**التحليل النفسي:**\nأصحاب شخصية الجولم يمتلكون ما يُسمى في علم النفس 'الصلابة النفسية' (Psychological Hardiness)، وهي سمة تتميز بـ:\n\n• **الالتزام**: يلتزمون بما يؤمنون به حتى النهاية\n• **التحكم**: يشعرون بالسيطرة على حياتهم رغم الظروف\n• **التحدي**: يرون الصعوبات كفرص للنمو\n• **الصبر الاستراتيجي**: يعرفون أن الأشياء العظيمة تأخذ وقتاً\n\nلكن هذه القوة لها ثمن: قد يعانون من الجمود العاطفي، ويجدون صعوبة في التكيف مع التغيير، ويقعون في فخ 'العناد' الذي يمنعهم من رؤية البدائل.",
+            secretReport: {
+              strengths: "• **الصبر الاستثنائي**: تستطيع الانتظار لفترات طويلة دون أن تفقد الأمل\n• **الصلابة النفسية**: لا تنهار تحت الضغط، بل تصبح أقوى\n• **الوفاء المطلق**: وعدك قانون، والتزامك لا يتزعزع\n• **الثبات العاطفي**: لا تتأثر بالتقلبات اليومية الصغيرة\n• **الاعتمادية**: الناس يعرفون أنهم يستطيعون الاعتماد عليك في أي وقت",
+              challenges: "• **الجمود العاطفي**: قد تجد صعوبة في التعبير عن مشاعرك\n• **صعوبة التكيف**: التغييرات المفاجئة تربكك وتزعجك\n• **العناد أحياناً**: تتمسك برأيك حتى عندما يكون الآخرون على حق\n• **البطء في اتخاذ القرار**: تحتاج وقتاً طويلاً للتفكير قبل أي خطوة\n• **صعوبة طلب المساعدة**: تعتقد أنك يجب أن تتحمل كل شيء وحدك",
+              growthPath: "**مسار التطور الشخصي:**\n1. تعلم 'المرونة المدروسة': الثبات لا يعني الجمود، تعلم متى تنحني\n2. مارس 'التعبير العاطفي': خصص وقتاً يومياً للتعبير عن مشاعرك\n3. ابنِ 'أنظمة التكيف': جهز نفسك للتغييرات قبل حدوثها\n4. طور 'سرعة القرار': تعلم اتخاذ قرارات سريعة في الأمور الصغيرة\n5. تعلم 'طلب المساعدة': القوة الحقيقية في معرفة حدودك",
+              relationships: "**في العلاقات:**\n• تحتاج شريكاً يفهم صمتك ويحترم ثباتك\n• قد تكون 'الصخرة الصامتة' في العلاقات، احذر من إهمال الجانب العاطفي\n• أفضل التوافق: مع العنقاء (التجدد يكمل ثباتك)، القنطور (التوازن)\n• توافق جيد: مع سيربيروس (الحماية المتبادلة)، الفالكيري (الشرف)\n• تجنب: الأشخاص المتقلبين المزاج، بيجاسوس (سيحاول حملك على الطيران)، الكيتسوني (سيحاول تغييرك)",
+              career: "**المسار المهني المثالي:**\n• الهندسة المدنية والمعمارية\n• إدارة المشاريع الكبرى\n• الجيش والقوات الأمنية\n• الزراعة والإدارة البيئية\n• الطب (خاصة الجراحة التي تتطلب صبراً)\n• الأعمال البنكية والمالية طويلة المدى\n• تجنب: الوظائف التي تتطلب تغييراً مستمراً، المبيعات، الإعلام",
+              insight: "قوتك الحقيقية ليست في أنك لا تنكسر، بل في أنك تعرف متى تسمح لنفسك بالبكاء. أنت لست صخراً بارداً، أنت جبل دافئ يحتضن من يحبه."
+            }
+          },
+          {
+            id: "hydra",
+            name: "الهيدرا المتجددة",
+            rarity: "أسطوري",
+            image: "assets/images/hydra.jpg",
+            description: "أنت رمز للإصرار والتعددية. كلما واجهت تحدياً، خرجت منه بأفكار وحلول أكثر.",
+            narrative: "في مواجهة الصعاب التي تحطم الآخرين، تتضاعف قوتك كالهيدرا التي تنمو لها رأسان كلما قُطع رأس. كل ضربة تتلقاها لا تضعفك، بل تزيدك قوة وذكاءً وحكمة. أنت لا تعرف الهزيمة، لأن كل هزيمة هي مجرد بداية جديدة.\n\nفي عالم يحاول أن يجعلك نسخة واحدة من نفسك، أنت متعدد الأوجه كالجوهرة. لديك ألف فكرة لكل مشكلة، وألف حل لكل تحدٍ. عندما يُغلق باب، لا تفتح نافذة فقط، بل تفتح ألف نافذة. عقلك لا يتوقف عن التولد والإبداع.\n\nأنت المثابرة في أبهى صورها، والإصرار في أسمى معانيه. كل فشل هو درس، وكل خسارة هي استثمار في نجاح قادم. لا تستسلم أبداً، لأن الاستسلام ليس في قاموسك. لكن في نفس الوقت، تعرف أن الإصرار الأعمى قد يكون ضاراً.\n\nتذكر أيها الهيدرا: التعددية قوة، لكن التركيز أقوى. عندما توجه كل رؤوسك نحو هدف واحد، تصبح قوة لا تُقهر. لكن عندما تتشتت بين ألف هدف، تفقد قوتك. تعلم أن تجمع بين التعددية والتركيز، بين المرونة والإصرار.",
+            advice: "تركيز كل رؤوسك على هدف واحد سيجعلك لا تقهر.",
+            badge: "المثابر الذي لا يقهر",
+            article: "الهيدرا (Hydra) هو وحش مائي من الأساطير اليونانية، يُعرف بـ'هيدرا ليرنا' (Lernaean Hydra). كان يعيش في مستنقع ليرنا بالقرب من أرغوس، وكان له تسعة رؤوس (أو أكثر حسب الروايات)، كلما قُطع رأس نما مكانه رأسان.\n\nكان الهيدرا من نسل الوحشين تايفون وإيكيدنا، مما يجعله أخاً لسيربيروس والكيميرا. كان نفسه ساماً لدرجة أن مجرد استنشاقه كان يسبب الموت.\n\nأشهر مواجهة مع الهيدرا كانت في 'المهمة الثانية' من مهام هرقل الاثنتي عشرة. استعان هرقل بابن أخيه 'إيولاوس' الذي كان يحرق جذع كل رأس بعد قطعه لمنع نموه مرة أخرى. الرأس الوحيد الخالد دُفن تحت صخرة ضخمة.\n\nفي علم الأحياء، سُمي حيوان 'Hydra' المائي بهذا الاسم نسبة للوحش الأسطوري، لقدرته المذهلة على التجدد. كما أن كوكبة 'Hydra' هي أكبر كوكبة في السماء.\n\n**التحليل النفسي:**\nأصحاب شخصية الهيدرا يمتلكون ما يُسمى في علم النفس 'المرونة التكيفية المتعددة' (Adaptive Multi-Resilience)، وهي قدرة نادرة على:\n\n• **التعافي السريع**: يتعافون من الفشل بسرعة مذهلة\n• **التفكير المتوازي**: يستطيعون العمل على عدة مشاريع في وقت واحد\n• **الإبداع تحت الضغط**: كلما زاد الضغط، زاد إبداعهم\n• **التعلم من الفشل**: يحولون كل خسارة إلى درس قيم\n\nلكن هذه القوة لها ثمن: قد يعانون من التشتت وعدم التركيز، ويجدون صعوبة في إكمال ما بدأوه.",
+            secretReport: {
+              strengths: "• **الإصرار الذي لا يلين**: لا تستسلم أبداً، كل فشل هو مجرد بداية جديدة\n• **التعددية الإبداعية**: تولد أفكاراً وحلولاً متعددة لكل مشكلة\n• **التعافي السريع**: تتعافى من الصدمات بسرعة تفوق المتوسط بـ 4 أضعاف\n• **التفكير المتوازي**: تستطيع العمل على عدة مشاريع في وقت واحد\n• **القدرة على التكيف**: تتكيف مع أي ظرف بسرعة مذهلة",
+              challenges: "• **التشتت المزمن**: تبدأ كثيراً لكن تنهي قليلاً\n• **صعوبة التركيز**: تنجذب لفرص جديدة قبل إنهاء القديمة\n• **الإرهاق الذاتي**: تحاول فعل كل شيء في وقت واحد\n• **عدم الرضا الدائم**: دائماً تبحث عن الشيء التالي، لا تستمتع بالإنجاز\n• **صعوبة اتخاذ القرار النهائي**: تعدد الخيارات يربكك",
+              growthPath: "**مسار التطور الشخصي:**\n1. تعلم 'التركيز الاستراتيجي': اختر هدفاً واحداً رئيسياً وخصص له 80% من طاقتك\n2. مارس 'قاعدة الإنهاء': لا تبدأ مشروعاً جديداً قبل إنهاء القديم\n3. ابنِ 'أنظمة الأولوية': استخدم مصفوفة آيزنهاور لترتيب مهامك\n4. طور 'فن الاحتفال': احتفل بإنجازاتك الصغيرة قبل الانتقال للتالي\n5. تعلم 'القول لا': ليست كل فرصة تستحق طاقتك",
+              relationships: "**في العلاقات:**\n• تحتاج شريكاً يفهم طبيعتك المتعددة ويثبتك عندما تتشتت\n• قد تكون 'المتقلب' في العلاقات، احذر من إهمال شريكك بسبب انشغالاتك\n• أفضل التوافق: مع الجولم (الثبات يثبتك)، أبو الهول (العمق يجمعك)\n• توافق جيد: مع الكراكن (التخطيط المشترك)، التنين (الطموح)\n• تجنب: الأشخاص الذين يحتاجون اهتماماً مستمراً، سيربيروس (سيحاول تقييدك)",
+              career: "**المسار المهني المثالي:**\n• ريادة الأعمال المتعددة (Serial Entrepreneur)\n• الابتكار وحل المشكلات المعقدة\n• البحث العلمي في مجالات متعددة التخصصات\n• الاستشارات الاستراتيجية للشركات\n• الإعلام وصناعة المحتوى\n• إدارة الأزمات والطوارئ\n• تجنب: الوظائف الروتينية، العمل في تخصص واحد ضيق",
+              insight: "قوتك الحقيقية ليست في عدد رؤوسك، بل في قدرتك على توجيهها جميعاً نحو هدف واحد. أنت لست فوضى مبدعة، أنت قوة منظمة تعرف متى تتعدد ومتى تركز."
+            }
+          },
+          {
+            id: "kitsune",
+            name: "الكيتسوني الماكر",
+            rarity: "نادر جداً",
+            image: "assets/images/kitsune.jpg",
+            description: "أنت رمز للذكاء التكيفي والسحر. تمتلك قدرة على تغيير شكلك وأسلوبك حسب الموقف.",
+            narrative: "بألف وجه ووجه، وبذكاء يسبق الريح، تتلاعب روحك بالواقع كالكيتسوني الأسطوري. أنت السحر والغموض، والقدرة المذهلة على التكيف مع أي عالم تدخل إليه. كل موقف له وجهك المناسب، وكل شخص يرى فيك ما يريد أن يراه.\n\nأنت الثعلب الذي يعرف متى يظهر ومتى يختفي، متى يتكلم ومتى يصمت، متى يقترب ومتى يبتعد. ذكاؤك ليس مكرراً خبيثاً، بل هو حكمة الحياة التي تعرف أن العالم ليس أبيض وأسود، بل ألف لون ولون.\n\nفي عالم يبحث عن البساطة، أنت تعقيد جميل. في عالم يريد إجابات واضحة، أنت السؤال الذكي. الناس ينجذبون إليك بسحرك الغامض، لكنهم لا يعرفون أبداً من أنت حقاً. وهذا ما يجعلك جذاباً وخطيراً في نفس الوقت.\n\nلكن تذكر أيها الكيتسوني: الأقنعة التي ترتديها قد تصبح وجهك الحقيقي. عندما تتقمص دوراً طويلاً، قد تنسى من أنت حقاً. أحياناً، الصدق المؤلم أقوى من الكذبة الجميلة. تعلم أن تخلع أقنعتك أمام من يستحقون رؤية حقيقتك.",
+            advice: "الذكاء موهبة، استخدمها لبناء الجسور وليس فقط لخداع العابرين.",
+            badge: "سيد التكيف",
+            article: "الكيتسوني (狐) هو الثعلب الأسطوري في الفولكلور الياباني، ويُعتبر من أكثر الكائنات الأسطورية تعقيداً في الثقافة اليابانية. يُعتقد أن الكيتسوني يكتسب القوة والحكمة مع التقدم في العمر، وكلما زاد عدد ذيوله (حتى 9 الذيول)، زادت قوته.\n\nهناك نوعان رئيسيان من الكيتسوني: 'Zenko' (الثعالب الطيبة) التي تخدم الإله 'إناري' إله الأرز والرخاء، و'Yako' (الثعالب الشريرة) التي تميل للأذى والخداع.\n\nأشهر أساطير الكيتسوني تتعلق بقدرتها على التحول إلى شكل بشري، عادة امرأة جميلة. في بعض القصص، تتزوج من البشر وتعيش حياة عائلية، لكن يُكشف أمرها عندما يرى زوجها ذيلها أو ظلها الحقيقي.\n\nفي الثقافة اليابانية، توجد معابد 'إناري' في كل أنحاء اليابان، وتماثيل الثعالب تحرسها. كما أن الكيتسوني ألهم العديد من الأعمال الفنية مثل 'The Fox Wife' و مسلسلات الأنمي.\n\n**التحليل النفسي:**\nأصحاب شخصية الكيتسوني يمتلكون ما يُسمى في علم النفس 'الذكاء الاجتماعي التكيفي' (Adaptive Social Intelligence):\n\n• **قراءة المواقف**: يفهمون ديناميكيات أي مجموعة بسرعة\n• **التكيف الاجتماعي**: يستطيعون الاندماج في أي ثقافة أو طبقة اجتماعية\n• **الإقناع والتأثير**: يعرفون كيف يقنعون الآخرين بوجهة نظرهم\n• **المرونة النفسية**: يتعافون بسرعة من الإخفاقات الاجتماعية\n\nلكن هذه القوة لها ثمن: قد يفقدون هويتهم الحقيقية، ويجدون صعوبة في تكوين علاقات عميقة.",
+            secretReport: {
+              strengths: "• **الذكاء الاجتماعي الفائق**: تستطيع قراءة أي شخص وأي موقف بدقة مذهلة\n• **القدرة على التكيف**: تتأقلم مع أي بيئة أو ثقافة بسرعة\n• **الإقناع والتأثير**: تعرف كيف تجعل الآخرين يرون الأمور من منظورك\n• **السحر الشخصي**: لديك كاريزما غامضة تجذب الناس إليك\n• **المرونة العقلية**: تستطيع تبني وجهات نظر متعددة في وقت واحد",
+              challenges: "• **فقدان الهوية**: كثرة الأقنعة قد تجعلك تنسى من أنت حقاً\n• **صعوبة الثقة الحقيقية**: لا تعرف إن كان الناس يحبونك أم أقنعتك\n• **التلاعب غير الواعي**: قد تتلاعب بالآخرين دون أن تدرك\n• **السطحية في العلاقات**: علاقاتك كثيرة لكن قليلة العمق\n• **الإرهاق من الأداء**: تمثيل أدوار متعددة يستنزف طاقتك",
+              growthPath: "**مسار التطور الشخصي:**\n1. مارس 'الصدق الانتقائي': اختر شخصاً واحداً على الأقل لترى أمامه حقيقتك\n2. ابنِ 'هوية أساسية': حدد قيمك الأساسية التي لا تتغير مهما تغيرت الأقنعة\n3. تعلم 'الضعف الاستراتيجي': أظهر ضعفك الحقيقي أحياناً، هذا يبني الثقة\n4. طور 'العلاقات العميقة': ركز على عدد قليل من العلاقات العميقة بدلاً من الكثير من السطحية\n5. مارس 'التأمل الذاتي': اسأل نفسك يومياً: من أنا عندما لا يراني أحد؟",
+              relationships: "**في العلاقات:**\n• تحتاج شريكاً ذكياً يستطيع رؤية ما وراء أقنعتك\n• قد تكون 'المتلاعب' في العلاقات، احذر من التلاعب بشريكك\n• أفضل التوافق: مع السيرين (سحر متبادل)، بيجاسوس (خيال مشترك)\n• توافق جيد: مع العنقاء (التجدد)، الكراكن (غموض مشترك)\n• تجنب: الجولم (شفافيته تكشفك)، سيربيروس (سيقاوم سحرك)",
+              career: "**المسار المهني المثالي:**\n• الدبلوماسية والعلاقات الدولية\n• التسويق والإعلان والإعلام\n• التمثيل والفنون الأدائية\n• الاستشارات الإدارية\n• المبيعات رفيعة المستوى\n• الكتابة الإبداعية والسيناريو\n• تجنب: الوظائف التي تتطلب شفافية مطلقة، المحاسبة، التدقيق",
+              insight: "قوتك الحقيقية ليست في عدد الأقنعة التي ترتديها، بل في شجاعتك لخلعها أمام من يستحقون رؤية حقيقتك. أنت لست محتالاً، أنت فنان يعرف كيف يرسم نفسه بألف لون."
+            }
+          },
+          {
+            id: "pegasus",
+            name: "بيجاسوس المجنح",
+            rarity: "نادر",
+            image: "assets/images/pegasus.jpg",
+            description: "أنت رمز للحرية والإلهام. تمتلك روحاً تحلق فوق المصاعب وتسعى دائماً للأفق البعيد.",
+            narrative: "بجناحين من خيال وإلهام، تحلق روحك فوق قيود الواقع كبيجاسوس المجنح. أنت الحرية التي لا يمكن حبسها في قفص، والحلم الذي يرفض أن يبقى على الأرض. عالمك هو الأفق، وسماء الاحتمالات اللامتناهية هي ملعبك.\n\nأنت الإلهام الذي يزور المبدعين في لحظات التأمل، والفكرة التي تلمع فجأة في العقول. عندما يحلق بيجاسوس، يولد الشعر في قلوب الشعراء، وتولد اللوحات في مخيلة الفنانين، وتولد الأفكار العظيمة في عقول المفكرين.\n\nحوافرك تضرب الأرض لتفجر ينابيع الإبداع، وأجنحتك تحلق في السماء لترسم أحلام المستقبل. أنت الجسر بين الأرض والسماء، بين الواقع والخيال، بين الممكن والمستحيل.\n\nلكن تذكر أيها المحلق: أجنحتك تحملك للسماء، لكن حوافرك هي التي تثبتك على الأرض. الخيال دون واقع يصبح هروباً، والواقع دون خيال يصبح سجن. تعلم أن تحلق عالياً دون أن تفقد اتصالك بالأرض.",
+            advice: "جناحاك يحملانك للسماء، لكن حوافرك هي التي تثبتك على الأرض؛ اعتني بكليهما.",
+            badge: "الملهم الطائر",
+            article: "بيجاسوس (Pegasus) هو الحصان المجنح الأسطوري من الأساطير اليونانية. وُلد من دم 'ميدوسا' عندما قطع 'بيرسيوس' رأسها، أو من عنقها حسب روايات أخرى. ارتبط اسمه بـ'ينبوع هيبوكرين' على جبل هيليكون، الذي كان يُعتقد أنه مصدر إلهام الشعراء.\n\nبيجاسوس كان رفيق البطل 'بيليروفون' (Bellerophon)، الذي استخدمه في قتال 'الكيميرا' الوحش المخيف. لكن عندما حاول بيليروفون الطيران إلى جبل أوليمبوس مقر الآلهة، ألقى به زيوس من على ظهر بيجاسوس.\n\nبعد ذلك، أصبح بيجاسوس حصان زيوس الخاص، يحمل له البرق والرعد. وفي النهاية، وضعه زيوس بين النجوم ككوكبة 'Pegasus'.\n\nفي الثقافة الإسلامية، ظهر حصان مجنح في رحلة الإسراء والمعراج باسم 'البُراق'، الذي حمل النبي محمد من مكة إلى القدس ثم إلى السماوات.\n\nفي علم الفلك، كوكبة Pegasus هي واحدة من أكبر الكوكبات، وتحتوي على 'مربع بيجاسوس' الشهير.\n\n**التحليل النفسي:**\nأصحاب شخصية بيجاسوس يمتلكون ما يُسمى في علم النفس 'الخيال الإبداعي' (Creative Imagination):\n\n• **التفكير المجرد**: يستطيعون تخيل أشياء غير موجودة\n• **الإلهام المستمر**: تأتيهم الأفكار الإبداعية باستمرار\n• **الرؤية المستقبلية**: يرون الإمكانيات قبل أن تتحقق\n• **الروح الحرة**: يرفضون القيود التي تحد من خيالهم\n\nلكن هذه القوة لها ثمن: قد يعانون من 'متلازمة بيتر بان' ويصعب عليهم التعامل مع الواقع العملي.",
+            secretReport: {
+              strengths: "• **الخيال الواسع**: تستطيع تخيل عوالم وأفكار لم يفكر فيها أحد من قبل\n• **القدرة على الإلهام**: وجودك يلهم الآخرين للإبداع والتفكير خارج الصندوق\n• **الروح الحرة**: لا يمكن لأحد أو لشيء أن يسجن عقلك أو روحك\n• **التفكير المجرد**: تفهم المفاهيم المعقدة بسهولة\n• **الإيجابية الطبيعية**: ترى الإمكانيات حيث يرى الآخرون المستحيل",
+              challenges: "• **صعوبة التعامل مع الواقع**: تكره التفاصيل العملية والروتينية\n• **الهروب من المسؤولية**: تميل للهروب إلى عالم الخيال عند مواجهة المشاكل\n• **عدم الإنجاز**: لديك آلاف الأفكار لكنك تنفذ قليلاً منها\n• **الحساسية المفرطة**: النقد يؤذيك كثيراً لأنه يجرح خيالك\n• **صعوبة الالتزام**: تملّ من الأشياء بسرعة وتبحث عن الجديد دائماً",
+              growthPath: "**مسار التطور الشخصي:**\n1. تعلم 'التجذير الواعي': خصص وقتاً يومياً للتعامل مع الواقع العملي\n2. مارس 'تنفيذ الأفكار': اختر فكرة واحدة كل شهر ونفذها بالكامل\n3. ابنِ 'أنظمة المتابعة': استخدم أدوات لإدارة مهامك اليومية\n4. طور 'الصبر الإبداعي': الإبداع العظيم يحتاج وقتاً طويلاً\n5. تعلم 'تقبل النقد': النقد البناء يساعدك على تحسين أفكارك",
+              relationships: "**في العلاقات:**\n• تحتاج شريكاً يحلق معك في الخيال لكنه يثبتك على الأرض\n• قد تكون 'الحالم الهارب' في العلاقات، احذر من إهمال شريكك\n• أفضل التوافق: مع السيمرغ (رؤية شاملة)، وحيد القرن (نقاء مشترك)\n• توافق جيد: مع العنقاء (التجدد)، الفون (المرح)\n• تجنب: الأشخاص العمليين جداً، الجولم (سيحاول تقييدك)، سيربيروس (سيحاول حبسك)",
+              career: "**المسار المهني المثالي:**\n• الفنون (الرسم، الكتابة، الموسيقى)\n• التصميم والإبداع البصري\n• السينما والإخراج\n• الابتكار وريادة الأعمال الإبداعية\n• التدريس الإبداعي\n• العلاج بالفنون\n• تجنب: الوظائف الروتينية، المحاسبة، الإدارة التقليدية",
+              insight: "قوتك الحقيقية ليست في قدرتك على التحليق بعيداً، بل في قدرتك على العودة بالأفكار العظيمة إلى الأرض. أنت لست هارباً من الواقع، أنت سفير للخيال في عالم الواقع."
+            }
+          },
+          {
+            id: "simurgh",
+            name: "السيمرغ الحكيم",
+            rarity: "أسطوري",
+            image: "assets/images/simurgh.jpg",
+            description: "أنت رمز للكمال والمعرفة الشاملة. تمتلك رؤية شاملة للكون وتفهم ترابط الأشياء.",
+            narrative: "من قمة جبل 'قاف' الأسطوري، حيث تلتقي الأرض بالسماء، تطل روحك على حكمة العصور كالسيمرغ العظيم. أنت الطائر الذي شهد خلق العالم، وعاش آلاف السنين ليجمع حكمة الكون كله في روحه. رؤيتك شاملة، ومعرفتك لا حدود لها.\n\nأنت الجامع بين الأضداد، الروح التي ترى الترابط الخفي بين كل الأشياء. تعرف أن الفرح والحزن وجهان لعملة واحدة، وأن البداية تحتوي على النهاية، وأن الصغير يعكس الكبير. هذه الرؤية الشاملة تجعلك حكيماً يفوق سنك.\n\nالناس يأتون إليك طلباً للحكمة، لأنهم يعرفون أنك ترى الصورة الكاملة. أنت المرشد الذي لا يفرض رأيه، بل يضيء الدروب للآخرين ليكتشفوا الحقيقة بأنفسهم. كلمتك قليلة لكنها عميقة كالمحيط.\n\nلكن تذكر أيها الحكيم: المثالية هدف جميل، لكن الكمال غير موجود في عالم البشر. أحياناً، تقبل النقص البشري هو قمة الحكمة. لا تحكم على الآخرين بمعاييرك العالية، فلكل شخص رحلته الخاصة. تعلم أن تحب الناس كما هم، لا كما تريد أن يكونوا.",
+            advice: "المثالية هدف جميل، لكن تقبل النقص البشري هو قمة الحكمة.",
+            badge: "الحكيم المطلق",
+            article: "السيمرغ (سیمرغ) هو طائر أسطوري عظيم من التراث الفارسي والأدب الصوفي. ذُكر في 'الشاهنامة' للفردوسي، حيث ربى البطل 'زال' الأبيض الشعر بعد أن تخلى عنه أبوه. كما ظهر بشكل مفصل في كتاب 'منطق الطير' للشاعر الصوفي فريد الدين العطار.\n\nفي 'منطق الطير'، ت embarked الطيور في رحلة للبحث عن ملكها السيمرغ. بعد عبور سبعة أودية (الطلب، العشق، المعرفة، الاستغناء، التوحيد، الحيرة، والفناء)، وصلت ثلاثون طائراً فقط إلى السيمرغ. وعندما رأوه، أدركوا أن 'سي مرغ' (ثلاثون طائراً بالفارسية) هم أنفسهم، وأن الملك كان في داخلهم طوال الوقت.\n\nيُوصف السيمرغ بأنه طائر ضخم بحجم الفيل، له وجه إنسان أحياناً، وذيل طويل ملون. عاش آلاف السنين ورأى دمار العالم ثلاث مرات. يعرف كل اللغات ويملك كل المعارف.\n\nفي الثقافة الإسلامية، يرتبط السيمرغ أحياناً بـ'العنقاء' وطائر 'الرخ' المذكور في رحلات السندباد.\n\n**التحليل النفسي:**\nأصحاب شخصية السيمرغ يمتلكون ما يُسمى في علم النفس 'الحكمة التكاملية' (Integrative Wisdom):\n\n• **الرؤية الشاملة**: يرون الترابط بين كل الأشياء\n• **الحكمة المبكرة**: يمتلكون حكمة تفوق سنهم\n• **القدرة على الإرشاد**: يوجهون الآخرين دون فرض آرائهم\n• **التوازن الروحي**: يجمعون بين العقل والقلب\n\nلكن هذه القوة لها ثمن: قد يعانون من المثالية المفرطة وخيبة الأمل من الواقع.",
+            secretReport: {
+              strengths: "• **الحكمة الشاملة**: ترى الترابط الخفي بين كل الأشياء والأحداث\n• **الرؤية الكونية**: تفهم الصورة الكبيرة بينما يركز الآخرون على التفاصيل\n• **القدرة على الإرشاد**: توجه الآخرين للحقيقة دون أن تفرضها عليهم\n• **التوازن الروحي**: تجمع بين العقل والقلب، الروح والجسد\n• **الهدوء الداخلي**: لديك سلام داخلي لا تهزه تقلبات الحياة",
+              challenges: "• **المثالية المفرطة**: تضع معايير عالية جداً لنفسك وللآخرين\n• **خيبة الأمل المزمنة**: الواقع يخيب ظنك دائماً لأنه لا يصل لمثالك\n• **العزلة الروحية**: تشعر بأنك مختلف عن الآخرين، وهذا يجعلك وحيداً\n• **الحكم الصامت**: قد تحكم على الآخرين في صمت دون أن تتكلم\n• **صعوبة المشاركة**: حكمتك عميقة لكنك تجد صعوبة في شرحها للآخرين",
+              growthPath: "**مسار التطور الشخصي:**\n1. تعلم 'تقبل النقص': الكمال غير موجود، تقبل البشر كما هم\n2. مارس 'الحكمة العملية': حول حكمتك إلى نصائح قابلة للتطبيق\n3. ابنِ 'جسور التواصل': تعلم تبسيط أفكارك العميقة للآخرين\n4. طور 'الرحمة الحكيمة': كن حكيماً لكن رحيماً في نفس الوقت\n5. تعلم 'الانخراط في الحياة': لا تكتفِ بالمراقبة من بعيد، شارك",
+              relationships: "**في العلاقات:**\n• تحتاج شريكاً يحترم حكمتك ويتعلم منك\n• قد تكون 'الحكيم البعيد' في العلاقات، احذر من الحكم على شريكك بصمت\n• أفضل التوافق: مع بومة أثينا (حكمة مشتركة)، أبو الهول (عمق فكري)\n• توافق جيد: مع الفالكيري (الشرف والحكمة)، القنطور (التوازن)\n• تجنب: الأشخاص السطحيين، الكيتسوني (تلاعبه يزعجك)، الهيدرا (فوضاها تربكك)",
+              career: "**المسار المهني المثالي:**\n• الإرشاد الروحي والنفسي\n• الفلسفة والتعليم الجامعي\n• الكتابة الأدبية والشعر\n• القيادة في المنظمات الإنسانية\n• الطب النفسي\n• الاستشارات الاستراتيجية العليا\n• تجنب: الوظائف المادية البحتة، المبيعات، العمل تحت ضغط يومي",
+              insight: "قوتك الحقيقية ليست في حكمتك التي تفهم كل شيء، بل في رحمتك التي تتقبل كل شيء. أنت لست قاضياً يحكم على العالم، أنت مرشد يضيء الدروب بحكمة وحب."
+            }
+          },
+          {
+            id: "siren",
+            name: "الساحرة البحرية",
+            rarity: "نادر جداً",
+            image: "assets/images/siren.jpg",
+            description: "أنت رمز للجاذبية والحدس. تمتلك صوتاً يسحر العقول وقدرة على قراءة المشاعر.",
+            narrative: "من أعماق البحار الأسطورية، حيث تلتقي الأمواج بالأغاني القديمة، يصدح صوتك الساحر كالسيرين. أنت الجاذبية التي لا تُقاوم، والحدس الذي يرى ما لا يراه الآخرون. صوتك يحمل قوة قديمة تحرك القلوب وتفتح الأبواب المغلقة.\n\nأنت الساحرة التي تعرف كيف تقرأ المشاعر قبل أن تُنطق، وتفهم الرغبات قبل أن تُعبر عنها. جاذبيتك ليست في جمالك الخارجي فقط، بل في قدرتك على جعل الآخرين يشعرون بأنهم مسموعون ومفهومون.\n\nفي عالم مليء بالضجيج، صوتك هو الذي يُستمع إليه. في عالم مليء بالأقنعة، أنت من يكشف الأقنعة الأخرى. لديك قدرة فطرية على فهم ما يريده الناس حقاً، حتى عندما لا يعرفون هم أنفسهم.\n\nلكن تذكر أيها الساحر: الجاذبية التي تُستخدم للتلاعب تدمر العلاقات، بينما الجاذبية التي تُستخدم للبناء تصنع معجزات. لا تستخدم سحرك للسيطرة على الآخرين، بل لتمكينهم. الصوت الذي يبني أعظم من الصوت الذي يسحر.",
+            advice: "استخدم جاذبيتك لبناء علاقات حقيقية، وليس فقط للإغواء.",
+            badge: "ساحرة الأعماق",
+            article: "السيران (Sirens) هن كائنات أسطورية من الأساطير اليونانية، اشتهرن بأصواتهن الساحرة التي تجذب البحارة إلى حتفهم. ورد ذكرهن في 'الأوديسة' لهوميروس، حيث حذر 'سيرسي' البطل أوديسيوس من السيران، فنصحته بوضع الشمع في آذان بحارته وربط نفسه بصارية السفينة.\n\nفي الأساطير اليونانية المبكرة، كانت السيران تُصور كنساء برؤوس طيور، وليس كحوريات بحر كما في الثقافة الحديثة. كن يعشن في جزيرة بين إيطاليا وصقلية.\n\nالتحول إلى 'حوريات البحر' (Mermaids) حدث في العصور الوسطى، حيث اختلطت أساطير السيران مع أساطير 'Undine' و'Melusine' الأوروبية.\n\nفي الأدب الحديث، ظهرت السيران في أعمال مثل 'The Little Mermaid' لهانس كريستيان أندرسن، وأصبحت رمزاً للرغبة والخطر معاً.\n\n**التحليل النفسي:**\nأصحاب شخصية السيران يمتلكون ما يُسمى في علم النفس 'الذكاء العاطفي الاجتماعي' (Social-Emotional Intelligence):\n\n• **القراءة العاطفية**: يفهمون مشاعر الآخرين بدقة\n• **الجاذبية الطبيعية**: يجذبون الناس إليهم بسهولة\n• **الإقناع الصوتي**: صوتهم مؤثر ومقنع\n• **الحدس القوي**: يشعرون بما سيحدث قبل حدوثه\n\nلكن هذه القوة لها ثمن: قد يستخدمون جاذبيتهم للتلاعب، ويجدون صعوبة في تكوين علاقات حقيقية.",
+            secretReport: {
+              strengths: "• **الجاذبية الطبيعية الفاتنة**: الناس ينجذبون إليك بشكل طبيعي دون أن تحاول\n• **الذكاء العاطفي الفائق**: تستطيع قراءة مشاعر الآخرين بدقة مذهلة\n• **الصوت المؤثر**: كلامك يؤثر في الآخرين بشكل عميق\n• **الحدس القوي**: تشعر بما سيحدث قبل حدوثه\n• **القدرة على الإقناع**: تعرف كيف تجعل الآخرين يتفقون معك",
+              challenges: "• **استخدام الجاذبية للتلاعب**: قد تستخدم سحرك للسيطرة على الآخرين\n• **صعوبة العلاقات الحقيقية**: علاقاتك كثيرة لكن سطحية\n• **الإدمان على الإعجاب**: تحتاج للإعجاب المستمر لتشعر بقيمتك\n• **عدم الوضوح**: قد تكون غامضاً بخصوص نواياك الحقيقية\n• **الحساسية للنقد**: النقد يؤذيك لأنه يجرح صورتك الذاتية",
+              growthPath: "**مسار التطور الشخصي:**\n1. تعلم 'الجاذبية الصادقة': استخدم سحرك للبناء لا للتلاعب\n2. ابنِ 'علاقات عميقة': ركز على عدد قليل من العلاقات الحقيقية\n3. مارس 'الصدق العاطفي': عبر عن مشاعرك الحقيقية، لا ما يريد الآخرون سماعه\n4. طور 'الثقة الداخلية': قيمتك ليست في إعجاب الآخرين بك\n5. تعلم 'الاستماع': أحياناً الصمت والاستماع أقوى من الكلام",
+              relationships: "**في العلاقات:**\n• تحتاج شريكاً يرى ما وراء سحرك ويحب حقيقتك\n• قد تكون 'المغوي' في العلاقات، احذر من التلاعب بشريكك\n• أفضل التوافق: مع الكيتسوني (سحر متبادل)، بيجاسوس (خيال مشترك)\n• توافق جيد: مع العنقاء (التجدد)، الفون (المرح)\n• تجنب: الفالكيري (سيكشف تلاعبك)، الجولم (سيطلب الصدق المطلق)، سيربيروس (سيحمي نفسه من سحرك)",
+              career: "**المسار المهني المثالي:**\n• الغناء والموسيقى\n• التمثيل والإعلام\n• الدبلوماسية والعلاقات العامة\n• العلاج النفسي (خاصة العلاج بالموسيقى)\n• التسويق والإعلان\n• الكتابة الأدبية والشعر\n• تجنب: الوظائف التقنية البحتة، المحاسبة، البرمجة",
+              insight: "قوتك الحقيقية ليست في صوتك الذي يسحر، بل في قدرتك على استخدام هذا السحر لبناء لا لتدمير. أنت لست إغواءً خطراً، أنت نغمة جميلة تثري حياة من يسمعونك."
+            }
+          },
+          {
+            id: "valkyrie",
+            name: "الفالكيري المحاربة",
+            rarity: "نادر جداً",
+            image: "assets/images/valkyrie.jpg",
+            description: "أنت رمز للشرف والشجاعة. تمتلك روحاً مقاتلة تدافع عن الحق وتختار طريق الأبطال.",
+            narrative: "في ساحات الشرف، تلمع روحك كالسيف الصقيل. أنت الشجاعة التي لا تهاب، والعدل الذي لا يميل. اختيارك دائماً هو طريق الأبطال مهما كان صعباً.\n\nلستَ من يختار المعركة السهلة، بل تختار المعركة الصحيحة. عندما يصمت الآخرون عن الظلم، أنت تتحدث. عندما ينحني الآخرون للخوف، أنت تقف. شرفك ليس كلمة تقال، بل هو طريقة تعيش بها كل لحظة.\n\nلكن تذكر: الشجاعة الحقيقية ليست في القتال فقط، بل في معرفة متى تقاتل ومتى تسامح. أحياناً، القوة الحقيقية تكمن في خفض السيف لا في رفعه.",
+            advice: "الشجاعة ليست غياب الخوف، بل هي المضي قدماً رغم وجوده.",
+            badge: "حارس الشرف",
+            article: "الفالكيري (Valkyrie) هن محاربات أسطوريات من الأساطير الاسكندنافية، خدامات الإله أودين. كانت مهمتهن اختيار أنصاف المعارك في ساحات القتال واصطحاب أرواح المحاربين الشجعان إلى فالهالا (قاعة الأبطال).\n\nكلمة 'Valkyrie' تعني حرفياً 'مختارات القتلى' (Old Norse: valkyrja). كانت الفالكيري يُصورن كمحاربات جميلات يركبن الخيول ويطرن في السماء، يرتدين الدروع ويحملن الرماح.\n\n**التحليل النفسي:**\nأصحاب شخصية الفالكيري يمتلكون ما يُسمى في علم النفس 'الأخلاق المبدئية' (Principled Morality)، وهو الالتزام القوي بالقيم والمبادئ حتى في أصعب الظروف. الدراسات تُظهر أن هؤلاء الأشخاص يمتلكون:\n\n• **الشجاعة الأخلاقية**: يدافعون عن الحق حتى لو كان ذلك ضد الأغلبية\n• **القيادة بالقدوة**: لا يطلبون من الآخرين ما لا يفعلونه هم أنفسهم\n• **العدالة الفطرية**: يميزون بين الصواب والخطأ بوضوح\n• **الحماية الفطرية**: يدافعون عن الضعفاء والمظلومين\n\nلكن هذه القوة لها ثمن: قد يميلون للصرامة الزائدة مع أنفسهم والآخرين، أو يجدون صعوبة في تقبل 'المنطقة الرمادية' في الحياة، أو يقعون في فخ 'الكمالية الأخلاقية' التي تجعلهم يحكمون على الآخرين بقسوة.",
+            secretReport: {
+              strengths: "• **الشجاعة الأخلاقية الاستثنائية**: تدافع عن مبادئك حتى لو وقفت وحدك\n• **القيادة بالقدوة**: لا تطلب من الآخرين ما لا تفعله أنت نفسك\n• **العدالة الفطرية**: تميز بين الصواب والخطأ بوضوح مذهل\n• **الحماية الفطرية**: تدافع عن الضعفاء والمظلومين بغريزة طبيعية",
+              challenges: "• **الصرامة الزائدة**: قد تكون قاسياً جداً مع نفسك والآخرين في اتباع المبادئ\n• **صعوبة تقبل المنطقة الرمادية**: ترى العالم أبيض أو أسود، مما يجعلك تحبط من تعقيدات الحياة\n• **الكمالية الأخلاقية**: قد تحكم على الآخرين بقسوة عندما لا يعيشون حسب معاييرك\n• **الإرهاق الأخلاقي**: حمل هموم العدالة قد يستنزف طاقتك النفسية",
+              growthPath: "**مسار التطور الشخصي:**\n1. تعلم 'الرحمة الأخلاقية': المبادئ مهمة، لكن الرحمة أهم أحياناً\n2. تقبل 'المنطقة الرمادية': الحياة ليست أبيض وأسود دائماً\n3. مارس 'التسامح الانتقائي': ليس كل خطأ يستحق العقاب\n4. ابنِ 'أنظمة الدعم': حتى المحاربون يحتاجون لمن يساعدهم أحياناً",
+              relationships: "**في العلاقات:**\n• تحتاج شريكاً يشاركك مبادئك لكنه يذكرك بالرحمة أحياناً\n• قد تكون 'الحامي' في العلاقات، احذر من الحماية المفرطة التي تخنق الآخرين\n• أفضل التوافق: مع كائنات حكيمة (أبو الهول، السيمرغ) توازن شجاعتك بحكمتهم\n• تجنب: الأشخاص الانتهازيين الذين لا مبادئ لهم",
+              career: "**المسار المهني المثالي:**\n• القانون والقضاء (لأنك تؤمن بالعدالة)\n• العمل الإنساني وحقوق الإنسان\n• القيادة في المنظمات التي تحتاج لإصلاحات أخلاقية\n• التعليم والتوجيه (لأنك قدوة للآخرين)\n• تجنب: الوظائف التي تتطلب compromises أخلاقية أو التلاعب بالآخرين",
+              insight: "شجاعتك الحقيقية ليست في القتال فحسب، بل في معرفة متى تقاتل ومتى تسامح. أنت لست محارباً فقط، أنت حارس للقيم في عالم يحتاج للحراس."
+            }
+          }
+        ]
+      }
+    ]
+  },
+  en: {
+    title: "QuizMagic | World of Mythical Quizzes",
+    heroTitle: "Discover Your True Mythical Essence",
+    heroSubtitle: "A journey into your subconscious to reveal the ancient powers within",
+    footerDesc: "The most accurate psychological quiz platform in the world.",
+    quizzes: [
+      {
+        id: "mythical-creature",
+        title: "Mythical Creature Quiz",
+        badge: "Most Accurate",
+        image: "assets/images/dragon.jpg",
+        description: "Advanced psychological analysis mapping your traits to ancient legends.",
+        questions: [
+          { id: 1, text: "I feel more comfortable being alone with my thoughts.", trait: "mystery", axis: "mystery", type: "likert" },
+          { id: 2, text: "I always tend to take the leadership role in groups.", trait: "leadership", axis: "willpower", type: "likert" },
+          { id: 3, text: "I care about helping others even at the expense of my comfort.", trait: "altruism", axis: "empathy", type: "likert" },
+          {
+            id: 4,
+            text: "Which of these portals attracts you most to enter?",
+            type: "visual",
+            options: [
+              { label: "Portal of Light", image: "assets/images/quiz/q4_opt1.jpg", trait: "purity", axis: "empathy", value: 5 },
+              { label: "Portal of Mystery", image: "assets/images/quiz/q4_opt2.jpg", trait: "mystery", axis: "mystery", value: 5 },
+              { label: "Portal of Power", image: "assets/images/quiz/q4_opt3.jpg", trait: "power", axis: "willpower", value: 5 },
+              { label: "Portal of Nature", image: "assets/images/quiz/q4_opt4.jpg", trait: "nature", axis: "energy", value: 5 }
+            ]
+          },
+          { id: 5, text: "I prefer planning everything in advance rather than spontaneity.", trait: "strategy", axis: "strategy", type: "likert" },
+          { id: 6, text: "I have a great ability to adapt to sudden changes.", trait: "adaptation", axis: "energy", type: "likert" },
+          { id: 7, text: "I always look for the deeper meaning behind things.", trait: "knowledge", axis: "intelligence", type: "likert" },
+          {
+            id: 8,
+            text: "What element do you feel represents your inner energy?",
+            type: "visual",
+            options: [
+              { label: "Fire", image: "assets/images/quiz/q8_opt1.jpg", trait: "intensity", axis: "energy", value: 5 },
+              { label: "Water", image: "assets/images/quiz/q8_opt2.jpg", trait: "composure", axis: "strategy", value: 5 },
+              { label: "Earth", image: "assets/images/quiz/q8_opt3.jpg", trait: "stability", axis: "willpower", value: 5 },
+              { label: "Wind", image: "assets/images/quiz/q8_opt4.jpg", trait: "exploration", axis: "intelligence", value: 5 }
+            ]
+          },
+          { id: 9, text: "I find it difficult to forgive people who have wronged me.", trait: "persistence", axis: "willpower", type: "likert" },
+          { id: 10, text: "I trust my intuition more than logic in making decisions.", trait: "intuition", axis: "mystery", type: "likert" },
+          { id: 11, text: "I love being surrounded by beauty and art in my life.", trait: "elegance", axis: "empathy", type: "likert" },
+          {
+            id: 12,
+            text: "Which of these scenes gives you a greater sense of peace?",
+            type: "visual",
+            options: [
+              { label: "Mountain Peak", image: "assets/images/quiz/q12_opt1.jpg", trait: "ambition", axis: "willpower", value: 5 },
+              { label: "Old Library", image: "assets/images/quiz/q12_opt2.jpg", trait: "wisdom", axis: "intelligence", value: 5 },
+              { label: "Secret Garden", image: "assets/images/quiz/q12_opt3.jpg", trait: "purity", axis: "empathy", value: 5 },
+              { label: "Deserted Beach", image: "assets/images/quiz/q12_opt4.jpg", trait: "mystery", axis: "mystery", value: 5 }
+            ]
+          },
+          { id: 13, text: "I enjoy discussing philosophical and complex ideas.", trait: "analysis", axis: "intelligence", type: "likert" },
+          { id: 14, text: "I am a very patient person when dealing with long-term problems.", trait: "persistence", axis: "strategy", type: "likert" },
+          { id: 15, text: "I care a lot about my reputation and how others view me.", trait: "potential", axis: "strategy", type: "likert" },
+          {
+            id: 16,
+            text: "Which magical symbol would you choose as your lucky charm?",
+            type: "visual",
+            options: [
+              { label: "The Eye", image: "assets/images/quiz/q16_opt1.jpg", trait: "knowledge", axis: "intelligence", value: 5 },
+              { label: "The Dagger", image: "assets/images/quiz/q16_opt2.jpg", trait: "protection", axis: "willpower", value: 5 },
+              { label: "The Cup", image: "assets/images/quiz/q16_opt3.jpg", trait: "altruism", axis: "empathy", value: 5 },
+              { label: "The Key", image: "assets/images/quiz/q16_opt4.jpg", trait: "curiosity", axis: "mystery", value: 5 }
+            ]
+          },
+          { id: 17, text: "I prefer working in a team rather than working alone.", trait: "social", axis: "empathy", type: "likert" },
+          { id: 18, text: "I am always honest with myself even if the dream is painful.", trait: "honesty", axis: "willpower", type: "likert" },
+          { id: 19, text: "I have a lot of energy that pushes me to try new things always.", trait: "energy", axis: "energy", type: "likert" },
+          {
+            id: 20,
+            text: "Which animal do you feel a spiritual connection with?",
+            type: "visual",
+            options: [
+              { label: "Wolf", image: "assets/images/quiz/q20_opt1.jpg", trait: "social", axis: "empathy", value: 5 },
+              { label: "Snake", image: "assets/images/quiz/q20_opt2.jpg", trait: "strategy", axis: "strategy", value: 5 },
+              { label: "Eagle", image: "assets/images/quiz/q20_opt3.jpg", trait: "exploration", axis: "energy", value: 5 },
+              { label: "Butterfly", image: "assets/images/quiz/q20_opt4.jpg", trait: "adaptation", axis: "energy", value: 5 }
+            ]
+          },
+          { id: 21, text: "I am a very emotional person and human stories affect me.", trait: "nature", axis: "empathy", type: "likert" },
+          { id: 22, text: "I love challenge and competition to reach the top.", trait: "leadership", axis: "willpower", type: "likert" },
+          { id: 23, text: "I tend to maintain old traditions and values.", trait: "tradition", axis: "strategy", type: "likert" },
+          {
+            id: 24,
+            text: "Which gemstone do you feel has an energy that attracts you?",
+            type: "visual",
+            options: [
+              { label: "Ruby", image: "assets/images/quiz/q24_opt1.jpg", trait: "intensity", axis: "energy", value: 5 },
+              { label: "Blue Diamond", image: "assets/images/quiz/q24_opt2.jpg", trait: "logic", axis: "intelligence", value: 5 },
+              { label: "Emerald", image: "assets/images/quiz/q24_opt3.jpg", trait: "nature", axis: "empathy", value: 5 },
+              { label: "Amethyst", image: "assets/images/quiz/q24_opt4.jpg", trait: "intuition", axis: "mystery", value: 5 }
+            ]
+          },
+          { id: 25, text: "I can control my temper even in the most difficult situations.", trait: "composure", axis: "strategy", type: "likert" },
+          { id: 26, text: "I care about small details that others might not notice.", trait: "analysis", axis: "intelligence", type: "likert" },
+          { id: 27, text: "I am an optimistic person and always see the bright side.", trait: "potential", axis: "energy", type: "likert" },
+          {
+            id: 28,
+            text: "Which sky do you prefer to contemplate at night?",
+            type: "visual",
+            options: [
+              { label: "Aurora", image: "assets/images/quiz/q28_opt1.jpg", trait: "potential", axis: "energy", value: 5 },
+              { label: "Total Eclipse", image: "assets/images/quiz/q28_opt2.jpg", trait: "mystery", axis: "mystery", value: 5 },
+              { label: "Nebula", image: "assets/images/quiz/q28_opt3.jpg", trait: "exploration", axis: "intelligence", value: 5 },
+              { label: "Silent Lightning", image: "assets/images/quiz/q28_opt4.jpg", trait: "energy", axis: "energy", value: 5 }
+            ]
+          },
+          { id: 29, text: "I prefer staying in one place over frequent traveling.", trait: "stability", axis: "strategy", type: "likert" },
+          { id: 30, text: "I feel that I have a great mission to fulfill in life.", trait: "ambition", axis: "willpower", type: "likert" },
+          { id: 31, text: "I love mystery and don't reveal all my cards to others.", trait: "mystery", axis: "mystery", type: "likert" },
+          {
+            id: 32,
+            text: "Which mythical transport would you choose for your next journey?",
+            type: "visual",
+            options: [
+              { label: "Flying Ship", image: "assets/images/quiz/q32_opt1.jpg", trait: "exploration", axis: "energy", value: 5 },
+              { label: "Chariot of Light", image: "assets/images/quiz/q32_opt2.jpg", trait: "purity", axis: "empathy", value: 5 },
+              { label: "Flying Carpet", image: "assets/images/quiz/q32_opt3.jpg", trait: "wisdom", axis: "intelligence", value: 5 },
+              { label: "Small Dragon", image: "assets/images/quiz/q32_opt4.jpg", trait: "protection", axis: "willpower", value: 5 }
+            ]
+          },
+          { id: 33, text: "I am a very practical person and don't waste time on dreams.", trait: "logic", axis: "strategy", type: "likert" },
+          { id: 34, text: "I always look for perfection in everything I do.", trait: "perfection", axis: "strategy", type: "likert" },
+          { id: 35, text: "I am very loyal to my friends and family.", trait: "social", axis: "empathy", type: "likert" },
+          {
+            id: 36,
+            text: "What weapon would you choose to defend your kingdom?",
+            type: "visual",
+            options: [
+              { label: "Sword of Light", image: "assets/images/quiz/q36_opt1.jpg", trait: "honesty", axis: "willpower", value: 5 },
+              { label: "Shield of Shadow", image: "assets/images/quiz/q36_opt2.jpg", trait: "protection", axis: "strategy", value: 5 },
+              { label: "Bow of Stars", image: "assets/images/quiz/q36_opt3.jpg", trait: "strategy", axis: "intelligence", value: 5 },
+              { label: "Sage's Staff", image: "assets/images/quiz/q36_opt4.jpg", trait: "knowledge", axis: "intelligence", value: 5 }
+            ]
+          },
+          { id: 37, text: "I like being unique and different from others.", trait: "potential", axis: "energy", type: "likert" },
+          { id: 38, text: "I am a very flexible person in my thinking.", trait: "adaptation", axis: "energy", type: "likert" },
+          { id: 39, text: "I believe true power comes from within.", trait: "power", axis: "willpower", type: "likert" },
+          {
+            id: 40,
+            text: "What ending would you prefer to conclude your life story?",
+            type: "visual",
+            options: [
+              { label: "Golden Throne", image: "assets/images/quiz/q40_opt1.jpg", trait: "leadership", axis: "willpower", value: 5 },
+              { label: "Quiet Cottage", image: "assets/images/quiz/q40_opt2.jpg", trait: "nature", axis: "empathy", value: 5 },
+              { label: "Eternal Journey", image: "assets/images/quiz/q40_opt3.jpg", trait: "curiosity", axis: "energy", value: 5 },
+              { label: "Cosmic Union", image: "assets/images/quiz/q40_opt4.jpg", trait: "mystery", axis: "mystery", value: 5 }
+            ]
+          }
+        ],
+        results: [
+          {
+            id: "dragon",
+            name: "The Great Dragon",
+            rarity: "Legendary",
+            image: "assets/images/dragon.jpg",
+            description: "You are the embodiment of power and leadership. You possess an indomitable fiery spirit and ambition that exceeds the clouds.",
+            narrative: "In the depths of ancient mountains, where peaks touch the sky and hide treasures of ages, your soul awoke from its eternal slumber. You are the unconquerable dragon, the king who carries in his eyes the wisdom of a thousand years and in his heart an unquenchable fire. Every step you take shakes the earth, and every glance carries the authority of kings and the courage of warriors who never retreat.\n\nYou are not merely a powerful being, but the embodiment of power governed by wisdom. Your vision extends beyond the horizon, and your ambition knows no bounds. When you speak, mountains listen, and when you decide, nations move. People are drawn to you like moths to the flame, seeing in you the natural leader born once in a millennium.\n\nBut remember, mighty dragon: true power lies not in dominating others, but in mastering oneself. The fire that burns everything around leaves only ashes, but the fire that warms and illuminates builds kingdoms. Use your flame wisely, for the wise dragon is greater than the powerful dragon.",
+            advice: "Remember that true power lies in restraining your fire and using it for warmth instead of burning.",
+            badge: "Mythical Thinker",
+            article: "The dragon is considered one of the most widespread and complex mythical creatures in human history, appearing in geographically distant cultures in a striking manner. In Chinese culture, it is called 'Long' (龍) and is considered a symbol of imperial power, good fortune, and divine authority. Chinese emperors were called 'sons of the dragon,' and the five-clawed dragon was exclusive to the emperor.\n\nIn European mythology, the image differed completely, as the dragon became an evil creature that the brave knight must slay, as in the legend of Saint George and the Dragon. This dragon represents the chaos and evil that must be tamed. In Persian culture, it appears as 'Azhdaha,' a massive creature representing the primal forces of nature.\n\nIn Japan, dragons are wise water creatures associated with rain and rivers, and in Aztec civilization, 'Quetzalcoatl' the feathered serpent was a creator god.\n\n**Psychological Analysis:**\nDragon personality owners possess what is called in psychology 'Transformational Charisma,' the ability to inspire others and lead them toward a shared vision. Studies show that these people possess:\n\n• **Natural Leadership**: They are born with an innate ability to take initiative\n• **Strategic Vision**: They see the big picture while others focus on details\n• **Moral Courage**: They defend their convictions even against the current\n• **Commanding Presence**: They enter a room and everyone feels their presence\n\nBut this power has a price: they may tend toward authoritarianism and excessive control, find it difficult to accept criticism, or fall into the trap of the 'Emperor Syndrome' where they believe they are always right.",
+            secretReport: {
+              strengths: "• **Innate Leadership Charisma**: Your ability to inspire others exceeds the average by 4 times; people are naturally drawn to you\n• **Comprehensive Strategic Vision**: You see the big picture and long-term results while others focus on the present\n• **Exceptional Courage**: You do not hesitate to face challenges that others fear\n• **Commanding Presence**: Your entrance into any place changes its energy; your presence makes others feel safe and strong\n• **Innate Protection**: You fiercely defend those you love and believe in",
+              challenges: "• **Authoritarian Tendency**: Your tendency to control may make you ignore others' important opinions\n• **Unintentional Arrogance**: Your high confidence may be interpreted as arrogance by others\n• **Quick Anger**: Your inner fire may ignite quickly when things do not go as you want\n• **Difficulty Delegating**: You believe you are always the best, which drains your energy\n• **High Expectations**: You set high standards for yourself and others, causing constant frustration",
+              growthPath: "**Personal Development Path:**\n1. Practice 'Servant Leadership': True power is in empowering others, not controlling them\n2. Learn 'The Art of Listening': Sometimes the best decision comes from the smallest team member\n3. Develop 'Strategic Humility': Admitting mistakes increases others' respect for you\n4. Build an 'Advisory Board': Surround yourself with people who dare to challenge your ideas\n5. Practice 'Smart Delegation': Trust others and give them space to grow",
+              relationships: "**In Relationships:**\n• You need a strong partner who is not afraid of you, but complements you with their wisdom\n• You may be 'The Controlling Protector' in relationships; beware of stifling your partner with excessive protection\n• Best Compatibility: With Sphinx (wisdom complements power), Simurgh (comprehensive vision)\n• Good Compatibility: With Valkyrie (shared honor), Centaur (balance)\n• Avoid: Relationships with weak people who always surrender, or Kitsune who may manipulate you",
+              career: "**Ideal Career Path:**\n• CEO and major entrepreneurship\n• Strategic military and security leadership\n• High-level politics and diplomacy\n• Major crisis and disaster management\n• Lawyering in major cases\n• Film directing and large-scale production\n• Avoid: Mid-level administrative positions, working under authority you do not respect, tedious detailed tasks",
+              insight: "Your true power is not in the fire that burns, but in the wisdom that knows when to ignite it and when to hide it. The greatest dragon is not the one everyone fears, but the one everyone respects."
+            }
+          },
+          {
+            id: "phoenix",
+            name: "The Phoenix",
+            rarity: "Very Rare",
+            image: "assets/images/phoenix.jpg",
+            description: "You are a symbol of renewal and hope. You have an amazing ability to rise from the ashes stronger than before.",
+            narrative: "In the moment of final burning, when the world thought you were finished, the spirit of the phoenix rose from your ashes. You are not just a survivor of storms, you are the storm itself that renews. Every loss taught you a lesson, every failure built wisdom within you, and every tear watered the soil of your soul to bloom anew.\n\nYou do not know the meaning of surrender, for the word does not exist in your dictionary. When others fall, you rise stronger. When a door closes, you open a window. When the world darkens, you become the light.\n\nBut remember: even the phoenix needs rest between cycles of renewal. Do not burn yourself constantly to prove your strength, for a calm sustained light is stronger than a violent fleeting flame.",
+            advice: "Remember that you don't always have to burn to prove your existence; a calm light lasts longer.",
+            badge: "Renewed Spirit",
+            article: "The Phoenix is one of the most widespread mythical creatures in ancient world cultures. It first appeared in ancient Egyptian mythology under the name 'Benu', where it was associated with sun worship and resurrection after death. The legend later transferred to Greek civilization, where Herodotus described it as an amazing bird that lives in the Arabian desert for 500 years before burning itself and returning to life from its ashes.\n\nIn Chinese culture, the phoenix is known as 'Fenghuang', a symbol of the empress and noble virtues. In Japanese culture, it is called 'Hō-ō' and appears only in times of peace and prosperity.\n\n**Psychological Analysis:**\nPhoenix personality owners possess what is called in psychology 'Psychological Resilience', the ability to recover from traumas and grow through them. Modern studies in positive psychology show that these people possess:\n\n• **Post-Traumatic Growth**: They do not just return to zero, they evolve\n• **Transforming pain into fuel**: They use difficult experiences as motivation for creativity\n• **Realistic optimism**: They see the bright side without denying reality\n• **Ability to renew**: They know when to end a phase and start another\n\nBut this power has a price: they may tend toward self-burnout in a constant attempt to renew, or fall into the trap of 'adrenaline addiction' by constantly seeking challenges.",
+            secretReport: {
+              strengths: "• **Exceptional psychological resilience**: Your ability to recover from traumas exceeds the average by 3 times\n• **Creative transformation of pain**: You transform difficult experiences into art, writing, or inspiring projects\n• **Leadership in crises**: When others lose hope, you become their source of inspiration\n• **Realistic optimism**: You see possibilities where others see the impossible",
+              challenges: "• **Burnout syndrome**: Your tendency for constant renewal may lead to physical and psychological exhaustion\n• **Difficulty with stability**: You may find it hard to commit to long-term relationships or projects\n• **Expecting renewal from others**: You may become frustrated when others don't change as quickly as you do\n• **Drama addiction**: Unconsciously, you may attract yourself to difficult situations to feel 'alive'",
+              growthPath: "**Personal development path:**\n1. Learn 'effective rest': renewal does not mean constant movement\n2. Build support systems: do not try to rise from ashes alone always\n3. Practice 'dynamic stability': you can change and grow without giving up everything\n4. Develop 'strategic patience': not everything needs immediate renewal",
+              relationships: "**In relationships:**\n• You need a partner who understands your natural cycles of renewal\n• You may be 'the rescuer' in relationships, beware of rescuing those who don't want rescue\n• Best compatibility: with stable creatures (Golem, Centaur) that balance your fluctuations\n• Avoid: toxic relationships that drain your renewable energy",
+              career: "**Ideal career path:**\n• Entrepreneurship (especially in renewal and transformation fields)\n• Psychotherapy and counseling (because you understand pain and recovery)\n• Creative arts (writing, music, visual arts)\n• Leadership in organizations going through crises\n• Avoid: routine repetitive jobs that kill your spirit of renewal",
+              insight: "Your true power is not just in the ability to rise from ashes, but in the wisdom you gather from each life cycle. You are not a bird that burns, you are wisdom embodied in each new birth."
+            }
+          },
+          {
+            id: "unicorn",
+            name: "The Pure Unicorn",
+            rarity: "Rare",
+            image: "assets/images/unicorn.jpg",
+            description: "You are the embodiment of purity and kindness. You possess a pure soul that always aims to spread goodness and beauty.",
+            narrative: "In an enchanted forest where no human foot has stepped, where sunlight dances between ancient branches, your pure soul dwells like a dewdrop on a rose petal. You are the unicorn that appears only to pure hearts, the creature that walks the earth without burdening it, and touches hearts without wounding them.\n\nThe light of your heart illuminates the dark paths of others, and the touch of your hands heals wounds no one sees. In a world full of noise and falsehood, you are the quiet truth everyone seeks. Your innocence is not weakness, but the strongest shield in the universe, for it knows no deception and holds no malice.\n\nPeople come to you when their hearts break, because they know you will not judge them, but will embrace them as a mother embraces a crying child. But remember, pure one: the world is not all good like you. There are those who will try to exploit your pure heart, and those who do not deserve your precious tears. Learn to protect your inner light without hiding it, for wisdom lies in knowing who deserves to see your true beauty.",
+            advice: "The purity of your heart is the strongest shield you own, don't let the world change your essence.",
+            badge: "Guardian of Purity",
+            article: "The unicorn is one of the most surprising mythical creatures in human history. It first appeared in the Indus Valley civilization 4,000 years ago, carved on stone seals. But its true fame came from medieval Europe, where it became a symbol of Christ, purity, and chastity.\n\nIn Christian tradition, it was said that the unicorn could only be captured by a pure virgin, making it a symbol of the Incarnation. This legend appeared in medieval 'Bestiaries' and in the famous 'The Hunt of the Unicorn' tapestry series currently at the Cloisters museum in New York.\n\nIn Chinese culture, there is a similar creature called 'Qilin' (麒麟), a symbol of prosperity and wisdom, said to have appeared at the birth of Confucius. In Japan, it is known as 'Kirin' and appears in times of justice and peace.\n\nIn ancient India, the 'Mahabharata' mentions 'Rishyasringa,' a sage who grew up alone in the forest, whose horn grants spiritual power.\n\n**Psychological Analysis:**\nUnicorn personality owners possess what is called in psychology 'Highly Sensitive Person (HSP),' a trait found in 15-20% of humans. Studies show that these people possess:\n\n• **Deep Empathy**: They feel others' emotions as their own\n• **Intuitive Perception**: They notice subtle details that others miss\n• **Moral Idealism**: They believe in higher values and live according to them\n• **Innate Creativity**: They see beauty in the simplest things\n\nBut this sensitivity has a price: they may suffer from emotional exhaustion, find it difficult to set boundaries, and fall victim to exploitation by selfish people.",
+            secretReport: {
+              strengths: "• **Innate Deep Empathy**: Your ability to understand others' feelings exceeds the average by 5 times; you feel what they feel\n• **Absolute Honesty**: You do not know hypocrisy; what is in your heart is on your tongue\n• **Healing Ability**: Your presence alone heals others' psychological wounds\n• **Vision of Beauty**: You see beauty and possibilities where others see the ordinary\n• **Spiritual Purity**: Your heart is clean of malice and hatred",
+              challenges: "• **Excessive Sensitivity**: Harsh words hurt you more than they should and stay in your mind for a long time\n• **Difficulty Saying 'No'**: You agree to things you don't want for fear of hurting others' feelings\n• **Emotional Naivety**: You trust everyone easily, exposing yourself to exploitation\n• **Self-Sacrifice**: You put others' needs above your own until you collapse\n• **Frustrating Idealism**: When someone disappoints you, you feel deep disappointment",
+              growthPath: "**Personal Development Path:**\n1. Learn 'The Art of Setting Boundaries': Protecting yourself is not selfish, but necessary\n2. Practice 'Emotional Intelligence': Learn to distinguish between those who deserve your heart and those who don't\n3. Build a 'Shield of Wisdom': Maintain your purity without being naive\n4. Develop 'Healthy Selfishness': Take care of yourself first; you cannot give what you do not have\n5. Learn 'Selective Forgiveness': Not every mistake deserves your forgiveness",
+              relationships: "**In Relationships:**\n• You need a partner who protects your purity without exploiting it\n• You may be 'The Emotional Rescuer' in relationships; beware of unbalanced relationships\n• Best Compatibility: With Faun (joy protects your purity), Pegasus (shared inspiration)\n• Good Compatibility: With Golem (stability protects you), Centaur (balance)\n• Avoid: Kitsune (may manipulate you), Siren (may drain your emotion), Dragon (may dominate you)",
+              career: "**Ideal Career Path:**\n• Psychotherapy and family counseling\n• Humanitarian and relief work\n• Therapeutic arts (music, drawing, writing)\n• Veterinary medicine and animal care\n• Teaching children (especially those with special needs)\n• Fashion and luxury interior design\n• Avoid: Highly competitive jobs, aggressive sales, toxic environments",
+              insight: "Your true power is not in the purity that protects you, but in the courage that allows you to remain pure in a harsh world. You are not weak because you are kind, you are stronger than everyone because you chose kindness despite everything."
+            }
+          },
+          {
+            id: "sphinx",
+            name: "The Mysterious Sphinx",
+            rarity: "Legendary",
+            image: "assets/images/sphinx.jpg",
+            description: "You are the guardian of secrets and wisdom. You possess an analytical mind that sees behind the curtain and solves the most complex puzzles.",
+            narrative: "Between the sands of time and the secrets of civilizations, your soul stands firm like the Sphinx statue. You are the riddle that cannot be solved, the eye that sees what others do not. Your silence is wisdom and your words are truth.\n\nIn a world where everyone screams to attract attention, you prefer silent observation. You weigh every word before speaking, and analyze every situation before reacting. This is not isolation, but a life strategy.\n\nBut remember: wisdom that is not shared becomes a burden. Sometimes, breaking silence and opening your heart to one trustworthy person is stronger than solving a thousand riddles.",
+            advice: "Sharing part of your secrets may open doors of friendship you didn't expect.",
+            badge: "Master of Riddles",
+            article: "The Sphinx is one of history's most enigmatic mythical creatures, appearing in Egyptian and Greek mythologies. In ancient Egypt, it was seen as a guardian of tombs and temples, with a human head and a lion's body, symbolizing the union of wisdom and strength. In Greek mythology, it posed riddles to travelers; those who failed to solve them met their doom.\n\nThe most famous riddle of the Greek Sphinx was: 'What walks on four legs in the morning, two at noon, and three in the evening?' The answer: man (as a child, youth, then elder).\n\n**Psychological Analysis:**\nSphinx personality owners possess what is called in psychology 'Analytical Intelligence', the ability to break down complex problems into small parts and solve them. Studies show that these people possess:\n\n• **Critical thinking**: They do not accept information without deep analysis\n• **Strategic patience**: They wait for the right moment to reveal truth\n• **Ability to read people**: They notice subtle details in body language and speech\n• **Silent wisdom**: They speak only when they have something valuable to say\n\nBut this power has a price: they may tend toward excessive isolation, or find it difficult to trust others, or fall into the trap of 'Analysis Paralysis' where they think too much and do not act.",
+            secretReport: {
+              strengths: "• **Sharp analytical intelligence**: Your ability to break down complex problems exceeds the average by 4 times\n• **Deep reading of people**: You notice details that 90% of people miss\n• **Strategic patience**: You wait for the right moment instead of acting impulsively\n• **Silent wisdom**: Your words are few but valuable and influential",
+              challenges: "• **Excessive isolation**: Your tendency for silence and mystery may make others find it difficult to get close to you\n• **Over-analysis**: You may think too much and not act, missing important opportunities\n• **Difficulty trusting**: You may find it hard to open your heart to others even to those who deserve it\n• **High expectations**: You may become frustrated when others don't understand your deep thinking",
+              growthPath: "**Personal development path:**\n1. Practice 'calculated openness': share your thoughts with one trusted person weekly\n2. Learn 'quick action': not every decision needs deep analysis\n3. Build 'bridges of trust': start with small shares and increase gradually\n4. Accept 'imperfection': not everything needs complete understanding before acting",
+              relationships: "**In relationships:**\n• You need a partner who respects your silence and understands your need for solitude sometimes\n• You may be 'the advisor' in relationships, beware of giving advice without being asked\n• Best compatibility: with social creatures (Faun, Kitsune) that bring you out of isolation\n• Avoid: superficial people who don't value your intellectual depth",
+              career: "**Ideal career path:**\n• Scientific and academic research (because you love deep analysis)\n• Strategic consulting (because you see what others don't)\n• Writing and authoring (because you express complex thoughts better in writing)\n• Investigation and criminal analysis\n• Avoid: jobs requiring constant superficial social interaction",
+              insight: "Your true wisdom is not just in solving riddles, but in knowing when to share the answer and when to keep it secret. You are not a closed riddle, you are a book waiting for the right reader."
+            }
+          },
+          {
+            id: "kraken",
+            name: "The Great Kraken",
+            rarity: "Very Rare",
+            image: "assets/images/kraken.jpg",
+            description: "You are the power of the mysterious depths. You possess wide influence and the ability to control things from behind the scenes.",
+            narrative: "In the dark oceans where light does not reach, where pressure crushes everything weak, your soul moves with the majesty and calm of the Great Kraken. You are the unseen power that everyone feels, the planner who steers from behind the curtain while others think they are captaining the ship.\n\nYour depths are boundless, and your secrets outnumber the stars in the sky. Each of your tentacles represents a different strategy, and every move you make is planned with care beyond others' comprehension. You do not need to shout to be heard, for your silence is stronger than a thousand screams.\n\nIn a superficial world where everyone seeks to appear, you know that true power lies in the hidden. Those who see you think they understand you, but they have only seen what you wanted them to see. You are the unsolvable riddle, the player who moves the pieces unseen.\n\nBut remember, mighty one: the depths are beautiful but cold and dark. Do not forget to rise to the surface sometimes to feel the warmth of the sun and see the faces of those you love clearly. True power is not in hidden control, but in the ability to appear and trust others.",
+            advice: "The depths are beautiful, but don't forget to come to the surface sometimes to enjoy the sunlight.",
+            badge: "Master of Depths",
+            article: "The Kraken is a legendary sea monster from Scandinavian folklore, first mentioned in the Norwegian manuscript 'Konungs skuggsjá' from 1250 AD, which describes a massive sea creature the size of an island. But the most famous description of the Kraken came from the Danish bishop Erik Pontoppidan in his book 'Natural History of Norway' in 1752.\n\nThe Kraken legend is believed to be inspired by real sightings of the giant squid (Architeuthis dux), which can reach 13 meters in length. In Scandinavian maritime tradition, sailors feared the Kraken because it could drag entire ships to the depths with its massive tentacles.\n\nIn modern popular culture, the Kraken appeared in the film 'Clash of the Titans' and became a symbol of unstoppable hidden power. The phrase 'Release the Kraken!' became globally famous.\n\n**Psychological Analysis:**\nKraken personality owners possess what is called in psychology 'Covert Strategic Intelligence,' people who work in the shadows and achieve massive results. Studies show:\n\n• **Long-term planning**: They think 10 steps ahead\n• **Emotional control**: They do not show their true feelings easily\n• **Strategic reading**: They understand power dynamics in any group\n• **Icy patience**: They wait for the right moment for any move\n\nBut this power has a price: they may suffer from emotional isolation, find it difficult to trust others, and fall into the trap of 'hidden control' that destroys relationships.",
+            secretReport: {
+              strengths: "• **Superior Strategic Planning**: Your ability to plan long-term exceeds the average by 5 times\n• **Hidden Power**: You influence things without anyone noticing, and this is the most dangerous type of power\n• **Absolute Emotional Control**: No one can read your true feelings\n• **Major Crisis Management**: You shine when others lose control\n• **Strategic Memory**: You never forget who stood with you or against you",
+              challenges: "• **Pathological Mystery**: You may hide too much even from those closest to you\n• **Hidden Control Tendency**: You try to guide others without them knowing\n• **Emotional Isolation**: Your depths are dark and cold, and you may forget how to feel warmth\n• **Difficulty Trusting**: You doubt everyone's intentions, even the loyal ones\n• **Cold Revenge**: When betrayed, you never forget or forgive",
+              growthPath: "**Personal Development Path:**\n1. Learn 'Selective Openness': Share part of your secrets with someone you trust\n2. Practice 'Conscious Control': Use your power to empower, not to control\n3. Build 'Islands of Warmth': Dedicate daily time for genuine emotional connection\n4. Develop 'The Art of Forgiveness': Holding grudges drains your energy\n5. Learn 'Asking for Help': Even the Kraken needs someone to lean on sometimes",
+              relationships: "**In Relationships:**\n• You need a smart partner who can understand your silence and read your hidden signals\n• You may be 'The Hidden Player' in relationships; beware of manipulating your partner\n• Best Compatibility: With Sphinx (mutual mystery), Dragon (power complements power)\n• Good Compatibility: With Hydra (strategic plurality), Simurgh (comprehensive vision)\n• Avoid: Superficial people, Faun (their joy disturbs you), Golem (their transparency confuses you)",
+              career: "**Ideal Career Path:**\n• Intelligence and national security\n• Political strategies and diplomacy\n• Managing major corporations from behind the scenes\n• Financial analysis and strategic investment\n• Programming and complex systems engineering\n• Scientific research in sensitive fields\n• Avoid: Jobs requiring complete transparency, public-facing work",
+              insight: "Your true power is not in your ability to hide in the depths, but in your courage to rise to the surface sometimes. The greatest Kraken is not the one who controls everyone, but the one who chooses when to reveal their greatness."
+            }
+          },
+          {
+            id: "owl_of_athena",
+            name: "The Owl of Athena",
+            rarity: "Rare",
+            image: "assets/images/owl_of_athena.jpg",
+            description: "You are a symbol of wisdom and knowledge. You see in the dark what others fail to see in broad daylight.",
+            narrative: "In the deep stillness of night, when the world sleeps and voices quiet, your soul flies under the starlight seeking absolute truth. You are the Owl of Athena, your eyes pierce the darkness to see what is hidden from others, and your mind analyzes everything with the precision of a skilled surgeon.\n\nIn the infinite library of the universe, you are the eternal insatiable reader. Every piece of information you absorb, every idea you analyze, every riddle you solve adds another layer of wisdom to your soul. People come to you when they are confused, because they know you have the answer, or at least the right way to reach it.\n\nYour silence is not emptiness, but deep contemplation. Your words are not chatter, but the essence of thought. You are the sage who knows that truth is not always beautiful, but it is always necessary.\n\nBut remember, wise one: wisdom without mercy is as harsh as a sword. Sometimes, people need a beautiful lie more than a painful truth. Learn when to speak with logic and when to speak with the heart. For true wisdom is that which combines the intelligence of the mind with the mercy of the heart.",
+            advice: "True wisdom is that which combines mind intelligence and heart mercy.",
+            badge: "Eye of Truth",
+            article: "The Owl of Athena is the most famous symbol of wisdom in Western civilization. In Greek mythology, the Little Owl (Athene noctua) accompanied Athena, goddess of wisdom, strategic warfare, and arts. It was called 'Glaukopis' meaning 'with gleaming eyes.'\n\nThe owl appeared on ancient Athenian coins (the drachma) since the 5th century BC, and was known as 'Γλαύξ' (Glaux). The phrase 'γλαῦκ' εἰς Ἀθήνας' (owl to Athens) became a proverb for something unnecessary, because Athens was full of owls.\n\nIn Hegel's philosophy, the Owl of Athena was used as a symbol of philosophy that 'flies at dusk,' meaning understanding events after they occur. This idea became one of the most important concepts in the philosophy of history.\n\nIn other cultures, the owl was considered a symbol of wisdom by the Romans (Owl of Minerva), but in some cultures it was an omen of misfortune (among Romans and Middle Easterners), while in Japan it is called 'Fukuro' meaning 'good luck.'\n\n**Psychological Analysis:**\nOwl of Athena personality owners possess what is called in psychology 'Critical Analytical Intelligence,' characterized by:\n\n• **Strict Logical Thinking**: They analyze everything precisely\n• **Cognitive Curiosity**: They never stop learning\n• **Evidence-Based Judgment**: They do not accept claims without proof\n• **Vision in Darkness**: They understand complex matters that confuse others\n\nBut this power has a price: they may suffer from 'excessive rationality' that makes them neglect the emotional side, and find it difficult to deal with situations requiring intuition rather than logic.",
+            secretReport: {
+              strengths: "• **Exceptional Analytical Intelligence**: Your ability for logical analysis exceeds the average by 5 times\n• **Vision in Darkness**: You see truths that others hide or hide from themselves\n• **Encyclopedic Memory**: You store vast amounts of information and recall it when needed\n• **Objective Judgment**: You are not influenced by emotions when making important decisions\n• **Rapid Learning Ability**: You understand complex concepts in record time",
+              challenges: "• **Dry Logic**: You may neglect feelings in favor of facts, hurting others\n• **Intellectual Superiority**: You may appear condescending to those who don't think as deeply\n• **Difficulty with Intuition**: You trust only logic and ignore inner signals\n• **Intellectual Isolation**: You find it difficult to communicate with 'ordinary' people\n• **Over-Analysis**: You analyze everything to the point of losing enjoyment in life",
+              growthPath: "**Personal Development Path:**\n1. Develop 'Emotional Intelligence': Learn to understand your feelings and others'\n2. Practice 'Listening Without Judgment': Sometimes people need an ear, not a solution\n3. Build 'Emotional Bridges': Share your feelings with others, not just your thoughts\n4. Learn 'The Art of Simplification': Not everything needs deep analysis\n5. Practice 'Compassionate Wisdom': Sometimes silence is kinder than truth",
+              relationships: "**In Relationships:**\n• You need an intelligent partner who can keep up with your thinking without feeling inferior\n• You may be 'The Analyzer' in relationships; beware of analyzing your partner as if they were a puzzle to be solved\n• Best Compatibility: With Simurgh (comprehensive wisdom), Sphinx (intellectual depth)\n• Good Compatibility: With Centaur (balance), Golem (stability)\n• Avoid: Superficial people, Faun (their randomness confuses you), Kitsune (their mystery disturbs you)",
+              career: "**Ideal Career Path:**\n• Scientific and academic research\n• Philosophy and university teaching\n• Diagnostic medicine (especially radiology and rare diseases)\n• Strategic analysis and consulting\n• Programming and complex software engineering\n• Judiciary and arbitration\n• Libraries and archives\n• Avoid: Emotional jobs (nursing), sales, entertainment",
+              insight: "Your true wisdom is not just in your ability to see the truth, but in knowing when to share it and when to keep it. You are not a cold eye analyzing everything, you are a light that illuminates paths with wisdom and mercy."
+            }
+          },
+          {
+            id: "centaur",
+            name: "The Wise Centaur",
+            rarity: "Rare",
+            image: "assets/images/centaur.jpg",
+            description: "You are a symbol of balance between mind and physical strength. You possess innate wisdom and a free spirit.",
+            narrative: "Between dense forests and vast plains, your soul runs with freedom that knows no bounds like the Wise Centaur. Half of you is human carrying wisdom and reason, the other half is horse symbolizing strength and instinctive freedom. You are the rare balance that few humans achieve.\n\nIn a world that divides people into rational and emotional, urban and nomadic, you combine opposites in amazing harmony. You carry your bow that never misses the target, and your mind that never misses judgment. Your teacher is nature, and your school is life itself.\n\nYou are the philosopher who needs no lecture halls, the warrior who needs no battlefields. Your wisdom comes from watching the stars at night, and your strength comes from running with the winds during the day. You do not follow others' rules, but make your own from your experience and trials.\n\nBut remember, Centaur: your freedom is a priceless treasure, but freedom without responsibility turns to chaos. Sometimes, the constraints we choose for ourselves are stronger than those imposed on us. Learn to commit to something without losing the essence of freedom within you.",
+            advice: "Your balance is your strength, don't let one side dominate the other.",
+            badge: "Wise Warrior",
+            article: "The Centaur is a mythical creature from Greek mythology, half human and half horse. The most famous Centaur in myths is 'Chiron,' who was wise and a teacher to great heroes like Hercules, Achilles, and Jason.\n\nChiron was not like other Centaurs who were known for violence and drunkenness, but was a teacher of medicine, music, and archery. He lived in a cave on Mount Pelion, and eventually sacrificed himself to save Prometheus from Zeus's punishment.\n\nIn Roman tradition, the Centaur appeared in the works of Virgil and Ovid, and became a symbol of the conflict between wild nature and civilization. In Islamic art, the Centaur appeared in Persian and Ottoman manuscripts, especially in Shahnameh stories.\n\nIn astronomy, there is the 'Centaurus' constellation containing the closest star to Earth (Alpha Centauri), symbolizing this creature's connection to the cosmos.\n\n**Psychological Analysis:**\nCentaur personality owners possess what is called in psychology 'Personal Integration,' the ability to integrate different aspects of personality into a harmonious unity:\n\n• **Dynamic Balance**: They combine reason and emotion, strength and mercy\n• **Natural Intelligence**: They learn from experience more than books\n• **Responsible Freedom**: They love freedom but commit to their values\n• **Practical Wisdom**: They apply knowledge in daily life\n\nBut this balance has its challenges: they may find it difficult to commit to strict systems and collide with bureaucratic institutions.",
+            secretReport: {
+              strengths: "• **Unique Balance**: You combine wisdom and strength, mind and instinct in rare harmony\n• **Natural Intelligence**: You learn from experience and life more than books and theories\n• **Inner Freedom**: No one can imprison your mind or soul\n• **Precise Archery**: You know exactly what you want and reach it\n• **Practical Wisdom**: Your advice is applicable and effective",
+              challenges: "• **Difficulty Committing**: You tend to escape when things get too serious\n• **Rebellion Against Rules**: You hate strict systems even if necessary\n• **Inner Duality**: Sometimes your rational side conflicts with your instinctive side\n• **Difficulty Settling**: You tend toward psychological and physical wandering\n• **Contempt for Bureaucracy**: You may reject good opportunities because of your hatred of routine",
+              growthPath: "**Personal Development Path:**\n1. Learn 'Voluntary Commitment': Choose what you commit to freely, not by force\n2. Build 'Flexible Systems': Design your life your way but with discipline\n3. Practice 'Conscious Integration': Know your conflicting aspects and reconcile them\n4. Develop 'Strategic Patience': Sometimes the long road is the shortest\n5. Learn 'Institutional Wisdom': Not every system is an enemy of freedom",
+              relationships: "**In Relationships:**\n• You need a partner who respects your freedom and does not try to restrict you\n• You may be 'The Runner' in relationships when things get too serious\n• Best Compatibility: With Golem (stability complements your freedom), Valkyrie (shared honor)\n• Good Compatibility: With Phoenix (renewal), another Centaur (mutual understanding)\n• Avoid: Authoritarian people, Kraken (will try to control you), strict Golem",
+              career: "**Ideal Career Path:**\n• Teaching and training (especially outdoors)\n• Environmental guidance and wildlife\n• Professional sports and athletic training\n• Freelance consulting\n• Alternative medicine and natural treatments\n• Writing and investigative journalism\n• Avoid: Restrictive office jobs, government bureaucracy, high-pressure work",
+              insight: "Your true wisdom is not in your ability to run away, but in knowing when to stop and where to settle. You are not a fugitive from constraints, you are a wise chooser of what you commit to."
+            }
+          },
+          {
+            id: "cerberus",
+            name: "Cerberus the Guardian",
+            rarity: "Very Rare",
+            image: "assets/images/cerberus.jpg",
+            description: "You are the loyal protector and the impenetrable shield. You possess constant vigilance and the ability to protect what is precious.",
+            narrative: "At the gates of what is sacred, where the visible world meets the world of secrets, your soul stands as an unblinking guardian like the Great Cerberus. Three heads you have, each watching a different direction, nothing escapes them, and their eyes never close for a moment.\n\nYou are the vigilance that knows no sleep, the loyalty that never wavers. When everyone sleeps, you watch over them. When everyone trusts, you doubt to protect them. When everyone surrenders, you stand to defend them. Your shield is not of iron, but of your firm belief that what you protect is worth all this sacrifice.\n\nPeople may fear your stern appearance, but they sleep soundly because they know you are there. You are the guardian who expects no thanks, because protecting what you love is the greatest thanks to yourself.\n\nBut remember, Guardian: not all strangers are enemies, and not every approach is danger. Sometimes, excessive protection becomes a prison for those you protect. Learn to distinguish between real threats and imaginary ones. True power is not in preventing every entry, but in knowing who deserves to pass.",
+            advice: "Protection doesn't always mean harshness; sometimes softness is the strongest defense.",
+            badge: "Impenetrable Shield",
+            article: "Cerberus is the legendary three-headed dog that guards the gates of the Underworld in Greek mythology. His task was to prevent the dead from leaving and the living from entering without permission. Cerberus's parents were the monsters 'Typhon' and 'Echidna,' making him brother to several other mythical beasts like the Hydra and the Sphinx.\n\nThe most famous encounter with Cerberus was when King Eurystheus tasked the hero Hercules with his twelfth and final labor: bringing Cerberus alive from the Underworld. Hercules succeeded using his immense strength without weapons, which impressed Hades, god of the Underworld.\n\nIn myth, Cerberus allowed spirits to enter but not to leave, making him a symbol of irreversible transition. He was mentioned in Homer's 'Iliad' and 'Odyssey,' and in Virgil's 'Aeneid.'\n\nIn modern popular culture, Cerberus appears in the 'Harry Potter' series as 'Fluffy,' the three-headed dog guarding the Philosopher's Stone.\n\n**Psychological Analysis:**\nCerberus personality owners possess what is called in psychology 'Protective Vigilance,' a psychological trait that usually develops in people who took on great responsibilities at an early age:\n\n• **Absolute Loyalty**: They defend those they love to the death\n• **Detection Ability**: They notice threats before they happen\n• **Multi-Tasking**: They can monitor several aspects at once\n• **Innate Protection**: They defend the weak without being asked\n\nBut this power has a price: they may suffer from chronic anxiety, find it difficult to trust others, and fall into the trap of 'excessive protection' that stifles those they love.",
+            secretReport: {
+              strengths: "• **Unwavering Absolute Loyalty**: When you commit to a person or cause, you defend it to the end\n• **High Vigilance**: You notice threats long before others see them\n• **Multi-Tasking Ability**: You can monitor and protect several aspects simultaneously\n• **Defensive Power**: When those you love are threatened, you become an unstoppable force\n• **Silent Devotion**: You need no thanks or appreciation; your protection is its own reward",
+              challenges: "• **Excessive Protection**: You may stifle those you love with your overprotection\n• **Difficulty Trusting**: You doubt everyone's intentions, even the loyal ones\n• **Chronic Anxiety**: Your mind is always on alert, draining your energy\n• **Excessive Strictness**: You may be harsher than necessary with those you protect\n• **Difficulty Relaxing**: You do not know how to rest your inner guardian",
+              growthPath: "**Personal Development Path:**\n1. Learn 'Selective Trust': Not all people are threats; learn who deserves your trust\n2. Practice 'Conscious Protection': Ask yourself, is this a real threat or just anxiety?\n3. Build 'Rest Times': Dedicate daily time to rest your inner guardian\n4. Develop 'Strategic Softness': Sometimes allowing experience is the best protection\n5. Learn 'Asking for Help': Even guardians need someone to guard them sometimes",
+              relationships: "**In Relationships:**\n• You need a partner who understands your need to protect and trusts your intentions\n• You may be 'The Controlling Protector' in relationships; beware of stifling your partner\n• Best Compatibility: With Valkyrie (shared honor), Golem (mutual stability)\n• Good Compatibility: With Dragon (power complements power), Centaur (balance)\n• Avoid: Kitsune (will try to manipulate your zeal), Siren (will drain your energy)",
+              career: "**Ideal Career Path:**\n• National security and intelligence\n• Special forces and personal security\n• Cybersecurity and data protection\n• Medicine (especially emergency and intensive care)\n• Law and defending the weak\n• Risk and disaster management\n• Avoid: Jobs requiring blind trust in others, sales, public relations",
+              insight: "Your true power is not in your ability to prevent every threat, but in your wisdom to know what deserves protection and what does not. You are not a guardian who fears the world, you are a guardian who loves the world enough to protect it."
+            }
+          },
+          {
+            id: "faun",
+            name: "The Natural Faun",
+            rarity: "Common",
+            image: "assets/images/faun.jpg",
+            description: "You are the spirit of nature and fun. You have the ability to enjoy life and spread joy around you.",
+            narrative: "With flute melodies and nature dances, your soul sways with fun. You are the joy on a cloudy day, the spontaneity that brings life back to the static things around you.\n\nIn a very serious world, you are the reminder that life should be lived not analyzed. Your laughter is contagious, and your cheerful spirit turns any gathering into a celebration. You don't need a reason for joy, for joy is your natural state.\n\nBut remember: fun alone does not build a future. Sometimes, you need to sit seriously and plan for your big dreams. The balance between fun and responsibility is the secret of your success.",
+            advice: "Fun is necessary, but a little seriousness helps you achieve your big dreams.",
+            badge: "Spirit of Fun",
+            article: "The Faun is a mythical creature from Roman mythology, combining human and goat features. Known as the spirit of forests and fields, he is associated with music, dance, and joy. The Faun represents the innate and spontaneous side of humans, a close connection with nature, and living in the present away from the complexities of civilization.\n\nIn Greek mythology, the Faun corresponds to 'Pan', the god of shepherds and flocks, who played the flute and filled forests with music. It was believed that his sudden scream caused causeless terror (hence the word 'panic').\n\n**Psychological Analysis:**\nFaun personality owners possess what is called in psychology 'Natural Extroversion', the ability to enjoy the present moment and spontaneously connect with others. Studies show that these people possess:\n\n• **Social intelligence**: Natural ability to blend into any group\n• **Spontaneous creativity**: They think outside the box naturally\n• **Emotional flexibility**: They recover quickly from negative emotions\n• **Connection with nature**: They find peace and inspiration in natural places\n\nBut this power has a price: they may tend toward procrastination, or find it difficult to commit to serious responsibilities, or fall into the trap of 'escaping reality' through constant fun.",
+            secretReport: {
+              strengths: "• **Natural social intelligence**: Your ability to blend with anyone exceeds the average by 3 times\n• **Spontaneous creativity**: You generate innovative ideas naturally without planning\n• **Emotional flexibility**: You recover from negative emotions at an amazing speed\n• **Contagious energy**: Your presence automatically lifts the morale of those around you",
+              challenges: "• **Chronic procrastination**: Your tendency for immediate pleasure may delay your important tasks\n• **Difficulty committing**: You may find it hard to complete long-term projects\n• **Escaping seriousness**: Sometimes you use fun as a mechanism to escape real problems\n• **Occasional superficiality**: You may avoid deep conversations because they are 'too serious'",
+              growthPath: "**Personal development path:**\n1. Practice 'disciplined fun': allocate time for serious work before pleasure\n2. Use the '2-minute rule': if a task takes less than 2 minutes, do it now\n3. Build 'follow-up systems': use reminder apps to track your tasks\n4. Learn 'temporary depth': dedicate 30 minutes daily to serious thinking about your goals",
+              relationships: "**In relationships:**\n• You need a partner who shares your cheerful spirit but reminds you of responsibilities sometimes\n• You may be 'the group clown', beware of being taken seriously only in fun\n• Best compatibility: with serious creatures (Golem, Sphinx) that balance your spontaneity\n• Avoid: negative people who extinguish your positive energy",
+              career: "**Ideal career path:**\n• Entertainment arts (music, theater, comedy)\n• Marketing and advertising (because you understand what makes people happy)\n• Working with children or in entertainment fields\n• Entrepreneurship in creative fields\n• Avoid: routine office jobs that kill your cheerful spirit",
+              insight: "Your true joy is not in escaping seriousness, but in finding balance between fun and responsibility. You are not an eternal child, you are a wise person who knows how to enjoy life consciously."
+            }
+          },
+          {
+            id: "golem",
+            name: "The Stone Golem",
+            rarity: "Rare",
+            image: "assets/images/golem.jpg",
+            description: "You are a symbol of stability and solidity. You possess a will of stone and the ability to endure the most difficult conditions.",
+            narrative: "From the earth's clay and the mountains' strength, your patient soul was forged like the unshakeable Golem. You are the mountain that the winds do not shake, the support that everyone relies on in times of storms. When everything around you collapses, you remain firm like the deep roots of ancient trees.\n\nYour word is a covenant, and your promise is law. When you say something, you do it no matter the cost. People know you are the rock they can build upon, the wall that protects their backs. You do not promise much, but what you promise, you fulfill precisely.\n\nYour patience is not weakness, but a special kind of strength. You know that great things take time, and mountains were not built in a day. You do not rush results, nor despair of the long road. You know that steadfastness makes history, not speed.\n\nBut remember, Rock: even mountains erode with time, and even stone can grow flowers. Do not fear showing your soft side sometimes. True strength is not in always being hard, but in knowing when to be strong and when to be gentle. Sometimes, crying is stronger than enduring.",
+            advice: "Even stone can grow flowers; don't fear showing your soft side.",
+            badge: "Solid Mountain",
+            article: "The Golem is a mythical creature from Jewish tradition, made from clay or mud and given life through magical rituals and secret words. The most famous Golem story is the 'Golem of Prague,' created by Rabbi Judah Loew ben Bezalel in the 16th century to protect Jews from persecution.\n\nThe word 'Golem' in Hebrew means 'unformed mass,' and is mentioned in Psalm 139:16 of the Torah. In Jewish Kabbalah, it was believed that wise rabbis could create life through using 'Sefer Yetzirah' (Book of Creation).\n\nThe Golem in legend does not speak and obeys its master's commands literally. To stop it, it was enough to remove the secret word 'אמת' (Emet - Truth) from its forehead, to become 'מת' (Met - Death).\n\nIn modern culture, the Golem became a symbol of blind power that does not think, and inspired many literary works like Mary Shelley's 'Frankenstein' and the character 'The Hulk' in comics.\n\n**Psychological Analysis:**\nGolem personality owners possess what is called in psychology 'Psychological Hardiness,' a trait characterized by:\n\n• **Commitment**: They commit to what they believe in to the end\n• **Control**: They feel in control of their lives despite circumstances\n• **Challenge**: They see difficulties as opportunities for growth\n• **Strategic Patience**: They know great things take time\n\nBut this power has a price: they may suffer from emotional rigidity, find it difficult to adapt to change, and fall into the trap of 'stubbornness' that prevents them from seeing alternatives.",
+            secretReport: {
+              strengths: "• **Exceptional Patience**: You can wait for long periods without losing hope\n• **Psychological Hardiness**: You do not collapse under pressure, but become stronger\n• **Absolute Faithfulness**: Your promise is law, and your commitment never wavers\n• **Emotional Stability**: You are not affected by small daily fluctuations\n• **Reliability**: People know they can rely on you at any time",
+              challenges: "• **Emotional Rigidity**: You may find it difficult to express your feelings\n• **Difficulty Adapting**: Sudden changes confuse and disturb you\n• **Sometimes Stubbornness**: You stick to your opinion even when others are right\n• **Slowness in Decision-Making**: You need a long time to think before any step\n• **Difficulty Asking for Help**: You believe you must bear everything alone",
+              growthPath: "**Personal Development Path:**\n1. Learn 'Thoughtful Flexibility': Steadfastness does not mean rigidity; learn when to bend\n2. Practice 'Emotional Expression': Dedicate daily time to express your feelings\n3. Build 'Adaptation Systems': Prepare yourself for changes before they happen\n4. Develop 'Decision Speed': Learn to make quick decisions in small matters\n5. Learn 'Asking for Help': True strength is in knowing your limits",
+              relationships: "**In Relationships:**\n• You need a partner who understands your silence and respects your stability\n• You may be 'The Silent Rock' in relationships; beware of neglecting the emotional side\n• Best Compatibility: With Phoenix (renewal complements your stability), Centaur (balance)\n• Good Compatibility: With Cerberus (mutual protection), Valkyrie (honor)\n• Avoid: Mood-swinging people, Pegasus (will try to make you fly), Kitsune (will try to change you)",
+              career: "**Ideal Career Path:**\n• Civil and architectural engineering\n• Major project management\n• Military and security forces\n• Agriculture and environmental management\n• Medicine (especially surgery requiring patience)\n• Long-term banking and finance\n• Avoid: Jobs requiring constant change, sales, media",
+              insight: "Your true power is not in that you do not break, but in that you know when to allow yourself to cry. You are not cold stone, you are a warm mountain that embraces those you love."
+            }
+          },
+          {
+            id: "hydra",
+            name: "The Renewing Hydra",
+            rarity: "Legendary",
+            image: "assets/images/hydra.jpg",
+            description: "You are a symbol of persistence and plurality. Every time you face a challenge, you come out of it with more ideas and solutions.",
+            narrative: "In the face of hardships that break others, your strength multiplies like the Hydra that grows two heads for every one cut. Every blow you receive does not weaken you, but increases your strength, intelligence, and wisdom. You do not know defeat, because every defeat is just a new beginning.\n\nIn a world that tries to make you one version of yourself, you are multi-faceted like a jewel. You have a thousand ideas for every problem, and a thousand solutions for every challenge. When a door closes, you do not just open a window, but open a thousand windows. Your mind never stops generating and creating.\n\nYou are persistence in its finest form, and determination in its highest meanings. Every failure is a lesson, and every loss is an investment in coming success. You never surrender, because surrender is not in your dictionary. But at the same time, you know that blind persistence can be harmful.\n\nRemember, Hydra: plurality is strength, but focus is stronger. When you direct all your heads toward one goal, you become an unstoppable force. But when you scatter among a thousand goals, you lose your power. Learn to combine plurality and focus, flexibility and persistence.",
+            advice: "Focusing all your heads on one goal will make you invincible.",
+            badge: "Invincible Persister",
+            article: "The Hydra is a water monster from Greek mythology, known as the 'Lernaean Hydra.' It lived in the swamp of Lerna near Argos, and had nine heads (or more according to accounts), and whenever a head was cut, two grew in its place.\n\nThe Hydra was the offspring of the monsters Typhon and Echidna, making it brother to Cerberus and the Chimera. Its breath was so poisonous that merely inhaling it caused death.\n\nThe most famous encounter with the Hydra was in 'The Second Labor' of Hercules' twelve labors. Hercules enlisted his nephew 'Iolaus,' who burned the stump of each head after cutting to prevent regrowth. The only immortal head was buried under a huge rock.\n\nIn biology, the water animal 'Hydra' was named after the mythical beast, for its amazing ability to regenerate. Also, the 'Hydra' constellation is the largest in the sky.\n\n**Psychological Analysis:**\nHydra personality owners possess what is called in psychology 'Adaptive Multi-Resilience,' a rare ability to:\n\n• **Rapid Recovery**: They recover from failure at an amazing speed\n• **Parallel Thinking**: They can work on multiple projects simultaneously\n• **Creativity Under Pressure**: The more pressure, the more creative they become\n• **Learning from Failure**: They turn every loss into a valuable lesson\n\nBut this power has a price: they may suffer from scattering and lack of focus, and find it difficult to complete what they started.",
+            secretReport: {
+              strengths: "• **Unwavering Persistence**: You never surrender; every failure is just a new beginning\n• **Creative Plurality**: You generate multiple ideas and solutions for every problem\n• **Rapid Recovery**: You recover from traumas at a speed exceeding the average by 4 times\n• **Parallel Thinking**: You can work on several projects simultaneously\n• **Adaptability**: You adapt to any circumstance with amazing speed",
+              challenges: "• **Chronic Scattering**: You start much but finish little\n• **Difficulty Focusing**: You are attracted to new opportunities before finishing old ones\n• **Self-Exhaustion**: You try to do everything at once\n• **Perpetual Dissatisfaction**: You always seek the next thing, not enjoying achievement\n• **Difficulty Making Final Decisions**: Multiple options confuse you",
+              growthPath: "**Personal Development Path:**\n1. Learn 'Strategic Focus': Choose one main goal and dedicate 80% of your energy to it\n2. Practice 'The Completion Rule': Do not start a new project before finishing the old one\n3. Build 'Priority Systems': Use the Eisenhower Matrix to arrange your tasks\n4. Develop 'The Art of Celebration': Celebrate your small achievements before moving to the next\n5. Learn 'Saying No': Not every opportunity deserves your energy",
+              relationships: "**In Relationships:**\n• You need a partner who understands your plural nature and grounds you when you scatter\n• You may be 'The Fluctuating One' in relationships; beware of neglecting your partner due to your busyness\n• Best Compatibility: With Golem (stability grounds you), Sphinx (depth focuses you)\n• Good Compatibility: With Kraken (joint planning), Dragon (ambition)\n• Avoid: People needing constant attention, Cerberus (will try to restrict you)",
+              career: "**Ideal Career Path:**\n• Serial Entrepreneurship\n• Innovation and solving complex problems\n• Scientific research in multidisciplinary fields\n• Strategic corporate consulting\n• Media and content creation\n• Crisis and emergency management\n• Avoid: Routine jobs, working in one narrow specialty",
+              insight: "Your true power is not in the number of your heads, but in your ability to direct them all toward one goal. You are not creative chaos, you are an organized force that knows when to be plural and when to focus."
+            }
+          },
+          {
+            id: "kitsune",
+            name: "The Cunning Kitsune",
+            rarity: "Very Rare",
+            image: "assets/images/kitsune.jpg",
+            description: "You are a symbol of adaptive intelligence and magic. You possess the ability to change your shape and style according to the situation.",
+            narrative: "With a thousand faces, and intelligence that precedes the wind, your soul plays with reality like the legendary Kitsune. You are magic and mystery, and the amazing ability to adapt to any world you enter. Every situation has its appropriate face, and every person sees in you what they want to see.\n\nYou are the fox that knows when to appear and when to disappear, when to speak and when to be silent, when to approach and when to withdraw. Your intelligence is not malicious cunning, but the wisdom of life that knows the world is not black and white, but a thousand colors.\n\nIn a world seeking simplicity, you are beautiful complexity. In a world wanting clear answers, you are the intelligent question. People are drawn to you by your mysterious charm, but they never truly know who you are. And this is what makes you attractive and dangerous at the same time.\n\nBut remember, Kitsune: the masks you wear may become your true face. When you play a role too long, you may forget who you really are. Sometimes, painful honesty is stronger than a beautiful lie. Learn to remove your masks before those who deserve to see your truth.",
+            advice: "Intelligence is a talent, use it to build bridges and not just to deceive passersby.",
+            badge: "Master of Adaptation",
+            article: "The Kitsune (狐) is the mythical fox in Japanese folklore, and is considered one of the most complex mythical creatures in Japanese culture. It is believed that the Kitsune gains strength and wisdom with age, and the more tails it has (up to 9), the more powerful it becomes.\n\nThere are two main types of Kitsune: 'Zenko' (good foxes) that serve the god 'Inari,' god of rice and prosperity, and 'Yako' (evil foxes) that tend toward harm and deception.\n\nThe most famous Kitsune legends relate to their ability to transform into human form, usually a beautiful woman. In some stories, they marry humans and live family lives, but are discovered when their husband sees their tail or true shadow.\n\nIn Japanese culture, 'Inari' temples exist throughout Japan, and fox statues guard them. The Kitsune also inspired many artistic works like 'The Fox Wife' and anime series.\n\n**Psychological Analysis:**\nKitsune personality owners possess what is called in psychology 'Adaptive Social Intelligence':\n\n• **Situation Reading**: They quickly understand the dynamics of any group\n• **Social Adaptation**: They can blend into any culture or social class\n• **Persuasion and Influence**: They know how to convince others of their viewpoint\n• **Psychological Flexibility**: They recover quickly from social failures\n\nBut this power has a price: they may lose their true identity and find it difficult to form deep relationships.",
+            secretReport: {
+              strengths: "• **Superior Social Intelligence**: You can read any person and any situation with amazing accuracy\n• **Adaptability**: You adapt to any environment or culture quickly\n• **Persuasion and Influence**: You know how to make others see things from your perspective\n• **Personal Charm**: You have a mysterious charisma that attracts people to you\n• **Mental Flexibility**: You can adopt multiple viewpoints simultaneously",
+              challenges: "• **Identity Loss**: Too many masks may make you forget who you really are\n• **Difficulty with True Trust**: You do not know if people love you or your masks\n• **Unconscious Manipulation**: You may manipulate others without realizing\n• **Superficiality in Relationships**: Your relationships are many but few are deep\n• **Performance Exhaustion**: Playing multiple roles drains your energy",
+              growthPath: "**Personal Development Path:**\n1. Practice 'Selective Honesty': Choose at least one person to show your truth to\n2. Build 'Core Identity': Define your core values that do not change regardless of masks\n3. Learn 'Strategic Vulnerability': Show your true weakness sometimes; this builds trust\n4. Develop 'Deep Relationships': Focus on a few deep relationships instead of many superficial ones\n5. Practice 'Self-Reflection': Ask yourself daily: who am I when no one sees me?",
+              relationships: "**In Relationships:**\n• You need an intelligent partner who can see beyond your masks\n• You may be 'The Manipulator' in relationships; beware of manipulating your partner\n• Best Compatibility: With Siren (mutual charm), Pegasus (shared imagination)\n• Good Compatibility: With Phoenix (renewal), Kraken (shared mystery)\n• Avoid: Golem (their transparency reveals you), Cerberus (will resist your charm)",
+              career: "**Ideal Career Path:**\n• Diplomacy and international relations\n• Marketing, advertising, and media\n• Acting and performing arts\n• Management consulting\n• High-level sales\n• Creative writing and screenwriting\n• Avoid: Jobs requiring absolute transparency, accounting, auditing",
+              insight: "Your true power is not in the number of masks you wear, but in your courage to remove them before those who deserve to see your truth. You are not a deceiver, you are an artist who knows how to paint yourself in a thousand colors."
+            }
+          },
+          {
+            id: "pegasus",
+            name: "The Winged Pegasus",
+            rarity: "Rare",
+            image: "assets/images/pegasus.jpg",
+            description: "You are a symbol of freedom and inspiration. You possess a soul that flies above difficulties and always seeks the distant horizon.",
+            narrative: "With wings of imagination and inspiration, your soul flies above the constraints of reality like the Winged Pegasus. You are the freedom that cannot be caged, the dream that refuses to stay on earth. Your world is the horizon, and the sky of infinite possibilities is your playground.\n\nYou are the inspiration that visits creators in moments of contemplation, the idea that suddenly shines in minds. When Pegasus flies, poetry is born in the hearts of poets, paintings are born in artists' imagination, and great ideas are born in thinkers' minds.\n\nYour hooves strike the earth to spring forth fountains of creativity, and your wings fly in the sky to paint dreams of the future. You are the bridge between earth and sky, between reality and imagination, between the possible and the impossible.\n\nBut remember, Flyer: your wings carry you to the sky, but your hooves ground you on earth. Imagination without reality becomes escape, and reality without imagination becomes prison. Learn to fly high without losing your connection to the ground.",
+            advice: "Your wings carry you to the sky, but your hooves are what ground you; take care of both.",
+            badge: "Flying Inspirer",
+            article: "Pegasus is the mythical winged horse from Greek mythology. It was born from the blood of 'Medusa' when 'Perseus' cut off her head, or from her neck according to other accounts. Its name was associated with the 'Hippocrene Spring' on Mount Helicon, which was believed to be a source of inspiration for poets.\n\nPegasus was the companion of the hero 'Bellerophon,' who used it to fight the fearsome 'Chimera' monster. But when Bellerophon tried to fly to Mount Olympus, home of the gods, Zeus threw him off Pegasus's back.\n\nAfter that, Pegasus became Zeus's personal horse, carrying lightning and thunder for him. Eventually, Zeus placed him among the stars as the 'Pegasus' constellation.\n\nIn Islamic culture, a winged horse appeared in the Night Journey and Ascension called 'Al-Buraq,' which carried the Prophet Muhammad from Mecca to Jerusalem and then to the heavens.\n\nIn astronomy, the Pegasus constellation is one of the largest, containing the famous 'Great Square of Pegasus.'\n\n**Psychological Analysis:**\nPegasus personality owners possess what is called in psychology 'Creative Imagination':\n\n• **Abstract Thinking**: They can imagine things that do not exist\n• **Continuous Inspiration**: Creative ideas come to them constantly\n• **Future Vision**: They see possibilities before they materialize\n• **Free Spirit**: They reject constraints that limit their imagination\n\nBut this power has a price: they may suffer from 'Peter Pan Syndrome' and find it difficult to deal with practical reality.",
+            secretReport: {
+              strengths: "• **Vast Imagination**: You can imagine worlds and ideas no one has thought of before\n• **Ability to Inspire**: Your presence inspires others to be creative and think outside the box\n• **Free Spirit**: No one and nothing can imprison your mind or soul\n• **Abstract Thinking**: You understand complex concepts easily\n• **Natural Positivity**: You see possibilities where others see the impossible",
+              challenges: "• **Difficulty Dealing with Reality**: You hate practical details and routine\n• **Escaping Responsibility**: You tend to escape into the world of imagination when facing problems\n• **Non-Achievement**: You have thousands of ideas but execute few of them\n• **Excessive Sensitivity**: Criticism hurts you deeply because it wounds your imagination\n• **Difficulty Committing**: You get bored with things quickly and always seek the new",
+              growthPath: "**Personal Development Path:**\n1. Learn 'Conscious Grounding': Dedicate daily time to deal with practical reality\n2. Practice 'Idea Execution': Choose one idea each month and execute it completely\n3. Build 'Follow-up Systems': Use tools to manage your daily tasks\n4. Develop 'Creative Patience': Great creativity takes a long time\n5. Learn 'Accepting Criticism': Constructive criticism helps you improve your ideas",
+              relationships: "**In Relationships:**\n• You need a partner who flies with you in imagination but grounds you on earth\n• You may be 'The Dreaming Escaper' in relationships; beware of neglecting your partner\n• Best Compatibility: With Simurgh (comprehensive vision), Unicorn (shared purity)\n• Good Compatibility: With Phoenix (renewal), Faun (joy)\n• Avoid: Very practical people, Golem (will try to restrict you), Cerberus (will try to cage you)",
+              career: "**Ideal Career Path:**\n• Arts (drawing, writing, music)\n• Design and visual creativity\n• Cinema and directing\n• Innovation and creative entrepreneurship\n• Creative teaching\n• Art therapy\n• Avoid: Routine jobs, accounting, traditional management",
+              insight: "Your true power is not in your ability to fly away, but in your ability to bring great ideas back to earth. You are not a fugitive from reality, you are an ambassador of imagination in the world of reality."
+            }
+          },
+          {
+            id: "simurgh",
+            name: "The Wise Simurgh",
+            rarity: "Legendary",
+            image: "assets/images/simurgh.jpg",
+            description: "You are a symbol of perfection and comprehensive knowledge. You possess a comprehensive vision of the universe and understand the interconnectedness of things.",
+            narrative: "From the peak of the legendary 'Qaf' mountain, where earth meets sky, your soul overlooks the wisdom of ages like the Great Simurgh. You are the bird that witnessed the creation of the world, and lived thousands of years to gather the wisdom of the entire universe in its soul. Your vision is comprehensive, and your knowledge is boundless.\n\nYou are the gatherer of opposites, the soul that sees the hidden connection between all things. You know that joy and sorrow are two sides of the same coin, that the beginning contains the end, and that the small reflects the large. This comprehensive vision makes you wise beyond your years.\n\nPeople come to you seeking wisdom, because they know you see the whole picture. You are the guide who does not impose opinion, but illuminates paths for others to discover truth themselves. Your words are few but deep as the ocean.\n\nBut remember, Wise One: idealism is a beautiful goal, but perfection does not exist in the human world. Sometimes, accepting human imperfection is the peak of wisdom. Do not judge others by your high standards, for everyone has their own journey. Learn to love people as they are, not as you want them to be.",
+            advice: "Perfection is a beautiful goal, but accepting human imperfection is the peak of wisdom.",
+            badge: "Absolute Sage",
+            article: "The Simurgh (سیمرغ) is a great mythical bird from Persian tradition and Sufi literature. It was mentioned in Ferdowsi's 'Shahnameh,' where it raised the white-haired hero 'Zal' after his father abandoned him. It also appeared in detail in the Sufi poet Farid al-Din Attar's book 'The Conference of the Birds.'\n\nIn 'The Conference of the Birds,' the birds embarked on a journey to search for their king the Simurgh. After crossing seven valleys (Quest, Love, Knowledge, Detachment, Unity, Bewilderment, and Annihilation), only thirty birds reached the Simurgh. And when they saw it, they realized that 'Si Murgh' (thirty birds in Persian) was themselves, and that the king was within them all along.\n\nThe Simurgh is described as a huge bird the size of an elephant, sometimes with a human face, and a long colored tail. It lived thousands of years and saw the world's destruction three times. It knows all languages and possesses all knowledge.\n\nIn Islamic culture, the Simurgh is sometimes associated with the 'Phoenix' and the 'Roc' bird mentioned in Sindbad's voyages.\n\n**Psychological Analysis:**\nSimurgh personality owners possess what is called in psychology 'Integrative Wisdom':\n\n• **Comprehensive Vision**: They see the connection between all things\n• **Early Wisdom**: They possess wisdom beyond their years\n• **Guidance Ability**: They guide others without imposing their views\n• **Spiritual Balance**: They combine mind and heart\n\nBut this power has a price: they may suffer from excessive idealism and disappointment with reality.",
+            secretReport: {
+              strengths: "• **Comprehensive Wisdom**: You see the hidden connection between all things and events\n• **Cosmic Vision**: You understand the big picture while others focus on details\n• **Guidance Ability**: You guide others to truth without imposing it on them\n• **Spiritual Balance**: You combine mind and heart, spirit and body\n• **Inner Calm**: You have inner peace undisturbed by life's fluctuations",
+              challenges: "• **Excessive Idealism**: You set very high standards for yourself and others\n• **Chronic Disappointment**: Reality always disappoints you because it does not reach your ideal\n• **Spiritual Isolation**: You feel different from others, and this makes you lonely\n• **Silent Judgment**: You may judge others in silence without speaking\n• **Difficulty Sharing**: Your wisdom is deep but you find it difficult to explain it to others",
+              growthPath: "**Personal Development Path:**\n1. Learn 'Accepting Imperfection': Perfection does not exist; accept humans as they are\n2. Practice 'Practical Wisdom': Turn your wisdom into applicable advice\n3. Build 'Communication Bridges': Learn to simplify your deep ideas for others\n4. Develop 'Wise Compassion': Be wise but compassionate at the same time\n5. Learn 'Engaging in Life': Do not just observe from afar; participate",
+              relationships: "**In Relationships:**\n• You need a partner who respects your wisdom and learns from you\n• You may be 'The Distant Sage' in relationships; beware of silently judging your partner\n• Best Compatibility: With Owl of Athena (shared wisdom), Sphinx (intellectual depth)\n• Good Compatibility: With Valkyrie (honor and wisdom), Centaur (balance)\n• Avoid: Superficial people, Kitsune (their manipulation disturbs you), Hydra (their chaos confuses you)",
+              career: "**Ideal Career Path:**\n• Spiritual and psychological guidance\n• Philosophy and university teaching\n• Literary writing and poetry\n• Leadership in humanitarian organizations\n• Psychiatry\n• High-level strategic consulting\n• Avoid: Purely material jobs, sales, work under daily pressure",
+              insight: "Your true power is not in your wisdom that understands everything, but in your compassion that accepts everything. You are not a judge judging the world, you are a guide illuminating paths with wisdom and love."
+            }
+          },
+          {
+            id: "siren",
+            name: "The Enchanting Siren",
+            rarity: "Very Rare",
+            image: "assets/images/siren.jpg",
+            description: "You are a symbol of allure and intuition. You possess a voice that enchants minds and the ability to read emotions.",
+            narrative: "From the depths of legendary seas, where waves meet ancient songs, your enchanting voice resounds like the Siren. You are the irresistible allure, the intuition that sees what others do not. Your voice carries an ancient power that moves hearts and opens closed doors.\n\nYou are the enchantress who knows how to read emotions before they are spoken, and understand desires before they are expressed. Your allure is not only in your outer beauty, but in your ability to make others feel heard and understood.\n\nIn a world full of noise, your voice is the one that is listened to. In a world full of masks, you are the one who reveals other masks. You have an innate ability to understand what people really want, even when they do not know themselves.\n\nBut remember, Enchanter: allure used for manipulation destroys relationships, while allure used for building creates miracles. Do not use your magic to control others, but to empower them. The voice that builds is greater than the voice that enchants.",
+            advice: "Use your allure to build genuine relationships, not just to seduce passersby.",
+            badge: "Enchantress of the Depths",
+            article: "The Sirens are mythical creatures from Greek mythology, famous for their enchanting voices that attract sailors to their doom. They were mentioned in Homer's 'Odyssey,' where 'Circe' warned the hero Odysseus about the Sirens, advising him to put wax in his sailors' ears and tie himself to the ship's mast.\n\nIn early Greek mythology, Sirens were depicted as women with bird heads, not as mermaids as in modern culture. They lived on an island between Italy and Sicily.\n\nThe transformation to 'Mermaids' occurred in the Middle Ages, where Siren legends mixed with European 'Undine' and 'Melusine' legends.\n\nIn modern literature, Sirens appeared in works like Hans Christian Andersen's 'The Little Mermaid,' and became a symbol of desire and danger together.\n\n**Psychological Analysis:**\nSiren personality owners possess what is called in psychology 'Social-Emotional Intelligence':\n\n• **Emotional Reading**: They accurately understand others' feelings\n• **Natural Allure**: They attract people to them easily\n• **Vocal Persuasion**: Their voice is influential and convincing\n• **Strong Intuition**: They feel what will happen before it happens\n\nBut this power has a price: they may use their allure for manipulation and find it difficult to form genuine relationships.",
+            secretReport: {
+              strengths: "• **Natural Captivating Allure**: People are naturally drawn to you without you trying\n• **Superior Emotional Intelligence**: You can read others' feelings with amazing accuracy\n• **Influential Voice**: Your words affect others deeply\n• **Strong Intuition**: You feel what will happen before it happens\n• **Persuasion Ability**: You know how to make others agree with you",
+              challenges: "• **Using Allure for Manipulation**: You may use your magic to control others\n• **Difficulty with Genuine Relationships**: Your relationships are many but superficial\n• **Addiction to Admiration**: You need constant admiration to feel your worth\n• **Lack of Clarity**: You may be ambiguous about your true intentions\n• **Sensitivity to Criticism**: Criticism hurts you because it wounds your self-image",
+              growthPath: "**Personal Development Path:**\n1. Learn 'Honest Allure': Use your magic to build, not to manipulate\n2. Build 'Deep Relationships': Focus on a few genuine relationships\n3. Practice 'Emotional Honesty': Express your true feelings, not what others want to hear\n4. Develop 'Inner Confidence': Your worth is not in others' admiration of you\n5. Learn 'Listening': Sometimes silence and listening are more powerful than speech",
+              relationships: "**In Relationships:**\n• You need a partner who sees beyond your magic and loves your truth\n• You may be 'The Seducer' in relationships; beware of manipulating your partner\n• Best Compatibility: With Kitsune (mutual charm), Pegasus (shared imagination)\n• Good Compatibility: With Phoenix (renewal), Faun (joy)\n• Avoid: Valkyrie (will reveal your manipulation), Golem (will demand absolute honesty), Cerberus (will protect themselves from your charm)",
+              career: "**Ideal Career Path:**\n• Singing and music\n• Acting and media\n• Diplomacy and public relations\n• Psychotherapy (especially music therapy)\n• Marketing and advertising\n• Literary writing and poetry\n• Avoid: Purely technical jobs, accounting, programming",
+              insight: "Your true power is not in your voice that enchants, but in your ability to use this enchantment to build, not destroy. You are not a dangerous temptation, you are a beautiful melody that enriches the lives of those who hear you."
+            }
+          },
+          {
+            id: "valkyrie",
+            name: "The Valkyrie Warrior",
+            rarity: "Very Rare",
+            image: "assets/images/valkyrie.jpg",
+            description: "You are a symbol of honor and courage. You possess a fighting spirit that defends the right and chooses the path of heroes.",
+            narrative: "In the arenas of honor, your soul shines like a polished sword. You are the courage that does not fear, the justice that does not lean. Your choice is always the path of heroes no matter how difficult.\n\nYou are not one who chooses the easy battle, but you choose the right battle. When others are silent about injustice, you speak. When others bow to fear, you stand. Your honor is not a word spoken, but a way you live every moment.\n\nBut remember: true courage is not just in fighting, but in knowing when to fight and when to forgive. Sometimes, true strength lies in lowering the sword not raising it.",
+            advice: "Courage is not the absence of fear, but moving forward despite its presence.",
+            badge: "Guardian of Honor",
+            article: "Valkyries are mythical warriors from Norse mythology, servants of the god Odin. Their task was to choose half of the slain in battlefields and bring the souls of brave warriors to Valhalla (Hall of Heroes).\n\nThe word 'Valkyrie' literally means 'choosers of the slain' (Old Norse: valkyrja). Valkyries were depicted as beautiful warriors riding horses and flying in the sky, wearing armor and carrying spears.\n\n**Psychological Analysis:**\nValkyrie personality owners possess what is called in psychology 'Principled Morality', strong commitment to values and principles even in the most difficult conditions. Studies show that these people possess:\n\n• **Moral courage**: They defend the right even if it is against the majority\n• **Leading by example**: They do not ask others what they do not do themselves\n• **Innate justice**: They distinguish between right and wrong clearly\n• **Innate protection**: They defend the weak and oppressed\n\nBut this power has a price: they may tend toward excessive strictness with themselves and others, or find it difficult to accept 'gray areas' in life, or fall into the trap of 'moral perfectionism' that makes them judge others harshly.",
+            secretReport: {
+              strengths: "• **Exceptional moral courage**: You defend your principles even if you stand alone\n• **Leading by example**: You do not ask others what you do not do yourself\n• **Innate justice**: You distinguish between right and wrong with amazing clarity\n• **Innate protection**: You defend the weak and oppressed with natural instinct",
+              challenges: "• **Excessive strictness**: You may be very harsh with yourself and others in following principles\n• **Difficulty accepting gray areas**: You see the world as black or white, making you frustrated with life's complexities\n• **Moral perfectionism**: You may judge others harshly when they don't live by your standards\n• **Moral exhaustion**: Carrying the burdens of justice may drain your psychological energy",
+              growthPath: "**Personal development path:**\n1. Learn 'moral mercy': principles are important, but mercy is more important sometimes\n2. Accept 'gray areas': life is not always black and white\n3. Practice 'selective forgiveness': not every mistake deserves punishment\n4. Build 'support systems': even warriors need help sometimes",
+              relationships: "**In relationships:**\n• You need a partner who shares your principles but reminds you of mercy sometimes\n• You may be 'the protector' in relationships, beware of overprotection that stifles others\n• Best compatibility: with wise creatures (Sphinx, Simurgh) that balance your courage with their wisdom\n• Avoid: opportunistic people who have no principles",
+              career: "**Ideal career path:**\n• Law and judiciary (because you believe in justice)\n• Humanitarian work and human rights\n• Leadership in organizations needing ethical reforms\n• Education and guidance (because you are a role model for others)\n• Avoid: jobs requiring ethical compromises or manipulating others",
+              insight: "Your true courage is not just in fighting, but in knowing when to fight and when to forgive. You are not just a warrior, you are a guardian of values in a world that needs guardians."
+            }
+          }
+        ]
+      }
+    ]
+  }
 };
