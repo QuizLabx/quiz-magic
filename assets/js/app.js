@@ -250,19 +250,23 @@ function checkAchievements() {
 function getUserStats() {
     const saved = localStorage.getItem('quiz_stats');
     const stats = saved ? JSON.parse(saved) : {};
-    
     let totalQuizzes = 0;
     if (stats.creatures) {
         totalQuizzes = Object.values(stats.creatures).reduce((a, b) => a + b, 0);
     }
-    
     return {
         totalQuizzes: totalQuizzes,
         creatures: stats.creatures || {},
         shares: stats.shares || 0,
         comparisons: stats.comparisons || 0,
         retakes: stats.retakes || 0,
-        secretUnlocks: stats.secretUnlocks || 0
+        secretUnlocks: stats.secretUnlocks || 0,
+        // ✨ الحقول الجديدة للإنجازات الذكية
+        fastestQuiz: stats.fastestQuiz || null,
+        nightVisits: stats.nightVisits || 0,
+        earlyVisits: stats.earlyVisits || 0,
+        visitDays: stats.visitDays || [],
+        bestCompatibility: stats.bestCompatibility || null
     };
 }
 
@@ -1023,7 +1027,7 @@ function showResult() {
 
     const percentage = getCreaturePercentage(winnerId);
     const isAr = currentLang === 'ar';
-    
+
     container.innerHTML = `
         <div class="theme-bg-secondary rounded-[2.5rem] overflow-hidden border theme-border shadow-2xl mb-12 animate-fade-in">
             <div class="relative h-[28rem] md:h-[35rem] overflow-hidden bg-slate-950">
