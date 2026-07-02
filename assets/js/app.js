@@ -721,7 +721,25 @@ function renderQuestionContent(container, question, totalSteps, progress, slideI
 
     container.innerHTML = content;
     updateVisualEvolution(progress);
+
+    // ♿ Keyboard Navigation (التنقل بلوحة المفاتيح)
+    setTimeout(() => {
+        const options = container.querySelectorAll('button, [onclick]');
+        if (options.length > 0) {
+            // إضافة tabindex للخيارات
+            options.forEach((opt, index) => {
+                opt.setAttribute('tabindex', '0');
+                opt.setAttribute('role', 'button');
+                opt.setAttribute('aria-label', `الخيار ${index + 1}`);
+            });
+        
+        // التركيز على أول خيار
+            options[0].focus();
+        }
+    }, 100);
+
 }
+
 
 function updateVisualEvolution(progress) {
     const bar = document.getElementById('dynamic-progress-bar');
@@ -742,6 +760,14 @@ function updateVisualEvolution(progress) {
 }
 
 function handleLikert(value, axis) {
+    
+ // ♿ إضافة تأثير بصري للخيار المحدد
+    const clickedBtn = event?.target?.closest('button');
+    if (clickedBtn) {
+        clickedBtn.classList.add('option-selected');
+        setTimeout(() => clickedBtn.classList.remove('option-selected'), 300);
+    }
+
     // 🎵 صوت الضغط
     if (window.audioManager) {
         window.audioManager.play('ui-click');
@@ -752,6 +778,14 @@ function handleLikert(value, axis) {
 }
 
 function handleVisualChoice(trait, value, axis) {
+
+    // ♿ إضافة تأثير بصري للخيار المحدد
+    const clickedOption = event?.target?.closest('[onclick]');
+    if (clickedOption) {
+        clickedOption.classList.add('option-selected');
+        setTimeout(() => clickedOption.classList.remove('option-selected'), 300);
+    }
+
     // 🎵 صوت الضغط
     if (window.audioManager) {
         window.audioManager.play('ui-click');
