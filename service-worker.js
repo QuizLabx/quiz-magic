@@ -15,10 +15,20 @@ const ASSETS = [
   'https://cdn.jsdelivr.net/npm/chart.js'
 ];
 
-self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_VERSION).then(cache => cache.addAll(ASSETS))
-  );
+self.addEventListener('install', (event) {
+    event.waitUntil(
+        caches.open(CACHE_NAME)
+            .then((cache) => {
+                // استخدام Promise.allSettled بدلاً من addAll لتجنب فشل كل الكاش بسبب ملف واحد
+                return Promise.allSettled(
+                    urlsToCache.map(url => 
+                        cache.add(url).catch(err => {
+                            console.warn(`⚠️ لم يتم تخزين: ${url}`, err.message);
+                        })
+                    )
+                );
+            })
+    );
 });
 
 self.addEventListener('activate', event => {
