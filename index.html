@@ -52,6 +52,9 @@ z-index: -100;
 </head>
 <body class="min-h-screen flex flex-col transition-colors duration-500">
 
+    <!-- ♿ Skip to Content Link (للمكفوفين) -->
+<a href="#main-content" class="skip-link">تخطي إلى المحتوى الرئيسي / Skip to main content</a>
+
 <!-- ==================== SPLASH SCREEN (NEW) ==================== -->
 <div id="splash-screen" class="splash-screen">
     <div class="splash-logo">
@@ -169,31 +172,31 @@ Mythical Analysis Result
 </a>
 <div class="flex items-center gap-3">
     <!-- 🎵 Music Toggle Button (NEW) -->
-    <button id="music-toggle" onclick="audioManager.toggleMusic()" class="theme-toggle-btn text-sm px-3 py-2 rounded-md border transition-all transform hover:scale-105" title="إيقاف الموسيقى / Mute Music">
-        <i class="fas fa-volume-up"></i>
+    <button id="music-toggle" onclick="audioManager.toggleMusic()" class="theme-toggle-btn text-sm px-3 py-2 rounded-md border transition-all transform hover:scale-105" title="إيقاف الموسيقى / Mute Music" aria-label="إيقاف أو تشغيل الموسيقى الخلفية">
+        <i class="fas fa-volume-up" aria-hidden="true"></i>
     </button>
     <!-- 🔔 SFX Toggle Button (NEW) -->
-    <button id="sfx-toggle" onclick="audioManager.toggleSfx()" class="theme-toggle-btn text-sm px-3 py-2 rounded-md border transition-all transform hover:scale-105" title="إيقاف المؤثرات / Mute SFX">
-        <i class="fas fa-bell"></i>
+    <button id="sfx-toggle" onclick="audioManager.toggleSfx()" class="theme-toggle-btn text-sm px-3 py-2 rounded-md border transition-all transform hover:scale-105" title="إيقاف المؤثرات / Mute SFX" aria-label="إيقاف أو تشغيل المؤثرات الصوتية">
+        <i class="fas fa-bell" aria-hidden="true"></i>
     </button>
     <!-- Achievements Button -->
-    <button onclick="showAchievementsModal()" class="theme-toggle-btn text-sm px-3 py-2 rounded-md border transition-all transform hover:scale-105" title="إنجازاتي / My Achievements">
-        <i class="fas fa-trophy"></i>
+    <button onclick="showAchievementsModal()" class="theme-toggle-btn text-sm px-3 py-2 rounded-md border transition-all transform hover:scale-105" title="إنجازاتي / My Achievements" aria-label="فتح صفحة الإنجازات">
+        <i class="fas fa-trophy" aria-hidden="true"></i>
     </button>
     <!-- Theme Toggle Button -->
-    <button id="theme-toggle" onclick="toggleTheme()" class="theme-toggle-btn text-sm px-3 py-2 rounded-md border transition-all transform hover:scale-105" title="تبديل المظهر / Toggle Theme">
-        <i class="fas fa-moon"></i>
+    <button id="theme-toggle" onclick="toggleTheme()" class="theme-toggle-btn text-sm px-3 py-2 rounded-md border transition-all transform hover:scale-105" title="تبديل المظهر / Toggle Theme" aria-label="تبديل بين الوضع الليلي والنهاري">
+        <i class="fas fa-moon" aria-hidden="true"></i>
     </button>
     <!-- Language Toggle Button -->
-    <button onclick="showLanguageScreen()" class="text-sm px-3 py-2 rounded-md border transition-all theme-bg-tertiary theme-border theme-text-primary">
-        <i class="fas fa-globe mr-1"></i> <span id="lang-btn-text">العربية</span>
+    <button onclick="showLanguageScreen()" class="text-sm px-3 py-2 rounded-md border transition-all theme-bg-tertiary theme-border theme-text-primary" aria-label="تغيير اللغة">
+        <i class="fas fa-globe mr-1" aria-hidden="true"></i> <span id="lang-btn-text">العربية</span>
     </button>
 </div>
 </div>
 </header>
 
 <!-- Main Content -->
-<main class="flex-grow container mx-auto px-4 py-8">
+<main id="main-content" class="flex-grow container mx-auto px-4 py-8" tabindex="-1">
 <!-- Hero Section -->
 <section id="hero-section" class="text-center mb-12">
 <h2 id="hero-title" class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent pb-2">
