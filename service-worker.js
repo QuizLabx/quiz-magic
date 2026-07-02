@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'quizmagic-v8';
+const CACHE_VERSION = 'quizmagic-v9';
 const ASSETS = [
   '/',
   '/index.html',
