@@ -492,6 +492,43 @@ function renderSocialLinks() {
 }
 
 // ==================== SKELETON LOADERS ====================
+
+// ⏳ Question Skeleton Loader (NEW)
+function showQuestionSkeleton(isVisual = false) {
+    const container = document.getElementById('quiz-container');
+    if (!container) return;
+    
+    let skeletonHtml = `
+        <div class="question-skeleton">
+            <div class="skeleton-progress"></div>
+            <div class="skeleton-title"></div>
+    `;
+    
+    if (isVisual) {
+        skeletonHtml += `
+            <div class="skeleton-visual-grid">
+                <div class="skeleton-visual-option"></div>
+                <div class="skeleton-visual-option"></div>
+                <div class="skeleton-visual-option"></div>
+                <div class="skeleton-visual-option"></div>
+            </div>
+        `;
+    } else {
+        skeletonHtml += `
+            <div class="skeleton-options">
+                <div class="skeleton-option"></div>
+                <div class="skeleton-option"></div>
+                <div class="skeleton-option"></div>
+                <div class="skeleton-option"></div>
+                <div class="skeleton-option"></div>
+            </div>
+        `;
+    }
+    
+    skeletonHtml += `</div>`;
+    container.innerHTML = skeletonHtml;
+}
+
 function showSkeletonLoaders() {
     const grid = document.getElementById('quiz-grid');
     const skeletonGrid = document.getElementById('skeleton-grid');
@@ -675,20 +712,26 @@ function showStep() {
     const container = document.getElementById('quiz-container');
     const totalSteps = currentQuiz.questions.length;
     const progress = ((currentStepId + 1) / totalSteps) * 100;
-    
     const isRTL = currentLang === 'ar';
     const slideInClass = isRTL ? 'question-slide-in-rtl' : 'question-slide-in-ltr';
     const slideOutClass = isRTL ? 'question-slide-out-rtl' : 'question-slide-out-ltr';
-
-    const currentContent = container.querySelector('.quiz-content-wrapper');
-    if (currentContent) {
-        currentContent.classList.add(slideOutClass);
-        setTimeout(() => {
+    
+    // ⏳ Show skeleton loader first
+    const isVisual = question.type === 'visual';
+    showQuestionSkeleton(isVisual);
+    
+    // ⏳ Wait a bit for skeleton to render, then show real content
+    setTimeout(() => {
+        const currentContent = container.querySelector('.quiz-content-wrapper');
+        if (currentContent) {
+            currentContent.classList.add(slideOutClass);
+            setTimeout(() => {
+                renderQuestionContent(container, question, totalSteps, progress, slideInClass);
+            }, 200);
+        } else {
             renderQuestionContent(container, question, totalSteps, progress, slideInClass);
-        }, 200);
-    } else {
-        renderQuestionContent(container, question, totalSteps, progress, slideInClass);
-    }
+        }
+    }, 150); // 150ms لإظهار الـ Skeleton قبل السؤال الحقيقي
 }
 
 function renderQuestionContent(container, question, totalSteps, progress, slideInClass) {
@@ -708,7 +751,7 @@ function renderQuestionContent(container, question, totalSteps, progress, slideI
             </div>
 
             <div class="mb-10">
-                <h2 class="text-2xl md:text-3xl font-bold theme-text-primary text-center leading-tight">${question.text}</h2>
+                <h2 class="text-2xl md:text-3xl font-bold theme-text-primary text-center leading-tight question-title-fade-in">${question.text}</h2>
             </div>
     `;
 
@@ -716,7 +759,7 @@ function renderQuestionContent(container, question, totalSteps, progress, slideI
         content += `
             <div class="grid grid-cols-2 gap-4 sm:gap-6">
                 ${question.options.map((opt) => `
-                    <div onclick="handleVisualChoice('${opt.trait}', ${opt.value}, '${opt.axis || ''}')" class="group cursor-pointer relative overflow-hidden rounded-2xl border-2 theme-border hover:border-purple-500 transition-all transform hover:scale-[1.03] active:scale-95 shadow-lg">
+                    <div onclick="handleVisualChoice('${opt.trait}', ${opt.value}, '${opt.axis || ''}')" class="group cursor-pointer relative overflow-hidden rounded-2xl border-2 theme-border hover:border-purple-500 transition-all transform hover:scale-[1.03] active:scale-95 shadow-lg question-option-fade-in">
                         <div class="aspect-square overflow-hidden">
                             <img src="${opt.image}" loading="lazy" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                         </div>
@@ -738,7 +781,7 @@ function renderQuestionContent(container, question, totalSteps, progress, slideI
                     { text: currentLang === 'ar' ? 'لا أوافق' : 'Disagree', value: 2, color: 'bg-orange-600/20 border-orange-500/50 hover:bg-orange-600/40' },
                     { text: currentLang === 'ar' ? 'لا أوافق بشدة' : 'Strongly Disagree', value: 1, color: 'bg-red-600/20 border-red-500/50 hover:bg-red-600/40' }
                 ].map((opt) => `
-                    <button onclick="handleLikert(${opt.value}, '${question.axis || ''}')" class="w-full p-4 text-center ${opt.color} border rounded-2xl transition-all transform hover:scale-[1.02] active:scale-95 font-bold theme-text-primary">
+                    <button onclick="handleLikert(${opt.value}, '${question.axis || ''}')" class="w-full p-4 text-center ${opt.color} border rounded-2xl transition-all transform hover:scale-[1.02] active:scale-95 font-bold theme-text-primary question-option-fade-in">
                         ${opt.text}
                     </button>
                 `).join('')}
