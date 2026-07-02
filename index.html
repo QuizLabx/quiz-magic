@@ -113,6 +113,64 @@ z-index: -100;
     </div>
 </div>
 
+
+<!-- ==================== PROFILE MODAL (NEW) ==================== -->
+<div id="profile-modal" class="profile-modal achievements-modal">
+    <div class="modal-overlay" onclick="closeProfileModal()"></div>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">
+                <i class="fas fa-user text-purple-400"></i>
+                <span id="profile-modal-title">ملفي الشخصي</span>
+            </h2>
+            <button onclick="closeProfileModal()" class="modal-close" aria-label="إغلاق">
+                <i class="fas fa-times" aria-hidden="true"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <!-- بطاقات الإحصائيات الرئيسية -->
+            <h3 class="text-lg font-bold theme-text-primary mb-4 flex items-center gap-2">
+                <i class="fas fa-chart-bar text-purple-400"></i>
+                <span id="profile-stats-title">إحصائياتي</span>
+            </h3>
+            <div id="profile-stats-grid" class="profile-stats-grid">
+                <!-- سيتم ملؤها ديناميكياً من JS -->
+            </div>
+
+            <!-- التفاصيل الإضافية -->
+            <h3 class="text-lg font-bold theme-text-primary mb-4 mt-6 flex items-center gap-2">
+                <i class="fas fa-list text-purple-400"></i>
+                <span id="profile-details-title">تفاصيل إضافية</span>
+            </h3>
+            <div id="profile-details" class="profile-details">
+                <!-- سيتم ملؤها ديناميكياً من JS -->
+            </div>
+
+            <!-- أزرار الإجراءات -->
+            <h3 class="text-lg font-bold theme-text-primary mb-4 mt-6 flex items-center gap-2">
+                <i class="fas fa-cogs text-purple-400"></i>
+                <span id="profile-actions-title">إدارة البيانات</span>
+            </h3>
+            <div class="profile-actions">
+                <button onclick="exportUserData()" class="profile-action-btn export-btn">
+                    <i class="fas fa-download btn-icon"></i>
+                    <span class="btn-text" id="profile-export-text">تصدير البيانات كملف JSON</span>
+                </button>
+                <button onclick="importUserData()" class="profile-action-btn import-btn">
+                    <i class="fas fa-upload btn-icon"></i>
+                    <span class="btn-text" id="profile-import-text">استيراد بيانات من ملف</span>
+                </button>
+                <button onclick="deleteAllData()" class="profile-action-btn delete-btn">
+                    <i class="fas fa-trash btn-icon"></i>
+                    <span class="btn-text" id="profile-delete-text">حذف جميع البيانات</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 <!-- Hidden Share Template for High-Quality Images -->
 <div id="share-template">
 <div class="share-card-bg"></div>
@@ -196,6 +254,12 @@ Mythical Analysis Result
     <button onclick="showAchievementsModal()" class="theme-toggle-btn text-sm px-3 py-2 rounded-md border transition-all transform hover:scale-105" title="إنجازاتي / My Achievements" aria-label="فتح صفحة الإنجازات">
         <i class="fas fa-trophy" aria-hidden="true"></i>
     </button>
+
+    <!-- 👤 Profile Button (NEW) -->
+    <button onclick="showProfileModal()" class="theme-toggle-btn text-sm px-3 py-2 rounded-md border transition-all transform hover:scale-105" title="ملفي الشخصي / My Profile" aria-label="فتح الملف الشخصي">
+        <i class="fas fa-user" aria-hidden="true"></i>
+    </button>
+
     <!-- Theme Toggle Button -->
     <button id="theme-toggle" onclick="toggleTheme()" class="theme-toggle-btn text-sm px-3 py-2 rounded-md border transition-all transform hover:scale-105" title="تبديل المظهر / Toggle Theme" aria-label="تبديل بين الوضع الليلي والنهاري">
         <i class="fas fa-moon" aria-hidden="true"></i>
@@ -288,6 +352,8 @@ Mythical Analysis Result
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="assets/js/quizzes.js"></script>
 <script src="assets/js/app.js"></script>
+<!-- 👤 Profile Manager (NEW) -->
+<script src="assets/js/profile.js"></script>
 <script>
 if ('serviceWorker' in navigator) {
 window.addEventListener('load', () => {
