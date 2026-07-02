@@ -1002,6 +1002,11 @@ function calculateCompatibility(user1Data, user2Data) {
 
 function showResult() {
     isQuizActive = false;
+    
+    // 🎯 هذا هو السطر المفقود الذي يحسب النتيجة ويعرف المتغيرات!
+    const { creature, secondaryCreature, radar, winnerId } = calculateResult();
+    saveUserStats(winnerId);
+
     // ⚡ تحقق من إنجاز البرق السريع
     const duration = getQuizDurationSeconds();
     if (duration > 0) {
@@ -1010,6 +1015,7 @@ function showResult() {
             localStorage.setItem('quiz_stats', JSON.stringify(userStats));
         }
     }
+    
     applyCreatureTheme(winnerId);
     document.getElementById('quiz-container').classList.add('hidden');
     const container = document.getElementById('result-container');
@@ -1017,7 +1023,7 @@ function showResult() {
 
     const percentage = getCreaturePercentage(winnerId);
     const isAr = currentLang === 'ar';
-
+    
     container.innerHTML = `
         <div class="theme-bg-secondary rounded-[2.5rem] overflow-hidden border theme-border shadow-2xl mb-12 animate-fade-in">
             <div class="relative h-[28rem] md:h-[35rem] overflow-hidden bg-slate-950">
