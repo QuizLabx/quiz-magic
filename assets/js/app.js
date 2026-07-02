@@ -6,6 +6,25 @@ let currentTheme = 'dark';
 let isQuizActive = false;
 let userStats = {};
 let friendComparisonData = null;
+let quizStartTime = null;  // ⚡ لتتبع وقت بداية الاختبار
+let userSessionData = {};  // 📊 بيانات الجلسة الحالية
+
+
+
+// 🛡️ Global Error Handler - يحمي الموقع من الانهيار الكامل
+window.addEventListener('error', (event) => {
+    console.error('🛡️ Global Error Caught:', event.error);
+    // لا نعرض إشعار هنا لأن هذا للأخطاء البرمجية العميقة
+});
+
+window.addEventListener('unhandledrejection', (event) => {
+    console.error('🛡️ Unhandled Promise Rejection:', event.reason);
+    const isAr = currentLang === 'ar';
+    showErrorToast(
+        isAr ? 'حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.' : 'An unexpected error occurred. Please try again.',
+        isAr
+    );
+});
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
@@ -21,6 +40,19 @@ document.addEventListener('DOMContentLoaded', () => {
     updateThemeToggleIcon();
     loadUserStats();
     
+// 🕐 سجل زيارة اليوم وتحقق من الوقت
+    recordVisitDay();
+    if (isNightOwlTime()) {
+        if (!userStats.nightVisits) userStats.nightVisits = 0;
+        userStats.nightVisits++;
+        localStorage.setItem('quiz_stats', JSON.stringify(userStats));
+    }
+    if (isEarlyBirdTime()) {
+        if (!userStats.earlyVisits) userStats.earlyVisits = 0;
+        userStats.earlyVisits++;
+        localStorage.setItem('quiz_stats', JSON.stringify(userStats));
+    }
+
     // Check for comparison URL parameter
     checkComparisonParam();
     
@@ -42,53 +74,59 @@ function hideSplashScreen() {
 
 // ==================== CONFETTI SYSTEM (NEW) ====================
 function launchConfetti(creatureId) {
-    const container = document.getElementById('confetti-container');
-    if (!container) return;
-    
-    const theme = creatureThemes[creatureId] || creatureThemes.dragon;
-    const colors = [
-        theme.primary,
-        theme.secondary,
-        '#a855f7',
-        '#ec4899',
-        '#fbbf24',
-        '#ffffff'
-    ];
-    
-    const shapes = ['square', 'circle', 'triangle'];
-    const piecesCount = 80;
-    
-    for (let i = 0; i < piecesCount; i++) {
-        const piece = document.createElement('div');
-        const shape = shapes[Math.floor(Math.random() * shapes.length)];
-        piece.className = `confetti-piece ${shape}`;
-        
-        const color = colors[Math.floor(Math.random() * colors.length)];
-        const left = Math.random() * 100;
-        const delay = Math.random() * 0.5;
-        const duration = 2.5 + Math.random() * 2;
-        const size = 6 + Math.random() * 10;
-        
-        piece.style.left = `${left}%`;
-        piece.style.animationDelay = `${delay}s`;
-        piece.style.animationDuration = `${duration}s`;
-        piece.style.width = `${size}px`;
-        piece.style.height = `${size}px`;
-        
-        if (shape === 'triangle') {
-            piece.style.color = color;
-        } else {
-            piece.style.backgroundColor = color;
+    try {
+        // احترام إعدادات تقليل الحركة
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            return;
         }
         
-        container.appendChild(piece);
+        const container = document.getElementById('confetti-container');
+        if (!container) return;
+        
+        const theme = creatureThemes[creatureId] || creatureThemes.dragon;
+        const colors = [
+            theme.primary,
+            theme.secondary,
+            '#a855f7',
+            '#ec4899',
+            '#fbbf24',
+            '#ffffff'
+        ];
+        const shapes = ['square', 'circle', 'triangle'];
+        const piecesCount = 80;
+        
+        for (let i = 0; i < piecesCount; i++) {
+            const piece = document.createElement('div');
+            const shape = shapes[Math.floor(Math.random() * shapes.length)];
+            piece.className = `confetti-piece ${shape}`;
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            const left = Math.random() * 100;
+            const delay = Math.random() * 0.5;
+            const duration = 2.5 + Math.random() * 2;
+            const size = 6 + Math.random() * 10;
+            
+            piece.style.left = `${left}%`;
+            piece.style.animationDelay = `${delay}s`;
+            piece.style.animationDuration = `${duration}s`;
+            piece.style.width = `${size}px`;
+            piece.style.height = `${size}px`;
+            
+            if (shape === 'triangle') {
+                piece.style.color = color;
+            } else {
+                piece.style.backgroundColor = color;
+            }
+            container.appendChild(piece);
+        }
+        
+        setTimeout(() => {
+            if (container) container.innerHTML = '';
+        }, 5000);
+    } catch (error) {
+        console.warn('🛡️ Confetti failed (non-critical):', error);
+        // الكونفيتي غير حرج - لا نزعج المستخدم بخطأ
     }
-    
-    setTimeout(() => {
-        container.innerHTML = '';
-    }, 5000);
 }
-
 // ==================== ACHIEVEMENTS SYSTEM (NEW) ====================
 let userAchievements = {};
 
@@ -142,12 +180,43 @@ const ACHIEVEMENTS = {
         condition: (stats) => stats.retakes >= 3
     },
     deep_diver: {
-        name: { ar: 'المتعمق', en: 'Deep Diver' },
-        description: { ar: 'فتح التقرير السري 5 مرات', en: 'Unlock secret report 5 times' },
-        icon: '🔓',
-        condition: (stats) => stats.secretUnlocks >= 5
+    name: { ar: 'المتعمق', en: 'Deep Diver' },
+    description: { ar: 'فتح التقرير السري 5 مرات', en: 'Unlock secret report 5 times' },
+    icon: '🔓',
+    condition: (stats) => stats.secretUnlocks >= 5
+    },
+    // ✨ الإنجازات الجديدة الذكية
+    speed_runner: {
+        name: { ar: 'البرق السريع', en: 'Speed Runner' },
+        description: { ar: 'أكمل الاختبار في أقل من 3 دقائق', en: 'Complete a quiz in under 3 minutes' },
+        icon: '⚡',
+        condition: (stats) => stats.fastestQuiz && stats.fastestQuiz <= 180
+    },
+    night_owl: {
+        name: { ar: 'بومة الليل', en: 'Night Owl' },
+        description: { ar: 'استخدم الموقع في ساعات الليل المتأخرة', en: 'Use the site during late night hours' },
+        icon: '🌙',
+        condition: (stats) => stats.nightVisits >= 1
+    },
+    early_bird: {
+        name: { ar: 'طائر الفجر', en: 'Early Bird' },
+        description: { ar: 'استخدم الموقع في ساعات الصباح الباكر', en: 'Use the site during early morning hours' },
+        icon: '🌅',
+        condition: (stats) => stats.earlyVisits >= 1
+    },
+    veteran: {
+        name: { ar: 'المتمرس', en: 'Veteran' },
+        description: { ar: 'استخدم الموقع في 7 أيام مختلفة', en: 'Use the site on 7 different days' },
+        icon: '🔥',
+        condition: (stats) => stats.visitDays && stats.visitDays.length >= 7
+    },
+    perfect_match: {
+        name: { ar: 'الرفيق المثالي', en: 'Perfect Match' },
+        description: { ar: 'احصل على توافق 95% أو أكثر مع صديق', en: 'Get 95%+ compatibility with a friend' },
+        icon: '🎯',
+        condition: (stats) => stats.bestCompatibility && stats.bestCompatibility >= 95
     }
-};
+    };
 
 function loadAchievements() {
     const saved = localStorage.getItem('quiz_achievements');
@@ -218,6 +287,30 @@ function showAchievementToast(achievement) {
     }, 4000);
 }
 
+function showErrorToast(errorMessage, isAr = currentLang === 'ar') {
+    // استخدام toast موجود بشكل مؤقت
+    const toast = document.getElementById('achievement-toast');
+    if (!toast) return;
+    
+    const title = toast.querySelector('.toast-title');
+    const message = toast.querySelector('.toast-message');
+    const icon = toast.querySelector('.toast-icon');
+    
+    // تغيير الألوان لتعكس خطأ
+    toast.style.background = 'linear-gradient(135deg, #dc2626, #ea580c)';
+    
+    title.textContent = isAr ? 'عذراً!' : 'Oops!';
+    message.textContent = errorMessage;
+    icon.textContent = '⚠️';
+    
+    toast.classList.add('show');
+    setTimeout(() => {
+        toast.classList.remove('show');
+        // إعادة الألوان الأصلية
+        toast.style.background = '';
+    }, 5000);
+}
+
 function showAchievementsModal() {
     const modal = document.getElementById('achievements-modal');
     if (!modal) return;
@@ -278,10 +371,51 @@ function calculateAchievementProgress(key, stats) {
         comparer: Math.min(100, (stats.comparisons / 1) * 100),
         collector: Math.min(100, (stats.creatures ? Object.keys(stats.creatures).length / 5 : 0) * 100),
         loyal: Math.min(100, (stats.retakes / 3) * 100),
-        deep_diver: Math.min(100, (stats.secretUnlocks / 5) * 100)
-    };
+        deep_diver: Math.min(100, (stats.secretUnlocks / 5) * 100),
+        // ✨ الإنجازات الجديدة
+        speed_runner: stats.fastestQuiz ? Math.min(100, ((180 - stats.fastestQuiz) / 180) * 100) : 0,
+        night_owl: stats.nightVisits >= 1 ? 100 : 0,
+        early_bird: stats.earlyVisits >= 1 ? 100 : 0,
+        veteran: stats.visitDays ? Math.min(100, (stats.visitDays.length / 7) * 100) : 0,
+        perfect_match: stats.bestCompatibility ? Math.min(100, (stats.bestCompatibility / 95) * 100) : 0
+};
     
     return Math.round(conditions[key] || 0);
+}
+
+// ==================== TIME & DATE HELPERS (NEW) ====================
+function getCurrentHour() {
+    return new Date().getHours();
+}
+
+function isNightOwlTime() {
+    const hour = getCurrentHour();
+    return hour >= 0 && hour < 5; // بين 12 ليلاً و 5 فجراً
+}
+
+function isEarlyBirdTime() {
+    const hour = getCurrentHour();
+    return hour >= 5 && hour < 8; // بين 5 و 8 صباحاً
+}
+
+function recordVisitDay() {
+    const today = new Date().toDateString();
+    if (!userStats.visitDays) {
+        userStats.visitDays = [];
+    }
+    if (!userStats.visitDays.includes(today)) {
+        userStats.visitDays.push(today);
+        // نحتفظ بآخر 30 يوم فقط
+        if (userStats.visitDays.length > 30) {
+            userStats.visitDays.shift();
+        }
+        localStorage.setItem('quiz_stats', JSON.stringify(userStats));
+    }
+}
+
+function getQuizDurationSeconds() {
+    if (!quizStartTime) return 0;
+    return Math.floor((Date.now() - quizStartTime) / 1000);
 }
 
 // ==================== THEME MANAGEMENT ====================
@@ -488,6 +622,7 @@ function startQuiz(quizId) {
     currentQuiz = data.quizzes.find(q => q.id === quizId);
     currentStepId = 0;
     userResponses = [];
+    quizStartTime = Date.now();  // ⚡ ابدأ تتبع الوقت
     document.getElementById('quiz-grid').classList.add('hidden');
     document.getElementById('hero-section').classList.add('hidden');
     const container = document.getElementById('quiz-container');
@@ -867,8 +1002,14 @@ function calculateCompatibility(user1Data, user2Data) {
 
 function showResult() {
     isQuizActive = false;
-    const { creature, secondaryCreature, radar, winnerId } = calculateResult();
-    saveUserStats(winnerId);
+    // ⚡ تحقق من إنجاز البرق السريع
+    const duration = getQuizDurationSeconds();
+    if (duration > 0) {
+        if (!userStats.fastestQuiz || duration < userStats.fastestQuiz) {
+            userStats.fastestQuiz = duration;
+            localStorage.setItem('quiz_stats', JSON.stringify(userStats));
+        }
+    }
     applyCreatureTheme(winnerId);
     document.getElementById('quiz-container').classList.add('hidden');
     const container = document.getElementById('result-container');
@@ -1040,6 +1181,14 @@ function showResult() {
         };
         const compatibilityScore = calculateCompatibility(friendComparisonData, currentUserData);
 
+    // 🎯 تحقق من إنجاز الرفيق المثالي
+        if (compatibilityScore >= 95) {
+            if (!userStats.bestCompatibility || compatibilityScore > userStats.bestCompatibility) {
+                userStats.bestCompatibility = compatibilityScore;
+                localStorage.setItem('quiz_stats', JSON.stringify(userStats));
+        }
+    }
+
         const comparisonResultHtml = `
             <div class="mt-12 p-8 theme-bg-tertiary/20 rounded-[2.5rem] border theme-border text-center animate-fade-in">
                 <h3 class="text-3xl font-bold theme-text-primary mb-4">
@@ -1064,47 +1213,82 @@ function showResult() {
 
 // ==================== RADAR CHART ====================
 function renderRadarChart(data) {
-    const ctx = document.getElementById('radarChart').getContext('2d');
-    const axesConfig = config.powerAxes[currentLang];
-    const labels = Object.values(axesConfig);
-    const dataValues = Object.keys(axesConfig).map(key => data[key] || 50);
-    const isLight = document.documentElement.classList.contains('light-mode');
-    const gridColor = isLight ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)';
-    const textColor = isLight ? '#0f172a' : '#94a3b8';
-
-    new Chart(ctx, {
-        type: 'radar',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: currentLang === 'ar' ? 'تحليل القوى' : 'Power Analysis',
-                data: dataValues,
-                backgroundColor: 'rgba(168, 85, 247, 0.2)',
-                borderColor: 'rgba(168, 85, 247, 0.8)',
-                borderWidth: 3,
-                pointBackgroundColor: '#a855f7',
-                pointBorderColor: '#fff',
-                pointHoverBackgroundColor: '#fff',
-                pointHoverBorderColor: '#a855f7'
-            }]
-        },
-        options: {
-            scales: {
-                r: {
-                    angleLines: { color: gridColor },
-                    grid: { color: gridColor },
-                    pointLabels: { color: textColor, font: { size: 12, family: 'Cairo', weight: 'bold' } },
-                    ticks: { display: false },
-                    suggestedMin: 0,
-                    suggestedMax: 100
-                }
-            },
-            plugins: { legend: { display: false } },
-            animation: { duration: 2000, easing: 'easeOutQuart' }
+    try {
+        const canvas = document.getElementById('radarChart');
+        if (!canvas) {
+            console.warn('⚠️ Radar Chart canvas not found');
+            return;
         }
-    });
+        
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+            console.warn('⚠️ Could not get canvas context');
+            return;
+        }
+        
+        // تحقق من تحميل Chart.js
+        if (typeof Chart === 'undefined') {
+            console.warn('⚠️ Chart.js not loaded');
+            return;
+        }
+        
+        const axesConfig = config?.powerAxes?.[currentLang] || {};
+        const labels = Object.values(axesConfig);
+        
+        if (labels.length === 0) {
+            console.warn('⚠️ No axes configuration found');
+            return;
+        }
+        
+        const dataValues = Object.keys(axesConfig).map(key => data[key] || 50);
+        const isLight = document.documentElement.classList.contains('light-mode');
+        const gridColor = isLight ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)';
+        const textColor = isLight ? '#0f172a' : '#94a3b8';
+        
+        new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: currentLang === 'ar' ? 'تحليل القوى' : 'Power Analysis',
+                    data: dataValues,
+                    backgroundColor: 'rgba(168, 85, 247, 0.2)',
+                    borderColor: 'rgba(168, 85, 247, 0.8)',
+                    borderWidth: 3,
+                    pointBackgroundColor: '#a855f7',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#a855f7'
+                }]
+            },
+            options: {
+                scales: {
+                    r: {
+                        angleLines: { color: gridColor },
+                        grid: { color: gridColor },
+                        pointLabels: { color: textColor, font: { size: 12, family: 'Cairo', weight: 'bold' } },
+                        ticks: { display: false },
+                        suggestedMin: 0,
+                        suggestedMax: 100
+                    }
+                },
+                plugins: { legend: { display: false } },
+                animation: { duration: 2000, easing: 'easeOutQuart' }
+            }
+        });
+    } catch (error) {
+        console.error('🛡️ Error in renderRadarChart:', error);
+        // إخفاء حاوية الرادار بشكل لطيف إذا فشل الرسم
+        const chartContainer = document.getElementById('radarChart')?.parentElement;
+        if (chartContainer) {
+            chartContainer.innerHTML = `
+                <p class="text-center theme-text-secondary italic py-8">
+                    ${currentLang === 'ar' ? 'تعذر عرض مخطط القوى حالياً' : 'Unable to display power chart at this time'}
+                </p>
+            `;
+        }
+    }
 }
-
 // ==================== SECRET REPORT ====================
 function toggleDetails() {
     const section = document.getElementById('details-section');
@@ -1186,8 +1370,14 @@ async function downloadResultAsImage(btn) {
         link.href = canvas.toDataURL('image/png');
         link.click();
     } catch (err) {
-        console.error('Download failed:', err);
-        alert(currentLang === 'ar' ? 'عذراً، فشل تحميل الصورة.' : 'Sorry, download failed.');
+        console.error('🛡️ Download failed:', err);
+        const isAr = currentLang === 'ar';
+        showErrorToast(
+            isAr 
+                ? 'تعذر تجهيز الصورة. يمكنك مشاركة النتيجة بالرابط بدلاً من ذلك.' 
+                : 'Could not prepare image. You can share the result via link instead.',
+            isAr
+        );
     } finally {
         btn.innerHTML = originalText;
         btn.disabled = false;
@@ -1221,7 +1411,20 @@ function compareWithFriend() {
         secondaryCreatureId: secondaryCreature.id,
         radarScores: radar
     };
-    const encodedData = btoa(JSON.stringify(friendData));
+    let encodedData;
+    try {
+        // استخدام encodeURIComponent + btoa لدعم أفضل (احتياطي)
+        encodedData = btoa(unescape(encodeURIComponent(JSON.stringify(friendData))));
+    } catch (e) {
+        console.warn('🛡️ Encoding failed, using fallback:', e);
+        // Fallback: JSON مشفر بشكل آمن بدون أحرف خاصة
+        const safeData = {
+            creatureId: friendData.creatureId,
+            secondaryCreatureId: friendData.secondaryCreatureId,
+            radarScores: friendData.radarScores
+        };
+        encodedData = btoa(JSON.stringify(safeData));
+    }
     const comparisonUrl = `${window.location.origin}${window.location.pathname}?compare=${encodedData}`;
     const text = currentLang === 'ar'
         ? `تحداني في QuizMagic واكتشف مدى توافق هويتنا الأسطورية! ${comparisonUrl}`
