@@ -532,6 +532,24 @@ function setLanguage(lang) {
 function renderQuizGrid() {
     isQuizActive = false;
     showSkeletonLoaders();
+
+    // 🚀 Lazy Loading للصور - تحمل فقط عند الاقتراب منها
+    const imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                if (img.dataset.src) {
+                    img.src = img.dataset.src;
+                    img.removeAttribute('data-src');
+                    img.classList.add('loaded');
+                }
+                observer.unobserve(img);
+            }
+        });
+    }, {
+        rootMargin: '50px 0px', // ابدأ التحميل قبل 50px من الوصول للصورة
+        threshold: 0.01
+    });
     const delay = navigator.connection?.effectiveType === '4g' ? 300 : 500;
     setTimeout(() => {
         const grid = document.getElementById('quiz-grid');
@@ -544,7 +562,7 @@ function renderQuizGrid() {
             card.style.animationDelay = `${index * 0.1}s`;
             card.innerHTML = `
                 <div class="relative h-56 overflow-hidden">
-                    <img src="${quiz.image}" alt="${quiz.title}" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <img data-src="${quiz.image}" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E" alt="${quiz.title}" loading="lazy" decoding="async" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-0 transition-opacity duration-500">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                     <div class="absolute top-4 right-4 bg-purple-600/90 backdrop-blur-md text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-xl">
                         ${quiz.badge}
@@ -566,9 +584,20 @@ function renderQuizGrid() {
                 }
             };
             grid.appendChild(card);
-        });
+            });
 
-        hideSkeletonLoaders();
+            // 🚀 ابدأ مراقبة جميع الصور الجديدة
+            const lazyImages = grid.querySelectorAll('img[data-src]');
+            lazyImages.forEach(img => {
+                imageObserver.observe(img);
+                // إضافة تأثير الظهور عند التحميل
+                img.addEventListener('load', () => {
+                    img.classList.remove('opacity-0');
+                    img.classList.add('opacity-100');
+                });
+            });
+
+            hideSkeletonLoaders();
     }, delay);
 }
 
