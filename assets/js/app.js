@@ -26,20 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Hide splash screen after loading
     hideSplashScreen();
-
-    // ✨ التحقق من شاشة الترحيب (بعد اختفاء الـ Splash Screen)
-    setTimeout(checkUserWelcome, 2500);
-
-    // ⌨️ دعم الضغط على مفتاح Enter في حقل الاسم
-    const nameInput = document.getElementById('user-name-input');
-    if (nameInput) {
-        nameInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                enterMagicRealm();
-            }
-        });
-    }
-    });
+});
 
 // ==================== SPLASH SCREEN (NEW) ====================
 function hideSplashScreen() {
@@ -395,18 +382,10 @@ function setLanguage(lang) {
     document.getElementById('hero-subtitle').innerText = data.heroSubtitle;
     document.getElementById('footer-desc').innerText = data.footerDesc;
     document.getElementById('lang-btn-text').innerText = lang === 'ar' ? 'العربية' : 'English';
+
     document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
     document.documentElement.lang = lang;
-    
-    // ✨ الحفاظ على الترحيب الشخصي إذا كان الاسم موجوداً
-    const savedName = localStorage.getItem('quiz_user_name');
-    if (savedName) {
-        const greetingDiv = document.getElementById('personal-greeting');
-        const nameDisplay = document.getElementById('user-name-display');
-        if (greetingDiv) greetingDiv.classList.remove('hidden');
-        if (nameDisplay) nameDisplay.textContent = savedName;
-    }
-    
+
     renderQuizGrid();
     document.getElementById('language-screen').classList.add('opacity-0', 'pointer-events-none');
 }
@@ -1264,70 +1243,5 @@ function compareWithFriend() {
             console.error('Failed to copy link: ', err);
             window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`);
         });
-    }
-}
-// ==================== WELCOME SCREEN & USER NAME (NEW) ====================
-function checkUserWelcome() {
-    const savedName = localStorage.getItem('quiz_user_name');
-    const welcomeScreen = document.getElementById('welcome-screen');
-    const greetingDiv = document.getElementById('personal-greeting');
-    const nameDisplay = document.getElementById('user-name-display');
-    
-    if (!savedName) {
-        // 👤 زائر جديد: إظهار شاشة الترحيب
-        if (welcomeScreen) {
-            welcomeScreen.classList.remove('hidden');
-            // التركيز على حقل الإدخال بعد ظهور الشاشة
-            setTimeout(() => {
-                const input = document.getElementById('user-name-input');
-                if (input) input.focus();
-            }, 1000);
-        }
-    } else {
-        // 🔄 زائر عائد: إخفاء شاشة الترحيب وإظهار الترحيب الشخصي
-        if (welcomeScreen) {
-            welcomeScreen.classList.add('hidden');
-        }
-        if (greetingDiv && nameDisplay) {
-            greetingDiv.classList.remove('hidden');
-            nameDisplay.textContent = savedName;
-        }
-    }
-}
-
-function enterMagicRealm() {
-    const input = document.getElementById('user-name-input');
-    const name = input ? input.value.trim() : '';
-    
-    // التحقق من أن الحقل ليس فارغاً
-    if (!name) {
-        const errorMsg = currentLang === 'ar' ? 'الرجاء كتابة اسمك للمتابعة...' : 'Please enter your name to continue...';
-        if (input) {
-            input.placeholder = errorMsg;
-            input.classList.add('border-red-500');
-            input.focus();
-            setTimeout(() => input.classList.remove('border-red-500'), 2000);
-        }
-        return;
-    }
-    
-    // 💾 حفظ الاسم في المتصفح
-    localStorage.setItem('quiz_user_name', name);
-    
-    // ✨ إخفاء الشاشة
-    const welcomeScreen = document.getElementById('welcome-screen');
-    if (welcomeScreen) {
-        welcomeScreen.classList.add('hidden');
-    }
-    
-    // 👋 إظهار الترحيب الشخصي في Hero Section
-    const greetingDiv = document.getElementById('personal-greeting');
-    const nameDisplay = document.getElementById('user-name-display');
-    if (greetingDiv) greetingDiv.classList.remove('hidden');
-    if (nameDisplay) nameDisplay.textContent = name;
-    
-    // 🎵 تشغيل الموسيقى الخلفية (الضغط على الزر = تفاعل مسموح به)
-    if (window.audioManager) {
-        window.audioManager.play('background');
     }
 }
