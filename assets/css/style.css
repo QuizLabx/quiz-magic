@@ -715,11 +715,16 @@ a:focus-visible,
     outline-offset: 4px;
 }
 
-/* ♿ High Contrast for Selected Options */
-.option-selected {
+/* ♿ High Contrast for Selected & Active Options */
+.option-selected,
+button:active,
+[onclick]:active,
+[role="button"]:active {
     outline: 3px solid var(--accent-primary) !important;
     outline-offset: 2px;
     box-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
+    transform: scale(0.98);
+    transition: all 0.1s ease;
 }
 
 /* ==================== RESPONSIVE & ACCESSIBILITY ==================== */
