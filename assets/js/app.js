@@ -6,6 +6,15 @@ let currentTheme = 'dark';
 let isQuizActive = false;
 let userStats = {};
 let friendComparisonData = null;
+
+// 📊 Google Analytics Helper
+function trackEvent(eventName, eventParams = {}) {
+    if (typeof gtag === 'function') {
+        gtag('event', eventName, eventParams);
+        console.log(`📊 Analytics: ${eventName}`, eventParams);
+    }
+}
+
 let quizStartTime = null;  // ⚡ لتتبع وقت بداية الاختبار
 let userSessionData = {};  /// 📊 بيانات الجلسة الحالية
 
@@ -286,6 +295,13 @@ function showAchievementToast(achievement) {
     message.textContent = isAr ? `فتحت وسام "${achievement.name.ar}"` : `You unlocked "${achievement.name.en}"`;
     icon.textContent = achievement.icon;
     toast.classList.add('show');
+
+    // 📊 تتبع فتح الإنجاز
+    trackEvent('achievement_unlocked', {
+        'achievement_id': achievement.name.en.toLowerCase().replace(/\s+/g, '_'),
+        'achievement_name': achievement.name[currentLang]
+    });
+
     setTimeout(() => {
         toast.classList.remove('show');
     }, 4000);
@@ -703,6 +719,13 @@ function startQuiz(quizId) {
         window.audioManager.play('ui-click');
     }
     
+    // 📊 تتبع بدء الاختبار
+    trackEvent('quiz_start', {
+        'quiz_id': quizId,
+        'quiz_title': currentQuiz.title,
+        'language': currentLang
+    });
+
     showStep();
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -1289,6 +1312,16 @@ function showResult() {
     }, 300);
     checkAchievements();
 
+    // 📊 تتبع إكمال الاختبار
+    trackEvent('quiz_complete', {
+        'creature_id': winnerId,
+        'creature_name': creature.name,
+        'secondary_creature_id': secondaryCreature.id,
+        'creature_rarity': creature.rarity,
+        'language': currentLang
+    });
+
+
     if (friendComparisonData) {
         const currentUserData = {
             creatureId: winnerId,
@@ -1439,6 +1472,10 @@ function unlockSecretReport() {
     userStats.secretUnlocks++;
     localStorage.setItem('quiz_stats', JSON.stringify(userStats));
     checkAchievements();
+    // 📊 تتبع فتح التقرير السري
+    trackEvent('secret_report_unlocked', {
+        'creature_id': userStats.lastCreatureId || 'unknown'
+    });
 }
 
 // ==================== SHARE TEMPLATE ====================
@@ -1485,6 +1522,14 @@ async function downloadResultAsImage(btn) {
         link.download = `QuizMagic-Result-${Date.now()}.png`;
         link.href = canvas.toDataURL('image/png');
         link.click();
+
+        // 📊 تتبع تحميل الصورة
+        trackEvent('result_download', {
+            'format': 'png',
+            'creature_id': userStats.lastCreatureId || 'unknown'
+        });
+
+
     } catch (err) {
         console.error('🛡️ Download failed:', err);
         const isAr = currentLang === 'ar';
@@ -1513,6 +1558,12 @@ function shareResult() {
     localStorage.setItem('quiz_stats', JSON.stringify(userStats));
     checkAchievements();
     
+    // 📊 تتبع المشاركة
+    trackEvent('result_share', {
+        'method': navigator.share ? 'native_share' : 'twitter',
+        'creature_id': userStats.lastCreatureId || 'unknown'
+    });
+
     if (navigator.share) {
         navigator.share({ title: 'QuizMagic', text: text, url: url });
     } else {
@@ -1552,6 +1603,12 @@ function compareWithFriend() {
     userStats.comparisons++;
     localStorage.setItem('quiz_stats', JSON.stringify(userStats));
     checkAchievements();
+
+    // 📊 تتبع المقارنة
+    trackEvent('friend_comparison', {
+        'method': navigator.share ? 'native_share' : 'clipboard',
+        'creature_id': winnerId
+    });
 
     if (navigator.share) {
         navigator.share({ title: 'QuizMagic Challenge', text: text, url: comparisonUrl });
