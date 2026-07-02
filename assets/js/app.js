@@ -7,7 +7,7 @@ let isQuizActive = false;
 let userStats = {};
 let friendComparisonData = null;
 let quizStartTime = null;  // ⚡ لتتبع وقت بداية الاختبار
-let userSessionData = {};  // 📊 بيانات الجلسة الحالية
+let userSessionData = {};  /// 📊 بيانات الجلسة الحالية
 
 
 
