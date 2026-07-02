@@ -955,6 +955,16 @@ grid-template-columns: 1fr;
     max-height: 85vh;
 }
 
+/* ✨ FIX: إضافة مساحة في أسفل الـ Modal لضمان ظهور زر الحذف بالكامل */
+.profile-modal .modal-body {
+    padding-bottom: 3rem !important;
+}
+
+/* ✨ FIX: إضافة مساحة إضافية في نهاية أزرار الإجراءات */
+.profile-modal .profile-actions {
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+}
 /* ==================== PROFILE STAT CARDS (NEW) ==================== */
 .profile-stats-grid {
     display: grid;
