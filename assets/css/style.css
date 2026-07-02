@@ -727,6 +727,23 @@ button:active,
     transition: all 0.1s ease;
 }
 
+/* ==================== PERFORMANCE ENHANCEMENTS (NEW) ==================== */
+/* 🚀 Lazy Loading Images */
+img[data-src] {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+img.loaded {
+    opacity: 1;
+}
+
+/* 🚀 Optimized Image Rendering */
+img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+}
+
 /* ==================== RESPONSIVE & ACCESSIBILITY ==================== */
 @media (max-width: 768px) {
 .quiz-card:hover { transform: translateY(-8px) scale(1.01); }
