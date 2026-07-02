@@ -212,6 +212,153 @@ to { transform: translateX(-50px); opacity: 0; }
 }
 
 /* ==================== SKELETON LOADERS ==================== */
+
+/* ⏳ Question Skeleton Loader (NEW) */
+.question-skeleton {
+    background: var(--bg-secondary);
+    border-radius: 1.5rem;
+    padding: 2rem;
+    border: 1px solid var(--border-color);
+    animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+.question-skeleton .skeleton-progress {
+    height: 10px;
+    background: var(--skeleton-bg);
+    border-radius: 20px;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.question-skeleton .skeleton-progress::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -50%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.3), transparent);
+    animation: skeleton-shimmer 1.5s infinite;
+}
+
+.question-skeleton .skeleton-title {
+    height: 2rem;
+    background: var(--skeleton-bg);
+    border-radius: 0.5rem;
+    margin-bottom: 3rem;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.question-skeleton .skeleton-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.question-skeleton .skeleton-option {
+    height: 3.5rem;
+    background: var(--skeleton-bg);
+    border-radius: 1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.question-skeleton .skeleton-option::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -50%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.2), transparent);
+    animation: skeleton-shimmer 1.5s infinite;
+}
+
+.question-skeleton .skeleton-option:nth-child(1)::after { animation-delay: 0s; }
+.question-skeleton .skeleton-option:nth-child(2)::after { animation-delay: 0.1s; }
+.question-skeleton .skeleton-option:nth-child(3)::after { animation-delay: 0.2s; }
+.question-skeleton .skeleton-option:nth-child(4)::after { animation-delay: 0.3s; }
+.question-skeleton .skeleton-option:nth-child(5)::after { animation-delay: 0.4s; }
+
+/* ⏳ Visual Question Skeleton (للأسئلة البصرية) */
+.question-skeleton .skeleton-visual-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.question-skeleton .skeleton-visual-option {
+    aspect-ratio: 1;
+    background: var(--skeleton-bg);
+    border-radius: 1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.question-skeleton .skeleton-visual-option::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -50%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.2), transparent);
+    animation: skeleton-shimmer 1.5s infinite;
+}
+
+.question-skeleton .skeleton-visual-option:nth-child(1)::after { animation-delay: 0s; }
+.question-skeleton .skeleton-visual-option:nth-child(2)::after { animation-delay: 0.1s; }
+.question-skeleton .skeleton-visual-option:nth-child(3)::after { animation-delay: 0.2s; }
+.question-skeleton .skeleton-visual-option:nth-child(4)::after { animation-delay: 0.3s; }
+
+@keyframes skeleton-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* ⏳ Fade-in Animation للخيارات */
+.question-option-fade-in {
+    animation: questionOptionFadeIn 0.5s ease-out forwards;
+    opacity: 0;
+}
+
+.question-option-fade-in:nth-child(1) { animation-delay: 0.1s; }
+.question-option-fade-in:nth-child(2) { animation-delay: 0.2s; }
+.question-option-fade-in:nth-child(3) { animation-delay: 0.3s; }
+.question-option-fade-in:nth-child(4) { animation-delay: 0.4s; }
+.question-option-fade-in:nth-child(5) { animation-delay: 0.5s; }
+
+@keyframes questionOptionFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ⏳ Question Title Animation */
+.question-title-fade-in {
+    animation: questionTitleFadeIn 0.6s ease-out forwards;
+    opacity: 0;
+}
+
+@keyframes questionTitleFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 @keyframes skeleton-shimmer {
 0% { background-position: -200% 0; }
 100% { background-position: 200% 0; }
