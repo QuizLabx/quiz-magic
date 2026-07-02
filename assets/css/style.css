@@ -678,6 +678,50 @@ right: auto;
 left: 1rem;
 }
 
+/* ==================== ACCESSIBILITY ENHANCEMENTS (NEW) ==================== */
+/* ♿ Skip Link */
+.skip-link {
+    position: absolute;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--accent-primary);
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 0 0 1rem 1rem;
+    z-index: 10000;
+    font-weight: bold;
+    transition: top 0.3s ease;
+    text-decoration: none;
+}
+
+.skip-link:focus {
+    top: 0;
+    outline: 3px solid var(--accent-secondary);
+}
+
+/* ♿ Focus Visible States (للتوضيح البصري عند التنقل بلوحة المفاتيح) */
+*:focus-visible {
+    outline: 3px solid var(--accent-primary) !important;
+    outline-offset: 4px;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 0 6px rgba(168, 85, 247, 0.2);
+}
+
+button:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible {
+    outline: 3px solid var(--accent-primary) !important;
+    outline-offset: 4px;
+}
+
+/* ♿ High Contrast for Selected Options */
+.option-selected {
+    outline: 3px solid var(--accent-primary) !important;
+    outline-offset: 2px;
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
+}
+
 /* ==================== RESPONSIVE & ACCESSIBILITY ==================== */
 @media (max-width: 768px) {
 .quiz-card:hover { transform: translateY(-8px) scale(1.01); }
