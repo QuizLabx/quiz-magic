@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>QuizMagic | اكتشف أسرار شخصيتك</title>
+<title>QuizMagic | اكتشف جوهر شخصيتك الحقيقي</title>
 <link rel="icon" type="image/png" href="favicon.png">
 <!-- PWA Meta Tags -->
 <link rel="manifest" href="manifest.json">
@@ -53,14 +53,76 @@ z-index: -100;
 <body class="min-h-screen flex flex-col transition-colors duration-500">
 
 <!-- ==================== SPLASH SCREEN (NEW) ==================== -->
-<div id="splash-screen" class="splash-screen">
-    <div class="splash-logo">
-        <i class="fas fa-magic"></i>
-    </div>
-    <h1 class="splash-title">QuizMagic</h1>
-    <p class="splash-subtitle">جاري تحضير عالم الأساطير...</p>
-    <div class="splash-loader"></div>
+<div class="splash-loader"></div>
 </div>
+
+<!-- ==================== WELCOME SCREEN (NEW - SMART) ==================== -->
+<div id="welcome-screen" class="welcome-screen overlay-bg">
+    <!-- خلفية الجزيئات السحرية -->
+    <div class="welcome-particles"></div>
+    
+    <div class="welcome-content glass-enhanced rounded-[3rem] p-10 md:p-16 max-w-2xl mx-4 relative overflow-hidden">
+        <!-- توهج علوي -->
+        <div class="absolute -top-20 -left-20 w-60 h-60 bg-purple-500/20 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-20 -right-20 w-60 h-60 bg-pink-500/20 rounded-full blur-3xl"></div>
+        
+        <div class="relative z-10 text-center">
+            <!-- الأيقونة السحرية -->
+            <div class="welcome-icon-wrapper mb-8">
+                <div class="welcome-icon">
+                    <i class="fas fa-hat-wizard"></i>
+                </div>
+            </div>
+            
+            <!-- العنوان الرئيسي -->
+            <h1 class="welcome-title text-4xl md:text-6xl font-black mb-4 pb-2">
+                مرحباً بك في عالم
+                <span class="welcome-title-gradient">السحر والأساطير</span>
+            </h1>
+            
+            <!-- النص التوضيحي -->
+            <p class="welcome-subtitle text-lg md:text-xl theme-text-secondary mb-10 leading-relaxed max-w-xl mx-auto">
+                اكتشف جوهر شخصيتك الحقيقي من خلال اختبارات تفاعلية غامرة. رحلتك تبدأ بخطوة واحدة.
+            </p>
+            
+            <!-- حقل إدخال الاسم -->
+            <div class="welcome-input-wrapper mb-8">
+                <label for="user-name-input" class="block text-sm font-bold theme-text-primary mb-3 uppercase tracking-widest">
+                    <i class="fas fa-user-astronaut ml-2 text-purple-400"></i>
+                    ما هو اسمك أيها المستكشف؟
+                </label>
+                <input 
+                    type="text" 
+                    id="user-name-input" 
+                    maxlength="30"
+                    placeholder="اكتب اسمك هنا..."
+                    class="welcome-input w-full px-6 py-4 rounded-2xl text-lg font-bold text-center transition-all focus:outline-none"
+                    autocomplete="off"
+                >
+            </div>
+            
+            <!-- زر البدء -->
+            <button 
+                id="start-magic-btn" 
+                onclick="enterMagicRealm()"
+                class="welcome-start-btn w-full py-5 rounded-2xl font-black text-xl text-white relative overflow-hidden transition-all transform hover:scale-[1.02] active:scale-95"
+            >
+                <span class="relative z-10 flex items-center justify-center gap-3">
+                    <i class="fas fa-wand-magic-sparkles text-2xl"></i>
+                    ابدأ الرحلة السحرية
+                </span>
+                <div class="btn-shine"></div>
+            </button>
+            
+            <!-- ملاحظة صغيرة -->
+            <p class="mt-6 text-xs theme-text-muted">
+                <i class="fas fa-lock ml-1"></i>
+                اسمك يُحفظ محلياً في متصفحك فقط ولن يُشارك مع أحد.
+            </p>
+        </div>
+    </div>
+</div>
+<!-- ==================== CONFETTI CONTAINER (NEW) ==================== -->
 
 <!-- ==================== CONFETTI CONTAINER (NEW) ==================== -->
 <div id="confetti-container" class="confetti-container"></div>
@@ -196,12 +258,20 @@ Mythical Analysis Result
 <main class="flex-grow container mx-auto px-4 py-8">
 <!-- Hero Section -->
 <section id="hero-section" class="text-center mb-12">
-<h2 id="hero-title" class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent pb-2">
-اكتشف أسرار شخصيتك الخفية
-</h2>
-<p id="hero-subtitle" class="text-lg max-w-2xl mx-auto theme-text-secondary">
-اختر اختبارك المفضل وابدأ رحلة ممتعة في عالم الخيال والنتائج المذهلة.
-</p>
+    <!-- ترحيب شخصي (يظهر فقط إذا كان هناك اسم محفوظ) -->
+    <div id="personal-greeting" class="hidden mb-6">
+        <h2 class="greeting-text text-3xl md:text-4xl font-black theme-text-primary">
+            أهلاً بك يا <span id="user-name-display" class="welcome-title-gradient"></span> 👋
+        </h2>
+        <p class="text-lg theme-text-secondary mt-2">جاهز لمغامرة جديدة اليوم؟</p>
+    </div>
+    
+    <h2 id="hero-title" class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent pb-2">
+        اكتشف أسرار شخصيتك الخفية
+    </h2>
+    <p id="hero-subtitle" class="text-lg max-w-2xl mx-auto theme-text-secondary">
+        اختر اختبارك المفضل وابدأ رحلة ممتعة في عالم الخيال والنتائج المذهلة.
+    </p>
 </section>
 
 <!-- Quiz Grid with Skeleton Loaders -->
