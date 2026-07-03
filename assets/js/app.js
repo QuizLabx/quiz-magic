@@ -1200,43 +1200,48 @@ function showResult() {
                 </div>
             </div>
             
-            <div id="details-section" class="max-h-0 overflow-hidden transition-all duration-1000 ease-in-out">
-                <div class="p-8 md:p-14 border-t theme-border">
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-20">
-                        <div class="theme-bg-tertiary/20 p-8 rounded-[2.5rem] border theme-border">
-                            <div class="mb-6">
-                                <img src="${creature.image}" class="w-full h-48 object-cover rounded-2xl mb-4 border-2 border-purple-500">
-                                <h4 class="text-2xl font-bold theme-text-primary mb-1">${creature.name}</h4>
-                                <span class="text-xs text-purple-400 font-bold uppercase tracking-widest">${isAr ? 'الكيان المهيمن' : 'Dominant Entity'}</span>
+            <div id="details-section" class="max-h-0 overflow-hidden transition-all duration-700 ease-in-out">
+                <!-- ✨ Padding محسّن للهاتف -->
+                <div class="p-4 sm:p-6 md:p-10 border-t theme-border">
+        
+                    <!-- 🎨 بطاقات الكائنين -->
+                    <div class="grid grid-cols-1 gap-6 md:gap-10 mb-12 md:mb-20">
+                        <div class="theme-bg-tertiary/20 p-5 sm:p-6 md:p-8 rounded-2xl md:rounded-[2.5rem] border theme-border">
+                            <div class="mb-4 md:mb-6">
+                                <img src="${creature.image}" class="w-full h-40 md:h-48 object-cover rounded-xl md:rounded-2xl mb-3 md:mb-4 border-2 border-purple-500">
+                                <h4 class="text-xl md:text-2xl font-bold theme-text-primary mb-1">${creature.name}</h4>
+                                <span class="text-[10px] md:text-xs text-purple-400 font-bold uppercase tracking-widest">${isAr ? 'الكيان المهيمن' : 'Dominant Entity'}</span>
                             </div>
-                            <p class="theme-text-secondary leading-relaxed text-sm">
+                            <p class="theme-text-secondary leading-relaxed md:leading-loose text-xs sm:text-sm text-justify">
                                 ${creature.article || creature.description}
                             </p>
                         </div>
-                        <div class="theme-bg-tertiary/20 p-8 rounded-[2.5rem] border theme-border">
-                            <div class="mb-6">
-                                <img src="${secondaryCreature.image}" class="w-full h-48 object-cover rounded-2xl mb-4 border-2 border-pink-500">
-                                <h4 class="text-2xl font-bold theme-text-primary mb-1">${secondaryCreature.name}</h4>
-                                <span class="text-xs text-pink-400 font-bold uppercase tracking-widest">${isAr ? 'الروح المصاحبة' : 'Companion Soul'}</span>
+            
+                        <div class="theme-bg-tertiary/20 p-5 sm:p-6 md:p-8 rounded-2xl md:rounded-[2.5rem] border theme-border">
+                            <div class="mb-4 md:mb-6">
+                                <img src="${secondaryCreature.image}" class="w-full h-40 md:h-48 object-cover rounded-xl md:rounded-2xl mb-3 md:mb-4 border-2 border-pink-500">
+                                <h4 class="text-xl md:text-2xl font-bold theme-text-primary mb-1">${secondaryCreature.name}</h4>
+                                <span class="text-[10px] md:text-xs text-pink-400 font-bold uppercase tracking-widest">${isAr ? 'الروح المصاحبة' : 'Companion Soul'}</span>
                             </div>
-                            <p class="theme-text-secondary leading-relaxed text-sm">
+                            <p class="theme-text-secondary leading-relaxed md:leading-loose text-xs sm:text-sm text-justify">
                                 ${secondaryCreature.article || secondaryCreature.description}
                             </p>
                         </div>
                     </div>
-
-                    <div class="mb-20 text-center">
-                        <div class="inline-block p-4 bg-purple-600/10 rounded-3xl mb-6">
-                            <i class="fas fa-dna text-4xl text-purple-500"></i>
+        
+                    <!-- 🧠 التحليل النفسي -->
+                    <div class="mb-12 md:mb-20 text-center">
+                        <div class="inline-block p-3 md:p-4 bg-purple-600/10 rounded-2xl md:rounded-3xl mb-4 md:mb-6">
+                            <i class="fas fa-dna text-3xl md:text-4xl text-purple-500"></i>
                         </div>
-                        <h3 class="text-3xl font-bold theme-text-primary mb-6">
+                        <h3 class="text-2xl md:text-3xl font-bold theme-text-primary mb-4 md:mb-6 px-2">
                             ${isAr ? 'التحليل النفسي للهوية الهجينة' : 'Hybrid Identity Psychoanalysis'}
                         </h3>
-                        <div class="max-w-3xl mx-auto theme-bg-tertiary/10 p-10 rounded-[3rem] border-2 border-dashed theme-border relative">
-                            <div class="absolute -top-4 -left-4 w-12 h-12 theme-bg-secondary flex items-center justify-center rounded-full border theme-border">
-                                <i class="fas fa-quote-left text-purple-500"></i>
+                        <div class="theme-bg-tertiary/10 p-5 sm:p-6 md:p-10 rounded-2xl md:rounded-[3rem] border-2 border-dashed theme-border relative">
+                            <div class="absolute -top-3 -left-3 w-8 h-8 md:w-12 md:h-12 theme-bg-secondary flex items-center justify-center rounded-full border theme-border">
+                                <i class="fas fa-quote-left text-sm md:text-base text-purple-500"></i>
                             </div>
-                            <p class="text-xl theme-text-secondary leading-relaxed italic">
+                            <p class="text-sm sm:text-base md:text-xl theme-text-secondary leading-relaxed md:leading-loose italic text-justify px-1">
                                 "${creature.narrative || creature.description} ${isAr ? 'بينما تكمن في أعماقك روح' : 'While deep within lies the spirit of'} ${secondaryCreature.name} ${isAr ? 'التي تمنحك' : 'which grants you'} ${secondaryCreature.description.split('.')[0].toLowerCase()}."
                             </p>
                         </div>
@@ -1257,24 +1262,24 @@ function showResult() {
                                 <div class="w-20 h-20 bg-gradient-to-tr from-purple-600 to-pink-600 rounded-full flex items-center justify-center mb-6 border-4 border-white/10 shadow-inner">
                                     <i class="fas fa-lock text-3xl text-white"></i>
                                 </div>
-                                <h3 class="text-3xl font-bold mb-4 theme-text-primary">${isAr ? 'التقرير السري المتقدم' : 'Advanced Secret Report'}</h3>
+                                <h3 class="text-xl md:text-3xl font-bold mb-3 md:mb-4 theme-text-primary px-2">${isAr ? 'التقرير السري المتقدم' : 'Advanced Secret Report'}</h3>
                                 <button onclick="unlockSecretReport()" class="bg-purple-600 text-white px-8 py-3 rounded-full font-bold hover:bg-purple-700 transition-all z-[60] cursor-pointer relative shadow-xl">
                                     ${isAr ? 'فتح التقرير السري' : 'Unlock Secret Report'}
                                 </button>
                             </div>
                             <div id="secret-content" class="opacity-10 blur-xl transition-all duration-1000">
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                    <div>
-                                        <h4 class="text-2xl font-bold text-purple-400 mb-4">${isAr ? 'نمط قوتك:' : 'Power Pattern:'}</h4>
-                                        <p class="theme-text-secondary mb-6">${creature.secretReport.strengths}</p>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
+                                    <div class="mb-4 md:mb-0">
+                                        <h4 class="text-lg md:text-2xl font-bold text-purple-400 mb-3 md:mb-4">${isAr ? 'نمط قوتك:' : 'Power Pattern:'}</h4>
+                                        <p class="theme-text-secondary text-xs sm:text-sm mb-4 md:mb-6 leading-relaxed text-justify">${creature.secretReport.strengths}</p>
                                     </div>
                                     <div>
-                                        <h4 class="text-2xl font-bold text-pink-400 mb-4">${isAr ? 'نصيحة الكائن:' : 'Creature Advice:'}</h4>
-                                        <p class="theme-text-secondary mb-6">${creature.advice || creature.secretReport.insight}</p>
+                                        <h4 class="text-lg md:text-2xl font-bold text-pink-400 mb-3 md:mb-4">${isAr ? 'نصيحة الكائن:' : 'Creature Advice:'}</h4>
+                                        <p class="theme-text-secondary text-xs sm:text-sm mb-4 md:mb-6 leading-relaxed text-justify">${creature.advice || creature.secretReport.insight}</p>
                                     </div>
                                 </div>
-                                <div class="mt-6 p-6 theme-bg-tertiary/20 border theme-border rounded-2xl text-center">
-                                    <p class="text-purple-300 italic text-lg">"${creature.secretReport.insight}"</p>
+                                <div class="mt-4 md:mt-6 p-4 md:p-6 theme-bg-tertiary/20 border theme-border rounded-xl md:rounded-2xl text-center">
+                                    <p class="text-purple-300 italic text-sm md:text-lg leading-relaxed">"${creature.secretReport.insight}"</p>
                                 </div>
                             </div>
                         </div>
