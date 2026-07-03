@@ -48,4 +48,97 @@ const config = {
             willpower: "Willpower"
         }
     }
+
+        // ✨ شاشة الترحيب العامة (تظهر مرة واحدة عند أول زيارة)
+    welcomeScreen: {
+        enabled: true, // تفعيل/إيقاف شاشة الترحيب
+        
+        // النصوص متعددة اللغات
+        texts: {
+            ar: {
+                title: "QuizMagic",
+                subtitle: "عالم الاختبارات التفاعلية",
+                welcomeMessage: "مرحباً بك في عالم QuizMagic! 🌟",
+                welcomeDescription: "اكتشف نفسك من خلال اختباراتنا التفاعلية المتنوعة. كل اختبار هو رحلة جديدة لاكتشاف جوانب خفية من شخصيتك",
+                
+                // بطاقات المميزات
+                features: [
+                    {
+                        icon: "🧠",
+                        title: "تحليل عميق",
+                        description: "خوارزميات ذكية تحلل شخصيتك بدقة"
+                    },
+                    {
+                        icon: "🎨",
+                        title: "نتائج تفاعلية",
+                        description: "نتائج بصرية مذهلة قابلة للمشاركة"
+                    },
+                    {
+                        icon: "🏆",
+                        title: "إنجازات وأوسمة",
+                        description: "اجمع الأوسمة وتحدى أصدقاءك"
+                    },
+                    {
+                        icon: "🔐",
+                        title: "تقارير سرية",
+                        description: "محتوى حصري ينتظرك بعد كل اختبار"
+                    }
+                ],
+                
+                // الخيارات السريعة
+                quickSettings: {
+                    theme: "تبديل المظهر",
+                    music: "الموسيقى",
+                    language: "اللغة"
+                },
+                
+                // زر البدء
+                startButton: "✨ ابدأ رحلتك الآن",
+                startHint: "اختر اختبارك المفضل من القائمة",
+                
+                // روابط سريعة (اختيارية)
+                skipButton: "تخطي"
+            },
+            
+            en: {
+                title: "QuizMagic",
+                subtitle: "Interactive Quiz Universe",
+                welcomeMessage: "Welcome to QuizMagic! 🌟",
+                welcomeDescription: "Discover yourself through our diverse interactive quizzes. Each quiz is a new journey to uncover hidden aspects of your personality",
+                
+                features: [
+                    {
+                        icon: "🧠",
+                        title: "Deep Analysis",
+                        description: "Smart algorithms analyze your personality accurately"
+                    },
+                    {
+                        icon: "🎨",
+                        title: "Interactive Results",
+                        description: "Stunning visual results ready to share"
+                    },
+                    {
+                        icon: "🏆",
+                        title: "Achievements & Badges",
+                        description: "Collect badges and challenge your friends"
+                    },
+                    {
+                        icon: "🔐",
+                        title: "Secret Reports",
+                        description: "Exclusive content awaits after each quiz"
+                    }
+                ],
+                
+                quickSettings: {
+                    theme: "Toggle Theme",
+                    music: "Music",
+                    language: "Language"
+                },
+                
+                startButton: "✨ Begin Your Journey",
+                startHint: "Choose your favorite quiz from the list",
+                skipButton: "Skip"
+            }
+        }
+    }
 };
