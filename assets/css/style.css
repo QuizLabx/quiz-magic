@@ -826,9 +826,9 @@ left: 1rem;
 }
 
 /* ==================== ACCESSIBILITY ENHANCEMENTS (NEW) ==================== */
-/* ♿ Skip Link */
+/* ♿ Skip Link (FIXED) - مخفي تماماً ولا يظهر إلا عند التنقل بلوحة المفاتيح */
 .skip-link {
-    position: absolute;
+    position: fixed;
     top: -100px;
     left: 50%;
     transform: translateX(-50%);
@@ -836,15 +836,32 @@ left: 1rem;
     color: white;
     padding: 1rem 2rem;
     border-radius: 0 0 1rem 1rem;
-    z-index: 10000;
+    z-index: 99999;
     font-weight: bold;
     transition: top 0.3s ease;
     text-decoration: none;
+    /* ✨ إخفاء كامل على الهواتف */
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
 }
 
-.skip-link:focus {
+/* ✨ يظهر فقط عند التركيز بلوحة المفاتيح (Tab) */
+.skip-link:focus,
+.skip-link:focus-visible {
     top: 0;
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
     outline: 3px solid var(--accent-secondary);
+    outline-offset: 2px;
+}
+
+/* 📱 على الهواتف المحمولة الصغيرة: إخفاء دائم (لأن معظم المستخدمين لا يستخدمون لوحة المفاتيح) */
+@media (max-width: 768px) {
+    .skip-link {
+        display: none !important;
+    }
 }
 
 /* ♿ Focus Visible States (للتوضيح البصري عند التنقل بلوحة المفاتيح) */
