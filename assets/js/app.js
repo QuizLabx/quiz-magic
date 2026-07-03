@@ -77,19 +77,26 @@ function checkFirstVisit() {
         return;
     }
     
-    // ✨ التحقق من تفضيل المستخدم فقط (بدون التحقق من الزيارة الأولى)
+    // ✨ التحقق من تفضيل المستخدم
     const userPreference = localStorage.getItem('quiz_welcome_screen_enabled');
     const isWelcomeEnabled = userPreference === null ? true : userPreference === 'true';
     
     if (!isWelcomeEnabled) {
-        // المستخدم اختار عدم إظهار الشاشة
         return;
+    }
+    
+    // ✨ التحقق من أن الشاشة لم تُعرض في هذه الجلسة
+    const shownThisSession = sessionStorage.getItem('welcome_shown_this_session');
+    if (shownThisSession === 'true') {
+        return; // لا نعرض الشاشة مرة أخرى في نفس الجلسة
     }
     
     // إظهار الشاشة الترحيبية
     showGlobalWelcomeScreen();
+    
+    // ✨ حفظ أن الشاشة عُرضت في هذه الجلسة
+    sessionStorage.setItem('welcome_shown_this_session', 'true');
 }
-
 function showGlobalWelcomeScreen() {
     const welcomeScreen = document.getElementById('welcome-screen');
     if (!welcomeScreen) return;
