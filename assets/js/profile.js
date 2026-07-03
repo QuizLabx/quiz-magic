@@ -115,6 +115,8 @@ function renderProfileStats() {
             <span class="detail-value">${visitDaysCount}</span>
         </div>
     `;
+    // ✨ تحديث حالة زر الشاشة الترحيبية
+    updateWelcomeScreenToggleState();
 }
 
 // ==================== HELPER FUNCTIONS ====================
