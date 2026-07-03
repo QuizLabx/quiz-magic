@@ -1,4 +1,7 @@
 
+// 🛡️ متغير في الذاكرة لتتبع عرض الإشعار (لا يعتمد على التخزين)
+let _storageErrorShown = false;
+
 // 🛡️ دالة ذكية للحفظ الآمن في localStorage
 function safeSetItem(key, value) {
   try {
@@ -6,20 +9,20 @@ function safeSetItem(key, value) {
     return true;
   } catch (e) {
     console.error('❌ فشل الحفظ - التخزين ممتلئ:', e);
-    // عرض إشعار للمستخدم فقط مرة واحدة في الجلسة
-    if (!sessionStorage.getItem('storage_error_shown')) {
+    
+    // عرض إشعار للمستخدم مرة واحدة فقط في الجلسة (متغير في الذاكرة)
+    if (!_storageErrorShown) {
+      _storageErrorShown = true;
       showErrorToast(
         currentLang === 'ar' 
           ? '⚠️ مساحة التخزين ممتلئة! يرجى حذف بعض البيانات من الملف الشخصي.' 
           : '⚠️ Storage is full! Please delete some data from your profile.',
         currentLang === 'ar'
       );
-      sessionStorage.setItem('storage_error_shown', 'true');
     }
     return false;
   }
 }
-
 let currentLang = 'ar';
 let currentQuiz = null;
 let currentStepId = 0;
