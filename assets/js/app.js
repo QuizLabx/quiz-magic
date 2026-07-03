@@ -188,6 +188,23 @@ function startJourney() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+function showLanguageFromWelcome() {
+    // إخفاء الشاشة الترحيبية مؤقتاً (بدون حذف التفضيل)
+    const welcomeScreen = document.getElementById('welcome-screen');
+    if (welcomeScreen) {
+        welcomeScreen.classList.add('hidden');
+    }
+    
+    // إظهار شاشة اختيار اللغة
+    const languageScreen = document.getElementById('language-screen');
+    if (languageScreen) {
+        languageScreen.classList.remove('opacity-0', 'pointer-events-none');
+    }
+    
+    // حفظ حالة "جاء من الشاشة الترحيبية"
+    sessionStorage.setItem('from_welcome_screen', 'true');
+}
+
 function toggleWelcomeMusic() {
     if (window.audioManager) {
         const isEnabled = window.audioManager.toggleMusic();
@@ -725,6 +742,22 @@ function setLanguage(lang) {
 
     renderQuizGrid();
     document.getElementById('language-screen').classList.add('opacity-0', 'pointer-events-none');
+
+    // 🔄 إذا جاء من الشاشة الترحيبية، أعد إظهارها
+    const fromWelcome = sessionStorage.getItem('from_welcome_screen');
+    if (fromWelcome === 'true') {
+        sessionStorage.removeItem('from_welcome_screen');
+    
+        // إعادة ملء الشاشة الترحيبية باللغة الجديدة
+        renderWelcomeScreenContent();
+    
+        // إظهار الشاشة الترحيبية مرة أخرى
+        const welcomeScreen = document.getElementById('welcome-screen');
+        if (welcomeScreen) {
+            welcomeScreen.classList.remove('hidden');
+        }
+    }
+
     // 🔄 إعادة ملء الشاشة الترحيبية إذا كانت ظاهرة
     const welcomeScreen = document.getElementById('welcome-screen');
     if (welcomeScreen && !welcomeScreen.classList.contains('hidden')) {
