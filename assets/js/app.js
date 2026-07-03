@@ -973,7 +973,7 @@ function renderQuestionContent(container, question, totalSteps, progress, slideI
         content += `
             <div class="grid grid-cols-2 gap-4 sm:gap-6">
                 ${question.options.map((opt) => `
-                    <div onclick="handleVisualChoice('${opt.trait}', ${opt.value}, '${opt.axis || ''}')" class="group cursor-pointer relative overflow-hidden rounded-2xl border-2 theme-border hover:border-purple-500 transition-all transform hover:scale-[1.03] active:scale-95 shadow-lg question-option-fade-in">
+                    <div onclick="handleVisualChoice('${opt.trait}', ${opt.value}, '${opt.axis || ''}', event)" class="group cursor-pointer relative overflow-hidden rounded-2xl border-2 theme-border hover:border-purple-500 transition-all transform hover:scale-[1.03] active:scale-95 shadow-lg question-option-fade-in">
                         <div class="aspect-square overflow-hidden">
                             <img src="${opt.image}" loading="lazy" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                         </div>
@@ -995,7 +995,7 @@ function renderQuestionContent(container, question, totalSteps, progress, slideI
                     { text: currentLang === 'ar' ? 'لا أوافق' : 'Disagree', value: 2, color: 'bg-orange-600/20 border-orange-500/50 hover:bg-orange-600/40' },
                     { text: currentLang === 'ar' ? 'لا أوافق بشدة' : 'Strongly Disagree', value: 1, color: 'bg-red-600/20 border-red-500/50 hover:bg-red-600/40' }
                 ].map((opt) => `
-                    <button onclick="handleLikert(${opt.value}, '${question.axis || ''}')" class="w-full p-4 text-center ${opt.color} border rounded-2xl transition-all transform hover:scale-[1.02] active:scale-95 font-bold theme-text-primary question-option-fade-in">
+                    <button onclick="handleLikert(${opt.value}, '${question.axis || ''}', event)" class="w-full p-4 text-center ${opt.color} border rounded-2xl transition-all transform hover:scale-[1.02] active:scale-95 font-bold theme-text-primary question-option-fade-in">
                         ${opt.text}
                     </button>
                 `).join('')}
@@ -1045,10 +1045,9 @@ function updateVisualEvolution(progress) {
     }
 }
 
-function handleLikert(value, axis) {
-    
+function handleLikert(value, axis, evt) {    
  // ♿ إضافة تأثير بصري للخيار المحدد
-    const clickedBtn = event?.target?.closest('button');
+    const clickedBtn = evt?.target?.closest('button');
     if (clickedBtn) {
         clickedBtn.classList.add('option-selected');
         setTimeout(() => clickedBtn.classList.remove('option-selected'), 300);
@@ -1063,10 +1062,10 @@ function handleLikert(value, axis) {
     nextStep();
 }
 
-function handleVisualChoice(trait, value, axis) {
+function handleVisualChoice(trait, value, axis, evt) {
 
     // ♿ إضافة تأثير بصري للخيار المحدد
-    const clickedOption = event?.target?.closest('[onclick]');
+    const clickedOption = evt?.target?.closest('[onclick]');
     if (clickedOption) {
         clickedOption.classList.add('option-selected');
         setTimeout(() => clickedOption.classList.remove('option-selected'), 300);
