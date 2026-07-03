@@ -1,3 +1,25 @@
+
+// 🛡️ دالة ذكية للحفظ الآمن في localStorage
+function safeSetItem(key, value) {
+  try {
+    localStorage.setItem(key, value);
+    return true;
+  } catch (e) {
+    console.error('❌ فشل الحفظ - التخزين ممتلئ:', e);
+    // عرض إشعار للمستخدم فقط مرة واحدة في الجلسة
+    if (!sessionStorage.getItem('storage_error_shown')) {
+      showErrorToast(
+        currentLang === 'ar' 
+          ? '⚠️ مساحة التخزين ممتلئة! يرجى حذف بعض البيانات من الملف الشخصي.' 
+          : '⚠️ Storage is full! Please delete some data from your profile.',
+        currentLang === 'ar'
+      );
+      sessionStorage.setItem('storage_error_shown', 'true');
+    }
+    return false;
+  }
+}
+
 let currentLang = 'ar';
 let currentQuiz = null;
 let currentStepId = 0;
@@ -55,12 +77,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (isNightOwlTime()) {
         if (!userStats.nightVisits) userStats.nightVisits = 0;
         userStats.nightVisits++;
-        localStorage.setItem('quiz_stats', JSON.stringify(userStats));
+        safeSetItem('quiz_stats', JSON.stringify(userStats));
     }
     if (isEarlyBirdTime()) {
         if (!userStats.earlyVisits) userStats.earlyVisits = 0;
         userStats.earlyVisits++;
-        localStorage.setItem('quiz_stats', JSON.stringify(userStats));
+        safeSetItem('quiz_stats', JSON.stringify(userStats));
     }
 
     // Check for comparison URL parameter
@@ -391,7 +413,7 @@ function loadAchievements() {
 }
 
 function saveAchievements() {
-    localStorage.setItem('quiz_achievements', JSON.stringify(userAchievements));
+    safeSetItem('quiz_achievements', JSON.stringify(userAchievements));
 }
 
 function checkAchievements() {
@@ -587,7 +609,7 @@ function recordVisitDay() {
         if (userStats.visitDays.length > 30) {
             userStats.visitDays.shift();
         }
-        localStorage.setItem('quiz_stats', JSON.stringify(userStats));
+        safeSetItem('quiz_stats', JSON.stringify(userStats));
     }
 }
 
@@ -618,7 +640,7 @@ function applyTheme(theme) {
 function toggleTheme() {
     const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
     applyTheme(newTheme);
-    localStorage.setItem('quiz_theme', newTheme);
+    safeSetItem('quiz_theme', newTheme);
     updateThemeToggleIcon();
     if (!isQuizActive) {
         renderQuizGrid();
@@ -736,7 +758,7 @@ function showLanguageScreen() {
 
 function setLanguage(lang) {
     currentLang = lang;
-    localStorage.setItem('quiz_lang', lang);
+    safeSetItem('quiz_lang', lang);
     const data = quizzesData[lang];
     document.getElementById('site-title').innerText = data.title;
     document.getElementById('hero-title').innerText = data.heroTitle;
@@ -1223,7 +1245,7 @@ function saveUserStats(creatureId) {
         userStats.creatures = {};
     }
     userStats.creatures[creatureId] = (userStats.creatures[creatureId] || 0) + 1;
-    localStorage.setItem('quiz_stats', JSON.stringify(userStats));
+    safeSetItem('quiz_stats', JSON.stringify(userStats));
 }
 
 function getCreaturePercentage(creatureId) {
@@ -1335,7 +1357,7 @@ function showResult() {
     if (duration > 0) {
         if (!userStats.fastestQuiz || duration < userStats.fastestQuiz) {
             userStats.fastestQuiz = duration;
-            localStorage.setItem('quiz_stats', JSON.stringify(userStats));
+            safeSetItem('quiz_stats', JSON.stringify(userStats));
         }
     }
     
@@ -1529,7 +1551,7 @@ function showResult() {
         if (compatibilityScore >= 95) {
             if (!userStats.bestCompatibility || compatibilityScore > userStats.bestCompatibility) {
                 userStats.bestCompatibility = compatibilityScore;
-                localStorage.setItem('quiz_stats', JSON.stringify(userStats));
+                safeSetItem('quiz_stats', JSON.stringify(userStats));
         }
     }
 
@@ -1672,7 +1694,7 @@ function unlockSecretReport() {
         userStats.secretUnlocks = 0;
     }
     userStats.secretUnlocks++;
-    localStorage.setItem('quiz_stats', JSON.stringify(userStats));
+    safeSetItem('quiz_stats', JSON.stringify(userStats));
     checkAchievements();
     // 📊 تتبع فتح التقرير السري
     trackEvent('secret_report_unlocked', {
@@ -1757,7 +1779,7 @@ function shareResult() {
         userStats.shares = 0;
     }
     userStats.shares++;
-    localStorage.setItem('quiz_stats', JSON.stringify(userStats));
+    safeSetItem('quiz_stats', JSON.stringify(userStats));
     checkAchievements();
     
     // 📊 تتبع المشاركة
@@ -1803,7 +1825,7 @@ function compareWithFriend() {
         userStats.comparisons = 0;
     }
     userStats.comparisons++;
-    localStorage.setItem('quiz_stats', JSON.stringify(userStats));
+    safeSetItem('quiz_stats', JSON.stringify(userStats));
     checkAchievements();
 
     // 📊 تتبع المقارنة
