@@ -234,6 +234,64 @@ Mythical Analysis Result
 </div>
 </div>
 
+<!-- ==================== WELCOME SCREEN (NEW) ==================== -->
+<div id="welcome-screen" class="welcome-screen hidden">
+    <!-- ✨ خلفية متحركة -->
+    <div class="welcome-particles"></div>
+    
+    <!-- 🎯 المحتوى الرئيسي -->
+    <div class="welcome-content">
+        
+        <!-- 🌟 القسم 1: الشعار والعنوان -->
+        <div class="welcome-header animate-fade-in">
+            <div class="welcome-logo">
+                <i class="fas fa-magic"></i>
+            </div>
+            <h1 class="welcome-title gradient-text-animated">QuizMagic</h1>
+            <p id="welcome-subtitle" class="welcome-subtitle"></p>
+        </div>
+        
+        <!-- 👋 القسم 2: رسالة الترحيب -->
+        <div class="welcome-message animate-fade-in" style="animation-delay: 0.2s;">
+            <h2 id="welcome-greeting" class="welcome-greeting"></h2>
+            <p id="welcome-description" class="welcome-description"></p>
+        </div>
+        
+        <!-- 💎 القسم 3: بطاقات المميزات -->
+        <div class="welcome-features animate-fade-in" style="animation-delay: 0.4s;">
+            <div id="welcome-features-grid" class="welcome-features-grid">
+                <!-- سيتم ملؤها ديناميكياً من JS -->
+            </div>
+        </div>
+        
+        <!-- ⚙️ القسم 4: الخيارات السريعة -->
+        <div class="welcome-quick-settings animate-fade-in" style="animation-delay: 0.6s;">
+            <button id="welcome-theme-btn" onclick="toggleTheme()" class="welcome-quick-btn" aria-label="تبديل المظهر">
+                <i class="fas fa-moon"></i>
+                <span id="welcome-theme-text"></span>
+            </button>
+            <button id="welcome-music-btn" onclick="toggleWelcomeMusic()" class="welcome-quick-btn" aria-label="الموسيقى">
+                <i class="fas fa-volume-up"></i>
+                <span id="welcome-music-text"></span>
+            </button>
+            <button onclick="showLanguageScreen()" class="welcome-quick-btn" aria-label="اللغة">
+                <i class="fas fa-globe"></i>
+                <span id="welcome-lang-text"></span>
+            </button>
+        </div>
+        
+        <!-- 🚀 القسم 5: زر البدء الكبير -->
+        <div class="welcome-cta animate-fade-in" style="animation-delay: 0.8s;">
+            <button id="welcome-start-btn" onclick="startJourney()" class="welcome-start-btn pulse-button">
+                <span id="welcome-start-text"></span>
+            </button>
+            <p id="welcome-hint" class="welcome-hint"></p>
+        </div>
+        
+    </div>
+</div>
+
+    
 <!-- Header -->
 <header class="p-4 border-b sticky top-0 z-40 theme-bg-secondary theme-border">
 <div class="container mx-auto flex justify-between items-center">
