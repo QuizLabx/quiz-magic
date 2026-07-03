@@ -77,7 +77,7 @@ function checkFirstVisit() {
         return;
     }
     
-    // ✨ التحقق من تفضيل المستخدم (الافتراضي: true)
+    // ✨ التحقق من تفضيل المستخدم فقط (بدون التحقق من الزيارة الأولى)
     const userPreference = localStorage.getItem('quiz_welcome_screen_enabled');
     const isWelcomeEnabled = userPreference === null ? true : userPreference === 'true';
     
@@ -86,13 +86,8 @@ function checkFirstVisit() {
         return;
     }
     
-    // التحقق من الزيارة الأولى
-    const hasVisited = localStorage.getItem('quiz_has_visited');
-    
-    if (!hasVisited) {
-        // أول زيارة - إظهار الشاشة الترحيبية
-        showGlobalWelcomeScreen();
-    }
+    // إظهار الشاشة الترحيبية
+    showGlobalWelcomeScreen();
 }
 
 function showGlobalWelcomeScreen() {
