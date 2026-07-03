@@ -1442,12 +1442,19 @@ function renderRadarChart(data) {
 function toggleDetails() {
     const section = document.getElementById('details-section');
     const icon = document.getElementById('expand-icon');
+    
     if (section.style.maxHeight && section.style.maxHeight !== '0px') {
+        // 📕 إغلاق القسم
         section.style.maxHeight = '0px';
         icon.style.transform = 'rotate(0deg)';
     } else {
-        section.style.maxHeight = '5000px';
+        // 📖 فتح القسم - حساب الارتفاع الفعلي للمحتوى ديناميكياً
+        section.style.maxHeight = section.scrollHeight + 'px';
         icon.style.transform = 'rotate(180deg)';
+        
+        // ✨ إضافة فئة لتأخير الأنيميشن حتى يكتمل الحساب
+        section.classList.add('details-open');
+        
         setTimeout(() => {
             section.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }, 300);
