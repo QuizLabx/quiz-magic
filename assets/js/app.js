@@ -20,7 +20,7 @@ let userSessionData = {};  /// 📊 بيانات الجلسة الحالية
 
 
 
-// 🛡️ Global Error Handler - يحمي الموقع من الانهيار الكامل
+// 🛡️ Global Error Handler -- يحمي الموقع من الانهيار الكامل
 window.addEventListener('error', (event) => {
     console.error('🛡️ Global Error Caught:', event.error);
     // لا نعرض إشعار هنا لأن هذا للأخطاء البرمجية العميقة
