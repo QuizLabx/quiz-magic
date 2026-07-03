@@ -1384,11 +1384,17 @@ html, body {
     z-index: 9998;
     background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
     display: flex;
-    align-items: center;
+    align-items: flex-start; /* ✨ التغيير الأهم: من center إلى flex-start */
     justify-content: center;
     overflow-y: auto;
     overflow-x: hidden;
     transition: opacity 0.6s ease, visibility 0.6s ease;
+    /* ✨ إضافة padding علوي وسفلي */
+    padding-top: 3rem;
+    padding-bottom: 2rem;
+    /* ✨ دعم الشاشات الآمنة (الهواتف الحديثة) */
+    padding-top: calc(3rem + env(safe-area-inset-top, 0px));
+    padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px));
 }
 
 .welcome-screen.hidden {
@@ -1448,6 +1454,8 @@ html, body {
     width: 90%;
     padding: 2rem 1rem;
     text-align: center;
+    /* ✨ margin تلقائي لتمركز المحتوى عمودياً */
+    margin: auto 0;
 }
 
 /* 🌟 القسم 1: الشعار والعنوان */
@@ -1688,9 +1696,14 @@ html, body {
 
 /* 📱 Responsive للهواتف */
 @media (max-width: 768px) {
+    .welcome-screen {
+        padding-top: 2rem;
+        padding-top: calc(2rem + env(safe-area-inset-top, 0px));
+    }
+    
     .welcome-content {
         width: 95%;
-        padding: 1.5rem 0.5rem;
+        padding: 1rem 0.5rem;
     }
     
     .welcome-logo {
