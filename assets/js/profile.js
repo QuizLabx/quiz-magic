@@ -1,14 +1,3 @@
-// 🛡️ دالة الحفظ الآمن (نفس الدالة من app.js)
-function safeSetItem(key, value) {
-  try {
-    localStorage.setItem(key, value);
-    return true;
-  } catch (e) {
-    console.error('❌ فشل الحفظ:', e);
-    return false;
-  }
-}
-
 /**
  * 👤 QuizMagic Profile Manager
  * نظام إدارة الملفات الشخصية (تصدير، استيراد، حذف، عرض الإحصائيات)
@@ -230,20 +219,21 @@ function importUserData() {
             if (!confirm(confirmMsg)) return;
             
             // استعادة البيانات
-            safeSetItem('quiz_stats', JSON.stringify(userData.quizStats));
-            safeSetItem('quiz_achievements', JSON.stringify(userData.achievements || {}));
+            localStorage.setItem('quiz_stats', JSON.stringify(userData.quizStats));
+            localStorage.setItem('quiz_achievements', JSON.stringify(userData.achievements || {}));
             
             if (userData.preferences) {
                 if (userData.preferences.language) {
-                    safeSetItem('quiz_lang', userData.preferences.language);                }
+                    localStorage.setItem('quiz_lang', userData.preferences.language);
+                }
                 if (userData.preferences.theme) {
-                    safeSetItem('quiz_theme', userData.preferences.theme);
+                    localStorage.setItem('quiz_theme', userData.preferences.theme);
                 }
                 if (typeof userData.preferences.musicEnabled === 'boolean') {
-                    safeSetItem('quiz_music_enabled', userData.preferences.musicEnabled);
+                    localStorage.setItem('quiz_music_enabled', userData.preferences.musicEnabled);
                 }
                 if (typeof userData.preferences.sfxEnabled === 'boolean') {
-                    safeSetItem('quiz_sfx_enabled', userData.preferences.sfxEnabled);
+                    localStorage.setItem('quiz_sfx_enabled', userData.preferences.sfxEnabled);
                 }
             }
             
@@ -369,7 +359,7 @@ function toggleWelcomeScreenPreference() {
     const isEnabled = toggle.checked;
     
     // حفظ التفضيل في localStorage
-    safeSetItem('quiz_welcome_screen_enabled', isEnabled.toString());
+    localStorage.setItem('quiz_welcome_screen_enabled', isEnabled.toString());
     
     // إظهار إشعار للمستخدم
     const isAr = currentLang === 'ar';

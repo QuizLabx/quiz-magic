@@ -1,28 +1,3 @@
-
-// 🛡️ متغير في الذاكرة لتتبع عرض الإشعار (لا يعتمد على التخزين)
-let _storageErrorShown = false;
-
-// 🛡️ دالة ذكية للحفظ الآمن في localStorage
-function safeSetItem(key, value) {
-  try {
-    localStorage.setItem(key, value);
-    return true;
-  } catch (e) {
-    console.error('❌ فشل الحفظ - التخزين ممتلئ:', e);
-    
-    // عرض إشعار للمستخدم مرة واحدة فقط في الجلسة (متغير في الذاكرة)
-    if (!_storageErrorShown) {
-      _storageErrorShown = true;
-      showErrorToast(
-        currentLang === 'ar' 
-          ? '⚠️ مساحة التخزين ممتلئة! يرجى حذف بعض البيانات من الملف الشخصي.' 
-          : '⚠️ Storage is full! Please delete some data from your profile.',
-        currentLang === 'ar'
-      );
-    }
-    return false;
-  }
-}
 let currentLang = 'ar';
 let currentQuiz = null;
 let currentStepId = 0;
@@ -45,7 +20,7 @@ let userSessionData = {};  /// 📊 بيانات الجلسة الحالية
 
 
 
-// 🛡️ Global Error Handler -- يحمي الموقع من الانهيار الكامل
+// 🛡️ Global Error Handler - يحمي الموقع من الانهيار الكامل
 window.addEventListener('error', (event) => {
     console.error('🛡️ Global Error Caught:', event.error);
     // لا نعرض إشعار هنا لأن هذا للأخطاء البرمجية العميقة
@@ -80,12 +55,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (isNightOwlTime()) {
         if (!userStats.nightVisits) userStats.nightVisits = 0;
         userStats.nightVisits++;
-        safeSetItem('quiz_stats', JSON.stringify(userStats));
+        localStorage.setItem('quiz_stats', JSON.stringify(userStats));
     }
     if (isEarlyBirdTime()) {
         if (!userStats.earlyVisits) userStats.earlyVisits = 0;
         userStats.earlyVisits++;
-        safeSetItem('quiz_stats', JSON.stringify(userStats));
+        localStorage.setItem('quiz_stats', JSON.stringify(userStats));
     }
 
     // Check for comparison URL parameter
@@ -416,7 +391,7 @@ function loadAchievements() {
 }
 
 function saveAchievements() {
-    safeSetItem('quiz_achievements', JSON.stringify(userAchievements));
+    localStorage.setItem('quiz_achievements', JSON.stringify(userAchievements));
 }
 
 function checkAchievements() {
@@ -612,7 +587,7 @@ function recordVisitDay() {
         if (userStats.visitDays.length > 30) {
             userStats.visitDays.shift();
         }
-        safeSetItem('quiz_stats', JSON.stringify(userStats));
+        localStorage.setItem('quiz_stats', JSON.stringify(userStats));
     }
 }
 
@@ -643,7 +618,7 @@ function applyTheme(theme) {
 function toggleTheme() {
     const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
     applyTheme(newTheme);
-    safeSetItem('quiz_theme', newTheme);
+    localStorage.setItem('quiz_theme', newTheme);
     updateThemeToggleIcon();
     if (!isQuizActive) {
         renderQuizGrid();
@@ -761,7 +736,7 @@ function showLanguageScreen() {
 
 function setLanguage(lang) {
     currentLang = lang;
-    safeSetItem('quiz_lang', lang);
+    localStorage.setItem('quiz_lang', lang);
     const data = quizzesData[lang];
     document.getElementById('site-title').innerText = data.title;
     document.getElementById('hero-title').innerText = data.heroTitle;
@@ -998,7 +973,7 @@ function renderQuestionContent(container, question, totalSteps, progress, slideI
         content += `
             <div class="grid grid-cols-2 gap-4 sm:gap-6">
                 ${question.options.map((opt) => `
-                    <div onclick="handleVisualChoice('${opt.trait}', ${opt.value}, '${opt.axis || ''}', event)" class="group cursor-pointer relative overflow-hidden rounded-2xl border-2 theme-border hover:border-purple-500 transition-all transform hover:scale-[1.03] active:scale-95 shadow-lg question-option-fade-in">
+                    <div onclick="handleVisualChoice('${opt.trait}', ${opt.value}, '${opt.axis || ''}')" class="group cursor-pointer relative overflow-hidden rounded-2xl border-2 theme-border hover:border-purple-500 transition-all transform hover:scale-[1.03] active:scale-95 shadow-lg question-option-fade-in">
                         <div class="aspect-square overflow-hidden">
                             <img src="${opt.image}" loading="lazy" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                         </div>
@@ -1020,7 +995,7 @@ function renderQuestionContent(container, question, totalSteps, progress, slideI
                     { text: currentLang === 'ar' ? 'لا أوافق' : 'Disagree', value: 2, color: 'bg-orange-600/20 border-orange-500/50 hover:bg-orange-600/40' },
                     { text: currentLang === 'ar' ? 'لا أوافق بشدة' : 'Strongly Disagree', value: 1, color: 'bg-red-600/20 border-red-500/50 hover:bg-red-600/40' }
                 ].map((opt) => `
-                    <button onclick="handleLikert(${opt.value}, '${question.axis || ''}', event)" class="w-full p-4 text-center ${opt.color} border rounded-2xl transition-all transform hover:scale-[1.02] active:scale-95 font-bold theme-text-primary question-option-fade-in">
+                    <button onclick="handleLikert(${opt.value}, '${question.axis || ''}')" class="w-full p-4 text-center ${opt.color} border rounded-2xl transition-all transform hover:scale-[1.02] active:scale-95 font-bold theme-text-primary question-option-fade-in">
                         ${opt.text}
                     </button>
                 `).join('')}
@@ -1070,9 +1045,10 @@ function updateVisualEvolution(progress) {
     }
 }
 
-function handleLikert(value, axis, evt) {    
+function handleLikert(value, axis) {
+    
  // ♿ إضافة تأثير بصري للخيار المحدد
-    const clickedBtn = evt?.target?.closest('button');
+    const clickedBtn = event?.target?.closest('button');
     if (clickedBtn) {
         clickedBtn.classList.add('option-selected');
         setTimeout(() => clickedBtn.classList.remove('option-selected'), 300);
@@ -1087,10 +1063,10 @@ function handleLikert(value, axis, evt) {
     nextStep();
 }
 
-function handleVisualChoice(trait, value, axis, evt) {
+function handleVisualChoice(trait, value, axis) {
 
     // ♿ إضافة تأثير بصري للخيار المحدد
-    const clickedOption = evt?.target?.closest('[onclick]');
+    const clickedOption = event?.target?.closest('[onclick]');
     if (clickedOption) {
         clickedOption.classList.add('option-selected');
         setTimeout(() => clickedOption.classList.remove('option-selected'), 300);
@@ -1248,7 +1224,7 @@ function saveUserStats(creatureId) {
         userStats.creatures = {};
     }
     userStats.creatures[creatureId] = (userStats.creatures[creatureId] || 0) + 1;
-    safeSetItem('quiz_stats', JSON.stringify(userStats));
+    localStorage.setItem('quiz_stats', JSON.stringify(userStats));
 }
 
 function getCreaturePercentage(creatureId) {
@@ -1360,7 +1336,7 @@ function showResult() {
     if (duration > 0) {
         if (!userStats.fastestQuiz || duration < userStats.fastestQuiz) {
             userStats.fastestQuiz = duration;
-            safeSetItem('quiz_stats', JSON.stringify(userStats));
+            localStorage.setItem('quiz_stats', JSON.stringify(userStats));
         }
     }
     
@@ -1554,7 +1530,7 @@ function showResult() {
         if (compatibilityScore >= 95) {
             if (!userStats.bestCompatibility || compatibilityScore > userStats.bestCompatibility) {
                 userStats.bestCompatibility = compatibilityScore;
-                safeSetItem('quiz_stats', JSON.stringify(userStats));
+                localStorage.setItem('quiz_stats', JSON.stringify(userStats));
         }
     }
 
@@ -1697,7 +1673,7 @@ function unlockSecretReport() {
         userStats.secretUnlocks = 0;
     }
     userStats.secretUnlocks++;
-    safeSetItem('quiz_stats', JSON.stringify(userStats));
+    localStorage.setItem('quiz_stats', JSON.stringify(userStats));
     checkAchievements();
     // 📊 تتبع فتح التقرير السري
     trackEvent('secret_report_unlocked', {
@@ -1782,7 +1758,7 @@ function shareResult() {
         userStats.shares = 0;
     }
     userStats.shares++;
-    safeSetItem('quiz_stats', JSON.stringify(userStats));
+    localStorage.setItem('quiz_stats', JSON.stringify(userStats));
     checkAchievements();
     
     // 📊 تتبع المشاركة
@@ -1828,7 +1804,7 @@ function compareWithFriend() {
         userStats.comparisons = 0;
     }
     userStats.comparisons++;
-    safeSetItem('quiz_stats', JSON.stringify(userStats));
+    localStorage.setItem('quiz_stats', JSON.stringify(userStats));
     checkAchievements();
 
     // 📊 تتبع المقارنة
