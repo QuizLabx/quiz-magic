@@ -48,8 +48,9 @@ document.addEventListener('DOMContentLoaded', () => {
     renderSocialLinks();
     updateThemeToggleIcon();
     loadUserStats();
-    
-// 🕐 سجل زيارة اليوم وتحقق من الوقت
+    // 🎯 التحقق من الزيارة الأولى وإظهار الشاشة الترحيبية
+    checkFirstVisit();
+    // 🕐 سجل زيارة اليوم وتحقق من الوقت
     recordVisitDay();
     if (isNightOwlTime()) {
         if (!userStats.nightVisits) userStats.nightVisits = 0;
@@ -68,6 +69,135 @@ document.addEventListener('DOMContentLoaded', () => {
     // Hide splash screen after loading
     hideSplashScreen();
 });
+
+// ==================== GLOBAL WELCOME SCREEN (NEW) ====================
+function checkFirstVisit() {
+    // التحقق من أن شاشة الترحيب مفعلة في config
+    if (typeof config === 'undefined' || !config.welcomeScreen || !config.welcomeScreen.enabled) {
+        return;
+    }
+    
+    // التحقق من الزيارة الأولى
+    const hasVisited = localStorage.getItem('quiz_has_visited');
+    
+    if (!hasVisited) {
+        // أول زيارة - إظهار الشاشة الترحيبية
+        showGlobalWelcomeScreen();
+    }
+}
+
+function showGlobalWelcomeScreen() {
+    const welcomeScreen = document.getElementById('welcome-screen');
+    if (!welcomeScreen) return;
+    
+    // ملء المحتوى من config
+    renderWelcomeScreenContent();
+    
+    // إظهار الشاشة
+    welcomeScreen.classList.remove('hidden');
+    
+    // 📊 Analytics tracking
+    if (typeof trackEvent === 'function') {
+        trackEvent('welcome_screen_view', {
+            'language': currentLang
+        });
+    }
+}
+
+function hideGlobalWelcomeScreen() {
+    const welcomeScreen = document.getElementById('welcome-screen');
+    if (!welcomeScreen) return;
+    
+    // إخفاء الشاشة
+    welcomeScreen.classList.add('hidden');
+    
+    // حفظ أن المستخدم زار الموقع
+    localStorage.setItem('quiz_has_visited', 'true');
+}
+
+function renderWelcomeScreenContent() {
+    const isAr = currentLang === 'ar';
+    const texts = config.welcomeScreen.texts[isAr ? 'ar' : 'en'];
+    
+    // ملء العنوان والنص الفرعي
+    const subtitle = document.getElementById('welcome-subtitle');
+    if (subtitle) subtitle.textContent = texts.subtitle;
+    
+    // ملء رسالة الترحيب
+    const greeting = document.getElementById('welcome-greeting');
+    if (greeting) greeting.textContent = texts.welcomeMessage;
+    
+    const description = document.getElementById('welcome-description');
+    if (description) description.textContent = texts.welcomeDescription;
+    
+    // ملء بطاقات المميزات
+    const featuresGrid = document.getElementById('welcome-features-grid');
+    if (featuresGrid) {
+        featuresGrid.innerHTML = '';
+        texts.features.forEach(feature => {
+            const card = document.createElement('div');
+            card.className = 'welcome-feature-card';
+            card.innerHTML = `
+                <div class="welcome-feature-icon">${feature.icon}</div>
+                <h3 class="welcome-feature-title">${feature.title}</h3>
+                <p class="welcome-feature-description">${feature.description}</p>
+            `;
+            featuresGrid.appendChild(card);
+        });
+    }
+    
+    // ملء أزرار الخيارات السريعة
+    const themeText = document.getElementById('welcome-theme-text');
+    if (themeText) themeText.textContent = texts.quickSettings.theme;
+    
+    const musicText = document.getElementById('welcome-music-text');
+    if (musicText) musicText.textContent = texts.quickSettings.music;
+    
+    const langText = document.getElementById('welcome-lang-text');
+    if (langText) langText.textContent = texts.quickSettings.language;
+    
+    // ملء زر البدء
+    const startText = document.getElementById('welcome-start-text');
+    if (startText) startText.textContent = texts.startButton;
+    
+    const hint = document.getElementById('welcome-hint');
+    if (hint) hint.textContent = texts.startHint;
+}
+
+function startJourney() {
+    // 🎵 صوت بدء الرحلة
+    if (window.audioManager) {
+        window.audioManager.play('ui-click');
+    }
+    
+    // إخفاء الشاشة الترحيبية
+    hideGlobalWelcomeScreen();
+    
+    // 📊 Analytics tracking
+    if (typeof trackEvent === 'function') {
+        trackEvent('welcome_screen_start', {
+            'language': currentLang
+        });
+    }
+    
+    // التمرير لأعلى الصفحة
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function toggleWelcomeMusic() {
+    if (window.audioManager) {
+        const isEnabled = window.audioManager.toggleMusic();
+        
+        // تحديث أيقونة الزر
+        const musicBtn = document.getElementById('welcome-music-btn');
+        if (musicBtn) {
+            const icon = musicBtn.querySelector('i');
+            if (icon) {
+                icon.className = isEnabled ? 'fas fa-volume-up' : 'fas fa-volume-mute';
+            }
+        }
+    }
+}
 
 // ==================== SPLASH SCREEN (NEW) ====================
 function hideSplashScreen() {
@@ -470,6 +600,7 @@ function toggleTheme() {
 function updateThemeToggleIcon() {
     const themeToggleBtn = document.getElementById('theme-toggle');
     if (!themeToggleBtn) return;
+    
     if (currentTheme === 'dark') {
         themeToggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
         themeToggleBtn.title = 'تبديل للوضع النهاري / Switch to Light Mode';
@@ -477,7 +608,18 @@ function updateThemeToggleIcon() {
         themeToggleBtn.innerHTML = '<i class="fas fa-sun"></i>';
         themeToggleBtn.title = 'تبديل للوضع الليلي / Switch to Dark Mode';
     }
-}
+    
+    // 🎵 تحديث أيقونة الموسيقى في الشاشة الترحيبية
+    const welcomeMusicBtn = document.getElementById('welcome-music-btn');
+    if (welcomeMusicBtn && window.audioManager) {
+        const icon = welcomeMusicBtn.querySelector('i');
+        if (icon) {
+            icon.className = window.audioManager.settings.musicEnabled 
+                ? 'fas fa-volume-up' 
+                : 'fas fa-volume-mute';
+        }  
+    }  
+}  
 
 // ==================== SOCIAL LINKS ====================
 function renderSocialLinks() {
@@ -579,6 +721,11 @@ function setLanguage(lang) {
 
     renderQuizGrid();
     document.getElementById('language-screen').classList.add('opacity-0', 'pointer-events-none');
+    // 🔄 إعادة ملء الشاشة الترحيبية إذا كانت ظاهرة
+    const welcomeScreen = document.getElementById('welcome-screen');
+    if (welcomeScreen && !welcomeScreen.classList.contains('hidden')) {
+        renderWelcomeScreenContent();
+    }
 }
 
 // ==================== QUIZ GRID ====================
