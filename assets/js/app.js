@@ -77,6 +77,15 @@ function checkFirstVisit() {
         return;
     }
     
+    // ✨ التحقق من تفضيل المستخدم (الافتراضي: true)
+    const userPreference = localStorage.getItem('quiz_welcome_screen_enabled');
+    const isWelcomeEnabled = userPreference === null ? true : userPreference === 'true';
+    
+    if (!isWelcomeEnabled) {
+        // المستخدم اختار عدم إظهار الشاشة
+        return;
+    }
+    
     // التحقق من الزيارة الأولى
     const hasVisited = localStorage.getItem('quiz_has_visited');
     
