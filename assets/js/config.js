@@ -47,10 +47,10 @@ const config = {
             mystery: "Mystery & Intuition",
             willpower: "Willpower"
         }
-    }
+    },
 
         // ✨ شاشة الترحيب العامة (تظهر مرة واحدة عند أول زيارة)
-        welcomeScreen: {
+    welcomeScreen: {
         enabled: true, // تفعيل/إيقاف شاشة الترحيب
         
         // النصوص متعددة اللغات
