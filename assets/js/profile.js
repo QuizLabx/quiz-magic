@@ -11,6 +11,9 @@ function showProfileModal() {
     renderProfileStats();
     modal.classList.add('show');
     
+    // ♿ Focus Trap
+    if (typeof trapFocus === 'function') trapFocus(modal);
+
     // ♿ Accessibility: Focus on close button
     setTimeout(() => {
         const closeBtn = modal.querySelector('.modal-close');
@@ -22,6 +25,9 @@ function closeProfileModal() {
     const modal = document.getElementById('profile-modal');
     if (!modal) return;
     modal.classList.remove('show');
+
+    // ♿ إزالة Focus Trap
+    if (typeof removeFocusTrap === 'function') removeFocusTrap(modal);
 }
 
 // ==================== RENDER STATISTICS ====================

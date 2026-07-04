@@ -315,7 +315,7 @@ const quizzesData = {
             id: "cerberus",
             name: "سيربيروس الحارس",
             rarity: "نادر جداً",
-            image: "assets/images/cerber.jpg",
+            image: "assets/images/cerberus.jpg",
             description: "أنت الحامي الوفي والدرع المنيع. تمتلك يقظة دائمة وقدرة على حماية ما هو ثمين.",
             axes: ["willpower", "strategy"],
             multiplier: 1.20,

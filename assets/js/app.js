@@ -35,6 +35,13 @@ window.addEventListener('unhandledrejection', (event) => {
     );
 });
 
+// ♿ إغلاق المودالات بضغط Escape
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        closeAchievementsModal();
+    }
+});
+
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     const savedLang = localStorage.getItem('quiz_lang') || 'ar';
@@ -294,6 +301,41 @@ function launchConfetti(creatureId) {
         // الكونفيتي غير حرج - لا نزعج المستخدم بخطأ
     }
 }
+// ♿ Focus Trap: حبس التركيز داخل المودال لقارئات الشاشة
+function trapFocus(element) {
+    const focusable = element.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    if (focusable.length === 0) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+
+    function handler(e) {
+        if (e.key !== 'Tab') return;
+        if (e.shiftKey) {
+            if (document.activeElement === first) {
+                last.focus();
+                e.preventDefault();
+            }
+        } else {
+            if (document.activeElement === last) {
+                first.focus();
+                e.preventDefault();
+            }
+        }
+    }
+    element.addEventListener('keydown', handler);
+    // إزالة المستمع عند إغلاق المودال (لتجنب تراكم المستمعين)
+    element._focusTrapHandler = handler;
+}
+
+function removeFocusTrap(element) {
+    if (element._focusTrapHandler) {
+        element.removeEventListener('keydown', element._focusTrapHandler);
+        delete element._focusTrapHandler;
+    }
+}
+
 // ==================== ACHIEVEMENTS SYSTEM (NEW) ====================
 let userAchievements = {};
 
@@ -492,15 +534,23 @@ function showErrorToast(errorMessage, isAr = currentLang === 'ar') {
 function showAchievementsModal() {
     const modal = document.getElementById('achievements-modal');
     if (!modal) return;
-    
+
     renderAchievementsGrid();
     modal.classList.add('show');
+    trapFocus(modal);
+
+    // ♿ التركيز على أول عنصر تفاعلي داخل المودال
+    setTimeout(() => {
+        const closeBtn = modal.querySelector('.modal-close');
+        if (closeBtn) closeBtn.focus();
+    }, 100);
 }
 
 function closeAchievementsModal() {
     const modal = document.getElementById('achievements-modal');
     if (!modal) return;
     modal.classList.remove('show');
+    removeFocusTrap(modal);
 }
 
 function renderAchievementsGrid() {
@@ -770,6 +820,22 @@ function setLanguage(lang) {
     if (welcomeScreen && !welcomeScreen.classList.contains('hidden')) {
         renderWelcomeScreenContent();
     }
+}
+
+// ==================== LAZY LOADING HELPER ====================
+function loadScript(src) {
+    return new Promise((resolve, reject) => {
+        // تحقق من أن السكريبت لم يُحمّل مسبقاً
+        if (document.querySelector(`script[src="${src}"]`)) {
+            resolve();
+            return;
+        }
+        const script = document.createElement('script');
+        script.src = src;
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+    });
 }
 
 // ==================== QUIZ GRID ====================
@@ -1220,7 +1286,6 @@ function loadUserStats() {
 }
 
 function saveUserStats(creatureId) {
-    userStats.lastCreatureId = creatureId;
     if (!userStats.creatures) {
         userStats.creatures = {};
     }
@@ -1381,7 +1446,7 @@ function showResult() {
                         ${isAr ? 'لقد تم تحليل جوهرك ودمجه مع القوى القديمة' : 'Your essence has been analyzed and merged with ancient forces'}
                     </p>
 
-                    <button onclick="toggleDetails()" class="group flex flex-col items-center gap-3 transition-all duration-500 hover:scale-110">
+	                    <button onclick="toggleDetails()" class="group flex flex-col items-center gap-3 transition-all duration-500 hover:scale-110" aria-expanded="false" aria-controls="details-section">
                         <span class="text-xs font-bold text-purple-400 uppercase tracking-[0.3em] group-hover:text-purple-300">
                             ${isAr ? 'اكتشف أسرار هويتك' : 'Discover Your Identity Secrets'}
                         </span>
@@ -1480,17 +1545,17 @@ function showResult() {
             </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-12">
-            <button onclick="downloadResultAsImage(this)" class="flex items-center justify-center gap-3 p-5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-2xl font-bold text-lg transition-all transform hover:scale-105 shadow-xl shadow-blue-600/20">
-                <i class="fas fa-image"></i> ${isAr ? '🖼️ تحميل النتيجة كصورة' : '🖼️ Download as Image'}
-            </button>
-            <button onclick="shareResult()" class="flex items-center justify-center gap-3 p-5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white rounded-2xl font-bold text-lg transition-all transform hover:scale-105 shadow-xl shadow-purple-600/20">
-                <i class="fas fa-share-alt"></i> ${isAr ? '🚀 شارك النتيجة' : '🚀 Share Result'}
-            </button>
-            <button onclick="compareWithFriend()" class="flex items-center justify-center gap-3 p-5 bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-500 hover:to-teal-500 text-white rounded-2xl font-bold text-lg transition-all transform hover:scale-105 shadow-xl shadow-green-600/20">
-                <i class="fas fa-users"></i> ${isAr ? '⚔️ قارن مع صديق' : '⚔️ Compare with Friend'}
-            </button>
-        </div>
+	        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-12">
+	            <button onclick="downloadResultAsImage(this)" class="flex items-center justify-center gap-3 p-5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-2xl font-bold text-lg transition-all transform hover:scale-105 shadow-xl shadow-blue-600/20" aria-label="${isAr ? 'تحميل نتيجة الاختبار كصورة' : 'Download quiz result as image'}">
+	                <i class="fas fa-image" aria-hidden="true"></i> ${isAr ? '🖼️ تحميل النتيجة كصورة' : '🖼️ Download as Image'}
+	            </button>
+	            <button onclick="shareResult()" class="flex items-center justify-center gap-3 p-5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white rounded-2xl font-bold text-lg transition-all transform hover:scale-105 shadow-xl shadow-purple-600/20" aria-label="${isAr ? 'مشاركة نتيجة الاختبار على وسائل التواصل' : 'Share quiz result on social media'}">
+	                <i class="fas fa-share-alt" aria-hidden="true"></i> ${isAr ? '🚀 شارك النتيجة' : '🚀 Share Result'}
+	            </button>
+	            <button onclick="compareWithFriend()" class="flex items-center justify-center gap-3 p-5 bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-500 hover:to-teal-500 text-white rounded-2xl font-bold text-lg transition-all transform hover:scale-105 shadow-xl shadow-green-600/20" aria-label="${isAr ? 'قارن نتيجتك مع صديق' : 'Compare your result with a friend'}">
+	                <i class="fas fa-users" aria-hidden="true"></i> ${isAr ? '⚔️ قارن مع صديق' : '⚔️ Compare with Friend'}
+	            </button>
+	        </div>
 
         <button onclick="location.reload()" class="theme-text-muted hover:theme-text-primary transition font-bold mb-20">
             <i class="fas fa-redo mr-2"></i> ${isAr ? 'إعادة الاختبار' : 'Retake Quiz'}
@@ -1565,16 +1630,28 @@ function renderRadarChart(data) {
             console.warn('⚠️ Radar Chart canvas not found');
             return;
         }
-        
+
         const ctx = canvas.getContext('2d');
         if (!ctx) {
             console.warn('⚠️ Could not get canvas context');
             return;
         }
-        
-        // تحقق من تحميل Chart.js
+
+        // 🚀 Lazy Loading: تحميل Chart.js عند الحاجة فقط
         if (typeof Chart === 'undefined') {
-            console.warn('⚠️ Chart.js not loaded');
+            loadScript('https://cdn.jsdelivr.net/npm/chart.js').then(() => {
+                renderRadarChart(data);
+            }).catch(err => {
+                console.error('🛡️ Failed to load Chart.js:', err);
+                const chartContainer = document.getElementById('radarChart')?.parentElement;
+                if (chartContainer) {
+                    chartContainer.innerHTML = `
+                        <p class="text-center theme-text-secondary italic py-8">
+                            ${currentLang === 'ar' ? 'تعذر عرض مخطط القوى حالياً' : 'Unable to display power chart at this time'}
+                        </p>
+                    `;
+                }
+            });
             return;
         }
         
@@ -1639,19 +1716,23 @@ function renderRadarChart(data) {
 function toggleDetails() {
     const section = document.getElementById('details-section');
     const icon = document.getElementById('expand-icon');
-    
+    const btn = document.querySelector('[aria-controls="details-section"]');
+
     if (section.style.maxHeight && section.style.maxHeight !== '0px') {
         // 📕 إغلاق القسم
         section.style.maxHeight = '0px';
         icon.style.transform = 'rotate(0deg)';
+        if (btn) btn.setAttribute('aria-expanded', 'false');
     } else {
         // 📖 فتح القسم - حساب الارتفاع الفعلي للمحتوى ديناميكياً
         section.style.maxHeight = section.scrollHeight + 'px';
         icon.style.transform = 'rotate(180deg)';
-        
+
         // ✨ إضافة فئة لتأخير الأنيميشن حتى يكتمل الحساب
         section.classList.add('details-open');
-        
+
+        if (btn) btn.setAttribute('aria-expanded', 'true');
+
         setTimeout(() => {
             section.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }, 300);
@@ -1715,6 +1796,10 @@ async function downloadResultAsImage(btn) {
     btn.innerHTML = `<i class="fas fa-spinner animate-spin"></i> ${currentLang === 'ar' ? 'جاري التجهيز...' : 'Preparing...'}`;
     btn.disabled = true;
     try {
+        // 🚀 Lazy Loading: تحميل html2canvas عند الحاجة فقط
+        if (typeof html2canvas === 'undefined') {
+            await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+        }
         const template = document.getElementById('share-template');
         const canvas = await html2canvas(template, {
             useCORS: true,

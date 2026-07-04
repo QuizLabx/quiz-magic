@@ -35,31 +35,11 @@ class AudioManager {
                 loop: false,
                 type: 'sfx'
             },
-            // 🎁 أصوات مستقبلية (Placeholder)
-            'achievement-unlocked': {
-                path: 'assets/audio/achievement-unlocked.mp3',
-                volume: 0.5,
-                loop: false,
-                type: 'sfx'
-            },
-            'hover-sound': {
-                path: 'assets/audio/hover-sound.mp3',
-                volume: 0.3,
-                loop: false,
-                type: 'sfx'
-            },
-            'quiz-complete': {
-                path: 'assets/audio/quiz-complete.mp3',
-                volume: 0.6,
-                loop: false,
-                type: 'sfx'
-            },
-            'splash-whoosh': {
-                path: 'assets/audio/splash-whoosh.mp3',
-                volume: 0.4,
-                loop: false,
-                type: 'sfx'
-            }
+            // 🔇 أصوات مستقبلية (غير متوفرة حالياً - أضف ملفات الصوت لإمكانية التفعيل)
+            // 'achievement-unlocked': { path: 'assets/audio/achievement-unlocked.mp3', volume: 0.5, loop: false, type: 'sfx' },
+            // 'hover-sound':         { path: 'assets/audio/hover-sound.mp3',         volume: 0.3, loop: false, type: 'sfx' },
+            // 'quiz-complete':        { path: 'assets/audio/quiz-complete.mp3',       volume: 0.6, loop: false, type: 'sfx' },
+            // 'splash-whoosh':       { path: 'assets/audio/splash-whoosh.mp3',      volume: 0.4, loop: false, type: 'sfx' }
         };
 
         this.audioElements = {};
