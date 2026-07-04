@@ -1220,6 +1220,7 @@ function loadUserStats() {
 }
 
 function saveUserStats(creatureId) {
+    userStats.lastCreatureId = creatureId;
     if (!userStats.creatures) {
         userStats.creatures = {};
     }
