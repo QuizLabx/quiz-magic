@@ -15,7 +15,7 @@ const config = {
     
     // إعدادات الميزات
     features: {
-        showWelcomeScreen: true, // إظهار شاشة "كيف يعمل الاختبار" قبل البدء
+        showWelcomeScreen: true, /// إظهار شاشة "كيف يعمل الاختبار" قبل البدء
         enableShare: true,        // تفعيل ميزة المشاركة
         enableHybridIdentity: true, // تفعيل ميزة الكائن المهيمن والمصاحب
         enablePowerBlueprint: true, // تفعيل مخطط القوى (Radar Chart)
