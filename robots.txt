@@ -1,0 +1,7 @@
+# robots.txt for QuizMagic
+# السماح لجميع عناكب الزحف
+User-agent: *
+Allow: /
+
+# ملف Sitemap
+Sitemap: https://quizlabx.github.io/quiz-magic/sitemap.xml
