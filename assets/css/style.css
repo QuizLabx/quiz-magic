@@ -661,6 +661,19 @@ justify-content: center;
 .achievements-modal.show {
 display: flex;
 }
+/* 🎨 تنسيق مودال التأكيد المخصص (بديل alert/confirm/prompt) */
+#confirm-dialog .modal-content {
+max-width: 500px;
+text-align: center;
+}
+#confirm-dialog .modal-body {
+padding: 2rem;
+}
+#confirm-dialog-input {
+text-align: center;
+font-weight: bold;
+letter-spacing: 0.1em;
+}
 .modal-overlay {
 position: absolute;
 inset: 0;
