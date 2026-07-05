@@ -219,6 +219,34 @@ z-index: -100;
 </div>
 
 
+<!-- ==================== CONFIRM DIALOG (NEW - بديل احترافي لـ alert/confirm/prompt) ==================== -->
+<div id="confirm-dialog" class="achievements-modal">
+    <div class="modal-overlay" onclick="dismissConfirmDialog(false)"></div>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">
+                <i id="confirm-dialog-icon" class="fas fa-exclamation-triangle text-yellow-400"></i>
+                <span id="confirm-dialog-title">تأكيد</span>
+            </h2>
+        </div>
+        <div class="modal-body">
+            <p id="confirm-dialog-message" class="theme-text-secondary text-lg leading-relaxed mb-6"></p>
+            <div id="confirm-dialog-input-wrapper" class="hidden mb-6">
+                <label id="confirm-dialog-input-label" class="block text-sm font-bold theme-text-muted mb-2"></label>
+                <input type="text" id="confirm-dialog-input" class="w-full theme-bg-tertiary/20 border theme-border rounded-xl py-3 px-4 theme-text-primary focus:outline-none focus:border-purple-500 transition-all">
+            </div>
+            <div class="flex gap-3">
+                <button id="confirm-dialog-cancel-btn" onclick="dismissConfirmDialog(false)" class="flex-1 py-3 rounded-xl font-bold theme-bg-tertiary theme-border theme-text-primary hover:opacity-80 transition-all">
+                    <span id="confirm-dialog-cancel-text">إلغاء</span>
+                </button>
+                <button id="confirm-dialog-ok-btn" onclick="dismissConfirmDialog(true)" class="flex-1 py-3 rounded-xl font-bold text-white transition-all transform hover:scale-[1.02] active:scale-95 shadow-lg">
+                    <span id="confirm-dialog-ok-text">تأكيد</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <!-- Hidden Share Template for High-Quality Images -->
 <div id="share-template">
