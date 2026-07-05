@@ -15,6 +15,114 @@ function trackEvent(eventName, eventParams = {}) {
     }
 }
 
+// 🛡️ Helper أمني: تخطي رموز HTML لمنع هجمات XSS
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = String(text);
+    return div.innerHTML;
+}
+
+// 🎨 بديل احترافي لـ alert/confirm/prompt
+// options: { title, message, okText, cancelText, okType ('danger'|'success'|'primary'), inputLabel, inputExpected }
+function showConfirmDialog(options) {
+    return new Promise((resolve) => {
+        const modal = document.getElementById('confirm-dialog');
+        if (!modal) {
+            // fallback إذا لم يكن المودال موجوداً
+            resolve(confirm(options.message));
+            return;
+        }
+
+        const isAr = currentLang === 'ar';
+
+        // ملء المحتوى
+        const titleEl = document.getElementById('confirm-dialog-title');
+        const msgEl = document.getElementById('confirm-dialog-message');
+        const okBtn = document.getElementById('confirm-dialog-ok-btn');
+        const okTextEl = document.getElementById('confirm-dialog-ok-text');
+        const cancelTextEl = document.getElementById('confirm-dialog-cancel-text');
+        const inputWrapper = document.getElementById('confirm-dialog-input-wrapper');
+        const inputEl = document.getElementById('confirm-dialog-input');
+        const inputLabelEl = document.getElementById('confirm-dialog-input-label');
+        const iconEl = document.getElementById('confirm-dialog-icon');
+
+        if (titleEl) titleEl.textContent = options.title || (isAr ? 'تأكيد' : 'Confirm');
+        if (msgEl) msgEl.textContent = options.message || '';
+        if (okTextEl) okTextEl.textContent = options.okText || (isAr ? 'تأكيد' : 'OK');
+        if (cancelTextEl) cancelTextEl.textContent = options.cancelText || (isAr ? 'إلغاء' : 'Cancel');
+
+        // نوع الزر (لون)
+        if (okBtn) {
+            okBtn.className = 'flex-1 py-3 rounded-xl font-bold text-white transition-all transform hover:scale-[1.02] active:scale-95 shadow-lg';
+            if (options.okType === 'danger') {
+                okBtn.classList.add('bg-gradient-to-r', 'from-red-600', 'to-rose-600');
+            } else if (options.okType === 'success') {
+                okBtn.classList.add('bg-gradient-to-r', 'from-green-600', 'to-teal-600');
+            } else {
+                okBtn.classList.add('bg-gradient-to-r', 'from-purple-600', 'to-pink-600');
+            }
+        }
+
+        // الأيقونة
+        if (iconEl) {
+            if (options.okType === 'danger') {
+                iconEl.className = 'fas fa-exclamation-triangle text-red-400';
+            } else if (options.okType === 'success') {
+                iconEl.className = 'fas fa-check-circle text-green-400';
+            } else if (options.icon) {
+                iconEl.className = options.icon;
+            } else {
+                iconEl.className = 'fas fa-info-circle text-purple-400';
+            }
+        }
+
+        // حقل الإدخال (بديل prompt)
+        if (options.inputLabel) {
+            if (inputWrapper) inputWrapper.classList.remove('hidden');
+            if (inputLabelEl) inputLabelEl.textContent = options.inputLabel;
+            if (inputEl) {
+                inputEl.value = '';
+                setTimeout(() => inputEl.focus(), 200);
+            }
+        } else {
+            if (inputWrapper) inputWrapper.classList.add('hidden');
+        }
+
+        // 🛡️ تركيب Promise: نجعل الإجاحة متاحة عالمياً لـ dismissConfirmDialog
+        window._confirmDialogResolve = resolve;
+        window._confirmDialogOptions = options;
+
+        modal.classList.add('show');
+        trapFocus(modal);
+
+        // ♿ التركيز على زر التأكيد
+        setTimeout(() => {
+            const focusTarget = options.inputLabel ? inputEl : okBtn;
+            if (focusTarget) focusTarget.focus();
+        }, 100);
+    });
+}
+
+function dismissConfirmDialog(confirmed) {
+    const modal = document.getElementById('confirm-dialog');
+    if (!modal) return;
+    modal.classList.remove('show');
+    removeFocusTrap(modal);
+
+    let result = confirmed;
+    // إذا كان هناك حقل إدخال متوقع، تحقق من قيمته
+    if (confirmed && window._confirmDialogOptions?.inputExpected) {
+        const inputEl = document.getElementById('confirm-dialog-input');
+        result = inputEl && inputEl.value === window._confirmDialogOptions.inputExpected;
+    }
+
+    if (window._confirmDialogResolve) {
+        window._confirmDialogResolve(result);
+        window._confirmDialogResolve = null;
+        window._confirmDialogOptions = null;
+    }
+}
+
 let quizStartTime = null;  // ⚡ لتتبع وقت بداية الاختبار
 let userSessionData = {};  /// 📊 بيانات الجلسة الحالية
 
@@ -38,7 +146,12 @@ window.addEventListener('unhandledrejection', (event) => {
 // ♿ إغلاق المودالات بضغط Escape
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
-        closeAchievementsModal();
+        const confirmModal = document.getElementById('confirm-dialog');
+        if (confirmModal && confirmModal.classList.contains('show')) {
+            dismissConfirmDialog(false);
+        } else {
+            closeAchievementsModal();
+        }
     }
 });
 
@@ -1039,7 +1152,7 @@ function renderQuestionContent(container, question, totalSteps, progress, slideI
         content += `
             <div class="grid grid-cols-2 gap-4 sm:gap-6">
                 ${question.options.map((opt) => `
-                    <div onclick="handleVisualChoice('${opt.trait}', ${opt.value}, '${opt.axis || ''}')" class="group cursor-pointer relative overflow-hidden rounded-2xl border-2 theme-border hover:border-purple-500 transition-all transform hover:scale-[1.03] active:scale-95 shadow-lg question-option-fade-in">
+                    <div onclick="handleVisualChoice(event, '${opt.trait}', ${opt.value}, '${opt.axis || ''}')" class="group cursor-pointer relative overflow-hidden rounded-2xl border-2 theme-border hover:border-purple-500 transition-all transform hover:scale-[1.03] active:scale-95 shadow-lg question-option-fade-in">
                         <div class="aspect-square overflow-hidden">
                             <img src="${opt.image}" loading="lazy" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                         </div>
@@ -1061,7 +1174,7 @@ function renderQuestionContent(container, question, totalSteps, progress, slideI
                     { text: currentLang === 'ar' ? 'لا أوافق' : 'Disagree', value: 2, color: 'bg-orange-600/20 border-orange-500/50 hover:bg-orange-600/40' },
                     { text: currentLang === 'ar' ? 'لا أوافق بشدة' : 'Strongly Disagree', value: 1, color: 'bg-red-600/20 border-red-500/50 hover:bg-red-600/40' }
                 ].map((opt) => `
-                    <button onclick="handleLikert(${opt.value}, '${question.axis || ''}')" class="w-full p-4 text-center ${opt.color} border rounded-2xl transition-all transform hover:scale-[1.02] active:scale-95 font-bold theme-text-primary question-option-fade-in">
+                    <button onclick="handleLikert(event, ${opt.value}, '${question.axis || ''}')" class="w-full p-4 text-center ${opt.color} border rounded-2xl transition-all transform hover:scale-[1.02] active:scale-95 font-bold theme-text-primary question-option-fade-in">
                         ${opt.text}
                     </button>
                 `).join('')}
@@ -1111,8 +1224,8 @@ function updateVisualEvolution(progress) {
     }
 }
 
-function handleLikert(value, axis) {
-    
+function handleLikert(event, value, axis) {
+
  // ♿ إضافة تأثير بصري للخيار المحدد
     const clickedBtn = event?.target?.closest('button');
     if (clickedBtn) {
@@ -1129,7 +1242,7 @@ function handleLikert(value, axis) {
     nextStep();
 }
 
-function handleVisualChoice(trait, value, axis) {
+function handleVisualChoice(event, trait, value, axis) {
 
     // ♿ إضافة تأثير بصري للخيار المحدد
     const clickedOption = event?.target?.closest('[onclick]');
@@ -1335,7 +1448,12 @@ function validateComparisonData(data) {
     if (!data.creatureId || typeof data.creatureId !== 'string') return false;
     if (!data.secondaryCreatureId || typeof data.secondaryCreatureId !== 'string') return false;
     if (!data.radarScores || typeof data.radarScores !== 'object') return false;
-    
+
+    // 🛡️ تحقق أمني: creatureId و secondaryCreatureId يجب أن يكونا كائنات أسطورية معروفة فعلاً
+    // لمنع حقن HTML/JavaScript خبيث عبر بارامتر URL
+    if (!findCreatureById(data.creatureId)) return false;
+    if (!findCreatureById(data.secondaryCreatureId)) return false;
+
     const validAxes = ['intelligence', 'energy', 'empathy', 'strategy', 'mystery', 'willpower'];
     for (const axis of validAxes) {
         if (typeof data.radarScores[axis] !== 'number') return false;
@@ -1354,9 +1472,15 @@ function checkComparisonParam() {
                 history.replaceState({}, document.title, window.location.pathname);
                 const isAr = currentLang === 'ar';
                 setTimeout(() => {
-                    alert(isAr 
-                        ? 'لقد تلقيت تحدي مقارنة! أكمل الاختبار لترى مدى توافقكما.' 
-                        : 'You received a comparison challenge! Complete the quiz to see your compatibility.');
+                    showConfirmDialog({
+                        title: isAr ? '⚔️ تحدي مقارنة' : '⚔️ Comparison Challenge',
+                        message: isAr
+                            ? 'لقد تلقيت تحدي مقارنة! أكمل الاختبار لترى مدى توافقكما.'
+                            : 'You received a comparison challenge! Complete the quiz to see your compatibility.',
+                        okText: isAr ? 'هيا بنا!' : 'Let\'s go!',
+                        cancelText: isAr ? 'لاحقاً' : 'Later',
+                        okType: 'primary'
+                    });
                 }, 500);
             } else {
                 console.warn('Invalid comparison data structure');
@@ -1612,9 +1736,9 @@ function showResult() {
                     ${compatibilityScore}%
                 </div>
                 <p class="theme-text-secondary text-lg">
-                    ${isAr 
-                        ? `أنت وصديقك ${friendComparisonData.creatureId} و ${currentUserData.creatureId} تشكلان ثنائياً أسطورياً بنسبة ${compatibilityScore}%!` 
-                        : `You and your friend, the ${friendComparisonData.creatureId} and the ${currentUserData.creatureId}, form a mythical duo with ${compatibilityScore}% compatibility!`}
+                    ${isAr
+                        ? `أنت وصديقك ${escapeHtml(friendComparisonData.creatureId)} و ${escapeHtml(currentUserData.creatureId)} تشكلان ثنائياً أسطورياً بنسبة ${compatibilityScore}%!`
+                        : `You and your friend, the ${escapeHtml(friendComparisonData.creatureId)} and the ${escapeHtml(currentUserData.creatureId)}, form a mythical duo with ${compatibilityScore}% compatibility!`}
                 </p>
             </div>
         `;
@@ -1903,7 +2027,14 @@ function compareWithFriend() {
         navigator.share({ title: 'QuizMagic Challenge', text: text, url: comparisonUrl });
     } else {
         navigator.clipboard.writeText(comparisonUrl).then(() => {
-            alert(currentLang === 'ar' ? 'تم نسخ رابط المقارنة! أرسله لصديقك.' : 'Comparison link copied! Send it to your friend.');
+            const isAr = currentLang === 'ar';
+            // 🎨 استخدام toast داخلي بدل alert
+            if (typeof showProfileNotification === 'function') {
+                showProfileNotification(
+                    isAr ? '✅ تم نسخ رابط المقارنة! أرسله لصديقك.' : '✅ Comparison link copied! Send it to your friend.',
+                    'success'
+                );
+            }
         }).catch(err => {
             console.error('Failed to copy link: ', err);
             window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`);

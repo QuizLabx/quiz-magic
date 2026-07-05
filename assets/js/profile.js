@@ -217,12 +217,18 @@ function importUserData() {
                 throw new Error('Invalid file format');
             }
             
-            // تأكيد من المستخدم
-            const confirmMsg = isAr 
-                ? '⚠️ سيؤدي هذا إلى استبدال بياناتك الحالية. هل أنت متأكد؟'
-                : '⚠️ This will replace your current data. Are you sure?';
-            
-            if (!confirm(confirmMsg)) return;
+            // 🎨 تأكيد من المستخدم باستخدام المودال المخصص
+            const confirmed = await showConfirmDialog({
+                title: isAr ? '⚠️ استيراد البيانات' : '⚠️ Import Data',
+                message: isAr
+                    ? 'سيؤدي هذا إلى استبدال بياناتك الحالية. هل أنت متأكد؟'
+                    : 'This will replace your current data. Are you sure?',
+                okText: isAr ? 'نعم، استيراد' : 'Yes, Import',
+                cancelText: isAr ? 'إلغاء' : 'Cancel',
+                okType: 'danger'
+            });
+
+            if (!confirmed) return;
             
             // استعادة البيانات
             localStorage.setItem('quiz_stats', JSON.stringify(userData.quizStats));
@@ -271,22 +277,36 @@ function importUserData() {
 }
 
 // ==================== DELETE ALL DATA ====================
-function deleteAllData() {
+async function deleteAllData() {
     const isAr = currentLang === 'ar';
-    
-    const confirmMsg1 = isAr
-        ? '⚠️ تحذير! سيتم حذف جميع بياناتك نهائياً:\n- جميع الإحصائيات\n- جميع الإنجازات\n- جميع التفضيلات\n\nهل أنت متأكد؟'
-        : '⚠️ Warning! All your data will be permanently deleted:\n- All statistics\n- All achievements\n- All preferences\n\nAre you sure?';
-    
-    if (!confirm(confirmMsg1)) return;
-    
-    // تأكيد ثانوي للحماية
-    const confirmMsg2 = isAr
-        ? '🔴 هذا الإجراء لا يمكن التراجع عنه! اكتب "DELETE" للتأكيد:'
-        : '🔴 This action cannot be undone! Type "DELETE" to confirm:';
-    
-    const userInput = prompt(confirmMsg2);
-    if (userInput !== 'DELETE') {
+
+    // 🎨 التأكيد الأول باستخدام المودال المخصص
+    const confirm1 = await showConfirmDialog({
+        title: isAr ? '⚠️ حذف جميع البيانات' : '⚠️ Delete All Data',
+        message: isAr
+            ? 'سيتم حذف جميع بياناتك نهائياً: الإحصائيات، الإنجازات، والتفضيلات. هل أنت متأكد؟'
+            : 'All your data will be permanently deleted: statistics, achievements, and preferences. Are you sure?',
+        okText: isAr ? 'متابعة' : 'Continue',
+        cancelText: isAr ? 'إلغاء' : 'Cancel',
+        okType: 'danger'
+    });
+
+    if (!confirm1) return;
+
+    // 🎨 التأكيد الثاني (الكتابة): بديل prompt
+    const confirm2 = await showConfirmDialog({
+        title: isAr ? '🔴 تأكيد نهائي' : '🔴 Final Confirmation',
+        message: isAr
+            ? 'هذا الإجراء لا يمكن التراجع عنه! اكتب "DELETE" للتأكيد.'
+            : 'This action cannot be undone! Type "DELETE" to confirm.',
+        okText: isAr ? 'حذف نهائي' : 'Delete Forever',
+        cancelText: isAr ? 'إلغاء' : 'Cancel',
+        okType: 'danger',
+        inputLabel: isAr ? 'اكتب DELETE هنا:' : 'Type DELETE here:',
+        inputExpected: 'DELETE'
+    });
+
+    if (!confirm2) {
         showProfileNotification(
             isAr ? '❌ تم إلغاء العملية' : '❌ Operation cancelled',
             'error'
