@@ -145,14 +145,10 @@ window.addEventListener('unhandledrejection', (event) => {
 
 // ♿ إغلاق المودالات بضغط Escape
 document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-        const confirmModal = document.getElementById('confirm-dialog');
-        if (confirmModal && confirmModal.classList.contains('show')) {
-            dismissConfirmDialog(false);
-        } else {
-            closeAchievementsModal();
-        }
-    }
+if (e.key === 'Escape') {
+closeAchievementsModal();
+closePokedexModal();
+}
 });
 
 // Initialize
@@ -817,6 +813,173 @@ function updateStreakDisplay(streak) {
         sessionStorage.setItem('streak_tracked_today', 'true');
     }
 }
+
+// ==================== POKÉDEX SYSTEM (NEW) ====================
+function showPokedexModal() {
+const modal = document.getElementById('pokedex-modal');
+if (!modal) return;
+
+// 🎵 صوت فتح الموسوعة
+if (window.audioManager) {
+window.audioManager.play('ui-click');
+}
+
+// إظهار عرض القائمة افتراضياً
+showPokedexList();
+
+modal.classList.add('show');
+trapFocus(modal);
+
+// ♿ التركيز على زر الإغلاق
+setTimeout(() => {
+const closeBtn = modal.querySelector('.modal-close');
+if (closeBtn) closeBtn.focus();
+}, 100);
+
+// 📊 Analytics tracking
+trackEvent('pokedex_opened');
+}
+
+function closePokedexModal() {
+const modal = document.getElementById('pokedex-modal');
+if (!modal) return;
+modal.classList.remove('show');
+removeFocusTrap(modal);
+}
+
+function showPokedexList() {
+const grid = document.getElementById('pokedex-grid');
+const backBtn = document.getElementById('pokedex-back-btn');
+const countEl = document.getElementById('pokedex-count');
+const percentEl = document.getElementById('pokedex-percent');
+const fillEl = document.getElementById('pokedex-progress-fill');
+const titleEl = document.getElementById('pokedex-modal-title');
+
+if (!grid) return;
+
+const isAr = currentLang === 'ar';
+// تحديث العنوان
+if (titleEl) titleEl.textContent = isAr ? 'موسوعة المخلوقات' : 'Pokédex';
+
+// إظهار الشبكة وإخفاء زر الرجوع
+grid.style.display = 'grid';
+if (backBtn) backBtn.style.display = 'none';
+
+// جلب بيانات المخلوقات
+const data = quizzesData[currentLang];
+const allCreatures = data.quizzes[0].results;
+const discoveredIds = userStats.creatures ? Object.keys(userStats.creatures) : [];
+
+// تحديث شريط التقدم
+const discoveredCount = discoveredIds.length;
+const totalCount = allCreatures.length;
+const percent = totalCount > 0 ? Math.round((discoveredCount / totalCount) * 100) : 0;
+
+if (countEl) {
+countEl.textContent = isAr
+? `اكتشفت ${discoveredCount} من ${totalCount}`
+: `Discovered ${discoveredCount} of ${totalCount}`;
+}
+if (percentEl) percentEl.textContent = `${percent}%`;
+if (fillEl) fillEl.style.width = `${percent}%`;
+
+// بناء بطاقات المخلوقات
+grid.innerHTML = '';
+allCreatures.forEach(creature => {
+const isDiscovered = discoveredIds.includes(creature.id);
+const count = isDiscovered ? (userStats.creatures[creature.id] || 0) : 0;
+
+const card = document.createElement('div');
+card.className = `pokedex-card ${isDiscovered ? 'discovered' : 'locked'}`;
+
+if (isDiscovered) {
+// 🎴 مخلوق مكتشف
+const rarityClass = `rarity-${creature.rarity.replace(/\s+/g, '-')}`;
+card.innerHTML = `
+<div class="pokedex-image-wrapper">
+<img src="${creature.image}" alt="${creature.name}" loading="lazy">
+</div>
+<div class="pokedex-info">
+<h4 class="pokedex-name">${creature.name}</h4>
+<span class="pokedex-rarity ${rarityClass}">${creature.rarity}</span>
+${count > 1 ? `<div class="pokedex-count">×${count}</div>` : ''}
+</div>
+`;
+card.onclick = () => showCreatureDetails(creature.id);
+} else {
+// 🔒 مخلوق مقفل
+card.innerHTML = `
+<div class="pokedex-image-wrapper">
+<img src="${creature.image}" alt="???" loading="lazy">
+<div class="pokedex-lock-overlay">
+<i class="fas fa-question"></i>
+</div>
+</div>
+<div class="pokedex-info">
+<h4 class="pokedex-name">???</h4>
+<span class="pokedex-rarity locked-rarity">${isAr ? 'غير مكتشف' : 'Undiscovered'}</span>
+</div>
+`;
+// لا يوجد onclick للمخلوقات المقفلة
+}
+
+grid.appendChild(card);
+});
+}
+
+function showCreatureDetails(creatureId) {
+const grid = document.getElementById('pokedex-grid');
+const backBtn = document.getElementById('pokedex-back-btn');
+const titleEl = document.getElementById('pokedex-modal-title');
+
+if (!grid) return;
+
+const isAr = currentLang === 'ar';
+const creature = findCreatureById(creatureId);
+if (!creature) return;
+
+const count = userStats.creatures[creatureId] || 0;
+const rarityClass = `rarity-${creature.rarity.replace(/\s+/g, '-')}`;
+
+// تحديث العنوان
+if (titleEl) titleEl.textContent = creature.name;
+
+// إخفاء الشبكة وإظهار زر الرجوع
+grid.style.display = 'none';
+if (backBtn) backBtn.style.display = 'flex';
+
+// استبدال محتوى الشبكة بتفاصيل المخلوق
+grid.innerHTML = `
+<div class="pokedex-details-view" style="grid-column: 1 / -1;">
+<img src="${creature.image}" alt="${creature.name}" class="pokedex-details-image">
+<h2 class="pokedex-details-name">${creature.name}</h2>
+<span class="pokedex-rarity ${rarityClass} pokedex-details-rarity">${creature.rarity}</span>
+<p class="pokedex-details-description">${creature.description || creature.article || ''}</p>
+<div class="pokedex-details-stats">
+<div class="pokedex-stat-card">
+<div class="pokedex-stat-label">${isAr ? 'عدد مرات الاكتشاف' : 'Times Discovered'}</div>
+<div class="pokedex-stat-value">×${count}</div>
+</div>
+<div class="pokedex-stat-card">
+<div class="pokedex-stat-label">${isAr ? 'الشفارة' : 'Badge'}</div>
+<div class="pokedex-stat-value" style="font-size: 1rem;">${creature.badge || '—'}</div>
+</div>
+</div>
+</div>
+`;
+
+// 🎵 صوت فتح التفاصيل
+if (window.audioManager) {
+window.audioManager.play('ui-click');
+}
+
+// 📊 Analytics tracking
+trackEvent('pokedex_creature_viewed', {
+'creature_id': creatureId,
+'creature_name': creature.name
+});
+}
+
 
 // ==================== TIME & DATE HELPERS (NEW) ====================
 function getCurrentHour() {
