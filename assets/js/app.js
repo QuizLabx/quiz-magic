@@ -2521,12 +2521,32 @@ function tryUpgradeCard(creatureId) {
     return currentTier;
 }
 
-// 🎨 Visual config per tier (used by Canvas renderer)
+// 🎨 Visual config per tier (used by Canvas renderer) — Masterpiece edition
 const TIER_VISUALS = {
-    common:  { border: '#64748b', glow: 'rgba(148,163,184,0.4)', accent: '#94a3b8', deep: '#0f172a', mid: '#1e293b', halo: 'rgba(148,163,184,0.15)', stars: 30 },
-    silver:  { border: '#cbd5e1', glow: 'rgba(203,213,225,0.6)', accent: '#e2e8f0', deep: '#1e293b', mid: '#334155', halo: 'rgba(203,213,225,0.22)', stars: 55 },
-    gold:    { border: '#fbbf24', glow: 'rgba(251,191,36,0.7)', accent: '#fcd34d', deep: '#1c1410', mid: '#3d2914', halo: 'rgba(251,191,36,0.28)', stars: 90 },
-    diamond: { border: '#67e8f9', glow: 'rgba(103,232,249,0.8)', accent: '#a5f3fc', deep: '#0c1b2a', mid: '#134e4a', halo: 'rgba(103,232,249,0.35)', stars: 140 }
+    common:  {
+        border: '#7c8aa3', glow: 'rgba(148,163,184,0.45)', accent: '#b8c5d6', accentDeep: '#64748b',
+        deep: '#0a0f1a', mid: '#1a2236', halo: 'rgba(148,163,184,0.18)',
+        stars: 35, gem: '◆', gemColor: '#94a3b8',
+        grad1: '#2a3650', grad2: '#161e2e', holo: false
+    },
+    silver:  {
+        border: '#d6deeb', glow: 'rgba(203,213,225,0.65)', accent: '#eef2f8', accentDeep: '#a8b4c8',
+        deep: '#101828', mid: '#283448', halo: 'rgba(203,213,225,0.25)',
+        stars: 65, gem: '◈', gemColor: '#e2e8f0',
+        grad1: '#475569', grad2: '#1e293b', holo: false
+    },
+    gold:    {
+        border: '#fcd34d', glow: 'rgba(251,191,36,0.75)', accent: '#fde68a', accentDeep: '#d97706',
+        deep: '#1a1208', mid: '#3d2810', halo: 'rgba(251,191,36,0.3)',
+        stars: 110, gem: '✦', gemColor: '#fbbf24',
+        grad1: '#92400e', grad2: '#451a03', holo: false
+    },
+    diamond: {
+        border: '#a5f3fc', glow: 'rgba(103,232,249,0.85)', accent: '#cffafe', accentDeep: '#0891b2',
+        deep: '#06141f', mid: '#0e3a45', halo: 'rgba(103,232,249,0.38)',
+        stars: 170, gem: '❖', gemColor: '#67e8f9',
+        grad1: '#155e75', grad2: '#082f49', holo: true
+    }
 };
 
 // Helper: load an <img> with CORS-enabled fetch → dataURL (avoids tainted canvas)
@@ -2596,150 +2616,410 @@ function roundRectPath(ctx, x, y, w, h, r) {
     ctx.closePath();
 }
 
-// 🖼️ Main Canvas card renderer — produces a premium rectangular trading card
+// 🖼️ MASTERPIECE card renderer — artifact-grade premium trading card
 async function renderCollectibleCardCanvas(creature, tier) {
     const isAr = currentLang === 'ar';
     const username = getUsername() || (isAr ? 'مجهول' : 'Unknown');
     const tierLabel = CARD_TIERS[tier] ? CARD_TIERS[tier].label[isAr ? 'ar' : 'en'] : tier;
     const visual = TIER_VISUALS[tier] || TIER_VISUALS.common;
+    const rarityText = creature.rarity || '';
 
-    // Card dimensions: 5:7 ratio (professional trading card)
-    const W = 1080, H = 1512;
+    // ===== Card dimensions: ultra-high-res 5:7 ratio =====
+    const W = 1440, H = 2016;
     const canvas = document.createElement('canvas');
     canvas.width = W;
     canvas.height = H;
     const ctx = canvas.getContext('2d');
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
 
-    // 🔤 Ensure Cairo font is fully loaded so Arabic renders with proper ligatures
+    // 🔤 Ensure Cairo font is fully loaded for proper Arabic ligatures
     if (document.fonts && document.fonts.ready) {
-        try { await document.fonts.ready; await document.fonts.load('700 64px Cairo'); } catch (e) { /* ignore */ }
+        try {
+            await document.fonts.ready;
+            await Promise.all([
+                document.fonts.load('900 86px Cairo'),
+                document.fonts.load('700 40px Cairo'),
+                document.fonts.load('600 32px Cairo'),
+                document.fonts.load('500 30px Cairo')
+            ]);
+        } catch (e) { /* ignore */ }
     }
 
-    // ===== Background gradient =====
+    // ===== Helper: drawing direction-aware text positions =====
+    const rtl = isAr;
+    const pad = 88; // outer content padding
+
+    // ============================================================
+    // LAYER 1: Deep cosmic background
+    // ============================================================
     const bg = ctx.createLinearGradient(0, 0, W, H);
     bg.addColorStop(0, visual.deep);
-    bg.addColorStop(0.5, visual.mid);
-    bg.addColorStop(1, visual.deep);
+    bg.addColorStop(0.45, visual.mid);
+    bg.addColorStop(0.7, visual.deep);
+    bg.addColorStop(1, '#04060c');
     ctx.fillStyle = bg;
     ctx.fillRect(0, 0, W, H);
 
-    // ===== Halo glow behind artwork =====
-    const halo = ctx.createRadialGradient(W / 2, 560, 50, W / 2, 560, 600);
+    // Subtle vignette
+    const vig = ctx.createRadialGradient(W / 2, H / 2, W * 0.3, W / 2, H / 2, W * 0.85);
+    vig.addColorStop(0, 'rgba(0,0,0,0)');
+    vig.addColorStop(1, 'rgba(0,0,0,0.65)');
+    ctx.fillStyle = vig;
+    ctx.fillRect(0, 0, W, H);
+
+    // ============================================================
+    // LAYER 2: Guilloché-style mesh (banknote guilloché pattern)
+    // ============================================================
+    ctx.save();
+    ctx.globalAlpha = 0.06;
+    ctx.strokeStyle = visual.accent;
+    ctx.lineWidth = 1;
+    const gcx = W / 2, gcy = H * 0.42;
+    for (let r = 80; r < W * 0.75; r += 28) {
+        ctx.beginPath();
+        for (let a = 0; a <= Math.PI * 2; a += 0.04) {
+            const wave = Math.sin(a * 7) * 14 + Math.cos(a * 3) * 10;
+            const rr = r + wave;
+            const px = gcx + Math.cos(a) * rr;
+            const py = gcy + Math.sin(a) * rr;
+            if (a === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+        }
+        ctx.closePath();
+        ctx.stroke();
+    }
+    ctx.restore();
+
+    // ============================================================
+    // LAYER 3: Nebula glow behind artwork
+    // ============================================================
+    const halo = ctx.createRadialGradient(W / 2, 780, 60, W / 2, 780, 820);
     halo.addColorStop(0, visual.halo);
+    halo.addColorStop(0.5, visual.halo.replace(/[\d.]+\)$/, '0.12)'));
     halo.addColorStop(1, 'rgba(0,0,0,0)');
     ctx.fillStyle = halo;
     ctx.fillRect(0, 0, W, H);
 
-    // ===== Sparkle stars (count by tier) =====
-    for (let i = 0; i < visual.stars; i++) {
+    // Secondary off-center glow (diamond/gold get richer glow)
+    const halo2 = ctx.createRadialGradient(W * 0.78, 500, 40, W * 0.78, 500, 520);
+    halo2.addColorStop(0, visual.halo);
+    halo2.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = halo2;
+    ctx.fillRect(0, 0, W, H);
+
+    // ============================================================
+    // LAYER 4: Constellation of sparkle stars
+    // ============================================================
+    // Tiny background dust
+    for (let i = 0; i < 220; i++) {
         const sx = Math.random() * W;
         const sy = Math.random() * H;
-        const sr = Math.random() * 1.8 + 0.4;
-        const sa = Math.random() * 0.6 + 0.2;
+        const sr = Math.random() * 1.4 + 0.3;
+        const sa = Math.random() * 0.5 + 0.15;
         ctx.fillStyle = 'rgba(255,255,255,' + sa + ')';
         ctx.beginPath();
         ctx.arc(sx, sy, sr, 0, Math.PI * 2);
         ctx.fill();
     }
+    // Larger gem-like sparkles (tier-based count)
+    for (let i = 0; i < visual.stars; i++) {
+        const sx = Math.random() * W;
+        const sy = Math.random() * H;
+        const sr = Math.random() * 3 + 1.2;
+        const sa = Math.random() * 0.7 + 0.3;
+        // Cross flare
+        ctx.save();
+        ctx.globalAlpha = sa;
+        ctx.fillStyle = visual.accent;
+        ctx.shadowColor = visual.glow;
+        ctx.shadowBlur = 12;
+        ctx.beginPath();
+        ctx.arc(sx, sy, sr, 0, Math.PI * 2);
+        ctx.fill();
+        // 4-point flare lines
+        ctx.strokeStyle = 'rgba(255,255,255,' + (sa * 0.6) + ')';
+        ctx.lineWidth = 1;
+        const flare = sr * 4;
+        ctx.beginPath();
+        ctx.moveTo(sx - flare, sy); ctx.lineTo(sx + flare, sy);
+        ctx.moveTo(sx, sy - flare); ctx.lineTo(sx, sy + flare);
+        ctx.stroke();
+        ctx.restore();
+    }
 
-    // ===== Ornate outer border (double-line for premium tiers) =====
+    // ============================================================
+    // LAYER 5: Holographic rainbow sheen (diamond + gold only)
+    // ============================================================
+    if (visual.holo) {
+        ctx.save();
+        ctx.globalAlpha = 0.08;
+        const holo = ctx.createLinearGradient(0, 0, W, H);
+        holo.addColorStop(0, '#ff006e');
+        holo.addColorStop(0.2, '#fb5607');
+        holo.addColorStop(0.4, '#ffbe0b');
+        holo.addColorStop(0.6, '#8338ec');
+        holo.addColorStop(0.8, '#3a86ff');
+        holo.addColorStop(1, '#06ffa5');
+        ctx.fillStyle = holo;
+        ctx.fillRect(0, 0, W, H);
+        ctx.restore();
+    }
+
+    // ============================================================
+    // LAYER 6: Ornate triple-frame border
+    // ============================================================
+    const frameInset = 32;
+    // Outer thick glowing border
     ctx.save();
-    ctx.lineWidth = 8;
+    ctx.lineWidth = 10;
     ctx.strokeStyle = visual.border;
     ctx.shadowColor = visual.glow;
-    ctx.shadowBlur = 35;
-    roundRectPath(ctx, 24, 24, W - 48, H - 48, 48);
+    ctx.shadowBlur = 50;
+    roundRectPath(ctx, frameInset, frameInset, W - frameInset * 2, H - frameInset * 2, 56);
     ctx.stroke();
     ctx.restore();
-    // Inner thin border
+    // Middle thin border
     ctx.save();
     ctx.lineWidth = 2;
     ctx.strokeStyle = visual.accent;
-    ctx.globalAlpha = 0.5;
-    roundRectPath(ctx, 44, 44, W - 88, H - 88, 36);
+    ctx.globalAlpha = 0.7;
+    roundRectPath(ctx, frameInset + 16, frameInset + 16, W - (frameInset + 16) * 2, H - (frameInset + 16) * 2, 44);
+    ctx.stroke();
+    ctx.restore();
+    // Inner hairline border
+    ctx.save();
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = visual.accent;
+    ctx.globalAlpha = 0.35;
+    roundRectPath(ctx, frameInset + 28, frameInset + 28, W - (frameInset + 28) * 2, H - (frameInset + 28) * 2, 38);
     ctx.stroke();
     ctx.restore();
 
-    // ===== Load creature image =====
-    const img = await loadImageAsDataURL(creature.image);
-
-    // ===== Artwork frame =====
-    const artX = 90, artY = 130, artW = W - 180, artH = 760;
-    ctx.save();
-    // Art frame background
-    ctx.fillStyle = '#000';
-    roundRectPath(ctx, artX, artY, artW, artH, 28);
-    ctx.fill();
-    // Clip and draw image (cover-fit)
-    if (img) {
+    // Corner ornaments (4 ornate flourishes)
+    function drawCornerOrnament(cx, cy, rot) {
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(rot);
+        ctx.strokeStyle = visual.accent;
+        ctx.lineWidth = 2.5;
+        ctx.globalAlpha = 0.9;
+        // Filigree curl
         ctx.beginPath();
-        roundRectPath(ctx, artX, artY, artW, artH, 28);
-        ctx.clip();
+        ctx.moveTo(0, 0);
+        ctx.bezierCurveTo(30, 0, 50, 20, 50, 50);
+        ctx.bezierCurveTo(50, 30, 70, 30, 80, 50);
+        ctx.stroke();
+        // Small gem dot
+        ctx.fillStyle = visual.gemColor;
+        ctx.shadowColor = visual.glow;
+        ctx.shadowBlur = 10;
+        ctx.beginPath();
+        ctx.arc(0, 0, 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        // Inner accent line
+        ctx.lineWidth = 1;
+        ctx.globalAlpha = 0.5;
+        ctx.beginPath();
+        ctx.moveTo(8, 8);
+        ctx.bezierCurveTo(22, 12, 32, 22, 38, 38);
+        ctx.stroke();
+        ctx.restore();
+    }
+    const ci = frameInset + 36;
+    drawCornerOrnament(ci, ci, 0);                          // top-left
+    drawCornerOrnament(W - ci, ci, Math.PI / 2);            // top-right
+    drawCornerOrnament(W - ci, H - ci, Math.PI);            // bottom-right
+    drawCornerOrnament(ci, H - ci, -Math.PI / 2);           // bottom-left
+
+    // ============================================================
+    // LAYER 7: Top banner — brand + tier icon
+    // ============================================================
+    // Brand name top-center
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font = '600 30px Cairo, Tajawal, sans-serif';
+    ctx.fillStyle = 'rgba(203,213,225,0.55)';
+    ctx.letterSpacing = '0.3em';
+    ctx.fillText('Q U I Z M A G I C', W / 2, 100);
+    ctx.restore();
+
+    // Tier gem icon top-center (large)
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font = '56px Cairo, Tajawal, sans-serif';
+    ctx.fillStyle = visual.gemColor;
+    ctx.shadowColor = visual.glow;
+    ctx.shadowBlur = 25;
+    ctx.fillText(visual.gem, W / 2, 150);
+    ctx.restore();
+
+    // ============================================================
+    // LAYER 8: Artwork window (3D framed with inner gold edge)
+    // ============================================================
+    const artX = pad, artY = 210, artW = W - pad * 2, artH = 880;
+
+    // Outer artwork shadow (depth)
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,0.7)';
+    ctx.shadowBlur = 40;
+    ctx.shadowOffsetY = 12;
+    ctx.fillStyle = '#000';
+    roundRectPath(ctx, artX, artY, artW, artH, 32);
+    ctx.fill();
+    ctx.restore();
+
+    // Load and draw image (cover-fit, clipped)
+    const img = await loadImageAsDataURL(creature.image);
+    ctx.save();
+    roundRectPath(ctx, artX, artY, artW, artH, 32);
+    ctx.clip();
+    if (img) {
         const scale = Math.max(artW / img.width, artH / img.height);
         const dw = img.width * scale, dh = img.height * scale;
         ctx.drawImage(img, artX + (artW - dw) / 2, artY + (artH - dh) / 2, dw, dh);
-        // Bottom fade for text legibility
-        const fade = ctx.createLinearGradient(0, artY + artH - 220, 0, artY + artH);
-        fade.addColorStop(0, 'rgba(0,0,0,0)');
-        fade.addColorStop(1, 'rgba(0,0,0,0.92)');
-        ctx.fillStyle = fade;
-        ctx.fillRect(artX, artY + artH - 220, artW, 220);
     } else {
-        // Placeholder if image fails
-        ctx.fillStyle = visual.mid;
+        const phGrad = ctx.createLinearGradient(artX, artY, artX + artW, artY + artH);
+        phGrad.addColorStop(0, visual.grad1);
+        phGrad.addColorStop(1, visual.grad2);
+        ctx.fillStyle = phGrad;
         ctx.fillRect(artX, artY, artW, artH);
     }
+    // Top gradient (for badge legibility)
+    const topFade = ctx.createLinearGradient(0, artY, 0, artY + 180);
+    topFade.addColorStop(0, 'rgba(0,0,0,0.75)');
+    topFade.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = topFade;
+    ctx.fillRect(artX, artY, artW, 180);
+    // Bottom strong gradient (for name legibility)
+    const botFade = ctx.createLinearGradient(0, artY + artH - 320, 0, artY + artH);
+    botFade.addColorStop(0, 'rgba(0,0,0,0)');
+    botFade.addColorStop(0.5, 'rgba(0,0,0,0.6)');
+    botFade.addColorStop(1, 'rgba(0,0,0,0.97)');
+    ctx.fillStyle = botFade;
+    ctx.fillRect(artX, artY + artH - 320, artW, 320);
     ctx.restore();
 
-    // Art frame border
+    // Inner gold frame edge around artwork
     ctx.save();
-    ctx.lineWidth = 3;
+    ctx.lineWidth = 4;
     ctx.strokeStyle = visual.border;
-    ctx.globalAlpha = 0.85;
-    roundRectPath(ctx, artX, artY, artW, artH, 28);
+    ctx.shadowColor = visual.glow;
+    ctx.shadowBlur = 20;
+    roundRectPath(ctx, artX, artY, artW, artH, 32);
+    ctx.stroke();
+    ctx.restore();
+    // Inner hairline
+    ctx.save();
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = visual.accent;
+    ctx.globalAlpha = 0.6;
+    roundRectPath(ctx, artX + 8, artY + 8, artW - 16, artH - 16, 26);
     ctx.stroke();
     ctx.restore();
 
-    // ===== Tier badge (top-right of artwork) =====
-    const badgeText = (isAr ? '⭐ ' : '') + tierLabel;
-    ctx.font = 'bold 34px Cairo, Tajawal, sans-serif';
-    ctx.textAlign = isAr ? 'right' : 'left';
-    ctx.textBaseline = 'middle';
-    const badgePadX = 28, badgeH = 64;
+    // ============================================================
+    // LAYER 9: Tier ribbon badge (top of artwork, pill shape)
+    // ============================================================
+    const badgeText = (isAr ? '⭐ ' : '★ ') + tierLabel + (isAr ? '' : ' ★');
+    ctx.font = '900 36px Cairo, Tajawal, sans-serif';
+    const badgePadX = 40, badgeH = 72;
     const badgeW = ctx.measureText(badgeText).width + badgePadX * 2;
-    const badgeX = isAr ? (artX + artW - 24 - badgeW) : (artX + 24);
+    const badgeCX = artX + artW / 2;
+    const badgeX = badgeCX - badgeW / 2;
     const badgeY = artY + 24;
     ctx.save();
-    ctx.fillStyle = 'rgba(0,0,0,0.75)';
-    roundRectPath(ctx, badgeX, badgeY, badgeW, badgeH, 32);
+    // Badge glow
+    ctx.shadowColor = visual.glow;
+    ctx.shadowBlur = 25;
+    const badgeGrad = ctx.createLinearGradient(badgeX, badgeY, badgeX, badgeY + badgeH);
+    badgeGrad.addColorStop(0, visual.deep);
+    badgeGrad.addColorStop(1, visual.mid);
+    ctx.fillStyle = badgeGrad;
+    roundRectPath(ctx, badgeX, badgeY, badgeW, badgeH, badgeH / 2);
     ctx.fill();
-    ctx.lineWidth = 2;
+    ctx.shadowBlur = 0;
+    // Badge border
+    ctx.lineWidth = 2.5;
     ctx.strokeStyle = visual.border;
     ctx.stroke();
+    // Badge text
     ctx.fillStyle = visual.accent;
-    const badgeTextX = isAr ? (badgeX + badgeW - badgePadX) : (badgeX + badgePadX);
-    ctx.fillText(badgeText, badgeTextX, badgeY + badgeH / 2);
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(badgeText, badgeCX, badgeY + badgeH / 2 + 2);
     ctx.restore();
 
-    // ===== Creature name (over bottom of artwork) =====
+    // ============================================================
+    // LAYER 10: Creature name + rarity (over artwork bottom)
+    // ============================================================
     ctx.save();
-    ctx.direction = isAr ? 'rtl' : 'ltr';
-    ctx.textAlign = isAr ? 'right' : 'left';
+    ctx.direction = rtl ? 'rtl' : 'ltr';
+    ctx.textAlign = rtl ? 'right' : 'left';
     ctx.textBaseline = 'alphabetic';
-    ctx.font = 'bold 64px Cairo, Tajawal, sans-serif';
-    ctx.fillStyle = '#ffffff';
-    ctx.shadowColor = 'rgba(0,0,0,0.9)';
-    ctx.shadowBlur = 12;
-    const nameX = isAr ? (artX + artW - 32) : (artX + 32);
-    ctx.fillText(String(creature.name || ''), nameX, artY + artH - 60);
-    // Rarity subtitle
-    ctx.shadowBlur = 6;
-    ctx.font = '500 28px Cairo, Tajawal, sans-serif';
+    // Rarity above name
+    ctx.font = '600 32px Cairo, Tajawal, sans-serif';
     ctx.fillStyle = visual.accent;
-    ctx.fillText(String(creature.rarity || ''), nameX, artY + artH - 24);
+    ctx.shadowColor = 'rgba(0,0,0,0.95)';
+    ctx.shadowBlur = 10;
+    const nameX = rtl ? (artX + artW - 40) : (artX + 40);
+    ctx.fillText(String(rarityText), nameX, artY + artH - 96);
+    // Big creature name
+    ctx.font = '900 82px Cairo, Tajawal, sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.shadowBlur = 18;
+    // Truncate if too long
+    let displayName = String(creature.name || '');
+    while (ctx.measureText(displayName).width > artW - 80 && displayName.length > 4) {
+        displayName = displayName.slice(0, -1);
+    }
+    if (displayName !== String(creature.name || '')) displayName += '…';
+    ctx.fillText(displayName, nameX, artY + artH - 40);
     ctx.restore();
 
-    // ===== Stats section =====
+    // ============================================================
+    // LAYER 11: Stats panel (glassmorphism card)
+    // ============================================================
+    const statY0 = 1160;
+    const statPanelH = 380;
+    const statX = pad, statW = W - pad * 2;
+
+    // Glass panel background
+    ctx.save();
+    ctx.fillStyle = 'rgba(15,23,42,0.45)';
+    roundRectPath(ctx, statX, statY0, statW, statPanelH, 28);
+    ctx.fill();
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+    ctx.stroke();
+    // Top highlight line
+    ctx.globalAlpha = 0.4;
+    ctx.lineWidth = 2;
+    const hlGrad = ctx.createLinearGradient(statX, statY0, statX + statW, statY0);
+    hlGrad.addColorStop(0, 'rgba(255,255,255,0)');
+    hlGrad.addColorStop(0.5, visual.border);
+    hlGrad.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.strokeStyle = hlGrad;
+    ctx.beginPath();
+    ctx.moveTo(statX + 40, statY0);
+    ctx.lineTo(statX + statW - 40, statY0);
+    ctx.stroke();
+    ctx.restore();
+
+    // Panel title
+    ctx.save();
+    ctx.direction = rtl ? 'rtl' : 'ltr';
+    ctx.textAlign = rtl ? 'right' : 'left';
+    ctx.textBaseline = 'middle';
+    ctx.font = '600 26px Cairo, Tajawal, sans-serif';
+    ctx.fillStyle = 'rgba(167,139,250,0.9)';
+    const panelTitleX = rtl ? (statX + statW - 36) : (statX + 36);
+    ctx.fillText(isAr ? '✦ السمات الأسطورية' : '✦ Mythical Attributes', panelTitleX, statY0 + 34);
+    ctx.restore();
+
+    // Axis labels & bars
     const axisLabels = {
         intelligence: { ar: 'الذكاء', en: 'Intelligence' },
         energy:       { ar: 'الطاقة', en: 'Energy' },
@@ -2748,136 +3028,254 @@ async function renderCollectibleCardCanvas(creature, tier) {
         mystery:      { ar: 'الغموض', en: 'Mystery' },
         willpower:    { ar: 'الإرادة', en: 'Willpower' }
     };
+    const axisIcons = {
+        intelligence: '🧠', energy: '⚡', empathy: '💫',
+        strategy: '♟', mystery: '🔮', willpower: '🔥'
+    };
     const primaryAxes = (creature.axes && creature.axes.length) ? creature.axes : ['willpower', 'energy'];
     const baseScore = Math.round((creature.multiplier || 1.15) * 75);
-    const statY0 = 950;
-    const statRowH = 56;
+    const statRowH = 68;
+    const statStartY = statY0 + 80;
+
     primaryAxes.slice(0, 4).forEach((axis, i) => {
-        const score = Math.min(10, Math.max(5, Math.round(baseScore / 10 + (i === 0 ? 2 : -1))));
+        const score = Math.min(10, Math.max(6, Math.round(baseScore / 10 + (i === 0 ? 2 : 0))));
         const label = (axisLabels[axis] || { ar: axis, en: axis })[isAr ? 'ar' : 'en'];
-        const y = statY0 + i * statRowH;
+        const icon = axisIcons[axis] || '◆';
+        const y = statStartY + i * statRowH;
 
         ctx.save();
-        ctx.direction = isAr ? 'rtl' : 'ltr';
-        ctx.textAlign = isAr ? 'right' : 'left';
+        ctx.direction = rtl ? 'rtl' : 'ltr';
         ctx.textBaseline = 'middle';
+        // Icon
+        ctx.textAlign = 'center';
+        ctx.font = '34px Cairo, Tajawal, sans-serif';
+        const iconX = rtl ? (statX + statW - 36) : (statX + 36);
+        ctx.fillText(icon, iconX, y);
         // Label
+        ctx.textAlign = rtl ? 'right' : 'left';
         ctx.font = '600 30px Cairo, Tajawal, sans-serif';
         ctx.fillStyle = '#cbd5e1';
-        const labelX = isAr ? (W - 110) : 110;
+        const labelX = rtl ? (statX + statW - 84) : (statX + 84);
         ctx.fillText(label, labelX, y);
-        // Stat bar (10 segments)
-        const barLabelW = 240;
-        const barTotalW = 360;
-        const segGap = 6;
+        // Stat bar background track
+        const barLabelW = 300;
+        const barTotalW = 380;
+        const segGap = 8;
         const segW = (barTotalW - segGap * 9) / 10;
-        const barStartX = isAr ? (W - 110 - barLabelW - barTotalW) : (110 + barLabelW);
+        const barStartX = rtl ? (statX + statW - 84 - barLabelW - barTotalW) : (statX + 84 + barLabelW);
         for (let s = 0; s < 10; s++) {
             const sx = barStartX + s * (segW + segGap);
-            ctx.fillStyle = s < score ? visual.accent : 'rgba(255,255,255,0.12)';
             if (s < score) {
+                // Filled segment with gradient + glow
+                const segGrad = ctx.createLinearGradient(sx, y - 16, sx, y + 16);
+                segGrad.addColorStop(0, visual.accent);
+                segGrad.addColorStop(1, visual.accentDeep);
+                ctx.fillStyle = segGrad;
                 ctx.shadowColor = visual.glow;
-                ctx.shadowBlur = 8;
+                ctx.shadowBlur = 12;
             } else {
+                ctx.fillStyle = 'rgba(255,255,255,0.1)';
                 ctx.shadowBlur = 0;
             }
-            roundRectPath(ctx, sx, y - 12, segW, 24, 6);
+            roundRectPath(ctx, sx, y - 16, segW, 32, 8);
             ctx.fill();
         }
+        ctx.shadowBlur = 0;
+        // Score number (end of bar)
+        ctx.font = '700 26px Cairo, Tajawal, sans-serif';
+        ctx.fillStyle = visual.accent;
+        const numX = rtl ? (barStartX - 16) : (barStartX + barTotalW + 16);
+        ctx.textAlign = rtl ? 'right' : 'left';
+        ctx.fillText(String(score) + '/10', numX, y);
         ctx.restore();
     });
 
-    // ===== Quote / insight =====
+    // ============================================================
+    // LAYER 12: Quote in glass frame
+    // ============================================================
     const insight = creature.secretReport && creature.secretReport.insight ? creature.secretReport.insight : '';
+    const quoteY0 = statY0 + statPanelH + 28;
+    const quotePanelH = 180;
+
     if (insight) {
         ctx.save();
-        ctx.direction = isAr ? 'rtl' : 'ltr';
-        ctx.textAlign = isAr ? 'right' : 'left';
-        ctx.textBaseline = 'alphabetic';
-        ctx.font = 'italic 30px Cairo, Tajawal, sans-serif';
-        ctx.fillStyle = 'rgba(226,232,240,0.85)';
-        const quoteY = 1220;
-        const quoteX = isAr ? (W - 110) : 110;
-        const quoteMaxW = W - 220;
-        const lines = wrapText(ctx, '“ ' + insight.replace(/\*\*/g, '') + ' ”', quoteMaxW, 3);
+        // Glass panel
+        ctx.fillStyle = 'rgba(15,23,42,0.35)';
+        roundRectPath(ctx, pad, quoteY0, W - pad * 2, quotePanelH, 24);
+        ctx.fill();
+        ctx.lineWidth = 1.5;
+        ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+        ctx.stroke();
+        // Decorative quote mark
+        ctx.font = '900 80px Cairo, Georgia, serif';
+        ctx.fillStyle = 'rgba(167,139,250,0.25)';
+        ctx.textAlign = rtl ? 'right' : 'left';
+        ctx.textBaseline = 'top';
+        const qmX = rtl ? (W - pad - 24) : (pad + 24);
+        ctx.fillText(rtl ? '”' : '"', qmX, quoteY0 + 6);
+        // Insight text
+        ctx.direction = rtl ? 'rtl' : 'ltr';
+        ctx.textAlign = rtl ? 'right' : 'left';
+        ctx.textBaseline = 'top';
+        ctx.font = 'italic 500 32px Cairo, Tajawal, sans-serif';
+        ctx.fillStyle = 'rgba(226,232,240,0.92)';
+        const quoteTextX = rtl ? (W - pad - 60) : (pad + 60);
+        const quoteMaxW = W - pad * 2 - 120;
+        const lines = wrapText(ctx, insight.replace(/\*\*/g, ''), quoteMaxW, 3);
         lines.forEach((line, i) => {
-            ctx.fillText(line, quoteX, quoteY + i * 40);
+            ctx.fillText(line, quoteTextX, quoteY0 + 40 + i * 44);
         });
         ctx.restore();
     }
 
-    // ===== Footer: username + card number =====
-    // Divider line
+    // ============================================================
+    // LAYER 13: Footer — avatar, username, serial, stamp
+    // ============================================================
+    const footerY = H - 200;
+
+    // Divider with gem in center
     ctx.save();
-    const divY = H - 150;
-    const divGrad = ctx.createLinearGradient(110, divY, W - 110, divY);
+    const divGrad = ctx.createLinearGradient(pad, footerY, W - pad, footerY);
     divGrad.addColorStop(0, 'rgba(255,255,255,0)');
     divGrad.addColorStop(0.5, visual.border);
     divGrad.addColorStop(1, 'rgba(255,255,255,0)');
     ctx.strokeStyle = divGrad;
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(110, divY);
-    ctx.lineTo(W - 110, divY);
+    ctx.moveTo(pad, footerY);
+    ctx.lineTo(W / 2 - 40, footerY);
+    ctx.moveTo(W / 2 + 40, footerY);
+    ctx.lineTo(W - pad, footerY);
     ctx.stroke();
+    // Center gem on divider
+    ctx.fillStyle = visual.gemColor;
+    ctx.shadowColor = visual.glow;
+    ctx.shadowBlur = 15;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font = '32px Cairo, Tajawal, sans-serif';
+    ctx.fillText(visual.gem, W / 2, footerY);
     ctx.restore();
 
-    // Avatar circle with initial
-    const avX = isAr ? (W - 110 - 44) : (110 + 44);
-    const avY = H - 80;
-    const avR = 44;
+    // Avatar circle with gradient ring
+    const avR = 56;
+    const avX = rtl ? (W - pad - avR) : (pad + avR);
+    const avY = H - 110;
+    // Outer glow ring
+    ctx.save();
+    ctx.shadowColor = visual.glow;
+    ctx.shadowBlur = 25;
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = visual.border;
+    ctx.beginPath();
+    ctx.arc(avX, avY, avR + 6, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
+    // Avatar fill
     ctx.save();
     const avGrad = ctx.createLinearGradient(avX - avR, avY - avR, avX + avR, avY + avR);
     avGrad.addColorStop(0, '#a855f7');
+    avGrad.addColorStop(0.5, '#d946ef');
     avGrad.addColorStop(1, '#ec4899');
     ctx.fillStyle = avGrad;
     ctx.beginPath();
     ctx.arc(avX, avY, avR, 0, Math.PI * 2);
     ctx.fill();
+    // Initial letter
     ctx.fillStyle = '#fff';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.font = 'bold 40px Cairo, Tajawal, sans-serif';
+    ctx.font = '900 52px Cairo, Tajawal, sans-serif';
     const initial = (username || '?').trim().charAt(0).toUpperCase() || '?';
-    ctx.fillText(initial, avX, avY + 2);
+    ctx.fillText(initial, avX, avY + 3);
     ctx.restore();
 
-    // Username + label
+    // Username + label next to avatar
     ctx.save();
-    ctx.direction = isAr ? 'rtl' : 'ltr';
-    ctx.textAlign = isAr ? 'right' : 'left';
+    ctx.direction = rtl ? 'rtl' : 'ltr';
+    ctx.textAlign = rtl ? 'right' : 'left';
     ctx.textBaseline = 'middle';
-    const nameOffsetX = isAr ? (W - 110 - avR * 2 - 28) : (110 + avR * 2 + 28);
-    // Label (small, above name)
-    ctx.font = '600 22px Cairo, Tajawal, sans-serif';
-    ctx.fillStyle = '#a78bfa';
-    ctx.fillText(isAr ? 'المستكشف' : 'Explorer', nameOffsetX, avY - 22);
-    // Name (bold)
-    ctx.font = 'bold 38px Cairo, Tajawal, sans-serif';
+    const nameOffsetX = rtl ? (W - pad - avR * 2 - 44) : (pad + avR * 2 + 44);
+    // Label
+    ctx.font = '600 26px Cairo, Tajawal, sans-serif';
+    ctx.fillStyle = 'rgba(167,139,250,0.9)';
+    ctx.fillText(isAr ? 'المستكشف الأسطوري' : 'Legendary Explorer', nameOffsetX, avY - 24);
+    // Username
+    ctx.font = '900 44px Cairo, Tajawal, sans-serif';
     ctx.fillStyle = '#ffffff';
-    ctx.fillText(String(username), nameOffsetX, avY + 12);
+    ctx.shadowColor = visual.glow;
+    ctx.shadowBlur = 10;
+    ctx.fillText(String(username), nameOffsetX, avY + 16);
     ctx.restore();
 
-    // Card number (opposite side of footer)
+    // Serial number (opposite side)
     ctx.save();
-    ctx.direction = isAr ? 'rtl' : 'ltr';
-    ctx.textAlign = isAr ? 'left' : 'right';
+    ctx.direction = rtl ? 'rtl' : 'ltr';
+    ctx.textAlign = rtl ? 'left' : 'right';
     ctx.textBaseline = 'middle';
-    ctx.font = '600 24px Cairo, Tajawal, sans-serif';
-    ctx.fillStyle = 'rgba(148,163,184,0.8)';
     const cards = getUserCards();
     const cardIndex = Object.keys(cards).indexOf(creature.id) + 1;
-    const numX = isAr ? 110 : (W - 110);
-    ctx.fillText('#' + String(cardIndex || 1).padStart(3, '0') + ' / ' + String(Object.keys(cards).length || 16).padStart(2, '0'), numX, avY);
+    const totalCards = Object.keys(cards).length || 16;
+    const serialX = rtl ? pad : (W - pad);
+    ctx.font = '600 22px Cairo, Tajawal, sans-serif';
+    ctx.fillStyle = 'rgba(148,163,184,0.7)';
+    ctx.fillText(isAr ? 'الإصدار' : 'Edition', serialX, avY - 28);
+    ctx.font = '700 30px Cairo, Tajawal, sans-serif';
+    ctx.fillStyle = visual.accent;
+    ctx.fillText('#' + String(cardIndex || 1).padStart(3, '0') + ' / ' + String(totalCards).padStart(2, '0'), serialX, avY + 8);
     ctx.restore();
 
-    // Brand watermark
+    // ============================================================
+    // LAYER 14: Wax seal stamp (bottom-center, rotated)
+    // ============================================================
+    const sealCX = W / 2, sealCY = H - 110, sealR = 52;
+    ctx.save();
+    ctx.translate(sealCX, sealCY);
+    ctx.rotate(-0.12);
+    // Seal shadow
+    ctx.shadowColor = 'rgba(0,0,0,0.5)';
+    ctx.shadowBlur = 15;
+    ctx.shadowOffsetY = 6;
+    // Seal body
+    const sealGrad = ctx.createRadialGradient(-12, -12, 5, 0, 0, sealR);
+    sealGrad.addColorStop(0, '#c0392b');
+    sealGrad.addColorStop(0.7, '#922c20');
+    sealGrad.addColorStop(1, '#5e1a12');
+    ctx.fillStyle = sealGrad;
+    ctx.beginPath();
+    ctx.arc(0, 0, sealR, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    // Seal inner ring
+    ctx.strokeStyle = 'rgba(255,200,180,0.5)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(0, 0, sealR - 8, 0, Math.PI * 2);
+    ctx.stroke();
+    // Seal emblem (QM monogram)
+    ctx.fillStyle = 'rgba(255,220,200,0.95)';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font = '900 30px Cairo, Georgia, serif';
+    ctx.fillText('QM', 0, 2);
+    // Tiny stars around
+    ctx.font = '16px Cairo, Tajawal, sans-serif';
+    ctx.fillStyle = 'rgba(255,220,200,0.7)';
+    for (let a = 0; a < 8; a++) {
+        const ang = (a / 8) * Math.PI * 2;
+        ctx.fillText('✦', Math.cos(ang) * (sealR - 18), Math.sin(ang) * (sealR - 18));
+    }
+    ctx.restore();
+
+    // ============================================================
+    // LAYER 15: Signature line (bottom edge)
+    // ============================================================
     ctx.save();
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.font = 'bold 22px Cairo, Tajawal, sans-serif';
-    ctx.fillStyle = 'rgba(148,163,184,0.5)';
-    ctx.fillText('✦ QuizMagic ✦', W / 2, H - 36);
+    ctx.font = 'italic 500 20px Cairo, Tajawal, sans-serif';
+    ctx.fillStyle = 'rgba(148,163,184,0.45)';
+    ctx.fillText('— Mythical Codex · Limited Edition —', W / 2, H - 40);
     ctx.restore();
 
     return canvas;
