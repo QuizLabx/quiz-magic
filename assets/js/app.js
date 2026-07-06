@@ -1934,6 +1934,48 @@ function showResult() {
                                 <div class="mt-4 md:mt-6 p-4 md:p-6 theme-bg-tertiary/20 border theme-border rounded-xl md:rounded-2xl text-center">
                                     <p class="text-purple-300 italic text-sm md:text-lg leading-relaxed">"${creature.secretReport.insight}"</p>
                                 </div>
+                                ${creature.secretReport.recommendations ? `
+                                <div class="recommendations-section">
+                                    <div class="recommendations-title">
+                                        <i class="fas fa-sparkles"></i>
+                                        <span>${isAr ? 'توصيات مخصصة لشخصيتك' : 'Personalized Recommendations'}</span>
+                                    </div>
+                                    <div class="recommendations-grid">
+                                        <div class="rec-category-card rec-books">
+                                            <div class="rec-category-header">
+                                                <span class="rec-icon"><i class="fas fa-book"></i></span>
+                                                <h5>${isAr ? 'كتب' : 'Books'}</h5>
+                                            </div>
+                                            ${creature.secretReport.recommendations.books.map(item => `
+                                            <div class="rec-item">
+                                                <div class="rec-item-title"><span class="rec-bullet">▸</span><span>${escapeHtml(item.title)}</span></div>
+                                                <div class="rec-item-reason">${escapeHtml(item.reason)}</div>
+                                            </div>`).join('')}
+                                        </div>
+                                        <div class="rec-category-card rec-movies">
+                                            <div class="rec-category-header">
+                                                <span class="rec-icon"><i class="fas fa-film"></i></span>
+                                                <h5>${isAr ? 'أفلام' : 'Movies'}</h5>
+                                            </div>
+                                            ${creature.secretReport.recommendations.movies.map(item => `
+                                            <div class="rec-item">
+                                                <div class="rec-item-title"><span class="rec-bullet">▸</span><span>${escapeHtml(item.title)}</span></div>
+                                                <div class="rec-item-reason">${escapeHtml(item.reason)}</div>
+                                            </div>`).join('')}
+                                        </div>
+                                        <div class="rec-category-card rec-music">
+                                            <div class="rec-category-header">
+                                                <span class="rec-icon"><i class="fas fa-music"></i></span>
+                                                <h5>${isAr ? 'موسيقى' : 'Music'}</h5>
+                                            </div>
+                                            ${creature.secretReport.recommendations.music.map(item => `
+                                            <div class="rec-item">
+                                                <div class="rec-item-title"><span class="rec-bullet">▸</span><span>${escapeHtml(item.title)}</span></div>
+                                                <div class="rec-item-reason">${escapeHtml(item.reason)}</div>
+                                            </div>`).join('')}
+                                        </div>
+                                    </div>
+                                </div>` : ''}
                             </div>
                         </div>
                     </div>
