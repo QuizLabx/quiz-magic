@@ -170,8 +170,13 @@ document.addEventListener('DOMContentLoaded', () => {
     loadUserStats();
     // 🎯 التحقق من الزيارة الأولى وإظهار الشاشة الترحيبية
     checkFirstVisit();
-    // 🕐 سجل زيارة اليوم وتحقق من الوقت
+        // 🕐 سجل زيارة اليوم وتحقق من الوقت
     recordVisitDay();
+    
+    // 🔥 حساب وعرض أيام المتتالية (Streaks)
+    const currentStreak = calculateCurrentStreak();
+    showStreakToast(currentStreak);
+	
     if (isNightOwlTime()) {
         if (!userStats.nightVisits) userStats.nightVisits = 0;
         userStats.nightVisits++;
@@ -723,6 +728,80 @@ function calculateAchievementProgress(key, stats) {
     
     return Math.round(conditions[key] || 0);
 }
+
+
+// ==================== STREAKS SYSTEM (NEW) ====================
+function calculateCurrentStreak() {
+    if (!userStats.visitDays || userStats.visitDays.length === 0) return 0;
+    
+    // ترتيب الأيام من الأحدث إلى الأقدم
+    const sortedDays = [...userStats.visitDays].sort((a, b) => new Date(b) - new Date(a));
+    
+    let streak = 0;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    // نتحقق إذا كان آخر يوم هو اليوم أو الأمس (للسماح بالزيارة اليومية)
+    const lastVisit = new Date(sortedDays[0]);
+    lastVisit.setHours(0, 0, 0, 0);
+    
+    const diffTime = today.getTime() - lastVisit.getTime();
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays > 1) {
+        return 0; // انقطع التسلسل
+    }
+    
+    // حساب الأيام المتتالية
+    for (let i = 0; i < sortedDays.length - 1; i++) {
+        const currentDay = new Date(sortedDays[i]);
+        const nextDay = new Date(sortedDays[i + 1]);
+        currentDay.setHours(0, 0, 0, 0);
+        nextDay.setHours(0, 0, 0, 0);
+        
+        const dayDiff = Math.floor((currentDay.getTime() - nextDay.getTime()) / (1000 * 60 * 60 * 24));
+        if (dayDiff === 1) {
+            streak++;
+        } else {
+            break;
+        }
+    }
+    
+    // نضيف 1 لأننا حسبنا الفروق، واليوم الأول يُحسب كـ 1
+    return streak + 1; 
+}
+
+function showStreakToast(streak) {
+    if (streak < 2) return; // لا نعرض إشعاراً ليوم واحد
+    
+    // منع عرض الإشعار أكثر من مرة في الجلسة الواحدة
+    if (sessionStorage.getItem('streak_shown_this_session')) return;
+    
+    const toast = document.getElementById('streak-toast');
+    if (!toast) return;
+    
+    const isAr = currentLang === 'ar';
+    const title = document.getElementById('streak-title');
+    const message = document.getElementById('streak-message');
+    
+    if (title) title.textContent = isAr ? 'يا له من التزام! 🔥' : 'What a streak! 🔥';
+    if (message) message.textContent = isAr 
+        ? `لقد استخدمت QuizMagic لـ ${streak} أيام متتالية!` 
+        : `You've used QuizMagic for ${streak} days in a row!`;
+        
+    toast.classList.add('show');
+    sessionStorage.setItem('streak_shown_this_session', 'true');
+    
+    // 📊 Analytics tracking
+    trackEvent('streak_achieved', {
+        'streak_days': streak
+    });
+    
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 5000);
+}
+
 
 // ==================== TIME & DATE HELPERS (NEW) ====================
 function getCurrentHour() {
