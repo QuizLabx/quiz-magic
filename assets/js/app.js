@@ -848,22 +848,26 @@ removeFocusTrap(modal);
 }
 
 function showPokedexList() {
-const grid = document.getElementById('pokedex-grid');
-const backBtn = document.getElementById('pokedex-back-btn');
-const countEl = document.getElementById('pokedex-count');
-const percentEl = document.getElementById('pokedex-percent');
-const fillEl = document.getElementById('pokedex-progress-fill');
-const titleEl = document.getElementById('pokedex-modal-title');
+    const grid = document.getElementById('pokedex-grid');
+    const backBtn = document.getElementById('pokedex-back-btn');
+    const countEl = document.getElementById('pokedex-count');
+    const percentEl = document.getElementById('pokedex-percent');
+    const fillEl = document.getElementById('pokedex-progress-fill');
+    const titleEl = document.getElementById('pokedex-modal-title');
+    const progressWrapper = document.querySelector('.pokedex-progress-wrapper');
 
-if (!grid) return;
+    if (!grid) return;
 
-const isAr = currentLang === 'ar';
-// تحديث العنوان
-if (titleEl) titleEl.textContent = isAr ? 'موسوعة المخلوقات' : 'Pokédex';
+    const isAr = currentLang === 'ar';
+    // تحديث العنوان
+    if (titleEl) titleEl.textContent = isAr ? 'موسوعة المخلوقات' : 'Pokédex';
 
-// إظهار الشبكة وإخفاء زر الرجوع
-grid.style.display = 'grid';
-if (backBtn) backBtn.style.display = 'none';
+    // ✨ إظهار شريط التقدم مرة أخرى
+    if (progressWrapper) progressWrapper.style.display = 'block';
+    
+    // إظهار الشبكة وإخفاء زر الرجوع
+    grid.style.display = 'grid';
+    if (backBtn) backBtn.style.display = 'none';
 
 // جلب بيانات المخلوقات
 const data = quizzesData[currentLang];
@@ -928,25 +932,28 @@ grid.appendChild(card);
 }
 
 function showCreatureDetails(creatureId) {
-const grid = document.getElementById('pokedex-grid');
-const backBtn = document.getElementById('pokedex-back-btn');
-const titleEl = document.getElementById('pokedex-modal-title');
+    const grid = document.getElementById('pokedex-grid');
+    const backBtn = document.getElementById('pokedex-back-btn');
+    const titleEl = document.getElementById('pokedex-modal-title');
+    const progressWrapper = document.querySelector('.pokedex-progress-wrapper');
 
-if (!grid) return;
+    if (!grid) return;
 
-const isAr = currentLang === 'ar';
-const creature = findCreatureById(creatureId);
-if (!creature) return;
+    const isAr = currentLang === 'ar';
+    const creature = findCreatureById(creatureId);
+    if (!creature) return;
 
-const count = userStats.creatures[creatureId] || 0;
-const rarityClass = `rarity-${creature.rarity.replace(/\s+/g, '-')}`;
+    const count = userStats.creatures[creatureId] || 0;
+    const rarityClass = `rarity-${creature.rarity.replace(/\s+/g, '-')}`;
 
-// تحديث العنوان
-if (titleEl) titleEl.textContent = creature.name;
+    // تحديث العنوان
+    if (titleEl) titleEl.textContent = creature.name;
 
-// إخفاء الشبكة وإظهار زر الرجوع
-grid.style.display = 'none';
-if (backBtn) backBtn.style.display = 'flex';
+    // ✨ إخفاء شريط التقدم عند عرض التفاصيل
+    if (progressWrapper) progressWrapper.style.display = 'none';
+    
+    // إظهار زر الرجوع
+    if (backBtn) backBtn.style.display = 'flex';
 
 // استبدال محتوى الشبكة بتفاصيل المخلوق
 grid.innerHTML = `
