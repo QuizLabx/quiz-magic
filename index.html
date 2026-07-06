@@ -139,6 +139,45 @@ z-index: -100;
     </div>
 </div>
 
+<!-- ==================== POKÉDEX MODAL (NEW) ==================== -->
+<div id="pokedex-modal" class="pokedex-modal">
+<div class="modal-overlay" onclick="closePokedexModal()"></div>
+<div class="modal-content">
+<div class="modal-header">
+<h2 class="modal-title">
+<i class="fas fa-book-open text-purple-400"></i>
+<span id="pokedex-modal-title">موسوعة المخلوقات</span>
+</h2>
+<button onclick="closePokedexModal()" class="modal-close" aria-label="إغلاق">
+<i class="fas fa-times" aria-hidden="true"></i>
+</button>
+</div>
+<div class="modal-body">
+<!-- 📊 شريط التقدم -->
+<div class="pokedex-progress-wrapper">
+<div class="pokedex-progress-header">
+<span id="pokedex-count" class="pokedex-count-text">اكتشفت 0 من 16</span>
+<span id="pokedex-percent" class="pokedex-percent-text">0%</span>
+</div>
+<div class="pokedex-progress-bar">
+<div id="pokedex-progress-fill" class="pokedex-progress-fill" style="width: 0%"></div>
+</div>
+</div>
+
+<!-- 🎴 شبكة المخلوقات -->
+<div id="pokedex-grid" class="pokedex-grid">
+<!-- سيتم ملؤها ديناميكياً من JS -->
+</div>
+
+<!-- 🔙 زر الرجوع (مخفي افتراضياً، يظهر عند عرض التفاصيل) -->
+<button id="pokedex-back-btn" onclick="showPokedexList()" class="pokedex-back-btn" style="display: none;">
+<i class="fas fa-arrow-left"></i>
+<span id="pokedex-back-text">العودة للموسوعة</span>
+</button>
+</div>
+</div>
+</div>
+
 
 <!-- ==================== PROFILE MODAL (NEW) ==================== -->
 <div id="profile-modal" class="profile-modal achievements-modal">
@@ -385,6 +424,12 @@ Mythical Analysis Result
     <button id="sfx-toggle" onclick="audioManager.toggleSfx()" class="theme-toggle-btn text-sm px-3 py-2 rounded-md border transition-all transform hover:scale-105" title="إيقاف المؤثرات / Mute SFX" aria-label="إيقاف أو تشغيل المؤثرات الصوتية">
         <i class="fas fa-bell" aria-hidden="true"></i>
     </button>
+	<!-- 📖 Pokédex Button (NEW) -->
+	<button onclick="showPokedexModal()" class="theme-toggle-btn text-sm px-3 py-2 rounded-md border transition-all transform hover:scale-105" title="موسوعة المخلوقات / Pokédex" aria-label="فتح موسوعة المخلوقات">
+	<i class="fas fa-book-open" aria-hidden="true"></i>
+	</button>
+
+	
     <!-- Achievements Button -->
     <button onclick="showAchievementsModal()" class="theme-toggle-btn text-sm px-3 py-2 rounded-md border transition-all transform hover:scale-105" title="إنجازاتي / My Achievements" aria-label="فتح صفحة الإنجازات">
         <i class="fas fa-trophy" aria-hidden="true"></i>
