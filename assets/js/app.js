@@ -6,7 +6,7 @@ let currentTheme = 'dark';
 let isQuizActive = false;
 let userStats = {};
 let friendComparisonData = null;
-
+let lastQuizResult = null;
 // 📊 Google Analytics Helper
 function trackEvent(eventName, eventParams = {}) {
     if (typeof gtag === 'function') {
@@ -1516,9 +1516,17 @@ function calculateCompatibility(user1Data, user2Data) {
 
 function showResult() {
     isQuizActive = false;
-    
     // 🎯 هذا هو السطر المفقود الذي يحسب النتيجة ويعرف المتغيرات!
     const { creature, secondaryCreature, radar, winnerId } = calculateResult();
+
+    // 💾 حفظ النتيجة النهائية لمنع تغييرها عند المقارنة
+    lastQuizResult = {
+        creature: creature,
+        secondaryCreature: secondaryCreature,
+        radar: radar,
+        winnerId: winnerId
+    };
+
     saveUserStats(winnerId);
 
     // ⚡ تحقق من إنجاز البرق السريع
@@ -1985,7 +1993,19 @@ function shareResult() {
 }
 
 function compareWithFriend() {
-    const { creature, secondaryCreature, radar, winnerId } = calculateResult();
+    // 🛡️ التحقق من وجود نتيجة محفوظة مسبقاً
+    if (!lastQuizResult || !lastQuizResult.winnerId) {
+        const isAr = currentLang === 'ar';
+        showErrorToast(
+            isAr ? 'يرجى إكمال الاختبار أولاً للحصول على نتيجة.' : 'Please complete the quiz first to get a result.',
+            isAr
+        );
+        return;
+    }
+
+    // 🎯 استخدام النتيجة المحفوظة بدلاً من إعادة الحساب
+    const { creature, secondaryCreature, radar, winnerId } = lastQuizResult;
+
     const friendData = {
         creatureId: winnerId,
         secondaryCreatureId: secondaryCreature.id,
