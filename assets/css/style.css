@@ -2718,6 +2718,10 @@ right: -50%;
 width: 100%;
 height: 200%;
 background: linear-gradient(135deg, transparent 40%, rgba(168, 85, 247, 0.08) 50%, transparent 60%);
-animation: cc-shimmer-move 3s ease-in-out infinite;
-pointer-events: none;
+	animation: cc-shimmer-move 3s ease-in-out infinite;
+	pointer-events: none;
+}
+@keyframes cc-shimmer-move {
+	0%, 100% { transform: translateX(-100%); }
+	50% { transform: translateX(100%); }
 }
