@@ -22,6 +22,72 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
+// ==================== USERNAME SYSTEM ====================
+const USERNAME_KEY = 'quiz_username';
+const CARDS_KEY = 'quiz_cards';
+
+function getUsername() {
+    return localStorage.getItem(USERNAME_KEY) || '';
+}
+
+function setUsername(name) {
+    localStorage.setItem(USERNAME_KEY, name);
+}
+
+function isValidUsername(name) {
+    return /^[a-zA-Z0-9\u0600-\u06FF\s_-]{3,20}$/.test(name.trim());
+}
+
+function showUsernameModal() {
+    const modal = document.getElementById('username-modal');
+    if (!modal) return;
+    const isAr = currentLang === 'ar';
+    document.getElementById('username-modal-title').textContent = isAr ? 'مرحباً أيها المسافر!' : 'Welcome, Traveler!';
+    document.getElementById('username-modal-message').textContent = isAr ? 'قبل أن تبدأ رحلتك الأسطورية، أخبرنا باسمك ليُنقش على بطاقاتك ونتائجك' : 'Before your legendary journey begins, tell us your name to engrave on your cards';
+    document.getElementById('username-input').placeholder = isAr ? 'اكتب اسمك هنا...' : 'Enter your name...';
+    document.getElementById('username-save-text').textContent = isAr ? 'حفظ ومتابعة' : 'Save & Continue';
+    document.getElementById('username-hint').textContent = isAr ? '3-20 حرف (أحرف، أرقام، مسافات، -، _)' : '3-20 chars (letters, numbers, spaces, -, _)';
+    document.getElementById('username-error').classList.add('hidden');
+    document.getElementById('username-input').value = '';
+    modal.classList.add('show');
+    setTimeout(() => document.getElementById('username-input').focus(), 400);
+}
+
+function saveUsername() {
+    const input = document.getElementById('username-input');
+    const name = input.value.trim();
+    const isAr = currentLang === 'ar';
+    const errorEl = document.getElementById('username-error');
+
+    if (!name) {
+        errorEl.textContent = isAr ? '⚠️ الرجاء إدخال اسم' : '⚠️ Please enter a name';
+        errorEl.classList.remove('hidden');
+        input.focus();
+        return;
+    }
+    if (!isValidUsername(name)) {
+        errorEl.textContent = isAr ? '⚠️ اسم غير صالح (3-20 حرف: أحرف، أرقام، مسافات، -، _)' : '⚠️ Invalid name (3-20 chars: letters, numbers, spaces, -, _)';
+        errorEl.classList.remove('hidden');
+        input.focus();
+        return;
+    }
+
+    setUsername(escapeHtml(name));
+    // 🔓 Unblock quiz interactions after username is saved
+    const mainContent = document.getElementById('main-content');
+    if (mainContent) {
+        mainContent.style.opacity = '';
+        mainContent.style.pointerEvents = '';
+        mainContent.style.filter = '';
+    }
+    const modal = document.getElementById('username-modal');
+    if (modal) modal.classList.remove('show');
+
+    if (typeof trackEvent === 'function') {
+        trackEvent('username_set');
+    }
+}
+
 // 🎨 بديل احترافي لـ alert//confirm/prompt
 // options: { title, message, okText, cancelText, okType ('danger'|'success'|'primary'), inputLabel, inputExpected }
 function showConfirmDialog(options) {
@@ -189,6 +255,18 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Hide splash screen after loading
     hideSplashScreen();
+
+    // 👤 Check username — show modal if not set (block quiz until entered)
+    if (!getUsername()) {
+        // Block quiz interactions until username is set
+        const mainContent = document.getElementById('main-content');
+        if (mainContent) {
+            mainContent.style.opacity = '0.3';
+            mainContent.style.pointerEvents = 'none';
+            mainContent.style.filter = 'blur(2px)';
+        }
+        showUsernameModal();
+    }
 });
 
 // ==================== GLOBAL WELCOME SCREEN (NEW) ====================
@@ -1793,6 +1871,16 @@ function showResult() {
 
     saveUserStats(winnerId);
 
+    // 🃏 Card tier: upgrade on retake, or assign new
+    const cards = getUserCards();
+    if (cards[winnerId]) {
+        // Already have this card → try to upgrade
+        lastQuizResult.cardTier = tryUpgradeCard(winnerId);
+    } else {
+        // First time getting this creature → assign tier
+        lastQuizResult.cardTier = getOrAssignCardTier(winnerId);
+    }
+
     // ⚡ تحقق من إنجاز البرق السريع
     const duration = getQuizDurationSeconds();
     if (duration > 0) {
@@ -1990,10 +2078,16 @@ function showResult() {
 	            <button onclick="shareResult()" class="flex items-center justify-center gap-3 p-5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white rounded-2xl font-bold text-lg transition-all transform hover:scale-105 shadow-xl shadow-purple-600/20" aria-label="${isAr ? 'مشاركة نتيجة الاختبار على وسائل التواصل' : 'Share quiz result on social media'}">
 	                <i class="fas fa-share-alt" aria-hidden="true"></i> ${isAr ? '🚀 شارك النتيجة' : '🚀 Share Result'}
 	            </button>
-	            <button onclick="compareWithFriend()" class="flex items-center justify-center gap-3 p-5 bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-500 hover:to-teal-500 text-white rounded-2xl font-bold text-lg transition-all transform hover:scale-105 shadow-xl shadow-green-600/20" aria-label="${isAr ? 'قارن نتيجتك مع صديق' : 'Compare your result with a friend'}">
-	                <i class="fas fa-users" aria-hidden="true"></i> ${isAr ? '⚔️ قارن مع صديق' : '⚔️ Compare with Friend'}
-	            </button>
-	        </div>
+		            <button onclick="compareWithFriend()" class="flex items-center justify-center gap-3 p-5 bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-500 hover:to-teal-500 text-white rounded-2xl font-bold text-lg transition-all transform hover:scale-105 shadow-xl shadow-green-600/20" aria-label="${isAr ? 'قارن نتيجتك مع صديق' : 'Compare your result with a friend'}">
+		                <i class="fas fa-users" aria-hidden="true"></i> ${isAr ? '⚔️ قارن مع صديق' : '⚔️ Compare with Friend'}
+		            </button>
+		        </div>
+
+			        <div class="flex justify-center mb-8">
+			            <button id="card-download-btn" onclick="downloadCollectibleCard(this, lastQuizResult.creature, lastQuizResult.cardTier)" class="card-download-btn flex items-center justify-center gap-3 p-5 bg-gradient-to-r from-amber-500 via-yellow-500 to-orange-500 hover:from-amber-400 hover:via-yellow-400 hover:to-orange-400 text-slate-900 rounded-2xl font-black text-lg transition-all transform hover:scale-105 shadow-xl shadow-amber-500/30 border-2 border-yellow-300/50" aria-label="${isAr ? 'تحميل بطاقتك الأسطورية الفاخرة' : 'Download your premium collectible card'}">
+			                <i class="fas fa-crown" aria-hidden="true"></i> ${isAr ? '🃏 حمل بطاقتك الفاخرة' : '🃏 Download Premium Card'}
+			            </button>
+			        </div>
 
         <button onclick="location.reload()" class="theme-text-muted hover:theme-text-primary transition font-bold mb-20">
             <i class="fas fa-redo mr-2"></i> ${isAr ? 'إعادة الاختبار' : 'Retake Quiz'}
@@ -2226,6 +2320,12 @@ function prepareShareTemplate(creature, secondary) {
 
     const desc = document.getElementById('share-description');
     if (desc) desc.innerText = (creature.narrative || creature.description).substring(0, 160) + '...';
+
+    // 👤 Inject username into share template
+    const usernameEl = document.getElementById('share-username');
+    if (usernameEl) usernameEl.innerText = getUsername();
+    const usernameLabel = document.getElementById('share-username-label');
+    if (usernameLabel) usernameLabel.innerText = isAr ? 'المستكشف' : 'Explorer';
 }
 
 // ==================== DOWNLOAD & SHARE ====================
@@ -2365,5 +2465,162 @@ function compareWithFriend() {
             console.error('Failed to copy link: ', err);
             window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`);
         });
+    }
+}
+
+// ==================== COLLECTIBLE CARD SYSTEM ====================
+const CARD_TIERS = {
+    common:  { key: 'common',  label: { ar: 'عادية', en: 'Common' },    weight: 50 },
+    silver:  { key: 'silver',  label: { ar: 'فضية', en: 'Silver' },    weight: 30 },
+    gold:    { key: 'gold',    label: { ar: 'ذهبية', en: 'Gold' },      weight: 15 },
+    diamond: { key: 'diamond', label: { ar: 'ماسية', en: 'Diamond' },  weight: 5 }
+};
+const TIER_ORDER = ['common', 'silver', 'gold', 'diamond'];
+
+function getUserCards() {
+    try { return JSON.parse(localStorage.getItem(CARDS_KEY) || '{}'); }
+    catch { return {}; }
+}
+
+function saveUserCards(cards) {
+    localStorage.setItem(CARDS_KEY, JSON.stringify(cards));
+}
+
+function getRandomTier() {
+    const roll = Math.random() * 100;
+    let cumulative = 0;
+    for (const tier of TIER_ORDER) {
+        cumulative += CARD_TIERS[tier].weight;
+        if (roll <= cumulative) return tier;
+    }
+    return 'common';
+}
+
+function getOrAssignCardTier(creatureId) {
+    const cards = getUserCards();
+    if (!cards[creatureId]) {
+        cards[creatureId] = getRandomTier();
+        saveUserCards(cards);
+    }
+    return cards[creatureId];
+}
+
+function tryUpgradeCard(creatureId) {
+    const cards = getUserCards();
+    const currentTier = cards[creatureId] || 'common';
+    const currentIdx = TIER_ORDER.indexOf(currentTier);
+    if (currentIdx >= TIER_ORDER.length - 1) return currentTier; // already max
+
+    // 30% chance to upgrade on retake
+    if (Math.random() <= 0.30) {
+        const newTier = TIER_ORDER[currentIdx + 1];
+        cards[creatureId] = newTier;
+        saveUserCards(cards);
+        return newTier;
+    }
+    return currentTier;
+}
+
+function prepareCollectibleCard(creature, tier) {
+    const isAr = currentLang === 'ar';
+    const username = getUsername();
+
+    // Set tier class on card
+    const card = document.querySelector('#collectible-card-template .cc-card');
+    if (card) {
+        card.className = 'cc-card card-tier-' + tier;
+    }
+
+    // User info
+    const ccUsername = document.getElementById('cc-username');
+    if (ccUsername) ccUsername.innerText = username || (isAr ? 'مجهول' : 'Unknown');
+    const ccUserLabel = document.getElementById('cc-user-label');
+    if (ccUserLabel) ccUserLabel.innerText = isAr ? 'المستكشف' : 'Explorer';
+
+    // Tier badge
+    const ccTierBadge = document.getElementById('cc-tier-badge');
+    if (ccTierBadge) ccTierBadge.innerText = CARD_TIERS[tier].label[isAr ? 'ar' : 'en'];
+
+    // Creature image
+    const ccImg = document.getElementById('cc-creature-img');
+    if (ccImg) ccImg.src = creature.image;
+
+    // Creature name & rarity
+    const ccName = document.getElementById('cc-creature-name');
+    if (ccName) ccName.innerText = creature.name;
+    const ccRarity = document.getElementById('cc-creature-rarity');
+    if (ccRarity) ccRarity.innerText = creature.rarity;
+
+    // Stats dots
+    const statsContainer = document.getElementById('cc-stats-container');
+    if (statsContainer && creature.axes) {
+        const axisLabels = {
+            intelligence: { ar: 'الذكاء', en: 'Intelligence' },
+            energy:       { ar: 'الطاقة', en: 'Energy' },
+            empathy:      { ar: 'التعاطف', en: 'Empathy' },
+            strategy:     { ar: 'الاستراتيجية', en: 'Strategy' },
+            mystery:      { ar: 'الغموض', en: 'Mystery' },
+            willpower:    { ar: 'الإرادة', en: 'Willpower' }
+        };
+        const primaryAxes = creature.axes || ['willpower', 'energy'];
+        // Generate fake high scores for card display (based on creature multiplier)
+        const baseScore = Math.round((creature.multiplier || 1.15) * 75);
+        let html = '';
+        primaryAxes.forEach((axis, i) => {
+            const score = Math.min(10, Math.round(baseScore / 10 + (i === 0 ? 2 : -1)));
+            const label = (axisLabels[axis] || { ar: axis, en: axis })[isAr ? 'ar' : 'en'];
+            html += '<div class="cc-stat-row"><span class="cc-stat-label">' + escapeHtml(label) + '</span><div class="cc-stat-dots">';
+            for (let d = 0; d < 10; d++) {
+                html += '<div class="cc-dot' + (d < score ? ' filled' : '') + '"></div>';
+            }
+            html += '</div></div>';
+        });
+        statsContainer.innerHTML = html;
+    }
+
+    // Quote
+    const ccQuote = document.getElementById('cc-quote');
+    if (ccQuote) {
+        const insight = creature.secretReport && creature.secretReport.insight ? creature.secretReport.insight : '';
+        const short = insight.length > 120 ? insight.substring(0, 120) + '...' : insight;
+        ccQuote.innerText = '\u201C ' + short + ' \u201D';
+    }
+
+    // Card number
+    const ccNum = document.getElementById('cc-card-number');
+    if (ccNum) {
+        const cardIndex = Object.keys(getUserCards()).indexOf(creature.id) + 1;
+        ccNum.innerText = '#' + String(cardIndex).padStart(3, '0');
+    }
+}
+
+async function downloadCollectibleCard(btn, creature, tier) {
+    const originalText = btn.innerHTML;
+    const isAr = currentLang === 'ar';
+    btn.innerHTML = '<i class="fas fa-spinner animate-spin"></i> ' + (isAr ? 'جاري التجهيز...' : 'Preparing...');
+    btn.disabled = true;
+    try {
+        if (typeof html2canvas === 'undefined') {
+            await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+        }
+        prepareCollectibleCard(creature, tier);
+        const template = document.getElementById('collectible-card-template');
+        const canvas = await html2canvas(template, {
+            useCORS: true,
+            scale: 2,
+            backgroundColor: '#0a0e1a'
+        });
+        const link = document.createElement('a');
+        const safeName = creature.id + '-' + tier;
+        link.download = 'QuizMagic-Card-' + safeName + '.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        if (typeof trackEvent === 'function') trackEvent('card_download', { 'creature_id': creature.id, 'tier': tier });
+    } catch (err) {
+        console.error('Card download failed:', err);
+        showErrorToast(isAr ? 'حدث خطأ أثناء تحميل البطاقة' : 'Error downloading card', isAr);
+    } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
     }
 }

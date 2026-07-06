@@ -60,7 +60,17 @@ function renderProfileStats() {
     }
     
     // عرض بطاقات الإحصائيات
+    const rawUsername = (typeof getUsername === 'function') ? getUsername() : (localStorage.getItem('quiz_username') || '');
+    // 🛡️ Escape username to prevent XSS via innerHTML
+    const savedUsername = (typeof escapeHtml === 'function') ? escapeHtml(rawUsername) : rawUsername;
+    const totalCards = (typeof getUserCards === 'function') ? Object.keys(getUserCards()).length : 0;
+
     statsContainer.innerHTML = `
+        <div class="profile-stat-card profile-username-card">
+            <div class="stat-icon">👤</div>
+            <div class="stat-value" style="font-size: 1.1rem; word-break: break-word;">${savedUsername || (isAr ? 'زائر' : 'Guest')}</div>
+            <div class="stat-label">${isAr ? 'اسم المستخدم' : 'Username'}</div>
+        </div>
         <div class="profile-stat-card">
             <div class="stat-icon">🎭</div>
             <div class="stat-value">${totalQuizzes}</div>
@@ -85,6 +95,11 @@ function renderProfileStats() {
             <div class="stat-icon">🎨</div>
             <div class="stat-value">${uniqueCreatures}</div>
             <div class="stat-label">${isAr ? 'كائنات مختلفة' : 'Unique Creatures'}</div>
+        </div>
+        <div class="profile-stat-card">
+            <div class="stat-icon">🃏</div>
+            <div class="stat-value">${totalCards}</div>
+            <div class="stat-label">${isAr ? 'بطاقات مجمّعة' : 'Cards Collected'}</div>
         </div>
         <div class="profile-stat-card">
             <div class="stat-icon">🐉</div>
@@ -151,8 +166,10 @@ function exportUserData() {
         const userData = {
             version: '1.0',
             exportDate: new Date().toISOString(),
+            username: localStorage.getItem('quiz_username') || '',
             quizStats: JSON.parse(localStorage.getItem('quiz_stats') || '{}'),
             achievements: JSON.parse(localStorage.getItem('quiz_achievements') || '{}'),
+            cards: JSON.parse(localStorage.getItem('quiz_cards') || '{}'),
             preferences: {
                 language: localStorage.getItem('quiz_lang') || 'ar',
                 theme: localStorage.getItem('quiz_theme') || 'auto',
@@ -233,7 +250,16 @@ function importUserData() {
             // استعادة البيانات
             localStorage.setItem('quiz_stats', JSON.stringify(userData.quizStats));
             localStorage.setItem('quiz_achievements', JSON.stringify(userData.achievements || {}));
-            
+
+            // 👤 Restore username
+            if (userData.username) {
+                localStorage.setItem('quiz_username', userData.username);
+            }
+            // 🃏 Restore collectible cards
+            if (userData.cards) {
+                localStorage.setItem('quiz_cards', JSON.stringify(userData.cards));
+            }
+
             if (userData.preferences) {
                 if (userData.preferences.language) {
                     localStorage.setItem('quiz_lang', userData.preferences.language);
@@ -322,7 +348,9 @@ async function deleteAllData() {
             'quiz_lang',
             'quiz_theme',
             'quiz_music_enabled',
-            'quiz_sfx_enabled'
+            'quiz_sfx_enabled',
+            'quiz_username',
+            'quiz_cards'
         ];
         
         keysToDelete.forEach(key => localStorage.removeItem(key));
