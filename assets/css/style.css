@@ -2098,3 +2098,340 @@ html.light-mode .welcome-quick-btn:hover {
         margin-left: auto;
     }
 }
+
+
+
+/* ==================== POKÉDEX SYSTEM (NEW) ==================== */
+.pokedex-modal {
+position: fixed;
+inset: 0;
+z-index: 9997;
+display: none;
+align-items: center;
+justify-content: center;
+}
+.pokedex-modal.show {
+display: flex;
+}
+.pokedex-modal .modal-content {
+max-width: 1000px;
+max-height: 90vh;
+}
+
+/* 📊 شريط التقدم */
+.pokedex-progress-wrapper {
+background: var(--bg-tertiary);
+border: 2px solid var(--border-color);
+border-radius: 1.5rem;
+padding: 1.25rem 1.5rem;
+margin-bottom: 2rem;
+}
+.pokedex-progress-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 0.75rem;
+}
+.pokedex-count-text {
+font-weight: 700;
+color: var(--text-primary);
+font-size: 1rem;
+}
+.pokedex-percent-text {
+font-weight: 900;
+font-size: 1.25rem;
+background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+background-clip: text;
+}
+.pokedex-progress-bar {
+width: 100%;
+height: 12px;
+background: var(--bg-primary);
+border-radius: 10px;
+overflow: hidden;
+position: relative;
+}
+.pokedex-progress-fill {
+height: 100%;
+background: linear-gradient(90deg, #a855f7, #ec4899, #f97316);
+background-size: 200% 100%;
+border-radius: 10px;
+transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+animation: pokedex-shimmer 3s linear infinite;
+box-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
+}
+@keyframes pokedex-shimmer {
+0% { background-position: 0% 0; }
+100% { background-position: 200% 0; }
+}
+
+/* 🎴 شبكة المخلوقات */
+.pokedex-grid {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+gap: 1.25rem;
+}
+.pokedex-card {
+background: var(--bg-tertiary);
+border: 2px solid var(--border-color);
+border-radius: 1.25rem;
+overflow: hidden;
+transition: all 0.3s ease;
+position: relative;
+cursor: pointer;
+}
+.pokedex-card.discovered {
+background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(236, 72, 153, 0.1));
+}
+.pokedex-card.discovered:hover {
+transform: translateY(-6px) scale(1.03);
+border-color: var(--accent-primary);
+box-shadow: 0 15px 35px rgba(168, 85, 247, 0.3);
+}
+.pokedex-card.locked {
+opacity: 0.6;
+cursor: not-allowed;
+}
+
+/* 🖼️ حاوية الصورة */
+.pokedex-image-wrapper {
+position: relative;
+aspect-ratio: 1;
+overflow: hidden;
+background: var(--bg-primary);
+}
+.pokedex-image-wrapper img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+transition: all 0.5s ease;
+}
+.pokedex-card.discovered:hover .pokedex-image-wrapper img {
+transform: scale(1.1);
+}
+
+/* 🔒 طبقة القفل للمخلوقات غير المكتشفة */
+.pokedex-card.locked .pokedex-image-wrapper img {
+filter: grayscale(100%) brightness(0.2) blur(2px);
+}
+.pokedex-lock-overlay {
+position: absolute;
+inset: 0;
+display: flex;
+align-items: center;
+justify-content: center;
+background: rgba(0, 0, 0, 0.3);
+backdrop-filter: blur(1px);
+}
+.pokedex-lock-overlay i {
+font-size: 3rem;
+color: rgba(255, 255, 255, 0.6);
+filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.5));
+animation: pokedex-question-pulse 2s ease-in-out infinite;
+}
+@keyframes pokedex-question-pulse {
+0%, 100% { transform: scale(1); opacity: 0.6; }
+50% { transform: scale(1.1); opacity: 1; }
+}
+
+/* 📝 معلومات المخلوق */
+.pokedex-info {
+padding: 0.875rem;
+text-align: center;
+}
+.pokedex-name {
+font-size: 1rem;
+font-weight: 900;
+color: var(--text-primary);
+margin-bottom: 0.375rem;
+letter-spacing: 0.02em;
+}
+.pokedex-card.locked .pokedex-name {
+color: var(--text-muted);
+font-style: italic;
+}
+.pokedex-rarity {
+display: inline-block;
+padding: 0.25rem 0.625rem;
+border-radius: 0.75rem;
+font-size: 0.7rem;
+font-weight: 700;
+text-transform: uppercase;
+letter-spacing: 0.05em;
+}
+.pokedex-rarity.rarity-أسطوري,
+.pokedex-rarity.rarity-Legendary {
+background: linear-gradient(135deg, #fbbf24, #f59e0b);
+color: #0f172a;
+box-shadow: 0 0 10px rgba(251, 191, 36, 0.4);
+}
+.pokedex-rarity.rarity-نادر-جداً,
+.pokedex-rarity.rarity-Very-Rare {
+background: linear-gradient(135deg, #a855f7, #ec4899);
+color: white;
+box-shadow: 0 0 10px rgba(168, 85, 247, 0.4);
+}
+.pokedex-rarity.rarity-نادر,
+.pokedex-rarity.rarity-Rare {
+background: linear-gradient(135deg, #3b82f6, #06b6d4);
+color: white;
+}
+.pokedex-rarity.rarity-شائع,
+.pokedex-rarity.rarity-غير-مألوف,
+.pokedex-rarity.rarity-Common,
+.pokedex-rarity.rarity-Uncommon {
+background: var(--bg-tertiary);
+color: var(--text-secondary);
+border: 1px solid var(--border-color);
+}
+.pokedex-rarity.locked-rarity {
+background: var(--bg-primary);
+color: var(--text-muted);
+font-style: italic;
+}
+.pokedex-count {
+display: inline-block;
+margin-top: 0.375rem;
+padding: 0.125rem 0.5rem;
+background: var(--bg-secondary);
+color: var(--accent-primary);
+border-radius: 0.75rem;
+font-size: 0.75rem;
+font-weight: 900;
+}
+
+/* 🔙 زر الرجوع */
+.pokedex-back-btn {
+margin-top: 1.5rem;
+padding: 0.75rem 1.5rem;
+background: var(--bg-tertiary);
+color: var(--text-primary);
+border: 2px solid var(--border-color);
+border-radius: 1rem;
+font-weight: 700;
+cursor: pointer;
+transition: all 0.3s ease;
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 0.5rem;
+width: 100%;
+}
+.pokedex-back-btn:hover {
+background: var(--accent-primary);
+color: white;
+border-color: var(--accent-primary);
+transform: translateY(-2px);
+}
+
+/* 📄 شاشة تفاصيل المخلوق */
+.pokedex-details-view {
+text-align: center;
+animation: pokedex-details-fade 0.5s ease-out;
+}
+@keyframes pokedex-details-fade {
+from { opacity: 0; transform: translateY(20px); }
+to { opacity: 1; transform: translateY(0); }
+}
+.pokedex-details-image {
+width: 100%;
+max-width: 300px;
+aspect-ratio: 1;
+object-fit: cover;
+border-radius: 2rem;
+border: 4px solid var(--accent-primary);
+margin: 0 auto 1.5rem;
+box-shadow: 0 20px 50px rgba(168, 85, 247, 0.4);
+}
+.pokedex-details-name {
+font-size: 2.5rem;
+font-weight: 900;
+background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+background-clip: text;
+margin-bottom: 0.5rem;
+}
+.pokedex-details-rarity {
+display: inline-block;
+margin-bottom: 1.5rem;
+}
+.pokedex-details-description {
+background: var(--bg-tertiary);
+border: 2px solid var(--border-color);
+border-radius: 1.5rem;
+padding: 1.5rem;
+text-align: justify;
+line-height: 1.8;
+color: var(--text-secondary);
+font-size: 0.95rem;
+margin-bottom: 1.5rem;
+}
+.pokedex-details-stats {
+display: grid;
+grid-template-columns: repeat(2, 1fr);
+gap: 1rem;
+margin-bottom: 1.5rem;
+}
+.pokedex-stat-card {
+background: var(--bg-tertiary);
+border: 2px solid var(--border-color);
+border-radius: 1rem;
+padding: 1rem;
+}
+.pokedex-stat-label {
+font-size: 0.75rem;
+color: var(--text-muted);
+text-transform: uppercase;
+letter-spacing: 0.05em;
+margin-bottom: 0.25rem;
+}
+.pokedex-stat-value {
+font-size: 1.5rem;
+font-weight: 900;
+color: var(--accent-primary);
+}
+
+/* 📱 Responsive */
+@media (max-width: 768px) {
+.pokedex-grid {
+grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+gap: 0.875rem;
+}
+.pokedex-name {
+font-size: 0.875rem;
+}
+.pokedex-rarity {
+font-size: 0.625rem;
+padding: 0.1875rem 0.5rem;
+}
+.pokedex-lock-overlay i {
+font-size: 2.25rem;
+}
+.pokedex-details-name {
+font-size: 1.75rem;
+}
+.pokedex-details-image {
+max-width: 240px;
+}
+.pokedex-details-stats {
+grid-template-columns: 1fr;
+}
+}
+@media (max-width: 480px) {
+.pokedex-grid {
+grid-template-columns: repeat(3, 1fr);
+gap: 0.5rem;
+}
+.pokedex-info {
+padding: 0.5rem 0.25rem;
+}
+.pokedex-name {
+font-size: 0.75rem;
+}
+.pokedex-count {
+font-size: 0.625rem;
+}
+}
