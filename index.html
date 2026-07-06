@@ -411,6 +411,15 @@ Mythical Analysis Result
     <button id="theme-toggle" onclick="toggleTheme()" class="theme-toggle-btn text-sm px-3 py-2 rounded-md border transition-all transform hover:scale-105" title="تبديل المظهر / Toggle Theme" aria-label="تبديل بين الوضع الليلي والنهاري">
         <i class="fas fa-moon" aria-hidden="true"></i>
     </button>
+
+	<!-- 🔥 Streak Counter (دائم الظهور) -->
+	<div id="streak-counter" class="streak-counter" title="أيام متتالية">
+    	<div class="streak-flame-wrapper">
+        	<div id="streak-flame" class="streak-flame inactive">🔥</div>
+        	<div id="streak-number" class="streak-number">0</div>
+    	</div>
+	</div>
+
     <!-- Language Toggle Button -->
     <button onclick="showLanguageScreen()" class="text-sm px-3 py-2 rounded-md border transition-all theme-bg-tertiary theme-border theme-text-primary" aria-label="تغيير اللغة">
         <i class="fas fa-globe mr-1" aria-hidden="true"></i> <span id="lang-btn-text">العربية</span>
