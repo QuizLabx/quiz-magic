@@ -1,3 +1,5 @@
+//
+
 const quizzesData = {
   ar: {
     title: "QuizMagic | عالم الاختبارات الأسطورية",
