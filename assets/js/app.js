@@ -2521,95 +2521,375 @@ function tryUpgradeCard(creatureId) {
     return currentTier;
 }
 
-function prepareCollectibleCard(creature, tier) {
+// 🎨 Visual config per tier (used by Canvas renderer)
+const TIER_VISUALS = {
+    common:  { border: '#64748b', glow: 'rgba(148,163,184,0.4)', accent: '#94a3b8', deep: '#0f172a', mid: '#1e293b', halo: 'rgba(148,163,184,0.15)', stars: 30 },
+    silver:  { border: '#cbd5e1', glow: 'rgba(203,213,225,0.6)', accent: '#e2e8f0', deep: '#1e293b', mid: '#334155', halo: 'rgba(203,213,225,0.22)', stars: 55 },
+    gold:    { border: '#fbbf24', glow: 'rgba(251,191,36,0.7)', accent: '#fcd34d', deep: '#1c1410', mid: '#3d2914', halo: 'rgba(251,191,36,0.28)', stars: 90 },
+    diamond: { border: '#67e8f9', glow: 'rgba(103,232,249,0.8)', accent: '#a5f3fc', deep: '#0c1b2a', mid: '#134e4a', halo: 'rgba(103,232,249,0.35)', stars: 140 }
+};
+
+// Helper: load an <img> with CORS-enabled fetch → dataURL (avoids tainted canvas)
+function loadImageAsDataURL(src) {
+    return new Promise((resolve, reject) => {
+        if (!src) { resolve(null); return; }
+        // Try direct fetch to bypass CORS taint
+        fetch(src, { mode: 'cors' })
+            .then(r => r.ok ? r.blob() : Promise.reject(new Error('fetch failed')))
+            .then(blob => {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    const img = new Image();
+                    img.onload = () => resolve(img);
+                    img.onerror = () => resolve(null);
+                    img.src = reader.result;
+                };
+                reader.onerror = () => resolve(null);
+                reader.readAsDataURL(blob);
+            })
+            .catch(() => {
+                // Fallback: direct Image with crossOrigin
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                img.onload = () => resolve(img);
+                img.onerror = () => resolve(null);
+                img.src = src;
+            });
+    });
+}
+
+// Helper: wrap Arabic/English text into lines that fit a max width
+function wrapText(ctx, text, maxWidth, maxLines) {
+    if (!text) return [];
+    const words = String(text).split(/\s+/);
+    const lines = [];
+    let current = '';
+    for (const w of words) {
+        const test = current ? current + ' ' + w : w;
+        if (ctx.measureText(test).width > maxWidth && current) {
+            lines.push(current);
+            current = w;
+            if (maxLines && lines.length >= maxLines) break;
+        } else {
+            current = test;
+        }
+    }
+    if (current && (!maxLines || lines.length < maxLines)) lines.push(current);
+    // If truncated, add ellipsis to last line
+    if (maxLines && lines.length === maxLines && words.length > lines.join(' ').split(/\s+/).length) {
+        let last = lines[maxLines - 1];
+        while (ctx.measureText(last + '…').width > maxWidth && last.length > 0) last = last.slice(0, -1);
+        lines[maxLines - 1] = last + '…';
+    }
+    return lines;
+}
+
+// Helper: draw a rounded rectangle path
+function roundRectPath(ctx, x, y, w, h, r) {
+    const rr = Math.min(r, w / 2, h / 2);
+    ctx.beginPath();
+    ctx.moveTo(x + rr, y);
+    ctx.arcTo(x + w, y, x + w, y + h, rr);
+    ctx.arcTo(x + w, y + h, x, y + h, rr);
+    ctx.arcTo(x, y + h, x, y, rr);
+    ctx.arcTo(x, y, x + w, y, rr);
+    ctx.closePath();
+}
+
+// 🖼️ Main Canvas card renderer — produces a premium rectangular trading card
+async function renderCollectibleCardCanvas(creature, tier) {
     const isAr = currentLang === 'ar';
-    const username = getUsername();
+    const username = getUsername() || (isAr ? 'مجهول' : 'Unknown');
+    const tierLabel = CARD_TIERS[tier] ? CARD_TIERS[tier].label[isAr ? 'ar' : 'en'] : tier;
+    const visual = TIER_VISUALS[tier] || TIER_VISUALS.common;
 
-    // Set tier class on card
-    const card = document.querySelector('#collectible-card-template .cc-card');
-    if (card) {
-        card.className = 'cc-card card-tier-' + tier;
+    // Card dimensions: 5:7 ratio (professional trading card)
+    const W = 1080, H = 1512;
+    const canvas = document.createElement('canvas');
+    canvas.width = W;
+    canvas.height = H;
+    const ctx = canvas.getContext('2d');
+
+    // 🔤 Ensure Cairo font is fully loaded so Arabic renders with proper ligatures
+    if (document.fonts && document.fonts.ready) {
+        try { await document.fonts.ready; await document.fonts.load('700 64px Cairo'); } catch (e) { /* ignore */ }
     }
 
-    // User info
-    const ccUsername = document.getElementById('cc-username');
-    if (ccUsername) ccUsername.innerText = username || (isAr ? 'مجهول' : 'Unknown');
-    const ccUserLabel = document.getElementById('cc-user-label');
-    if (ccUserLabel) ccUserLabel.innerText = isAr ? 'المستكشف' : 'Explorer';
+    // ===== Background gradient =====
+    const bg = ctx.createLinearGradient(0, 0, W, H);
+    bg.addColorStop(0, visual.deep);
+    bg.addColorStop(0.5, visual.mid);
+    bg.addColorStop(1, visual.deep);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
 
-    // Tier badge
-    const ccTierBadge = document.getElementById('cc-tier-badge');
-    if (ccTierBadge) ccTierBadge.innerText = CARD_TIERS[tier].label[isAr ? 'ar' : 'en'];
+    // ===== Halo glow behind artwork =====
+    const halo = ctx.createRadialGradient(W / 2, 560, 50, W / 2, 560, 600);
+    halo.addColorStop(0, visual.halo);
+    halo.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = halo;
+    ctx.fillRect(0, 0, W, H);
 
-    // Creature image
-    const ccImg = document.getElementById('cc-creature-img');
-    if (ccImg) ccImg.src = creature.image;
+    // ===== Sparkle stars (count by tier) =====
+    for (let i = 0; i < visual.stars; i++) {
+        const sx = Math.random() * W;
+        const sy = Math.random() * H;
+        const sr = Math.random() * 1.8 + 0.4;
+        const sa = Math.random() * 0.6 + 0.2;
+        ctx.fillStyle = 'rgba(255,255,255,' + sa + ')';
+        ctx.beginPath();
+        ctx.arc(sx, sy, sr, 0, Math.PI * 2);
+        ctx.fill();
+    }
 
-    // Creature name & rarity
-    const ccName = document.getElementById('cc-creature-name');
-    if (ccName) ccName.innerText = creature.name;
-    const ccRarity = document.getElementById('cc-creature-rarity');
-    if (ccRarity) ccRarity.innerText = creature.rarity;
+    // ===== Ornate outer border (double-line for premium tiers) =====
+    ctx.save();
+    ctx.lineWidth = 8;
+    ctx.strokeStyle = visual.border;
+    ctx.shadowColor = visual.glow;
+    ctx.shadowBlur = 35;
+    roundRectPath(ctx, 24, 24, W - 48, H - 48, 48);
+    ctx.stroke();
+    ctx.restore();
+    // Inner thin border
+    ctx.save();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = visual.accent;
+    ctx.globalAlpha = 0.5;
+    roundRectPath(ctx, 44, 44, W - 88, H - 88, 36);
+    ctx.stroke();
+    ctx.restore();
 
-    // Stats dots
-    const statsContainer = document.getElementById('cc-stats-container');
-    if (statsContainer && creature.axes) {
-        const axisLabels = {
-            intelligence: { ar: 'الذكاء', en: 'Intelligence' },
-            energy:       { ar: 'الطاقة', en: 'Energy' },
-            empathy:      { ar: 'التعاطف', en: 'Empathy' },
-            strategy:     { ar: 'الاستراتيجية', en: 'Strategy' },
-            mystery:      { ar: 'الغموض', en: 'Mystery' },
-            willpower:    { ar: 'الإرادة', en: 'Willpower' }
-        };
-        const primaryAxes = creature.axes || ['willpower', 'energy'];
-        // Generate fake high scores for card display (based on creature multiplier)
-        const baseScore = Math.round((creature.multiplier || 1.15) * 75);
-        let html = '';
-        primaryAxes.forEach((axis, i) => {
-            const score = Math.min(10, Math.round(baseScore / 10 + (i === 0 ? 2 : -1)));
-            const label = (axisLabels[axis] || { ar: axis, en: axis })[isAr ? 'ar' : 'en'];
-            html += '<div class="cc-stat-row"><span class="cc-stat-label">' + escapeHtml(label) + '</span><div class="cc-stat-dots">';
-            for (let d = 0; d < 10; d++) {
-                html += '<div class="cc-dot' + (d < score ? ' filled' : '') + '"></div>';
+    // ===== Load creature image =====
+    const img = await loadImageAsDataURL(creature.image);
+
+    // ===== Artwork frame =====
+    const artX = 90, artY = 130, artW = W - 180, artH = 760;
+    ctx.save();
+    // Art frame background
+    ctx.fillStyle = '#000';
+    roundRectPath(ctx, artX, artY, artW, artH, 28);
+    ctx.fill();
+    // Clip and draw image (cover-fit)
+    if (img) {
+        ctx.beginPath();
+        roundRectPath(ctx, artX, artY, artW, artH, 28);
+        ctx.clip();
+        const scale = Math.max(artW / img.width, artH / img.height);
+        const dw = img.width * scale, dh = img.height * scale;
+        ctx.drawImage(img, artX + (artW - dw) / 2, artY + (artH - dh) / 2, dw, dh);
+        // Bottom fade for text legibility
+        const fade = ctx.createLinearGradient(0, artY + artH - 220, 0, artY + artH);
+        fade.addColorStop(0, 'rgba(0,0,0,0)');
+        fade.addColorStop(1, 'rgba(0,0,0,0.92)');
+        ctx.fillStyle = fade;
+        ctx.fillRect(artX, artY + artH - 220, artW, 220);
+    } else {
+        // Placeholder if image fails
+        ctx.fillStyle = visual.mid;
+        ctx.fillRect(artX, artY, artW, artH);
+    }
+    ctx.restore();
+
+    // Art frame border
+    ctx.save();
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = visual.border;
+    ctx.globalAlpha = 0.85;
+    roundRectPath(ctx, artX, artY, artW, artH, 28);
+    ctx.stroke();
+    ctx.restore();
+
+    // ===== Tier badge (top-right of artwork) =====
+    const badgeText = (isAr ? '⭐ ' : '') + tierLabel;
+    ctx.font = 'bold 34px Cairo, Tajawal, sans-serif';
+    ctx.textAlign = isAr ? 'right' : 'left';
+    ctx.textBaseline = 'middle';
+    const badgePadX = 28, badgeH = 64;
+    const badgeW = ctx.measureText(badgeText).width + badgePadX * 2;
+    const badgeX = isAr ? (artX + artW - 24 - badgeW) : (artX + 24);
+    const badgeY = artY + 24;
+    ctx.save();
+    ctx.fillStyle = 'rgba(0,0,0,0.75)';
+    roundRectPath(ctx, badgeX, badgeY, badgeW, badgeH, 32);
+    ctx.fill();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = visual.border;
+    ctx.stroke();
+    ctx.fillStyle = visual.accent;
+    const badgeTextX = isAr ? (badgeX + badgeW - badgePadX) : (badgeX + badgePadX);
+    ctx.fillText(badgeText, badgeTextX, badgeY + badgeH / 2);
+    ctx.restore();
+
+    // ===== Creature name (over bottom of artwork) =====
+    ctx.save();
+    ctx.direction = isAr ? 'rtl' : 'ltr';
+    ctx.textAlign = isAr ? 'right' : 'left';
+    ctx.textBaseline = 'alphabetic';
+    ctx.font = 'bold 64px Cairo, Tajawal, sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.shadowColor = 'rgba(0,0,0,0.9)';
+    ctx.shadowBlur = 12;
+    const nameX = isAr ? (artX + artW - 32) : (artX + 32);
+    ctx.fillText(String(creature.name || ''), nameX, artY + artH - 60);
+    // Rarity subtitle
+    ctx.shadowBlur = 6;
+    ctx.font = '500 28px Cairo, Tajawal, sans-serif';
+    ctx.fillStyle = visual.accent;
+    ctx.fillText(String(creature.rarity || ''), nameX, artY + artH - 24);
+    ctx.restore();
+
+    // ===== Stats section =====
+    const axisLabels = {
+        intelligence: { ar: 'الذكاء', en: 'Intelligence' },
+        energy:       { ar: 'الطاقة', en: 'Energy' },
+        empathy:      { ar: 'التعاطف', en: 'Empathy' },
+        strategy:     { ar: 'الاستراتيجية', en: 'Strategy' },
+        mystery:      { ar: 'الغموض', en: 'Mystery' },
+        willpower:    { ar: 'الإرادة', en: 'Willpower' }
+    };
+    const primaryAxes = (creature.axes && creature.axes.length) ? creature.axes : ['willpower', 'energy'];
+    const baseScore = Math.round((creature.multiplier || 1.15) * 75);
+    const statY0 = 950;
+    const statRowH = 56;
+    primaryAxes.slice(0, 4).forEach((axis, i) => {
+        const score = Math.min(10, Math.max(5, Math.round(baseScore / 10 + (i === 0 ? 2 : -1))));
+        const label = (axisLabels[axis] || { ar: axis, en: axis })[isAr ? 'ar' : 'en'];
+        const y = statY0 + i * statRowH;
+
+        ctx.save();
+        ctx.direction = isAr ? 'rtl' : 'ltr';
+        ctx.textAlign = isAr ? 'right' : 'left';
+        ctx.textBaseline = 'middle';
+        // Label
+        ctx.font = '600 30px Cairo, Tajawal, sans-serif';
+        ctx.fillStyle = '#cbd5e1';
+        const labelX = isAr ? (W - 110) : 110;
+        ctx.fillText(label, labelX, y);
+        // Stat bar (10 segments)
+        const barLabelW = 240;
+        const barTotalW = 360;
+        const segGap = 6;
+        const segW = (barTotalW - segGap * 9) / 10;
+        const barStartX = isAr ? (W - 110 - barLabelW - barTotalW) : (110 + barLabelW);
+        for (let s = 0; s < 10; s++) {
+            const sx = barStartX + s * (segW + segGap);
+            ctx.fillStyle = s < score ? visual.accent : 'rgba(255,255,255,0.12)';
+            if (s < score) {
+                ctx.shadowColor = visual.glow;
+                ctx.shadowBlur = 8;
+            } else {
+                ctx.shadowBlur = 0;
             }
-            html += '</div></div>';
+            roundRectPath(ctx, sx, y - 12, segW, 24, 6);
+            ctx.fill();
+        }
+        ctx.restore();
+    });
+
+    // ===== Quote / insight =====
+    const insight = creature.secretReport && creature.secretReport.insight ? creature.secretReport.insight : '';
+    if (insight) {
+        ctx.save();
+        ctx.direction = isAr ? 'rtl' : 'ltr';
+        ctx.textAlign = isAr ? 'right' : 'left';
+        ctx.textBaseline = 'alphabetic';
+        ctx.font = 'italic 30px Cairo, Tajawal, sans-serif';
+        ctx.fillStyle = 'rgba(226,232,240,0.85)';
+        const quoteY = 1220;
+        const quoteX = isAr ? (W - 110) : 110;
+        const quoteMaxW = W - 220;
+        const lines = wrapText(ctx, '“ ' + insight.replace(/\*\*/g, '') + ' ”', quoteMaxW, 3);
+        lines.forEach((line, i) => {
+            ctx.fillText(line, quoteX, quoteY + i * 40);
         });
-        statsContainer.innerHTML = html;
+        ctx.restore();
     }
 
-    // Quote
-    const ccQuote = document.getElementById('cc-quote');
-    if (ccQuote) {
-        const insight = creature.secretReport && creature.secretReport.insight ? creature.secretReport.insight : '';
-        const short = insight.length > 120 ? insight.substring(0, 120) + '...' : insight;
-        ccQuote.innerText = '\u201C ' + short + ' \u201D';
-    }
+    // ===== Footer: username + card number =====
+    // Divider line
+    ctx.save();
+    const divY = H - 150;
+    const divGrad = ctx.createLinearGradient(110, divY, W - 110, divY);
+    divGrad.addColorStop(0, 'rgba(255,255,255,0)');
+    divGrad.addColorStop(0.5, visual.border);
+    divGrad.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.strokeStyle = divGrad;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(110, divY);
+    ctx.lineTo(W - 110, divY);
+    ctx.stroke();
+    ctx.restore();
 
-    // Card number
-    const ccNum = document.getElementById('cc-card-number');
-    if (ccNum) {
-        const cardIndex = Object.keys(getUserCards()).indexOf(creature.id) + 1;
-        ccNum.innerText = '#' + String(cardIndex).padStart(3, '0');
-    }
+    // Avatar circle with initial
+    const avX = isAr ? (W - 110 - 44) : (110 + 44);
+    const avY = H - 80;
+    const avR = 44;
+    ctx.save();
+    const avGrad = ctx.createLinearGradient(avX - avR, avY - avR, avX + avR, avY + avR);
+    avGrad.addColorStop(0, '#a855f7');
+    avGrad.addColorStop(1, '#ec4899');
+    ctx.fillStyle = avGrad;
+    ctx.beginPath();
+    ctx.arc(avX, avY, avR, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font = 'bold 40px Cairo, Tajawal, sans-serif';
+    const initial = (username || '?').trim().charAt(0).toUpperCase() || '?';
+    ctx.fillText(initial, avX, avY + 2);
+    ctx.restore();
+
+    // Username + label
+    ctx.save();
+    ctx.direction = isAr ? 'rtl' : 'ltr';
+    ctx.textAlign = isAr ? 'right' : 'left';
+    ctx.textBaseline = 'middle';
+    const nameOffsetX = isAr ? (W - 110 - avR * 2 - 28) : (110 + avR * 2 + 28);
+    // Label (small, above name)
+    ctx.font = '600 22px Cairo, Tajawal, sans-serif';
+    ctx.fillStyle = '#a78bfa';
+    ctx.fillText(isAr ? 'المستكشف' : 'Explorer', nameOffsetX, avY - 22);
+    // Name (bold)
+    ctx.font = 'bold 38px Cairo, Tajawal, sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText(String(username), nameOffsetX, avY + 12);
+    ctx.restore();
+
+    // Card number (opposite side of footer)
+    ctx.save();
+    ctx.direction = isAr ? 'rtl' : 'ltr';
+    ctx.textAlign = isAr ? 'left' : 'right';
+    ctx.textBaseline = 'middle';
+    ctx.font = '600 24px Cairo, Tajawal, sans-serif';
+    ctx.fillStyle = 'rgba(148,163,184,0.8)';
+    const cards = getUserCards();
+    const cardIndex = Object.keys(cards).indexOf(creature.id) + 1;
+    const numX = isAr ? 110 : (W - 110);
+    ctx.fillText('#' + String(cardIndex || 1).padStart(3, '0') + ' / ' + String(Object.keys(cards).length || 16).padStart(2, '0'), numX, avY);
+    ctx.restore();
+
+    // Brand watermark
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font = 'bold 22px Cairo, Tajawal, sans-serif';
+    ctx.fillStyle = 'rgba(148,163,184,0.5)';
+    ctx.fillText('✦ QuizMagic ✦', W / 2, H - 36);
+    ctx.restore();
+
+    return canvas;
 }
 
 async function downloadCollectibleCard(btn, creature, tier) {
     const originalText = btn.innerHTML;
     const isAr = currentLang === 'ar';
-    btn.innerHTML = '<i class="fas fa-spinner animate-spin"></i> ' + (isAr ? 'جاري التجهيز...' : 'Preparing...');
+    btn.innerHTML = '<i class="fas fa-spinner animate-spin"></i> ' + (isAr ? 'جاري الرسم...' : 'Rendering...');
     btn.disabled = true;
     try {
-        if (typeof html2canvas === 'undefined') {
-            await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
-        }
-        prepareCollectibleCard(creature, tier);
-        const template = document.getElementById('collectible-card-template');
-        const canvas = await html2canvas(template, {
-            useCORS: true,
-            scale: 2,
-            backgroundColor: '#0a0e1a'
-        });
+        const canvas = await renderCollectibleCardCanvas(creature, tier);
         const link = document.createElement('a');
         const safeName = creature.id + '-' + tier;
         link.download = 'QuizMagic-Card-' + safeName + '.png';
@@ -2618,7 +2898,7 @@ async function downloadCollectibleCard(btn, creature, tier) {
         if (typeof trackEvent === 'function') trackEvent('card_download', { 'creature_id': creature.id, 'tier': tier });
     } catch (err) {
         console.error('Card download failed:', err);
-        showErrorToast(isAr ? 'حدث خطأ أثناء تحميل البطاقة' : 'Error downloading card', isAr);
+        showErrorToast(isAr ? 'حدث خطأ أثناء رسم البطاقة' : 'Error rendering card', isAr);
     } finally {
         btn.innerHTML = originalText;
         btn.disabled = false;
