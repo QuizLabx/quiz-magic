@@ -22,7 +22,7 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-// 🎨 بديل احترافي لـ alert/confirm/prompt
+// 🎨 بديل احترافي لـ alert//confirm/prompt
 // options: { title, message, okText, cancelText, okType ('danger'|'success'|'primary'), inputLabel, inputExpected }
 function showConfirmDialog(options) {
     return new Promise((resolve) => {
