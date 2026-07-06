@@ -173,9 +173,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // 🕐 سجل زيارة اليوم وتحقق من الوقت
     recordVisitDay();
     
-    // 🔥 حساب وعرض أيام المتتالية (Streaks)
+        // 🔥 حساب وعرض أيام المتتالية (Streaks) بشكل دائم
     const currentStreak = calculateCurrentStreak();
-    showStreakToast(currentStreak);
+    updateStreakDisplay(currentStreak);
 	
     if (isNightOwlTime()) {
         if (!userStats.nightVisits) userStats.nightVisits = 0;
@@ -771,37 +771,52 @@ function calculateCurrentStreak() {
     return streak + 1; 
 }
 
-function showStreakToast(streak) {
-    if (streak < 2) return; // لا نعرض إشعاراً ليوم واحد
+function updateStreakDisplay(streak) {
+    const counter = document.getElementById('streak-counter');
+    const flame = document.getElementById('streak-flame');
+    const number = document.getElementById('streak-number');
     
-    // منع عرض الإشعار أكثر من مرة في الجلسة الواحدة
-    if (sessionStorage.getItem('streak_shown_this_session')) return;
+    if (!counter || !flame || !number) return;
     
-    const toast = document.getElementById('streak-toast');
-    if (!toast) return;
+    // تحديث الرقم
+    number.textContent = streak;
     
+    // إزالة جميع الحالات السابقة
+    counter.classList.remove('has-streak', 'mega-streak');
+    flame.classList.remove('active');
+    
+    if (streak >= 3) {
+        // 🔥 شعلة نشطة جداً (3 أيام فأكثر)
+        flame.classList.add('active');
+        counter.classList.add('mega-streak');
+    } else if (streak >= 2) {
+        // 🔥 شعلة نشطة (يومان)
+        flame.classList.add('active');
+        counter.classList.add('has-streak');
+    } else if (streak === 1) {
+        // 💤 شعلة منطفئة (يوم واحد)
+        flame.classList.remove('active');
+        counter.classList.add('has-streak');
+    } else {
+        // ⚫ لا يوجد streak
+        flame.classList.remove('active');
+    }
+    
+    // تحديث الـ Tooltip
     const isAr = currentLang === 'ar';
-    const title = document.getElementById('streak-title');
-    const message = document.getElementById('streak-message');
+    const tooltipText = isAr 
+        ? `${streak} ${streak === 1 ? 'يوم' : (streak === 2 ? 'يومان' : (streak <= 10 ? 'أيام' : 'يومًا'))} متتالية`
+        : `${streak} day${streak !== 1 ? 's' : ''} streak`;
+    counter.title = tooltipText;
     
-    if (title) title.textContent = isAr ? 'يا له من التزام! 🔥' : 'What a streak! 🔥';
-    if (message) message.textContent = isAr 
-        ? `لقد استخدمت QuizMagic لـ ${streak} أيام متتالية!` 
-        : `You've used QuizMagic for ${streak} days in a row!`;
-        
-    toast.classList.add('show');
-    sessionStorage.setItem('streak_shown_this_session', 'true');
-    
-    // 📊 Analytics tracking
-    trackEvent('streak_achieved', {
-        'streak_days': streak
-    });
-    
-    setTimeout(() => {
-        toast.classList.remove('show');
-    }, 5000);
+    // 📊 Analytics tracking (فقط إذا كان streak مهم)
+    if (streak >= 3 && !sessionStorage.getItem('streak_tracked_today')) {
+        trackEvent('streak_achieved', {
+            'streak_days': streak
+        });
+        sessionStorage.setItem('streak_tracked_today', 'true');
+    }
 }
-
 
 // ==================== TIME & DATE HELPERS (NEW) ====================
 function getCurrentHour() {
