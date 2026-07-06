@@ -104,6 +104,33 @@ z-index: -100;
     <div class="splash-loader"></div>
 </div>
 
+<!-- ==================== USERNAME MODAL (NEW) ==================== -->
+<div id="username-modal" class="achievements-modal username-modal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">
+                <i class="fas fa-user-astronaut text-purple-400"></i>
+                <span id="username-modal-title">مرحباً أيها المسافر!</span>
+            </h2>
+        </div>
+        <div class="modal-body username-modal-body">
+            <p id="username-modal-message" class="theme-text-secondary text-lg leading-relaxed mb-6 text-center">قبل أن تبدأ رحلتك الأسطورية، أخبرنا باسمك ليُنقش على بطاقاتك ونتائجك</p>
+            <div class="mb-2">
+                <input type="text" id="username-input" class="username-input" placeholder="اكتب اسمك هنا..." maxlength="20" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();saveUsername();}">
+            </div>
+            <p id="username-error" class="username-error hidden"></p>
+            <div class="flex gap-3 mt-6">
+                <button onclick="saveUsername()" class="username-save-btn">
+                    <i class="fas fa-check mr-2"></i>
+                    <span id="username-save-text">حفظ ومتابعة</span>
+                </button>
+            </div>
+            <p id="username-hint" class="username-hint">3-20 حرف (أحرف، أرقام، مسافات، -، _)</p>
+        </div>
+    </div>
+</div>
+
 <!-- ==================== CONFETTI CONTAINER (NEW) ==================== -->
 <div id="confetti-container" class="confetti-container"></div>
 	
@@ -299,6 +326,15 @@ z-index: -100;
 Mythical Analysis Result
 </div>
 </div>
+<div id="share-username-wrapper" class="w-full mb-6 flex items-center gap-4">
+<div class="w-20 h-20 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center border-4 border-purple-500/30 shadow-xl">
+<i class="fas fa-user-astronaut text-3xl text-white"></i>
+</div>
+<div class="flex flex-col">
+<span class="text-xs font-black text-purple-400 uppercase tracking-widest" id="share-username-label">المستكشف</span>
+<h2 id="share-username" class="text-4xl font-black text-white"></h2>
+</div>
+</div>
 <div class="flex flex-row gap-10 w-full items-center flex-grow">
 <div class="w-1/2 h-[600px] relative rounded-[3rem] overflow-hidden border-4 border-purple-500/50 shadow-2xl">
 <img id="share-creature-img-dominant" src="" class="w-full h-full object-cover">
@@ -331,6 +367,44 @@ Mythical Analysis Result
 </div>
 <div class="w-48 h-48 bg-white p-4 rounded-3xl shadow-xl flex items-center justify-center">
 <i class="fas fa-magic text-7xl text-purple-600"></i>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ==================== COLLECTIBLE CARD TEMPLATE (NEW) ==================== -->
+<div id="collectible-card-template">
+<div class="cc-bg-glow"></div>
+<div class="cc-card card-tier-gold">
+<div class="cc-shimmer"></div>
+<div class="cc-inner">
+<div class="cc-header">
+<div class="cc-user-block">
+<div class="cc-user-avatar"><i class="fas fa-user-astronaut"></i></div>
+<div class="cc-user-info">
+<span class="cc-user-label" id="cc-user-label">المستكشف</span>
+<span class="cc-username" id="cc-username"></span>
+</div>
+</div>
+<div class="cc-tier-badge" id="cc-tier-badge">GOLD</div>
+</div>
+<div class="cc-artwork">
+<div class="cc-art-glow"></div>
+<img id="cc-creature-img" src="">
+<div class="cc-art-overlay"></div>
+<div class="cc-creature-name-block">
+<span class="cc-creature-rarity" id="cc-creature-rarity"></span>
+<h2 class="cc-creature-name" id="cc-creature-name"></h2>
+</div>
+</div>
+<div class="cc-stats" id="cc-stats-container"></div>
+<div class="cc-quote" id="cc-quote"></div>
+<div class="cc-footer">
+<div class="cc-footer-left">
+<i class="fas fa-magic cc-footer-logo"></i>
+<span class="cc-brand">QuizMagic</span>
+</div>
+<div class="cc-card-number" id="cc-card-number">#001</div>
 </div>
 </div>
 </div>
