@@ -1,4 +1,4 @@
-/*
+﻿/*
 Custom Styles for QuizMagic - Full Professional Version (Phase 4 + Achievements System)
 Includes: Dark/Light Mode, Glassmorphism, Advanced Animations, Skeleton Loaders, Fixed Dragon Progress,
 Confetti, Splash Screen, Enhanced Card Effects, Smooth Question Transitions, and Achievements System.
@@ -213,7 +213,7 @@ to { transform: translateX(-50px); opacity: 0; }
 
 /* ==================== SKELETON LOADERS ==================== */
 
-/* ⏳ Question Skeleton Loader (NEW) */
+/* â³ Question Skeleton Loader (NEW) */
 .question-skeleton {
     background: var(--bg-secondary);
     border-radius: 1.5rem;
@@ -283,7 +283,7 @@ to { transform: translateX(-50px); opacity: 0; }
 .question-skeleton .skeleton-option:nth-child(4)::after { animation-delay: 0.3s; }
 .question-skeleton .skeleton-option:nth-child(5)::after { animation-delay: 0.4s; }
 
-/* ⏳ Visual Question Skeleton (للأسئلة البصرية) */
+/* â³ Visual Question Skeleton (Ù„Ù„Ø£Ø³Ø¦Ù„Ø© Ø§Ù„Ø¨ØµØ±ÙŠØ©) */
 .question-skeleton .skeleton-visual-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -319,7 +319,7 @@ to { transform: translateX(-50px); opacity: 0; }
     50% { opacity: 0.7; }
 }
 
-/* ⏳ Fade-in Animation للخيارات */
+/* â³ Fade-in Animation Ù„Ù„Ø®ÙŠØ§Ø±Ø§Øª */
 .question-option-fade-in {
     animation: questionOptionFadeIn 0.5s ease-out forwards;
     opacity: 0;
@@ -342,7 +342,7 @@ to { transform: translateX(-50px); opacity: 0; }
     }
 }
 
-/* ⏳ Question Title Animation */
+/* â³ Question Title Animation */
 .question-title-fade-in {
     animation: questionTitleFadeIn 0.6s ease-out forwards;
     opacity: 0;
@@ -675,7 +675,7 @@ background-clip: text;
     }
 }
 
-/* 📱 Responsive للهواتف */
+/* ðŸ“± Responsive Ù„Ù„Ù‡ÙˆØ§ØªÙ */
 @media (max-width: 640px) {
     .streak-counter {
         width: 38px;
@@ -765,7 +765,7 @@ justify-content: center;
 .achievements-modal.show {
 display: flex;
 }
-/* 🎨 تنسيق مودال التأكيد المخصص (بديل alert/confirm/prompt) */
+/* ðŸŽ¨ ØªÙ†Ø³ÙŠÙ‚ Ù…ÙˆØ¯Ø§Ù„ Ø§Ù„ØªØ£ÙƒÙŠØ¯ Ø§Ù„Ù…Ø®ØµØµ (Ø¨Ø¯ÙŠÙ„ alert/confirm/prompt) */
 #confirm-dialog .modal-content {
 max-width: 500px;
 text-align: center;
@@ -943,7 +943,7 @@ left: 1rem;
 }
 
 /* ==================== ACCESSIBILITY ENHANCEMENTS (NEW) ==================== */
-/* ♿ Skip Link (FIXED) - مخفي تماماً ولا يظهر إلا عند التنقل بلوحة المفاتيح */
+/* â™¿ Skip Link (FIXED) - Ù…Ø®ÙÙŠ ØªÙ…Ø§Ù…Ø§Ù‹ ÙˆÙ„Ø§ ÙŠØ¸Ù‡Ø± Ø¥Ù„Ø§ Ø¹Ù†Ø¯ Ø§Ù„ØªÙ†Ù‚Ù„ Ø¨Ù„ÙˆØ­Ø© Ø§Ù„Ù…ÙØ§ØªÙŠØ­ */
 .skip-link {
     position: fixed;
     top: -100px;
@@ -957,13 +957,13 @@ left: 1rem;
     font-weight: bold;
     transition: top 0.3s ease;
     text-decoration: none;
-    /* ✨ إخفاء كامل على الهواتف */
+    /* âœ¨ Ø¥Ø®ÙØ§Ø¡ ÙƒØ§Ù…Ù„ Ø¹Ù„Ù‰ Ø§Ù„Ù‡ÙˆØ§ØªÙ */
     visibility: hidden;
     opacity: 0;
     pointer-events: none;
 }
 
-/* ✨ يظهر فقط عند التركيز بلوحة المفاتيح (Tab) */
+/* âœ¨ ÙŠØ¸Ù‡Ø± ÙÙ‚Ø· Ø¹Ù†Ø¯ Ø§Ù„ØªØ±ÙƒÙŠØ² Ø¨Ù„ÙˆØ­Ø© Ø§Ù„Ù…ÙØ§ØªÙŠØ­ (Tab) */
 .skip-link:focus,
 .skip-link:focus-visible {
     top: 0;
@@ -974,14 +974,14 @@ left: 1rem;
     outline-offset: 2px;
 }
 
-/* 📱 على الهواتف المحمولة الصغيرة: إخفاء دائم (لأن معظم المستخدمين لا يستخدمون لوحة المفاتيح) */
+/* ðŸ“± Ø¹Ù„Ù‰ Ø§Ù„Ù‡ÙˆØ§ØªÙ Ø§Ù„Ù…Ø­Ù…ÙˆÙ„Ø© Ø§Ù„ØµØºÙŠØ±Ø©: Ø¥Ø®ÙØ§Ø¡ Ø¯Ø§Ø¦Ù… (Ù„Ø£Ù† Ù…Ø¹Ø¸Ù… Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…ÙŠÙ† Ù„Ø§ ÙŠØ³ØªØ®Ø¯Ù…ÙˆÙ† Ù„ÙˆØ­Ø© Ø§Ù„Ù…ÙØ§ØªÙŠØ­) */
 @media (max-width: 768px) {
     .skip-link {
         display: none !important;
     }
 }
 
-/* ♿ Focus Visible States (للتوضيح البصري عند التنقل بلوحة المفاتيح) */
+/* â™¿ Focus Visible States (Ù„Ù„ØªÙˆØ¶ÙŠØ­ Ø§Ù„Ø¨ØµØ±ÙŠ Ø¹Ù†Ø¯ Ø§Ù„ØªÙ†Ù‚Ù„ Ø¨Ù„ÙˆØ­Ø© Ø§Ù„Ù…ÙØ§ØªÙŠØ­) */
 *:focus-visible {
     outline: 3px solid var(--accent-primary) !important;
     outline-offset: 4px;
@@ -996,7 +996,7 @@ a:focus-visible,
     outline-offset: 4px;
 }
 
-/* ♿ High Contrast for Selected & Active Options */
+/* â™¿ High Contrast for Selected & Active Options */
 .option-selected,
 button:active,
 [onclick]:active,
@@ -1009,7 +1009,7 @@ button:active,
 }
 
 /* ==================== PERFORMANCE ENHANCEMENTS (NEW) ==================== */
-/* 🚀 Lazy Loading Images */
+/* ðŸš€ Lazy Loading Images */
 img[data-src] {
     opacity: 0;
     transition: opacity 0.5s ease-in-out;
@@ -1019,7 +1019,7 @@ img.loaded {
     opacity: 1;
 }
 
-/* 🚀 Optimized Image Rendering */
+/* ðŸš€ Optimized Image Rendering */
 img {
     image-rendering: -webkit-optimize-contrast;
     image-rendering: crisp-edges;
@@ -1054,7 +1054,7 @@ grid-template-columns: 1fr;
 [dir="ltr"] .text-start { text-align: left; }
 
 /* ==================== AUDIO BUTTON EFFECTS (NEW) ==================== */
-/* تأثير النبض على زر الموسيقى الخلفية عند التشغيل */
+/* ØªØ£Ø«ÙŠØ± Ø§Ù„Ù†Ø¨Ø¶ Ø¹Ù„Ù‰ Ø²Ø± Ø§Ù„Ù…ÙˆØ³ÙŠÙ‚Ù‰ Ø§Ù„Ø®Ù„ÙÙŠØ© Ø¹Ù†Ø¯ Ø§Ù„ØªØ´ØºÙŠÙ„ */
 #bg-music-toggle.playing {
     animation: music-pulse 2s ease-in-out infinite;
     border-color: var(--accent-primary);
@@ -1089,12 +1089,12 @@ grid-template-columns: 1fr;
     max-height: 85vh;
 }
 
-/* ✨ FIX: إضافة مساحة في أسفل الـ Modal لضمان ظهور زر الحذف بالكامل */
+/* âœ¨ FIX: Ø¥Ø¶Ø§ÙØ© Ù…Ø³Ø§Ø­Ø© ÙÙŠ Ø£Ø³ÙÙ„ Ø§Ù„Ù€ Modal Ù„Ø¶Ù…Ø§Ù† Ø¸Ù‡ÙˆØ± Ø²Ø± Ø§Ù„Ø­Ø°Ù Ø¨Ø§Ù„ÙƒØ§Ù…Ù„ */
 .profile-modal .modal-body {
     padding-bottom: 3rem !important;
 }
 
-/* ✨ FIX: إضافة مساحة إضافية في نهاية أزرار الإجراءات */
+/* âœ¨ FIX: Ø¥Ø¶Ø§ÙØ© Ù…Ø³Ø§Ø­Ø© Ø¥Ø¶Ø§ÙÙŠØ© ÙÙŠ Ù†Ù‡Ø§ÙŠØ© Ø£Ø²Ø±Ø§Ø± Ø§Ù„Ø¥Ø¬Ø±Ø§Ø¡Ø§Øª */
 .profile-modal .profile-actions {
     margin-bottom: 1rem;
     padding-bottom: 1rem;
@@ -1395,14 +1395,14 @@ grid-template-columns: 1fr;
 
 /* ==================== MOBILE HEADER FIX (NEW) ==================== */
 
-/* 📱 للشاشات الصغيرة جداً (أقل من 640px) */
+/* ðŸ“± Ù„Ù„Ø´Ø§Ø´Ø§Øª Ø§Ù„ØµØºÙŠØ±Ø© Ø¬Ø¯Ø§Ù‹ (Ø£Ù‚Ù„ Ù…Ù† 640px) */
 @media (max-width: 640px) {
-    /* تقليل padding الهيدر */
+    /* ØªÙ‚Ù„ÙŠÙ„ padding Ø§Ù„Ù‡ÙŠØ¯Ø± */
     header.p-4 {
         padding: 0.5rem 0.75rem !important;
     }
     
-    /* تصغير العنوان وإخفاء الجزء الطويل */
+    /* ØªØµØºÙŠØ± Ø§Ù„Ø¹Ù†ÙˆØ§Ù† ÙˆØ¥Ø®ÙØ§Ø¡ Ø§Ù„Ø¬Ø²Ø¡ Ø§Ù„Ø·ÙˆÙŠÙ„ */
     header a.text-2xl {
         font-size: 1.125rem !important;
         gap: 0.375rem !important;
@@ -1418,17 +1418,17 @@ grid-template-columns: 1fr;
         max-width: 110px;
     }
     
-    /* تصغير الأيقونة */
+    /* ØªØµØºÙŠØ± Ø§Ù„Ø£ÙŠÙ‚ÙˆÙ†Ø© */
     header a.text-2xl i {
         font-size: 1rem !important;
     }
     
-    /* تصغير حاوية الأزرار */
+    /* ØªØµØºÙŠØ± Ø­Ø§ÙˆÙŠØ© Ø§Ù„Ø£Ø²Ø±Ø§Ø± */
     header .flex.items-center.gap-3 {
         gap: 0.25rem !important;
     }
     
-    /* تصغير جميع الأزرار */
+    /* ØªØµØºÙŠØ± Ø¬Ù…ÙŠØ¹ Ø§Ù„Ø£Ø²Ø±Ø§Ø± */
     header .theme-toggle-btn,
     header button.text-sm {
         padding: 0.375rem 0.5rem !important;
@@ -1437,13 +1437,13 @@ grid-template-columns: 1fr;
         min-height: 32px;
     }
     
-    /* تصغير الأيقونات داخل الأزرار */
+    /* ØªØµØºÙŠØ± Ø§Ù„Ø£ÙŠÙ‚ÙˆÙ†Ø§Øª Ø¯Ø§Ø®Ù„ Ø§Ù„Ø£Ø²Ø±Ø§Ø± */
     header .theme-toggle-btn i,
     header button.text-sm i {
         font-size: 0.875rem !important;
     }
     
-    /* إخفاء نص زر اللغة على الهواتف (نترك الأيقونة فقط) */
+    /* Ø¥Ø®ÙØ§Ø¡ Ù†Øµ Ø²Ø± Ø§Ù„Ù„ØºØ© Ø¹Ù„Ù‰ Ø§Ù„Ù‡ÙˆØ§ØªÙ (Ù†ØªØ±Ùƒ Ø§Ù„Ø£ÙŠÙ‚ÙˆÙ†Ø© ÙÙ‚Ø·) */
     header button.text-sm span#lang-btn-text {
         display: none !important;
     }
@@ -1453,21 +1453,21 @@ grid-template-columns: 1fr;
         margin-left: 0 !important;
     }
     
-    /* منع التمرير الأفقي */
+    /* Ù…Ù†Ø¹ Ø§Ù„ØªÙ…Ø±ÙŠØ± Ø§Ù„Ø£ÙÙ‚ÙŠ */
     header .container {
         padding-left: 0.75rem !important;
         padding-right: 0.75rem !important;
     }
 }
 
-/* 📱 للشاشات الصغيرة جداً جداً (أقل من 380px - iPhone SE) */
+/* ðŸ“± Ù„Ù„Ø´Ø§Ø´Ø§Øª Ø§Ù„ØµØºÙŠØ±Ø© Ø¬Ø¯Ø§Ù‹ Ø¬Ø¯Ø§Ù‹ (Ø£Ù‚Ù„ Ù…Ù† 380px - iPhone SE) */
 @media (max-width: 380px) {
-    /* إخفاء زر المؤثرات الصوتية (SFX) - الأقل أهمية */
+    /* Ø¥Ø®ÙØ§Ø¡ Ø²Ø± Ø§Ù„Ù…Ø¤Ø«Ø±Ø§Øª Ø§Ù„ØµÙˆØªÙŠØ© (SFX) - Ø§Ù„Ø£Ù‚Ù„ Ø£Ù‡Ù…ÙŠØ© */
     header button#sfx-toggle {
         display: none !important;
     }
     
-    /* تصغير أكثر */
+    /* ØªØµØºÙŠØ± Ø£ÙƒØ«Ø± */
     header a.text-2xl {
         max-width: 120px;
     }
@@ -1481,14 +1481,14 @@ grid-template-columns: 1fr;
     }
 }
 
-/* 🖥️ للديسكتوب (أكثر من 640px) - لا تغيير */
+/* ðŸ–¥ï¸ Ù„Ù„Ø¯ÙŠØ³ÙƒØªÙˆØ¨ (Ø£ÙƒØ«Ø± Ù…Ù† 640px) - Ù„Ø§ ØªØºÙŠÙŠØ± */
 @media (min-width: 641px) {
     header a.text-2xl span {
         white-space: normal;
     }
 }
 
-/* 🛡️ منع التمرير الأفقي العام في الصفحة */
+/* ðŸ›¡ï¸ Ù…Ù†Ø¹ Ø§Ù„ØªÙ…Ø±ÙŠØ± Ø§Ù„Ø£ÙÙ‚ÙŠ Ø§Ù„Ø¹Ø§Ù… ÙÙŠ Ø§Ù„ØµÙØ­Ø© */
 html, body {
     overflow-x: hidden;
     max-width: 100vw;
@@ -1501,15 +1501,15 @@ html, body {
     z-index: 9998;
     background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
     display: flex;
-    align-items: flex-start; /* ✨ التغيير الأهم: من center إلى flex-start */
+    align-items: flex-start; /* âœ¨ Ø§Ù„ØªØºÙŠÙŠØ± Ø§Ù„Ø£Ù‡Ù…: Ù…Ù† center Ø¥Ù„Ù‰ flex-start */
     justify-content: center;
     overflow-y: auto;
     overflow-x: hidden;
     transition: opacity 0.6s ease, visibility 0.6s ease;
-    /* ✨ إضافة padding علوي وسفلي */
+    /* âœ¨ Ø¥Ø¶Ø§ÙØ© padding Ø¹Ù„ÙˆÙŠ ÙˆØ³ÙÙ„ÙŠ */
     padding-top: 3rem;
     padding-bottom: 2rem;
-    /* ✨ دعم الشاشات الآمنة (الهواتف الحديثة) */
+    /* âœ¨ Ø¯Ø¹Ù… Ø§Ù„Ø´Ø§Ø´Ø§Øª Ø§Ù„Ø¢Ù…Ù†Ø© (Ø§Ù„Ù‡ÙˆØ§ØªÙ Ø§Ù„Ø­Ø¯ÙŠØ«Ø©) */
     padding-top: calc(3rem + env(safe-area-inset-top, 0px));
     padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px));
 }
@@ -1520,7 +1520,7 @@ html, body {
     pointer-events: none;
 }
 
-/* ✨ خلفية Particles متحركة */
+/* âœ¨ Ø®Ù„ÙÙŠØ© Particles Ù…ØªØ­Ø±ÙƒØ© */
 .welcome-particles {
     position: absolute;
     inset: 0;
@@ -1563,7 +1563,7 @@ html, body {
     }
 }
 
-/* 🎯 المحتوى الرئيسي */
+/* ðŸŽ¯ Ø§Ù„Ù…Ø­ØªÙˆÙ‰ Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠ */
 .welcome-content {
     position: relative;
     z-index: 1;
@@ -1571,11 +1571,11 @@ html, body {
     width: 90%;
     padding: 2rem 1rem;
     text-align: center;
-    /* ✨ margin تلقائي لتمركز المحتوى عمودياً */
+    /* âœ¨ margin ØªÙ„Ù‚Ø§Ø¦ÙŠ Ù„ØªÙ…Ø±ÙƒØ² Ø§Ù„Ù…Ø­ØªÙˆÙ‰ Ø¹Ù…ÙˆØ¯ÙŠØ§Ù‹ */
     margin: auto 0;
 }
 
-/* 🌟 القسم 1: الشعار والعنوان */
+/* ðŸŒŸ Ø§Ù„Ù‚Ø³Ù… 1: Ø§Ù„Ø´Ø¹Ø§Ø± ÙˆØ§Ù„Ø¹Ù†ÙˆØ§Ù† */
 .welcome-header {
     margin-bottom: 2rem;
 }
@@ -1623,7 +1623,7 @@ html, body {
     }
 }
 
-/* 👋 القسم 2: رسالة الترحيب */
+/* ðŸ‘‹ Ø§Ù„Ù‚Ø³Ù… 2: Ø±Ø³Ø§Ù„Ø© Ø§Ù„ØªØ±Ø­ÙŠØ¨ */
 .welcome-message {
     margin-bottom: 3rem;
 }
@@ -1643,7 +1643,7 @@ html, body {
     margin: 0 auto;
 }
 
-/* 💎 القسم 3: بطاقات المميزات */
+/* ðŸ’Ž Ø§Ù„Ù‚Ø³Ù… 3: Ø¨Ø·Ø§Ù‚Ø§Øª Ø§Ù„Ù…Ù…ÙŠØ²Ø§Øª */
 .welcome-features {
     margin-bottom: 3rem;
 }
@@ -1721,7 +1721,7 @@ html, body {
     line-height: 1.5;
 }
 
-/* ⚙️ القسم 4: الخيارات السريعة */
+/* âš™ï¸ Ø§Ù„Ù‚Ø³Ù… 4: Ø§Ù„Ø®ÙŠØ§Ø±Ø§Øª Ø§Ù„Ø³Ø±ÙŠØ¹Ø© */
 .welcome-quick-settings {
     display: flex;
     justify-content: center;
@@ -1757,7 +1757,7 @@ html, body {
     font-size: 1.125rem;
 }
 
-/* 🚀 القسم 5: زر البدء الكبير */
+/* ðŸš€ Ø§Ù„Ù‚Ø³Ù… 5: Ø²Ø± Ø§Ù„Ø¨Ø¯Ø¡ Ø§Ù„ÙƒØ¨ÙŠØ± */
 .welcome-cta {
     margin-top: 2rem;
 }
@@ -1811,7 +1811,7 @@ html, body {
     font-style: italic;
 }
 
-/* 📱 Responsive للهواتف */
+/* ðŸ“± Responsive Ù„Ù„Ù‡ÙˆØ§ØªÙ */
 @media (max-width: 768px) {
     .welcome-screen {
         padding-top: 2rem;
@@ -1908,7 +1908,7 @@ html, body {
     }
 }
 
-/* 🌙 دعم الوضع النهاري */
+/* ðŸŒ™ Ø¯Ø¹Ù… Ø§Ù„ÙˆØ¶Ø¹ Ø§Ù„Ù†Ù‡Ø§Ø±ÙŠ */
 html.light-mode .welcome-screen {
     background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f0f9ff 100%);
 }
@@ -1949,7 +1949,7 @@ html.light-mode .welcome-quick-btn:hover {
     border-color: rgba(124, 58, 237, 0.6);
 }
 
-/* ♿ دعم تقليل الحركة */
+/* â™¿ Ø¯Ø¹Ù… ØªÙ‚Ù„ÙŠÙ„ Ø§Ù„Ø­Ø±ÙƒØ© */
 @media (prefers-reduced-motion: reduce) {
     .welcome-screen * {
         animation-duration: 0.01ms !important;
@@ -2030,7 +2030,7 @@ html.light-mode .welcome-quick-btn:hover {
     color: var(--text-muted);
 }
 
-/* 🎚️ Toggle Switch */
+/* ðŸŽšï¸ Toggle Switch */
 .toggle-switch {
     position: relative;
     width: 52px;
@@ -2083,7 +2083,7 @@ html.light-mode .welcome-quick-btn:hover {
     outline-offset: 2px;
 }
 
-/* 📱 Responsive */
+/* ðŸ“± Responsive */
 @media (max-width: 480px) {
     .settings-item {
         flex-wrap: wrap;
@@ -2101,7 +2101,7 @@ html.light-mode .welcome-quick-btn:hover {
 
 
 
-/* ==================== POKÉDEX SYSTEM (NEW) ==================== */
+/* ==================== POKÃ‰DEX SYSTEM (NEW) ==================== */
 .pokedex-modal {
 position: fixed;
 inset: 0;
@@ -2118,7 +2118,7 @@ max-width: 1000px;
 max-height: 90vh;
 }
 
-/* 📊 شريط التقدم */
+/* ðŸ“Š Ø´Ø±ÙŠØ· Ø§Ù„ØªÙ‚Ø¯Ù… */
 .pokedex-progress-wrapper {
 background: var(--bg-tertiary);
 border: 2px solid var(--border-color);
@@ -2167,7 +2167,7 @@ box-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
 100% { background-position: 200% 0; }
 }
 
-/* 🎴 شبكة المخلوقات */
+/* ðŸŽ´ Ø´Ø¨ÙƒØ© Ø§Ù„Ù…Ø®Ù„ÙˆÙ‚Ø§Øª */
 .pokedex-grid {
 display: grid;
 grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -2195,7 +2195,7 @@ opacity: 0.6;
 cursor: not-allowed;
 }
 
-/* 🖼️ حاوية الصورة */
+/* ðŸ–¼ï¸ Ø­Ø§ÙˆÙŠØ© Ø§Ù„ØµÙˆØ±Ø© */
 .pokedex-image-wrapper {
 position: relative;
 aspect-ratio: 1;
@@ -2212,7 +2212,7 @@ transition: all 0.5s ease;
 transform: scale(1.1);
 }
 
-/* 🔒 طبقة القفل للمخلوقات غير المكتشفة */
+/* ðŸ”’ Ø·Ø¨Ù‚Ø© Ø§Ù„Ù‚ÙÙ„ Ù„Ù„Ù…Ø®Ù„ÙˆÙ‚Ø§Øª ØºÙŠØ± Ø§Ù„Ù…ÙƒØªØ´ÙØ© */
 .pokedex-card.locked .pokedex-image-wrapper img {
 filter: grayscale(100%) brightness(0.2) blur(2px);
 }
@@ -2236,7 +2236,7 @@ animation: pokedex-question-pulse 2s ease-in-out infinite;
 50% { transform: scale(1.1); opacity: 1; }
 }
 
-/* 📝 معلومات المخلوق */
+/* ðŸ“ Ù…Ø¹Ù„ÙˆÙ…Ø§Øª Ø§Ù„Ù…Ø®Ù„ÙˆÙ‚ */
 .pokedex-info {
 padding: 0.875rem;
 text-align: center;
@@ -2261,25 +2261,25 @@ font-weight: 700;
 text-transform: uppercase;
 letter-spacing: 0.05em;
 }
-.pokedex-rarity.rarity-أسطوري,
+.pokedex-rarity.rarity-Ø£Ø³Ø·ÙˆØ±ÙŠ,
 .pokedex-rarity.rarity-Legendary {
 background: linear-gradient(135deg, #fbbf24, #f59e0b);
 color: #0f172a;
 box-shadow: 0 0 10px rgba(251, 191, 36, 0.4);
 }
-.pokedex-rarity.rarity-نادر-جداً,
+.pokedex-rarity.rarity-Ù†Ø§Ø¯Ø±-Ø¬Ø¯Ø§Ù‹,
 .pokedex-rarity.rarity-Very-Rare {
 background: linear-gradient(135deg, #a855f7, #ec4899);
 color: white;
 box-shadow: 0 0 10px rgba(168, 85, 247, 0.4);
 }
-.pokedex-rarity.rarity-نادر,
+.pokedex-rarity.rarity-Ù†Ø§Ø¯Ø±,
 .pokedex-rarity.rarity-Rare {
 background: linear-gradient(135deg, #3b82f6, #06b6d4);
 color: white;
 }
-.pokedex-rarity.rarity-شائع,
-.pokedex-rarity.rarity-غير-مألوف,
+.pokedex-rarity.rarity-Ø´Ø§Ø¦Ø¹,
+.pokedex-rarity.rarity-ØºÙŠØ±-Ù…Ø£Ù„ÙˆÙ,
 .pokedex-rarity.rarity-Common,
 .pokedex-rarity.rarity-Uncommon {
 background: var(--bg-tertiary);
@@ -2302,7 +2302,7 @@ font-size: 0.75rem;
 font-weight: 900;
 }
 
-/* 🔙 زر الرجوع */
+/* ðŸ”™ Ø²Ø± Ø§Ù„Ø±Ø¬ÙˆØ¹ */
 .pokedex-back-btn {
 margin-top: 1.5rem;
 padding: 0.75rem 1.5rem;
@@ -2326,7 +2326,7 @@ border-color: var(--accent-primary);
 transform: translateY(-2px);
 }
 
-/* 📄 شاشة تفاصيل المخلوق */
+/* ðŸ“„ Ø´Ø§Ø´Ø© ØªÙØ§ØµÙŠÙ„ Ø§Ù„Ù…Ø®Ù„ÙˆÙ‚ */
 .pokedex-details-view {
 text-align: center;
 animation: pokedex-details-fade 0.5s ease-out;
@@ -2394,7 +2394,7 @@ font-weight: 900;
 color: var(--accent-primary);
 }
 
-/* 📱 Responsive */
+/* ðŸ“± Responsive */
 @media (max-width: 768px) {
 .pokedex-grid {
 grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
@@ -2720,276 +2720,4 @@ height: 200%;
 background: linear-gradient(135deg, transparent 40%, rgba(168, 85, 247, 0.08) 50%, transparent 60%);
 animation: cc-shimmer-move 3s ease-in-out infinite;
 pointer-events: none;
-}
-
-/* ========================================
-   COLLECTIBLE CARD TEMPLATE (Ultra Premium)
-   ======================================== */
-#collectible-card-template {
-position: fixed;
-left: -9999px;
-top: -9999px;
-width: 1080px;
-height: 1080px;
-background: #0a0e1a;
-color: white;
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-z-index: -100;
-font-family: 'Cairo', sans-serif;
-overflow: hidden;
-}
-.cc-card {
-position: relative;
-width: 960px;
-height: 1000px;
-background: rgba(15, 23, 42, 0.7);
-backdrop-filter: blur(20px);
--webkit-backdrop-filter: blur(20px);
-border-radius: 2rem;
-overflow: hidden;
-border: 2px solid rgba(255, 255, 255, 0.1);
-box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
-}
-.cc-bg-glow {
-position: absolute;
-top: -20%;
-left: -20%;
-width: 140%;
-height: 140%;
-background: radial-gradient(circle at 30% 30%, rgba(168, 85, 247, 0.08) 0%, transparent 60%),
-    radial-gradient(circle at 70% 70%, rgba(236, 72, 153, 0.06) 0%, transparent 60%);
-z-index: 1;
-pointer-events: none;
-}
-.card-tier-gold .cc-bg-glow {
-background: radial-gradient(circle at 30% 30%, rgba(251, 191, 36, 0.12) 0%, transparent 60%),
-    radial-gradient(circle at 70% 70%, rgba(245, 158, 11, 0.08) 0%, transparent 60%);
-}
-.card-tier-diamond .cc-bg-glow {
-background: radial-gradient(circle at 30% 30%, rgba(103, 232, 249, 0.15) 0%, transparent 50%),
-    radial-gradient(circle at 70% 70%, rgba(168, 85, 247, 0.1) 0%, transparent 50%);
-}
-/* Tier Colors */
-.card-tier-common { border-color: rgba(148, 163, 184, 0.4); }
-.card-tier-silver { border-color: rgba(203, 213, 225, 0.6); box-shadow: 0 30px 80px rgba(148, 163, 184, 0.3), 0 0 40px rgba(203, 213, 225, 0.15); }
-.card-tier-gold { border-color: rgba(251, 191, 36, 0.6); box-shadow: 0 30px 80px rgba(251, 191, 36, 0.3), 0 0 40px rgba(251, 191, 36, 0.15); }
-.card-tier-diamond { border-color: rgba(103, 232, 249, 0.6); box-shadow: 0 30px 80px rgba(103, 232, 249, 0.3), 0 0 60px rgba(103, 232, 249, 0.2); }
-/* Shimmer sweep */
-.cc-shimmer {
-position: absolute;
-top: 0;
-left: -100%;
-width: 60%;
-height: 100%;
-background: linear-gradient(115deg, transparent 20%, rgba(255, 255, 255, 0.08) 50%, transparent 80%);
-z-index: 10;
-pointer-events: none;
-animation: cc-shimmer-move 4s ease-in-out infinite;
-}
-@keyframes cc-shimmer-move {
-0%, 100% { left: -100%; }
-50% { left: 120%; }
-}
-/* Inner layout */
-.cc-inner {
-position: relative;
-z-index: 5;
-padding: 2.5rem;
-height: 100%;
-display: flex;
-flex-direction: column;
-}
-/* Header */
-.cc-header {
-display: flex;
-justify-content: space-between;
-align-items: center;
-margin-bottom: 1.5rem;
-}
-.cc-user-block {
-display: flex;
-align-items: center;
-gap: 1rem;
-}
-.cc-user-avatar {
-width: 3.5rem;
-height: 3.5rem;
-border-radius: 50%;
-background: linear-gradient(135deg, #a855f7, #ec4899);
-display: flex;
-align-items: center;
-justify-content: center;
-font-size: 1.25rem;
-color: white;
-border: 2px solid rgba(255, 255, 255, 0.2);
-flex-shrink: 0;
-}
-.cc-user-info {
-display: flex;
-flex-direction: column;
-}
-.cc-user-label {
-font-size: 0.7rem;
-font-weight: 700;
-color: #a78bfa;
-text-transform: uppercase;
-letter-spacing: 0.1em;
-}
-.cc-username {
-font-size: 1.5rem;
-font-weight: 900;
-color: white;
-}
-.cc-tier-badge {
-padding: 0.5rem 1.25rem;
-border-radius: 2rem;
-font-size: 0.85rem;
-font-weight: 900;
-text-transform: uppercase;
-letter-spacing: 0.15em;
-}
-.card-tier-common .cc-tier-badge { background: rgba(148, 163, 184, 0.3); color: #94a3b8; border: 1px solid rgba(148, 163, 184, 0.4); }
-.card-tier-silver .cc-tier-badge { background: rgba(203, 213, 225, 0.3); color: #e2e8f0; border: 1px solid rgba(203, 213, 225, 0.5); }
-.card-tier-gold .cc-tier-badge { background: linear-gradient(135deg, rgba(251, 191, 36, 0.3), rgba(245, 158, 11, 0.3)); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.5); }
-.card-tier-diamond .cc-tier-badge { background: linear-gradient(135deg, rgba(103, 232, 249, 0.3), rgba(56, 189, 248, 0.3)); color: #67e8f9; border: 1px solid rgba(103, 232, 249, 0.5); }
-/* Artwork */
-.cc-artwork {
-position: relative;
-height: 420px;
-border-radius: 1.5rem;
-overflow: hidden;
-margin-bottom: 1.5rem;
-}
-.cc-art-glow {
-position: absolute;
-inset: -20px;
-background: radial-gradient(circle at center, rgba(168, 85, 247, 0.3) 0%, transparent 70%);
-z-index: 1;
-}
-.card-tier-gold .cc-art-glow { background: radial-gradient(circle at center, rgba(251, 191, 36, 0.35) 0%, transparent 70%); }
-.card-tier-diamond .cc-art-glow { background: radial-gradient(circle at center, rgba(103, 232, 249, 0.4) 0%, transparent 70%); }
-.cc-artwork img {
-position: relative;
-z-index: 2;
-width: 100%;
-height: 100%;
-object-fit: cover;
-}
-.cc-art-overlay {
-position: absolute;
-bottom: 0;
-left: 0;
-right: 0;
-height: 50%;
-background: linear-gradient(to top, rgba(10, 14, 26, 0.95) 0%, transparent 100%);
-z-index: 3;
-}
-.cc-creature-name-block {
-position: absolute;
-bottom: 0;
-left: 0;
-right: 0;
-z-index: 4;
-padding: 1.5rem 2rem;
-}
-.cc-creature-rarity {
-display: inline-block;
-padding: 0.3rem 0.8rem;
-border-radius: 0.5rem;
-font-size: 0.7rem;
-font-weight: 800;
-text-transform: uppercase;
-letter-spacing: 0.1em;
-margin-bottom: 0.5rem;
-background: rgba(168, 85, 247, 0.3);
-color: #c4b5fd;
-border: 1px solid rgba(168, 85, 247, 0.3);
-}
-.cc-creature-name {
-font-size: 2.5rem;
-font-weight: 900;
-color: white;
-line-height: 1.2;
-}
-/* Stats dots */
-.cc-stats {
-display: grid;
-grid-template-columns: repeat(2, 1fr);
-gap: 1rem;
-margin-bottom: 1.5rem;
-}
-.cc-stat-row {
-display: flex;
-align-items: center;
-gap: 0.75rem;
-}
-.cc-stat-label {
-font-size: 0.85rem;
-font-weight: 700;
-color: #94a3b8;
-min-width: 120px;
-}
-.cc-stat-dots {
-display: flex;
-gap: 0.35rem;
-flex: 1;
-}
-.cc-dot {
-width: 1rem;
-height: 1rem;
-border-radius: 50%;
-background: rgba(51, 65, 85, 0.5);
-border: 1px solid rgba(71, 85, 105, 0.3);
-}
-.cc-dot.filled {
-border: none;
-}
-.card-tier-common .cc-dot.filled { background: #94a3b8; }
-.card-tier-silver .cc-dot.filled { background: linear-gradient(135deg, #cbd5e1, #e2e8f0); }
-.card-tier-gold .cc-dot.filled { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
-.card-tier-diamond .cc-dot.filled { background: linear-gradient(135deg, #67e8f9, #38bdf8); }
-/* Quote */
-.cc-quote {
-text-align: center;
-padding: 1.25rem;
-background: rgba(51, 65, 85, 0.2);
-border: 1px solid rgba(71, 85, 105, 0.2);
-border-radius: 1rem;
-margin-bottom: 1.25rem;
-font-size: 1.1rem;
-font-style: italic;
-color: rgba(203, 213, 225, 0.8);
-line-height: 1.6;
-}
-/* Footer */
-.cc-footer {
-display: flex;
-justify-content: space-between;
-align-items: center;
-margin-top: auto;
-padding-top: 1rem;
-}
-.cc-footer-left {
-display: flex;
-align-items: center;
-gap: 0.75rem;
-}
-.cc-footer-logo {
-font-size: 1.25rem;
-color: #a855f7;
-}
-.cc-brand {
-font-size: 1.1rem;
-font-weight: 800;
-color: rgba(203, 213, 225, 0.6);
-letter-spacing: 0.05em;
-}
-.cc-card-number {
-font-size: 0.85rem;
-font-weight: 700;
-color: rgba(148, 163, 184, 0.5);
-letter-spacing: 0.1em;
 }
