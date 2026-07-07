@@ -121,11 +121,11 @@ function showConfirmDialog(options) {
         if (okBtn) {
             okBtn.className = 'flex-1 py-3 rounded-xl font-bold text-white transition-all transform hover:scale-[1.02] active:scale-95 shadow-lg';
             if (options.okType === 'danger') {
-                okBtn.classList.add('bg-gradient-to-r', 'from-red-600', 'to-rose-600');
+                okBtn.style.backgroundImage = 'linear-gradient(to right, #dc2626, #e11d48)';
             } else if (options.okType === 'success') {
-                okBtn.classList.add('bg-gradient-to-r', 'from-green-600', 'to-teal-600');
+                okBtn.classList.add('btn-success');
             } else {
-                okBtn.classList.add('bg-gradient-to-r', 'from-purple-600', 'to-pink-600');
+                okBtn.classList.add('btn-primary');
             }
         }
 
@@ -138,7 +138,7 @@ function showConfirmDialog(options) {
             } else if (options.icon) {
                 iconEl.className = options.icon;
             } else {
-                iconEl.className = 'fas fa-info-circle text-purple-400';
+                iconEl.className = 'fas fa-info-circle text-accent';
             }
         }
 
@@ -1396,7 +1396,7 @@ function renderSocialLinks() {
                 a.href = config.socialLinks[link.id];
                 a.target = "_blank";
                 a.rel = "noopener noreferrer";
-                a.className = "w-10 h-10 rounded-full flex items-center justify-center hover:bg-purple-600 hover:text-white transition-all transform hover:scale-110 theme-bg-tertiary theme-text-primary";
+                a.className = "w-10 h-10 rounded-full flex items-center justify-center hover:bg-accent hover:text-white transition-all transform hover:scale-110 theme-bg-tertiary theme-text-primary";
                 a.innerHTML = `<i class="${link.icon}"></i>`;
                 container.appendChild(a);
             }
@@ -1551,14 +1551,14 @@ function renderQuizGrid() {
                 <div class="relative h-56 overflow-hidden">
                     <img data-src="${quiz.image}" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E" alt="${quiz.title}" loading="lazy" decoding="async" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-0 transition-opacity duration-500">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                    <div class="absolute top-4 right-4 bg-purple-600/90 backdrop-blur-md text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-xl">
+                    <div class="absolute top-4 right-4 badge-rarity text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-xl">
                         ${quiz.badge}
                     </div>
                 </div>
                 <div class="p-6 flex-grow flex flex-col">
-                    <h3 class="text-xl font-bold mb-3 group-hover:text-purple-400 transition-colors theme-text-primary">${quiz.title}</h3>
+                    <h3 class="text-xl font-bold mb-3 group-hover:text-accent transition-colors theme-text-primary">${quiz.title}</h3>
                     <p class="theme-text-secondary text-sm mb-6 flex-grow leading-relaxed">${quiz.description}</p>
-                    <button class="w-full py-3 rounded-xl font-bold transition-all transform active:scale-95 bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white shadow-lg shadow-purple-600/20">
+                    <button class="btn-primary w-full py-3 rounded-xl font-bold transition-all transform active:scale-95">
                         ${currentLang === 'ar' ? 'ابدأ الاختبار 🎭' : 'Start Quiz 🎭'}
                     </button>
                 </div>
@@ -1608,27 +1608,27 @@ function showWelcomeScreen(quizId) {
             </h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
                 <div class="theme-bg-tertiary/20 p-5 rounded-2xl border theme-border">
-                    <div class="text-3xl mb-3 text-purple-400"><i class="fas fa-dna"></i></div>
+                    <div class="text-3xl mb-3 text-accent"><i class="fas fa-dna"></i></div>
                     <h4 class="font-bold theme-text-primary mb-2">${isAr ? 'الهوية الهجينة' : 'Hybrid Identity'}</h4>
                     <p class="theme-text-secondary text-xs">${isAr ? 'نكتشف كائنك المهيمن وروحك المصاحبة.' : 'We discover your dominant creature and companion soul.'}</p>
                 </div>
                 <div class="theme-bg-tertiary/20 p-5 rounded-2xl border theme-border">
-                    <div class="text-3xl mb-3 text-blue-400"><i class="fas fa-chart-pie"></i></div>
+                    <div class="text-3xl mb-3 text-accent-secondary"><i class="fas fa-chart-pie"></i></div>
                     <h4 class="font-bold theme-text-primary mb-2">${isAr ? 'مخطط القوى' : 'Power Blueprint'}</h4>
                     <p class="theme-text-secondary text-xs">${isAr ? 'تحليل دقيق لـ 6 محاور لشخصيتك.' : 'Accurate analysis of 6 axes of your personality.'}</p>
                 </div>
                 <div class="theme-bg-tertiary/20 p-5 rounded-2xl border theme-border">
-                    <div class="text-3xl mb-3 text-pink-400"><i class="fas fa-book-open"></i></div>
+                    <div class="text-3xl mb-3 text-accent-secondary"><i class="fas fa-book-open"></i></div>
                     <h4 class="font-bold theme-text-primary mb-2">${isAr ? 'سرد قصصي' : 'Narrative Results'}</h4>
                     <p class="theme-text-secondary text-xs">${isAr ? 'نكتب لك قصة تصف يومك ككائن أسطوري.' : 'We write a story describing your day as a mythical being.'}</p>
                 </div>
                 <div class="theme-bg-tertiary/20 p-5 rounded-2xl border theme-border">
-                    <div class="text-3xl mb-3 text-green-400"><i class="fas fa-medal"></i></div>
+                    <div class="text-3xl mb-3 text-accent"><i class="fas fa-medal"></i></div>
                     <h4 class="font-bold theme-text-primary mb-2">${isAr ? 'الأوسمة والندرة' : 'Badges & Rarity'}</h4>
                     <p class="theme-text-secondary text-xs">${isAr ? 'احصل على أوسمة نادرة بناءً على تميزك.' : 'Get rare badges based on your uniqueness.'}</p>
                 </div>
             </div>
-            <button onclick="startQuiz('${quizId}')" class="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold rounded-2xl shadow-lg transform hover:scale-[1.02] active:scale-95 transition-all">
+            <button onclick="startQuiz('${quizId}')" class="btn-primary w-full py-4 text-white font-bold rounded-2xl shadow-lg transform hover:scale-[1.02] active:scale-95 transition-all">
                 ${isAr ? 'فهمت، ابدأ الآن 🚀' : 'Got it, Start Now 🚀'}
             </button>
         </div>
@@ -1696,7 +1696,7 @@ function renderQuestionContent(container, question, totalSteps, progress, slideI
         <div class="quiz-content-wrapper ${slideInClass}">
             <div class="progress-wrapper">
                 <div class="flex justify-between items-center mb-4">
-                    <span class="text-xs font-bold text-purple-400 uppercase tracking-widest">
+                    <span class="text-xs font-bold text-accent uppercase tracking-widest">
                         ${currentLang === 'ar' ? 'السؤال' : 'Question'} ${currentStepId + 1} / ${totalSteps}
                     </span>
                     <span class="text-xs theme-text-muted">${Math.round(progress)}%</span>
@@ -1716,7 +1716,7 @@ function renderQuestionContent(container, question, totalSteps, progress, slideI
         content += `
             <div class="grid grid-cols-2 gap-4 sm:gap-6">
                 ${question.options.map((opt) => `
-                    <div onclick="handleVisualChoice(event, '${opt.trait}', ${opt.value}, '${opt.axis || ''}')" class="group cursor-pointer relative overflow-hidden rounded-2xl border-2 theme-border hover:border-purple-500 transition-all transform hover:scale-[1.03] active:scale-95 shadow-lg question-option-fade-in">
+                    <div onclick="handleVisualChoice(event, '${opt.trait}', ${opt.value}, '${opt.axis || ''}')" class="group cursor-pointer relative overflow-hidden rounded-2xl border-2 theme-border hover:border-accent transition-all transform hover:scale-[1.03] active:scale-95 shadow-lg question-option-fade-in">
                         <div class="aspect-square overflow-hidden">
                             <img src="${opt.image}" loading="lazy" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                         </div>
@@ -1837,11 +1837,11 @@ function showLoading() {
     container.innerHTML = `
         <div class="text-center py-20 animate-fade-in">
             <div class="relative w-32 h-32 mx-auto mb-10">
-                <div class="absolute inset-0 border-4 border-purple-500/10 rounded-full"></div>
-                <div class="absolute inset-0 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
-                <div class="absolute inset-4 border-4 border-pink-500/20 border-b-transparent rounded-full animate-spin-slow"></div>
+                <div class="absolute inset-0 border-4 rounded-full bg-accent-soft"></div>
+                <div class="progress-bar absolute inset-0 border-4 border-t-transparent rounded-full animate-spin" style="background: none;"></div>
+                <div class="absolute inset-4 border-4 rounded-full animate-spin-slow bg-accent-soft-strong" style="border-bottom-color: transparent;"></div>
             </div>
-            <h2 class="text-3xl font-bold mb-4 animate-pulse bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
+            <h2 class="gradient-title text-3xl font-bold mb-4 animate-pulse">
                 ${currentLang === 'ar' ? 'جاري تحليل شخصيتك...' : 'Analyzing your psyche...'}
             </h2>
             <p class="theme-text-secondary text-lg">${currentLang === 'ar' ? 'نقوم بربط إجاباتك بالقوى الأسطورية القديمة' : 'Mapping your responses to ancient mythical forces'}</p>
@@ -2128,22 +2128,22 @@ function showResult() {
                 
                 <div class="absolute inset-0 flex flex-col items-center justify-center px-8 text-center">
                     <div class="flex justify-center gap-3 mb-8">
-                        <span class="bg-purple-600/90 backdrop-blur-md text-white px-4 py-1.5 rounded-full text-[10px] font-black shadow-lg uppercase tracking-widest border border-white/10">
+                        <span class="badge-rarity text-white px-4 py-1.5 rounded-full text-[10px] font-black shadow-lg uppercase tracking-widest border border-white/10">
                             ${creature.rarity}
                         </span>
-                        <span class="bg-pink-600/80 backdrop-blur-md text-white px-4 py-1.5 rounded-full text-[10px] font-black shadow-lg uppercase tracking-widest border border-white/10">
+                        <span class="badge-creature text-white px-4 py-1.5 rounded-full text-[10px] font-black shadow-lg uppercase tracking-widest border border-white/10">
                             ${creature.badge || 'Legend'}
                         </span>
                     </div>
-                    
+
                     <div class="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 mb-6">
                         <div class="flex flex-col items-center">
-                            <span class="text-xs font-black text-purple-500 mb-2 uppercase tracking-tighter">${isAr ? 'المهيمن (70%)' : 'Dominant (70%)'}</span>
+                            <span class="text-xs font-black text-accent-strong mb-2 uppercase tracking-tighter">${isAr ? 'المهيمن (70%)' : 'Dominant (70%)'}</span>
                             <h2 class="text-4xl md:text-7xl font-black text-white drop-shadow-2xl">${creature.name}</h2>
                         </div>
-                        <span class="text-purple-600 text-4xl md:text-6xl font-light opacity-50 hidden md:block">×</span>
+                        <span class="text-accent-strong opacity-50 text-4xl md:text-6xl font-light hidden md:block">×</span>
                         <div class="flex flex-col items-center">
-                            <span class="text-xs font-black text-pink-500 mb-2 uppercase tracking-tighter">${isAr ? 'المصاحب (30%)' : 'Companion (30%)'}</span>
+                            <span class="text-xs font-black text-accent-secondary mb-2 uppercase tracking-tighter">${isAr ? 'المصاحب (30%)' : 'Companion (30%)'}</span>
                             <h2 class="text-2xl md:text-4xl font-black text-slate-400 drop-shadow-2xl">${secondaryCreature.name}</h2>
                         </div>
                     </div>
@@ -2153,11 +2153,11 @@ function showResult() {
                     </p>
 
 	                    <button onclick="toggleDetails()" class="group flex flex-col items-center gap-3 transition-all duration-500 hover:scale-110" aria-expanded="false" aria-controls="details-section">
-                        <span class="text-xs font-bold text-purple-400 uppercase tracking-[0.3em] group-hover:text-purple-300">
+                        <span class="text-xs font-bold text-accent uppercase tracking-[0.3em] group-hover:text-accent-strong">
                             ${isAr ? 'اكتشف أسرار هويتك' : 'Discover Your Identity Secrets'}
                         </span>
-                        <div class="w-12 h-12 rounded-full border-2 border-purple-500/30 flex items-center justify-center group-hover:border-purple-500 transition-colors">
-                            <i id="expand-icon" class="fas fa-chevron-down text-purple-500 animate-bounce"></i>
+                        <div class="w-12 h-12 rounded-full border-2 border-accent-soft flex items-center justify-center group-hover:border-accent transition-colors">
+                            <i id="expand-icon" class="fas fa-chevron-down text-accent-strong animate-bounce"></i>
                         </div>
                     </button>
                 </div>
@@ -2171,20 +2171,20 @@ function showResult() {
                     <div class="grid grid-cols-1 gap-6 md:gap-10 mb-12 md:mb-20">
                         <div class="theme-bg-tertiary/20 p-5 sm:p-6 md:p-8 rounded-2xl md:rounded-[2.5rem] border theme-border">
                             <div class="mb-4 md:mb-6">
-                                <img src="${creature.image}" class="w-full h-40 md:h-48 object-cover rounded-xl md:rounded-2xl mb-3 md:mb-4 border-2 border-purple-500">
+                                <img src="${creature.image}" class="w-full h-40 md:h-48 object-cover rounded-xl md:rounded-2xl mb-3 md:mb-4 border-2 border-accent">
                                 <h4 class="text-xl md:text-2xl font-bold theme-text-primary mb-1">${creature.name}</h4>
-                                <span class="text-[10px] md:text-xs text-purple-400 font-bold uppercase tracking-widest">${isAr ? 'الكيان المهيمن' : 'Dominant Entity'}</span>
+                                <span class="text-[10px] md:text-xs text-accent font-bold uppercase tracking-widest">${isAr ? 'الكيان المهيمن' : 'Dominant Entity'}</span>
                             </div>
                             <p class="theme-text-secondary leading-relaxed md:leading-loose text-xs sm:text-sm text-justify">
                                 ${creature.article || creature.description}
                             </p>
                         </div>
-            
+
                         <div class="theme-bg-tertiary/20 p-5 sm:p-6 md:p-8 rounded-2xl md:rounded-[2.5rem] border theme-border">
                             <div class="mb-4 md:mb-6">
-                                <img src="${secondaryCreature.image}" class="w-full h-40 md:h-48 object-cover rounded-xl md:rounded-2xl mb-3 md:mb-4 border-2 border-pink-500">
+                                <img src="${secondaryCreature.image}" class="w-full h-40 md:h-48 object-cover rounded-xl md:rounded-2xl mb-3 md:mb-4 border-2 border-accent-secondary">
                                 <h4 class="text-xl md:text-2xl font-bold theme-text-primary mb-1">${secondaryCreature.name}</h4>
-                                <span class="text-[10px] md:text-xs text-pink-400 font-bold uppercase tracking-widest">${isAr ? 'الروح المصاحبة' : 'Companion Soul'}</span>
+                                <span class="text-[10px] md:text-xs text-accent-secondary font-bold uppercase tracking-widest">${isAr ? 'الروح المصاحبة' : 'Companion Soul'}</span>
                             </div>
                             <p class="theme-text-secondary leading-relaxed md:leading-loose text-xs sm:text-sm text-justify">
                                 ${secondaryCreature.article || secondaryCreature.description}
@@ -2194,15 +2194,15 @@ function showResult() {
         
                     <!-- 🧠 التحليل النفسي -->
                     <div class="mb-12 md:mb-20 text-center">
-                        <div class="inline-block p-3 md:p-4 bg-purple-600/10 rounded-2xl md:rounded-3xl mb-4 md:mb-6">
-                            <i class="fas fa-dna text-3xl md:text-4xl text-purple-500"></i>
+                        <div class="inline-block p-3 md:p-4 bg-accent-soft rounded-2xl md:rounded-3xl mb-4 md:mb-6">
+                            <i class="fas fa-dna text-3xl md:text-4xl text-accent-strong"></i>
                         </div>
                         <h3 class="text-2xl md:text-3xl font-bold theme-text-primary mb-4 md:mb-6 px-2">
                             ${isAr ? 'التحليل النفسي للهوية الهجينة' : 'Hybrid Identity Psychoanalysis'}
                         </h3>
                         <div class="theme-bg-tertiary/10 p-5 sm:p-6 md:p-10 rounded-2xl md:rounded-[3rem] border-2 border-dashed theme-border relative">
                             <div class="absolute -top-3 -left-3 w-8 h-8 md:w-12 md:h-12 theme-bg-secondary flex items-center justify-center rounded-full border theme-border">
-                                <i class="fas fa-quote-left text-sm md:text-base text-purple-500"></i>
+                                <i class="fas fa-quote-left text-sm md:text-base text-accent-strong"></i>
                             </div>
                             <p class="text-sm sm:text-base md:text-xl theme-text-secondary leading-relaxed md:leading-loose italic text-justify px-1">
                                 "${creature.narrative || creature.description} ${isAr ? 'بينما تكمن في أعماقك روح' : 'While deep within lies the spirit of'} ${secondaryCreature.name} ${isAr ? 'التي تمنحك' : 'which grants you'} ${secondaryCreature.description.split('.')[0].toLowerCase()}."
@@ -2219,30 +2219,30 @@ function showResult() {
                         </div>
                     </div>
 
-                    <div class="relative p-1 bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 rounded-[2rem] overflow-hidden shadow-2xl">
+                    <div class="relative p-1 secret-frame rounded-[2rem] overflow-hidden shadow-2xl">
                         <div class="relative p-10 theme-bg-primary rounded-[1.8rem] overflow-hidden">
                             <div id="cpa-locker" class="absolute inset-0 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center z-10 bg-black/20">
-                                <div class="w-20 h-20 bg-gradient-to-tr from-purple-600 to-pink-600 rounded-full flex items-center justify-center mb-6 border-4 border-white/10 shadow-inner">
+                                <div class="w-20 h-20 lock-icon-circle rounded-full flex items-center justify-center mb-6 border-4 border-white/10 shadow-inner">
                                     <i class="fas fa-lock text-3xl text-white"></i>
                                 </div>
                                 <h3 class="text-xl md:text-3xl font-bold mb-3 md:mb-4 theme-text-primary px-2">${isAr ? 'التقرير السري المتقدم' : 'Advanced Secret Report'}</h3>
-                                <button onclick="unlockSecretReport()" class="bg-purple-600 text-white px-8 py-3 rounded-full font-bold hover:bg-purple-700 transition-all z-[60] cursor-pointer relative shadow-xl">
+                                <button onclick="unlockSecretReport()" class="btn-primary-solid px-8 py-3 rounded-full font-bold transition-all z-[60] cursor-pointer relative shadow-xl">
                                     ${isAr ? 'فتح التقرير السري' : 'Unlock Secret Report'}
                                 </button>
                             </div>
                             <div id="secret-content" class="opacity-10 blur-xl transition-all duration-1000">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
                                     <div class="mb-4 md:mb-0">
-                                        <h4 class="text-lg md:text-2xl font-bold text-purple-400 mb-3 md:mb-4">${isAr ? 'نمط قوتك:' : 'Power Pattern:'}</h4>
+                                        <h4 class="text-lg md:text-2xl font-bold text-accent mb-3 md:mb-4">${isAr ? 'نمط قوتك:' : 'Power Pattern:'}</h4>
                                         <p class="theme-text-secondary text-xs sm:text-sm mb-4 md:mb-6 leading-relaxed text-justify">${creature.secretReport.strengths}</p>
                                     </div>
                                     <div>
-                                        <h4 class="text-lg md:text-2xl font-bold text-pink-400 mb-3 md:mb-4">${isAr ? 'نصيحة الكائن:' : 'Creature Advice:'}</h4>
+                                        <h4 class="text-lg md:text-2xl font-bold text-accent-secondary mb-3 md:mb-4">${isAr ? 'نصيحة الكائن:' : 'Creature Advice:'}</h4>
                                         <p class="theme-text-secondary text-xs sm:text-sm mb-4 md:mb-6 leading-relaxed text-justify">${creature.advice || creature.secretReport.insight}</p>
                                     </div>
                                 </div>
                                 <div class="mt-4 md:mt-6 p-4 md:p-6 theme-bg-tertiary/20 border theme-border rounded-xl md:rounded-2xl text-center">
-                                    <p class="text-purple-300 italic text-sm md:text-lg leading-relaxed">"${creature.secretReport.insight}"</p>
+                                    <p class="text-accent italic text-sm md:text-lg leading-relaxed">"${creature.secretReport.insight}"</p>
                                 </div>
                                 ${creature.secretReport.recommendations ? `
                                 <div class="recommendations-section">
@@ -2294,22 +2294,22 @@ function showResult() {
         </div>
 
 	        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-12">
-	            <button onclick="downloadResultAsImage(this)" class="flex items-center justify-center gap-3 p-5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-2xl font-bold text-lg transition-all transform hover:scale-105 shadow-xl shadow-blue-600/20" aria-label="${isAr ? 'تحميل نتيجة الاختبار كصورة' : 'Download quiz result as image'}">
+	            <button onclick="downloadResultAsImage(this)" class="btn-secondary flex items-center justify-center gap-3 p-5 rounded-2xl font-bold text-lg transition-all transform hover:scale-105" aria-label="${isAr ? 'تحميل نتيجة الاختبار كصورة' : 'Download quiz result as image'}">
 	                <i class="fas fa-image" aria-hidden="true"></i> ${isAr ? '🖼️ تحميل النتيجة كصورة' : '🖼️ Download as Image'}
 	            </button>
-	            <button onclick="shareResult()" class="flex items-center justify-center gap-3 p-5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white rounded-2xl font-bold text-lg transition-all transform hover:scale-105 shadow-xl shadow-purple-600/20" aria-label="${isAr ? 'مشاركة نتيجة الاختبار على وسائل التواصل' : 'Share quiz result on social media'}">
+	            <button onclick="shareResult()" class="btn-primary flex items-center justify-center gap-3 p-5 rounded-2xl font-bold text-lg transition-all transform hover:scale-105" aria-label="${isAr ? 'مشاركة نتيجة الاختبار على وسائل التواصل' : 'Share quiz result on social media'}">
 	                <i class="fas fa-share-alt" aria-hidden="true"></i> ${isAr ? '🚀 شارك النتيجة' : '🚀 Share Result'}
 	            </button>
-		            <button onclick="compareWithFriend()" class="flex items-center justify-center gap-3 p-5 bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-500 hover:to-teal-500 text-white rounded-2xl font-bold text-lg transition-all transform hover:scale-105 shadow-xl shadow-green-600/20" aria-label="${isAr ? 'قارن نتيجتك مع صديق' : 'Compare your result with a friend'}">
-		                <i class="fas fa-users" aria-hidden="true"></i> ${isAr ? '⚔️ قارن مع صديق' : '⚔️ Compare with Friend'}
+		            <button onclick="compareWithFriend()" class="btn-success flex items-center justify-center gap-3 p-5 rounded-2xl font-bold text-lg transition-all transform hover:scale-105" aria-label="${isAr ? 'قارن نتيجتك مع صديق' : 'Compare your result with a friend'}">
+	                <i class="fas fa-users" aria-hidden="true"></i> ${isAr ? '⚔️ قارن مع صديق' : '⚔️ Compare with Friend'}
+	            </button>
+	        </div>
+
+		        <div class="flex justify-center mb-8">
+		            <button id="card-download-btn" onclick="downloadCollectibleCard(this, lastQuizResult.creature, lastQuizResult.cardTier)" class="btn-card card-download-btn flex items-center justify-center gap-3 p-5 rounded-2xl font-black text-lg transition-all transform hover:scale-105" aria-label="${isAr ? 'تحميل بطاقتك الأسطورية الفاخرة' : 'Download your premium collectible card'}">
+		                <i class="fas fa-crown" aria-hidden="true"></i> ${isAr ? '🃏 حمل بطاقتك الفاخرة' : '🃏 Download Premium Card'}
 		            </button>
 		        </div>
-
-			        <div class="flex justify-center mb-8">
-			            <button id="card-download-btn" onclick="downloadCollectibleCard(this, lastQuizResult.creature, lastQuizResult.cardTier)" class="card-download-btn flex items-center justify-center gap-3 p-5 bg-gradient-to-r from-amber-500 via-yellow-500 to-orange-500 hover:from-amber-400 hover:via-yellow-400 hover:to-orange-400 text-slate-900 rounded-2xl font-black text-lg transition-all transform hover:scale-105 shadow-xl shadow-amber-500/30 border-2 border-yellow-300/50" aria-label="${isAr ? 'تحميل بطاقتك الأسطورية الفاخرة' : 'Download your premium collectible card'}">
-			                <i class="fas fa-crown" aria-hidden="true"></i> ${isAr ? '🃏 حمل بطاقتك الفاخرة' : '🃏 Download Premium Card'}
-			            </button>
-			        </div>
 
         <button onclick="location.reload()" class="theme-text-muted hover:theme-text-primary transition font-bold mb-20">
             <i class="fas fa-redo mr-2"></i> ${isAr ? 'إعادة الاختبار' : 'Retake Quiz'}
