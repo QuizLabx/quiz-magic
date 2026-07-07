@@ -214,6 +214,7 @@ document.addEventListener('keydown', (e) => {
 if (e.key === 'Escape') {
 closeAchievementsModal();
 closePokedexModal();
+closeThemeModal();
 }
 });
 
@@ -1102,25 +1103,131 @@ function getQuizDurationSeconds() {
 }
 
 // ==================== THEME MANAGEMENT ====================
+
+// 🎨 تعريف كل السمات المتاحة (للمودال وللتبديل السريع)
+const THEMES = {
+    dark: {
+        id: 'dark',
+        icon: '🌑',
+        name: { ar: 'الداكن', en: 'Dark' },
+        desc: { ar: 'السمة الافتراضية', en: 'Default theme' },
+        previewClass: 'theme-preview-dark',
+        toggleIcon: 'fas fa-moon'
+    },
+    light: {
+        id: 'light',
+        icon: '☀️',
+        name: { ar: 'الفاتح', en: 'Light' },
+        desc: { ar: 'نهاري سماوي', en: 'Soft azure day' },
+        previewClass: 'theme-preview-light',
+        toggleIcon: 'fas fa-sun'
+    },
+    cyberpunk: {
+        id: 'cyberpunk',
+        icon: '🌌',
+        name: { ar: 'سايبربونك', en: 'Cyberpunk' },
+        desc: { ar: 'نيون ومستقبل', en: 'Neon future' },
+        previewClass: 'theme-preview-cyberpunk',
+        toggleIcon: 'fas fa-microchip'
+    },
+    nature: {
+        id: 'nature',
+        icon: '🌿',
+        name: { ar: 'الطبيعة', en: 'Nature' },
+        desc: { ar: 'غابة خضراء', en: 'Green forest' },
+        previewClass: 'theme-preview-nature',
+        toggleIcon: 'fas fa-leaf'
+    },
+    space: {
+        id: 'space',
+        icon: '🚀',
+        name: { ar: 'الفضاء', en: 'Space' },
+        desc: { ar: 'نجوم وكواكب', en: 'Stars & planets' },
+        previewClass: 'theme-preview-space',
+        toggleIcon: 'fas fa-rocket'
+    },
+    retro: {
+        id: 'retro',
+        icon: '🕹️',
+        name: { ar: 'ريترو 80s', en: 'Retro 80s' },
+        desc: { ar: 'Synthwave زاهي', en: 'Vivid synthwave' },
+        previewClass: 'theme-preview-retro',
+        toggleIcon: 'fas fa-gamepad'
+    }
+};
+
+// السمات التي تستخدم class على html (غير الداكن الافتراضي)
+const THEME_HTML_CLASSES = {
+    light: 'light-mode',
+    cyberpunk: 'theme-cyberpunk',
+    nature: 'theme-nature',
+    space: 'theme-space',
+    retro: 'theme-retro'
+};
+
 function initializeTheme(savedTheme) {
     let preferredTheme = savedTheme;
-    if (preferredTheme === 'auto') {
+    if (preferredTheme === 'auto' || !THEMES[preferredTheme]) {
         preferredTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
     applyTheme(preferredTheme);
 }
 
 function applyTheme(theme) {
+    // التحقق من صحة السمة، والرجوع للداكن عند عدم التعرّف
+    if (!THEMES[theme]) theme = 'dark';
     currentTheme = theme;
     const html = document.documentElement;
-    if (theme === 'light') {
-        html.classList.add('light-mode');
+
+    // إزالة كل classes السمات أولاً
+    Object.values(THEME_HTML_CLASSES).forEach(cls => html.classList.remove(cls));
+
+    // تطبيق class السمة المختارة
+    const themeClass = THEME_HTML_CLASSES[theme];
+    if (themeClass) {
+        html.classList.add(themeClass);
+    }
+
+    // 🎨 تحديث خطوط الجسم حسب السمة
+    applyThemeTypography(theme);
+}
+
+// 🎨 تطبيق الخطوط والـ theme-color المناسبين لكل سمة
+function applyThemeTypography(theme) {
+    const body = document.body;
+    if (!body) return;
+
+    // إزالة classes الخطوط السابقة
+    body.classList.remove('font-cyberpunk', 'font-retro');
+
+    if (theme === 'cyberpunk') {
+        body.style.fontFamily = "'Orbitron', 'Cairo', sans-serif";
+        body.classList.add('font-cyberpunk');
+    } else if (theme === 'retro') {
+        // نصوص العناوين فقط بأسلوب البكسل؛ نحتفظ بـ Cairo للنصوص العربية القابلة للقراءة
+        body.style.fontFamily = "'Cairo', sans-serif";
+        body.classList.add('font-retro');
     } else {
-        html.classList.remove('light-mode');
+        body.style.fontFamily = "'Cairo', sans-serif";
+    }
+
+    // تحديث <meta name="theme-color"> ليتناسب مع لون السمة (تحسين PWA/الموبايل)
+    const themeColors = {
+        dark: '#0f172a',
+        light: '#f0f9ff',
+        cyberpunk: '#0a0a0f',
+        nature: '#1a2e1a',
+        space: '#020617',
+        retro: '#1a0033'
+    };
+    const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+    if (metaThemeColor && themeColors[theme]) {
+        metaThemeColor.setAttribute('content', themeColors[theme]);
     }
 }
 
 function toggleTheme() {
+    // تبديل سريع بين الداكن والفاتح فقط (السمات الأخرى عبر المودال)
     const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
     applyTheme(newTheme);
     localStorage.setItem('quiz_theme', newTheme);
@@ -1133,26 +1240,137 @@ function toggleTheme() {
 function updateThemeToggleIcon() {
     const themeToggleBtn = document.getElementById('theme-toggle');
     if (!themeToggleBtn) return;
-    
-    if (currentTheme === 'dark') {
-        themeToggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
-        themeToggleBtn.title = 'تبديل للوضع النهاري / Switch to Light Mode';
+
+    const themeData = THEMES[currentTheme] || THEMES.dark;
+    const isAr = currentLang === 'ar';
+
+    // زر التبديل السريع يبقى يتنقل بين داكن/فاتح
+    if (currentTheme === 'dark' || currentTheme === 'light') {
+        const iconClass = currentTheme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+        themeToggleBtn.innerHTML = `<i class="${iconClass}" aria-hidden="true"></i>`;
+        themeToggleBtn.title = isAr
+            ? (currentTheme === 'dark' ? 'تبديل للوضع النهاري' : 'تبديل للوضع الليلي')
+            : (currentTheme === 'dark' ? 'Switch to Light' : 'Switch to Dark');
     } else {
-        themeToggleBtn.innerHTML = '<i class="fas fa-sun"></i>';
-        themeToggleBtn.title = 'تبديل للوضع الليلي / Switch to Dark Mode';
+        // عند تفعيل سمة مخصصة، نعرض أيقونتها لإعلام المستخدم بالسمة الحالية
+        themeToggleBtn.innerHTML = `<i class="${themeData.toggleIcon}" aria-hidden="true"></i>`;
+        themeToggleBtn.title = isAr
+            ? `السمة الحالية: ${themeData.name.ar} — اضغط للداكن/الفاتح`
+            : `Current: ${themeData.name.en} — click for dark/light`;
     }
-    
+
     // 🎵 تحديث أيقونة الموسيقى في الشاشة الترحيبية
     const welcomeMusicBtn = document.getElementById('welcome-music-btn');
     if (welcomeMusicBtn && window.audioManager) {
         const icon = welcomeMusicBtn.querySelector('i');
         if (icon) {
-            icon.className = window.audioManager.settings.musicEnabled 
-                ? 'fas fa-volume-up' 
+            icon.className = window.audioManager.settings.musicEnabled
+                ? 'fas fa-volume-up'
                 : 'fas fa-volume-mute';
-        }  
-    }  
-}  
+        }
+    }
+}
+
+// ==================== THEME PICKER MODAL (NEW) ====================
+function showThemeModal() {
+    const modal = document.getElementById('theme-picker-modal');
+    if (!modal) return;
+
+    // تحديث العناوين النصية حسب اللغة
+    const isAr = currentLang === 'ar';
+    const titleEl = document.getElementById('theme-picker-title');
+    const hintEl = document.getElementById('theme-picker-hint');
+    if (titleEl) titleEl.textContent = isAr ? 'السمات' : 'Themes';
+    if (hintEl) hintEl.textContent = isAr
+        ? 'اختر سمتك المفضلة — تُطبَّق فوراً على كامل الموقع'
+        : 'Choose your favorite theme — applied instantly site-wide';
+
+    renderThemePickerGrid();
+
+    modal.classList.add('show');
+    if (typeof trapFocus === 'function') trapFocus(modal);
+    setTimeout(() => {
+        const closeBtn = modal.querySelector('.modal-close');
+        if (closeBtn) closeBtn.focus();
+    }, 100);
+
+    if (typeof trackEvent === 'function') {
+        trackEvent('theme_picker_open');
+    }
+}
+
+function closeThemeModal() {
+    const modal = document.getElementById('theme-picker-modal');
+    if (!modal) return;
+    modal.classList.remove('show');
+    if (typeof removeFocusTrap === 'function') removeFocusTrap(modal);
+}
+
+function renderThemePickerGrid() {
+    const grid = document.getElementById('theme-picker-grid');
+    if (!grid) return;
+
+    const isAr = currentLang === 'ar';
+    grid.innerHTML = '';
+
+    Object.values(THEMES).forEach(theme => {
+        const isActive = currentTheme === theme.id;
+        const card = document.createElement('div');
+        card.className = `theme-card ${theme.previewClass} ${isActive ? 'active' : ''}`;
+        card.setAttribute('role', 'button');
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('aria-label', `${isAr ? theme.name.ar : theme.name.en} ${isActive ? (isAr ? '(مفعّلة)' : '(active)') : ''}`);
+
+        const name = isAr ? theme.name.ar : theme.name.en;
+        const desc = isAr ? theme.desc.ar : theme.desc.en;
+
+        card.innerHTML = `
+            ${isActive ? `<span class="theme-card-badge"><i class="fas fa-check"></i> ${isAr ? 'الحالية' : 'Active'}</span>` : ''}
+            <div class="theme-card-content">
+                <div class="theme-card-icon">${theme.icon}</div>
+                <div class="theme-card-name">${name}</div>
+                <div class="theme-card-desc">${desc}</div>
+            </div>
+        `;
+
+        // التطبيق عند النقر أو الضغط بـ Enter/Space
+        const activate = () => selectTheme(theme.id);
+        card.addEventListener('click', activate);
+        card.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                activate();
+            }
+        });
+
+        grid.appendChild(card);
+    });
+}
+
+function selectTheme(themeId) {
+    if (!THEMES[themeId]) return;
+
+    // 🎵 مؤثر صوتي للنقر
+    if (window.audioManager) {
+        window.audioManager.play('ui-click');
+    }
+
+    applyTheme(themeId);
+    localStorage.setItem('quiz_theme', themeId);
+    updateThemeToggleIcon();
+
+    // إعادة عرض البطاقات لإظهار شارة "الحالية" على السمة الجديدة
+    renderThemePickerGrid();
+
+    // إعادة عرض بطاقات الاختبار لتتماشى مع السمة الجديدة
+    if (!isQuizActive) {
+        renderQuizGrid();
+    }
+
+    if (typeof trackEvent === 'function') {
+        trackEvent('theme_changed', { theme: themeId });
+    }
+}
 
 // ==================== SOCIAL LINKS ====================
 function renderSocialLinks() {
