@@ -29,6 +29,8 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <!-- Google Fonts: Cairo -->
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<!-- Custom Themes Fonts (NEW): Orbitron لسايبربونك، Press Start 2P للرسترو -->
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Press+Start+2P&display=swap" rel="stylesheet">
 <!-- Font Awesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="assets/css/style.css">
@@ -161,6 +163,28 @@ z-index: -100;
         <div class="modal-body">
             <div id="achievements-grid" class="achievements-grid">
                 <!-- Achievements will be rendered here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== THEME PICKER MODAL (NEW) ==================== -->
+<div id="theme-picker-modal" class="achievements-modal theme-picker-modal">
+    <div class="modal-overlay" onclick="closeThemeModal()"></div>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">
+                <i class="fas fa-palette text-purple-400"></i>
+                <span id="theme-picker-title">السمات</span>
+            </h2>
+            <button onclick="closeThemeModal()" class="modal-close" aria-label="إغلاق">
+                <i class="fas fa-times" aria-hidden="true"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <p id="theme-picker-hint" class="theme-text-secondary text-sm mb-2 text-center">اختر سمتك المفضلة — تُطبَّق فوراً على كامل الموقع</p>
+            <div id="theme-picker-grid" class="theme-picker-grid">
+                <!-- Theme cards will be rendered here by JS -->
             </div>
         </div>
     </div>
@@ -481,6 +505,11 @@ Mythical Analysis Result
     <!-- Theme Toggle Button -->
     <button id="theme-toggle" onclick="toggleTheme()" class="theme-toggle-btn text-sm px-3 py-2 rounded-md border transition-all transform hover:scale-105" title="تبديل المظهر / Toggle Theme" aria-label="تبديل بين الوضع الليلي والنهاري">
         <i class="fas fa-moon" aria-hidden="true"></i>
+    </button>
+
+    <!-- 🎨 Theme Picker Button (NEW) -->
+    <button onclick="showThemeModal()" class="theme-toggle-btn text-sm px-3 py-2 rounded-md border transition-all transform hover:scale-105" title="السمات / Themes" aria-label="اختيار سمة مخصصة">
+        <i class="fas fa-palette" aria-hidden="true"></i>
     </button>
 
 	<!-- 🔥 Streak Counter (دائم الظهور) -->
