@@ -9,7 +9,7 @@ const quizzesData = {
         id: "mythical-creature",
         title: "اختبار الكائن الأسطوري",
         badge: "الأكثر دقة",
-        image: "assets/images/dragon.jpg",
+        image: "assets/images/mynew.jpg",
         description: "تحليل نفسي متقدم يربط سماتك الشخصية بأساطير الكائنات القديمة.",
         questions: [
           { id: 1, text: "أشعر بالراحة أكثر عندما أكون وحيداً مع أفكاري.", trait: "mystery", axis: "mystery", type: "likert" },
