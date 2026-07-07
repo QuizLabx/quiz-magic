@@ -3057,367 +3057,193 @@ background: linear-gradient(135deg, transparent 40%, rgba(168, 85, 247, 0.08) 50
 }
 
 /* ============================================================
-   🎨 CUSTOM THEMES — QUIZ & RESULT STYLING (NEW)
-   تخصيص أزرار الاختبار، شريط التقدم، وأزرار النتيجة، والتدرجات
-   لكل سمة (يستبدل الألوان البنفسجية الـ hardcoded في Tailwind)
+   🎨 THEME COLOR SYSTEM (نظام ألوان السمات الموحّد)
+   متغيرات دلالية يتحكم بها كل سمة + utility classes تُستخدم في القوالب
    ============================================================ */
 
-/* --- 🎯 متغيرات مساعدة لكل سمة (للأزرار والتدرجات) --- */
+/* --- المتغيرات الدلالية لكل سمة --- */
 :root {
---btn-gradient-from: #a855f7;
---btn-gradient-to: #ec4899;
---btn-secondary-from: #3b82f6;
---btn-secondary-to: #6366f1;
---btn-accent-from: #f59e0b;
---btn-accent-to: #f97316;
---btn-success-from: #16a34a;
---btn-success-to: #14b8a6;
---btn-glow: rgba(168, 85, 247, 0.4);
---progress-color: #a855f7;
---badge-bg: rgba(168, 85, 247, 0.9);
---badge-secondary-bg: rgba(236, 72, 153, 0.8);
+--c-primary: #a855f7;          /* اللون الأساسي */
+--c-primary-rgb: 168, 85, 247;
+--c-primary-soft: #c084fc;     /* نسخة فاتحة للـ hover */
+--c-secondary: #ec4899;        /* اللون الثانوي */
+--c-secondary-soft: #f472b6;
+--c-accent: #f59e0b;           /* لون التمييز (بطاقات، تنزيل) */
+--c-success: #16a34a;          /* لون النجاح/المقارنة */
+--c-success-soft: #14b8a6;
+--c-text-accent: #c084fc;      /* نص مميّز */
+--c-text-accent-strong: #a855f7;
 }
 html.light-mode {
---btn-gradient-from: #7c3aed;
---btn-gradient-to: #db2777;
+--c-primary: #7c3aed; --c-primary-rgb: 124, 58, 237;
+--c-primary-soft: #8b5cf6; --c-secondary: #db2777; --c-secondary-soft: #ec4899;
+--c-text-accent: #7c3aed; --c-text-accent-strong: #6d28d9;
 }
 html.theme-cyberpunk {
---btn-gradient-from: #ff00aa;
---btn-gradient-to: #00f0ff;
---btn-secondary-from: #00f0ff;
---btn-secondary-to: #00ff88;
---btn-accent-from: #ffeb3b;
---btn-accent-to: #ff00aa;
---btn-success-from: #00ff88;
---btn-success-to: #00f0ff;
---btn-glow: rgba(255, 0, 170, 0.5);
---progress-color: #ff00aa;
---badge-bg: rgba(255, 0, 170, 0.9);
---badge-secondary-bg: rgba(0, 240, 255, 0.8);
+--c-primary: #ff00aa; --c-primary-rgb: 255, 0, 170;
+--c-primary-soft: #ff44bb; --c-secondary: #00f0ff; --c-secondary-soft: #44f5ff;
+--c-accent: #ffeb3b; --c-success: #00ff88; --c-success-soft: #00f0ff;
+--c-text-accent: #ff44bb; --c-text-accent-strong: #ff00aa;
 }
 html.theme-nature {
---btn-gradient-from: #d4a574;
---btn-gradient-to: #6ee7b7;
---btn-secondary-from: #65a30d;
---btn-secondary-to: #16a34a;
---btn-accent-from: #d97706;
---btn-accent-to: #b45309;
---btn-success-from: #15803d;
---btn-success-to: #166534;
---btn-glow: rgba(212, 165, 116, 0.45);
---progress-color: #d4a574;
---badge-bg: rgba(212, 165, 116, 0.9);
---badge-secondary-bg: rgba(110, 231, 183, 0.85);
+--c-primary: #d4a574; --c-primary-rgb: 212, 165, 116;
+--c-primary-soft: #e0b88a; --c-secondary: #6ee7b7; --c-secondary-soft: #8af0c8;
+--c-accent: #d97706; --c-success: #15803d; --c-success-soft: #166534;
+--c-text-accent: #d4a574; --c-text-accent-strong: #c89560;
 }
 html.theme-space {
---btn-gradient-from: #8b5cf6;
---btn-gradient-to: #3b82f6;
---btn-secondary-from: #6366f1;
---btn-secondary-to: #8b5cf6;
---btn-accent-from: #facc15;
---btn-accent-to: #f59e0b;
---btn-success-from: #06b6d4;
---btn-success-to: #3b82f6;
---btn-glow: rgba(139, 92, 246, 0.5);
---progress-color: #8b5cf6;
---badge-bg: rgba(139, 92, 246, 0.9);
---badge-secondary-bg: rgba(59, 130, 246, 0.8);
+--c-primary: #8b5cf6; --c-primary-rgb: 139, 92, 246;
+--c-primary-soft: #a78bfa; --c-secondary: #3b82f6; --c-secondary-soft: #60a5fa;
+--c-accent: #facc15; --c-success: #06b6d4; --c-success-soft: #3b82f6;
+--c-text-accent: #a78bfa; --c-text-accent-strong: #8b5cf6;
 }
 html.theme-retro {
---btn-gradient-from: #ff69b4;
---btn-gradient-to: #ffeb3b;
---btn-secondary-from: #00f0ff;
---btn-secondary-to: #ff69b4;
---btn-accent-from: #ffeb3b;
---btn-accent-to: #ff69b4;
---btn-success-from: #00f0ff;
---btn-success-to: #39ff14;
---btn-glow: rgba(255, 105, 180, 0.5);
---progress-color: #ff69b4;
---badge-bg: rgba(255, 105, 180, 0.9);
---badge-secondary-bg: rgba(255, 235, 59, 0.85);
+--c-primary: #ff69b4; --c-primary-rgb: 255, 105, 180;
+--c-primary-soft: #ff8ac4; --c-secondary: #ffeb3b; --c-secondary-soft: #fff176;
+--c-accent: #ffeb3b; --c-success: #39ff14; --c-success-soft: #00f0ff;
+--c-text-accent: #ff69b4; --c-text-accent-strong: #ff1493;
 }
 
-/* --- 🎨 الخطوط المميزة لكل سمة على العناوين والنتائج --- */
-/* Cyberpunk: Orbitron لكل العناوين الرئيسية */
-html.theme-cyberpunk h1,
-html.theme-cyberpunk h2,
-html.theme-cyberpunk .modal-title,
-html.theme-cyberpunk .welcome-title,
-html.theme-cyberpunk .hero-title,
-html.theme-cyberpunk .result-creature-name {
-font-family: 'Orbitron', 'Cairo', sans-serif;
-letter-spacing: 0.02em;
-}
-/* Space: Orbitron أيضاً لكن بإحساس كوني على العناوين الكبرى فقط */
-html.theme-space h1,
-html.theme-space .welcome-title,
-html.theme-space .hero-title {
-font-family: 'Orbitron', 'Cairo', sans-serif;
-}
-/* Retro: Press Start 2P على العناوين القصيرة فقط (لأنه صعب القراءة بالعربية) — نطبّقه على الأرقام والشارات */
-html.theme-retro .badge,
-html.theme-retro .rarity-badge,
-html.theme-retro [class*="tracking-widest"],
-html.theme-retro #streak-number {
-font-family: 'Press Start 2P', 'Cairo', monospace;
-}
-html.theme-retro .hero-title,
-html.theme-retro .welcome-title {
-font-family: 'Orbitron', 'Cairo', sans-serif;
+/* ============================================================
+   🔘 UTILITY CLASSES — تُستخدم في قوالب JS و HTML
+   ============================================================ */
+
+/* --- النصوص المميّزة (بدل text-purple-400/500) --- */
+.text-accent { color: var(--c-text-accent) !important; }
+.text-accent-strong { color: var(--c-text-accent-strong) !important; }
+.text-accent-secondary { color: var(--c-secondary-soft) !important; }
+.hover\:text-accent:hover { color: var(--c-text-accent) !important; }
+.hover\:text-accent-soft:hover { color: var(--c-primary-soft) !important; }
+
+/* --- العناوين المتدرّجة (بدل bg-clip-text from-purple) --- */
+.gradient-title {
+background-image: linear-gradient(to right, var(--c-primary), var(--c-secondary)) !important;
+-webkit-background-clip: text !important;
+background-clip: text !important;
+-webkit-text-fill-color: transparent !important;
+color: transparent !important;
 }
 
-/* --- 🟣 أزرار النتيجة الأساسية (مشاركة، تنزيل صورة، مقارنة، بطاقة) --- */
-/* زر "ابدأ الاختبار" وأزرار البطاقة على الصفحة الرئيسية */
-html.theme-cyberpunk button[class*="bg-gradient-to-r"][class*="from-purple"],
-html.theme-cyberpunk button[class*="from-purple-600"]:not([class*="from-purple-500/"]) {
-background-image: linear-gradient(to right, var(--btn-gradient-from), var(--btn-gradient-to)) !important;
-box-shadow: 0 0 18px var(--btn-glow), 0 10px 25px rgba(0,0,0,0.3) !important;
+/* --- الحدود المميّزة (بدل border-purple-500 / border-pink-500) --- */
+.border-accent { border-color: var(--c-primary) !important; }
+.border-accent-secondary { border-color: var(--c-secondary) !important; }
+.border-accent-soft { border-color: rgba(var(--c-primary-rgb), 0.3) !important; }
+
+/* --- خلفيات ناعمة (بدل bg-purple-600/10) --- */
+.bg-accent-soft { background-color: rgba(var(--c-primary-rgb), 0.12) !important; }
+.bg-accent-soft-strong { background-color: rgba(var(--c-primary-rgb), 0.2) !important; }
+
+/* ============================================================
+   🔘 الأزرار الموحّدة
+   ============================================================ */
+
+/* زر أساسي متدرّج (المشاركة، البدء، الإرسال) */
+.btn-primary {
+color: #fff !important;
+background-image: linear-gradient(to right, var(--c-primary), var(--c-secondary)) !important;
+box-shadow: 0 10px 25px -5px rgba(var(--c-primary-rgb), 0.4) !important;
+transition: all 0.3s ease;
+}
+.btn-primary:hover {
+background-image: linear-gradient(to right, var(--c-primary-soft), var(--c-secondary-soft)) !important;
+transform: scale(1.03);
+box-shadow: 0 14px 30px -5px rgba(var(--c-primary-rgb), 0.5) !important;
+}
+
+/* زر ثانوي متدرّج (تنزيل الصورة) */
+.btn-secondary {
+color: #fff !important;
+background-image: linear-gradient(to right, var(--c-secondary), var(--c-primary)) !important;
+box-shadow: 0 10px 25px -5px rgba(var(--c-primary-rgb), 0.35) !important;
+transition: all 0.3s ease;
+}
+.btn-secondary:hover {
+transform: scale(1.03);
+box-shadow: 0 14px 30px -5px rgba(var(--c-primary-rgb), 0.45) !important;
+}
+
+/* زر نجاح/مقارنة */
+.btn-success {
+color: #fff !important;
+background-image: linear-gradient(to right, var(--c-success), var(--c-success-soft)) !important;
+box-shadow: 0 10px 25px -5px rgba(var(--c-primary-rgb), 0.3) !important;
+transition: all 0.3s ease;
+}
+.btn-success:hover { transform: scale(1.03); }
+
+/* زر البطاقة الفاخرة */
+.btn-card {
+background-image: linear-gradient(to right, var(--c-accent), var(--c-primary)) !important;
+box-shadow: 0 10px 25px -5px rgba(var(--c-primary-rgb), 0.4) !important;
+transition: all 0.3s ease;
+}
+.btn-card:hover { transform: scale(1.03); }
+
+/* زر صلب بسيط (شاشة اللغة) */
+.btn-primary-solid {
+background-color: var(--c-primary) !important;
+color: #fff !important;
+box-shadow: 0 8px 20px -5px rgba(var(--c-primary-rgb), 0.4) !important;
+transition: all 0.3s ease;
+}
+.btn-primary-solid:hover {
+background-color: var(--c-primary-soft) !important;
+transform: scale(1.05);
+}
+
+/* ============================================================
+   🏷️ الشارات
+   ============================================================ */
+.badge-rarity {
+background-color: rgba(var(--c-primary-rgb), 0.9) !important;
+backdrop-filter: blur(8px);
+color: #fff;
+}
+.badge-creature {
+background-color: rgba(var(--c-primary-rgb), 0.8) !important;
+backdrop-filter: blur(8px);
+color: #fff;
+}
+
+/* ============================================================
+   📊 شريط التقدّم
+   ============================================================ */
+.progress-bar {
+background: linear-gradient(to right, var(--c-primary), var(--c-secondary)) !important;
+box-shadow: 0 0 12px rgba(var(--c-primary-rgb), 0.5);
+}
+
+/* ============================================================
+   🔓 إطار القفل المتدرّج + أيقونة القفل
+   ============================================================ */
+.secret-frame {
+background: linear-gradient(to bottom right, var(--c-primary), var(--c-secondary), var(--c-accent)) !important;
+}
+.lock-icon-circle {
+background-image: linear-gradient(to top right, var(--c-primary), var(--c-secondary)) !important;
+}
+
+/* ============================================================
+   🎨 تأثيرات إضافية خاصة بكل سمة على الأزرار
+   ============================================================ */
+html.theme-cyberpunk .btn-primary,
+html.theme-cyberpunk .btn-primary-solid,
+html.theme-cyberpunk .btn-card {
 text-shadow: 0 0 6px rgba(0, 240, 255, 0.6);
 }
-html.theme-nature button[class*="bg-gradient-to-r"][class*="from-purple"],
-html.theme-nature button[class*="from-purple-600"]:not([class*="from-purple-500/"]) {
-background-image: linear-gradient(to right, var(--btn-gradient-from), var(--btn-gradient-to)) !important;
+html.theme-cyberpunk .btn-primary:hover,
+html.theme-cyberpunk .btn-card:hover {
+box-shadow: 0 0 22px var(--c-primary), 0 14px 30px -5px rgba(var(--c-primary-rgb), 0.5) !important;
 }
-html.theme-space button[class*="bg-gradient-to-r"][class*="from-purple"],
-html.theme-space button[class*="from-purple-600"]:not([class*="from-purple-500/"]) {
-background-image: linear-gradient(to right, var(--btn-gradient-from), var(--btn-gradient-to)) !important;
-box-shadow: 0 8px 25px var(--btn-glow) !important;
-}
-html.theme-retro button[class*="bg-gradient-to-r"][class*="from-purple"],
-html.theme-retro button[class*="from-purple-600"]:not([class*="from-purple-500/"]) {
-background-image: linear-gradient(to right, var(--btn-gradient-from), var(--btn-gradient-to)) !important;
+html.theme-retro .btn-primary,
+html.theme-retro .btn-secondary,
+html.theme-retro .btn-success,
+html.theme-retro .btn-card,
+html.theme-retro .btn-primary-solid {
 border: 2px solid #fff !important;
 text-shadow: 2px 2px 0 #1a0033;
 }
-
-/* زر "تحميل النتيجة كصورة" (from-blue-600 to-indigo-600) */
-html.theme-cyberpunk button[class*="from-blue-600"] {
-background-image: linear-gradient(to right, var(--btn-secondary-from), var(--btn-secondary-to)) !important;
-box-shadow: 0 0 18px rgba(0, 240, 255, 0.5) !important;
+html.theme-space .btn-primary:hover,
+html.theme-space .btn-card:hover {
+box-shadow: 0 0 22px rgba(var(--c-primary-rgb), 0.6) !important;
 }
-html.theme-nature button[class*="from-blue-600"] {
-background-image: linear-gradient(to right, var(--btn-secondary-from), var(--btn-secondary-to)) !important;
-}
-html.theme-space button[class*="from-blue-600"] {
-background-image: linear-gradient(to right, var(--btn-secondary-from), var(--btn-secondary-to)) !important;
-}
-html.theme-retro button[class*="from-blue-600"] {
-background-image: linear-gradient(to right, var(--btn-secondary-from), var(--btn-secondary-to)) !important;
-border: 2px solid #fff !important;
-}
-
-/* زر "شارك النتيجة" (from-purple-600 to-pink-600) */
-html.theme-cyberpunk button[onclick="shareResult()"],
-html.theme-cyberpunk button[onclick*="shareResult"] {
-background-image: linear-gradient(to right, var(--btn-gradient-from), var(--btn-gradient-to)) !important;
-box-shadow: 0 0 18px var(--btn-glow) !important;
-}
-html.theme-nature button[onclick="shareResult()"],
-html.theme-nature button[onclick*="shareResult"] {
-background-image: linear-gradient(to right, var(--btn-gradient-from), var(--btn-gradient-to)) !important;
-}
-html.theme-space button[onclick="shareResult()"],
-html.theme-space button[onclick*="shareResult"] {
-background-image: linear-gradient(to right, var(--btn-gradient-from), var(--btn-gradient-to)) !important;
-}
-html.theme-retro button[onclick="shareResult()"],
-html.theme-retro button[onclick*="shareResult"] {
-background-image: linear-gradient(to right, var(--btn-gradient-from), var(--btn-gradient-to)) !important;
-border: 2px solid #fff !important;
-}
-
-/* زر "قارن مع صديق" (from-green-600 to-teal-600) */
-html.theme-cyberpunk button[onclick="compareWithFriend()"],
-html.theme-cyberpunk button[onclick*="compareWithFriend"] {
-background-image: linear-gradient(to right, var(--btn-success-from), var(--btn-success-to)) !important;
-box-shadow: 0 0 18px rgba(0, 255, 136, 0.4) !important;
-}
-html.theme-nature button[onclick="compareWithFriend()"],
-html.theme-nature button[onclick*="compareWithFriend"] {
-background-image: linear-gradient(to right, var(--btn-success-from), var(--btn-success-to)) !important;
-}
-html.theme-space button[onclick="compareWithFriend()"],
-html.theme-space button[onclick*="compareWithFriend"] {
-background-image: linear-gradient(to right, var(--btn-success-from), var(--btn-success-to)) !important;
-}
-html.theme-retro button[onclick="compareWithFriend()"],
-html.theme-retro button[onclick*="compareWithFriend"] {
-background-image: linear-gradient(to right, var(--btn-success-from), var(--btn-success-to)) !important;
-border: 2px solid #fff !important;
-}
-
-/* زر "حمل بطاقتك الفاخرة" (from-amber-500) */
-html.theme-cyberpunk button[onclick*="downloadCollectibleCard"],
-html.theme-cyberpunk .card-download-btn {
-background-image: linear-gradient(to right, var(--btn-accent-from), var(--btn-accent-to)) !important;
-box-shadow: 0 0 20px rgba(255, 235, 59, 0.4) !important;
-}
-html.theme-nature button[onclick*="downloadCollectibleCard"],
-html.theme-nature .card-download-btn {
-background-image: linear-gradient(to right, var(--btn-accent-from), var(--btn-accent-to)) !important;
-}
-html.theme-space button[onclick*="downloadCollectibleCard"],
-html.theme-space .card-download-btn {
-background-image: linear-gradient(to right, var(--btn-accent-from), var(--btn-accent-to)) !important;
-}
-html.theme-retro button[onclick*="downloadCollectibleCard"],
-html.theme-retro .card-download-btn {
-background-image: linear-gradient(to right, var(--btn-accent-from), var(--btn-accent-to)) !important;
-border: 2px solid #fff !important;
-}
-
-/* --- 📊 شريط التقدم في الاختبار --- */
-html.theme-cyberpunk [class*="bg-purple-600"][style*="width"],
-html.theme-cyberpunk .progress-bar-fill,
-html.theme-cyberpunk [role="progressbar"] > div {
-background: linear-gradient(to right, #ff00aa, #00f0ff) !important;
-box-shadow: 0 0 12px rgba(255, 0, 170, 0.6);
-}
-html.theme-nature [class*="bg-purple-600"][style*="width"],
-html.theme-nature .progress-bar-fill,
-html.theme-nature [role="progressbar"] > div {
-background: linear-gradient(to right, #d4a574, #6ee7b7) !important;
-}
-html.theme-space [class*="bg-purple-600"][style*="width"],
-html.theme-space .progress-bar-fill,
-html.theme-space [role="progressbar"] > div {
-background: linear-gradient(to right, #8b5cf6, #3b82f6) !important;
-box-shadow: 0 0 12px rgba(139, 92, 246, 0.5);
-}
-html.theme-retro [class*="bg-purple-600"][style*="width"],
-html.theme-retro .progress-bar-fill,
-html.theme-retro [role="progressbar"] > div {
-background: linear-gradient(to right, #ff69b4, #ffeb3b) !important;
-}
-
-/* --- 🏷️ شارات الندرة والبادج في النتيجة --- */
-html.theme-cyberpunk .bg-purple-600\/90,
-html.theme-cyberpunk .bg-purple-600\/80 {
-background-color: var(--badge-bg) !important;
-text-shadow: 0 0 8px rgba(0, 240, 255, 0.8);
-}
-html.theme-cyberpunk .bg-pink-600\/80,
-html.theme-cyberpunk .bg-pink-600\/90 {
-background-color: var(--badge-secondary-bg) !important;
-}
-html.theme-nature .bg-purple-600\/90,
-html.theme-nature .bg-purple-600\/80 {
-background-color: var(--badge-bg) !important;
-}
-html.theme-nature .bg-pink-600\/80,
-html.theme-nature .bg-pink-600\/90 {
-background-color: var(--badge-secondary-bg) !important;
-}
-html.theme-space .bg-purple-600\/90,
-html.theme-space .bg-purple-600\/80 {
-background-color: var(--badge-bg) !important;
-}
-html.theme-space .bg-pink-600\/80,
-html.theme-space .bg-pink-600\/90 {
-background-color: var(--badge-secondary-bg) !important;
-}
-html.theme-retro .bg-purple-600\/90,
-html.theme-retro .bg-purple-600\/80 {
-background-color: var(--badge-bg) !important;
-border: 1px solid #fff !important;
-}
-html.theme-retro .bg-pink-600\/80,
-html.theme-retro .bg-pink-600\/90 {
-background-color: var(--badge-secondary-bg) !important;
-border: 1px solid #fff !important;
-}
-
-/* --- 🔓 زر "فتح التقرير السري" --- */
-html.theme-cyberpunk button[onclick="unlockSecretReport()"] {
-background: var(--btn-gradient-from) !important;
-box-shadow: 0 0 20px var(--btn-glow) !important;
-}
-html.theme-nature button[onclick="unlockSecretReport()"] {
-background: var(--btn-gradient-from) !important;
-}
-html.theme-space button[onclick="unlockSecretReport()"] {
-background: var(--btn-gradient-from) !important;
-box-shadow: 0 0 20px var(--btn-glow) !important;
-}
-html.theme-retro button[onclick="unlockSecretReport()"] {
-background: var(--btn-gradient-from) !important;
-border: 2px solid #fff !important;
-}
-
-/* --- 📐 حدود الإطار المتدرج للقفل (from-purple-600 via-pink-600 to-orange-500) --- */
-html.theme-cyberpunk [class*="from-purple-600"][class*="via-pink-600"] {
-background: linear-gradient(to bottom right, var(--btn-gradient-from), var(--btn-gradient-to), var(--btn-accent-from)) !important;
-}
-html.theme-nature [class*="from-purple-600"][class*="via-pink-600"] {
-background: linear-gradient(to bottom right, var(--btn-gradient-from), var(--btn-gradient-to), var(--btn-accent-from)) !important;
-}
-html.theme-space [class*="from-purple-600"][class*="via-pink-600"] {
-background: linear-gradient(to bottom right, var(--btn-gradient-from), var(--btn-gradient-to), var(--btn-accent-from)) !important;
-}
-html.theme-retro [class*="from-purple-600"][class*="via-pink-600"] {
-background: linear-gradient(to bottom right, var(--btn-gradient-from), var(--btn-gradient-to), var(--btn-accent-from)) !important;
-}
-
-/* --- 🎯 ألوان النصوص البنفسجية/الوردية في النتيجة --- */
-html.theme-cyberpunk .text-purple-500,
-html.theme-cyberpunk .text-purple-400,
-html.theme-cyberpunk .text-purple-300 { color: #ff00aa !important; text-shadow: 0 0 6px rgba(255, 0, 170, 0.5); }
-html.theme-cyberpunk .text-pink-500,
-html.theme-cyberpunk .text-pink-400,
-html.theme-cyberpunk .text-pink-300 { color: #00f0ff !important; }
-
-html.theme-nature .text-purple-500,
-html.theme-nature .text-purple-400,
-html.theme-nature .text-purple-300 { color: #d4a574 !important; }
-html.theme-nature .text-pink-500,
-html.theme-nature .text-pink-400,
-html.theme-nature .text-pink-300 { color: #6ee7b7 !important; }
-
-html.theme-space .text-purple-500,
-html.theme-space .text-purple-400,
-html.theme-space .text-purple-300 { color: #a78bfa !important; text-shadow: 0 0 6px rgba(139, 92, 246, 0.4); }
-html.theme-space .text-pink-500,
-html.theme-space .text-pink-400,
-html.theme-space .text-pink-300 { color: #60a5fa !important; }
-
-html.theme-retro .text-purple-500,
-html.theme-retro .text-purple-400,
-html.theme-retro .text-purple-300 { color: #ff69b4 !important; text-shadow: 1px 1px 0 #ffeb3b; }
-html.theme-retro .text-pink-500,
-html.theme-retro .text-pink-400,
-html.theme-retro .text-pink-300 { color: #ffeb3b !important; text-shadow: 1px 1px 0 #ff69b4; }
-
-/* --- 🖼️ حدود الصور داخل النتيجة (border-purple-500 / border-pink-500) --- */
-html.theme-cyberpunk .border-purple-500 { border-color: #ff00aa !important; box-shadow: 0 0 10px rgba(255, 0, 170, 0.4); }
-html.theme-cyberpunk .border-pink-500 { border-color: #00f0ff !important; }
-html.theme-nature .border-purple-500 { border-color: #d4a574 !important; }
-html.theme-nature .border-pink-500 { border-color: #6ee7b7 !important; }
-html.theme-space .border-purple-500 { border-color: #8b5cf6 !important; }
-html.theme-space .border-pink-500 { border-color: #3b82f6 !important; }
-html.theme-retro .border-purple-500 { border-color: #ff69b4 !important; }
-html.theme-retro .border-pink-500 { border-color: #ffeb3b !important; }
-
-/* --- 🎨 تدرج أيقونة القفل في التقرير السري --- */
-html.theme-cyberpunk .from-purple-600[class*="to-pink-600"]:not([class*="via"]) {
-background-image: linear-gradient(to top right, var(--btn-gradient-from), var(--btn-gradient-to)) !important;
-}
-html.theme-nature .from-purple-600[class*="to-pink-600"]:not([class*="via"]) {
-background-image: linear-gradient(to top right, var(--btn-gradient-from), var(--btn-gradient-to)) !important;
-}
-html.theme-space .from-purple-600[class*="to-pink-600"]:not([class*="via"]) {
-background-image: linear-gradient(to top right, var(--btn-gradient-from), var(--btn-gradient-to)) !important;
-}
-html.theme-retro .from-purple-600[class*="to-pink-600"]:not([class*="via"]) {
-background-image: linear-gradient(to top right, var(--btn-gradient-from), var(--btn-gradient-to)) !important;
-}
-
-/* --- 🟣 خلفيات purple-600/10 (أيقونة التحليل النفسي، نص الاقتباس) --- */
-html.theme-cyberpunk .bg-purple-600\/10,
-html.theme-cyberpunk .bg-purple-600\/20 { background-color: rgba(255, 0, 170, 0.12) !important; }
-html.theme-nature .bg-purple-600\/10,
-html.theme-nature .bg-purple-600\/20 { background-color: rgba(212, 165, 116, 0.14) !important; }
-html.theme-space .bg-purple-600\/10,
-html.theme-space .bg-purple-600\/20 { background-color: rgba(139, 92, 246, 0.15) !important; }
-html.theme-retro .bg-purple-600\/10,
-html.theme-retro .bg-purple-600\/20 { background-color: rgba(255, 105, 180, 0.15) !important; }
