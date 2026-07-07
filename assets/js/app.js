@@ -1134,7 +1134,7 @@ const THEMES = {
         id: 'nature',
         icon: '🌿',
         name: { ar: 'الطبيعة', en: 'Nature' },
-        desc: { ar: 'غابة خضراء', en: 'Green forest' },
+        desc: { ar: 'غابة عند الغروب', en: 'Forest at sunset' },
         previewClass: 'theme-preview-nature',
         toggleIcon: 'fas fa-leaf'
     },
@@ -1198,7 +1198,7 @@ function applyThemeTypography(theme) {
     if (!body) return;
 
     // إزالة classes الخطوط السابقة
-    body.classList.remove('font-cyberpunk', 'font-retro');
+    body.classList.remove('font-cyberpunk', 'font-retro', 'font-nature');
 
     if (theme === 'cyberpunk') {
         body.style.fontFamily = "'Orbitron', 'Cairo', sans-serif";
@@ -1207,6 +1207,10 @@ function applyThemeTypography(theme) {
         // نصوص العناوين فقط بأسلوب البكسل؛ نحتفظ بـ Cairo للنصوص العربية القابلة للقراءة
         body.style.fontFamily = "'Cairo', sans-serif";
         body.classList.add('font-retro');
+    } else if (theme === 'nature') {
+        // النصوص الأساسية تبقى Cairo للقراءة؛ العناوين تأخذ Amiri عبر CSS (html.theme-nature h1/h2)
+        body.style.fontFamily = "'Cairo', sans-serif";
+        body.classList.add('font-nature');
     } else {
         body.style.fontFamily = "'Cairo', sans-serif";
     }
@@ -1216,7 +1220,7 @@ function applyThemeTypography(theme) {
         dark: '#0f172a',
         light: '#f0f9ff',
         cyberpunk: '#0a0a0f',
-        nature: '#1a2e1a',
+        nature: '#1a2a1f',
         space: '#020617',
         retro: '#1a0033'
     };
