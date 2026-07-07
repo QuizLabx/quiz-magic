@@ -786,7 +786,7 @@ const quizzesData = {
         id: "mythical-creature",
         title: "Mythical Creature Quiz",
         badge: "Most Accurate",
-        image: "assets/images/dragon.jpg",
+        image: "assets/images/mynew.jpg",
         description: "Advanced psychological analysis mapping your traits to ancient legends.",
         questions: [
           { id: 1, text: "I feel more comfortable being alone with my thoughts.", trait: "mystery", axis: "mystery", type: "likert" },
