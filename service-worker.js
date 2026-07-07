@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'quizmagic-v13-themes';
+const CACHE_VERSION = 'quizmagic-v15-themed-buttons';
 const ASSETS = [
   '/',
   '/index.html',
@@ -22,6 +22,7 @@ self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_VERSION)
             .then((cache) => cache.addAll(ASSETS))
+            .then(() => self.skipWaiting())
     );
 });
 
@@ -35,12 +36,35 @@ self.addEventListener('activate', event => {
           }
         })
       );
-    })
+    }).then(() => self.clients.claim())
   );
 });
 
+// 🔄 Stale-while-revalidate strategy
+// يعرض النسخة المخزّنة فوراً (سريع) لكن يجلب النسخة الجديدة بالخلفية
+// وحدّثها للزيارة التالية. هذا يضمن رؤية المستخدم لأي تحديث مستقبلي.
 self.addEventListener('fetch', event => {
+  // نتجاهل الطلبات غير GET (مثل POST) وطلبات التتبّع
+  if (event.request.method !== 'GET') return;
+
   event.respondWith(
-    caches.match(event.request).then(response => response || fetch(event.request))
+    caches.open(CACHE_VERSION).then(async cache => {
+      const cachedResponse = await cache.match(event.request);
+
+      // اجلب من الشبكة بالخلفية وحدّث الكاش
+      const networkFetch = fetch(event.request).then(networkResponse => {
+        // نتأكد من أن الاستجابة صالحة قبل تخزينها
+        if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
+          cache.put(event.request, networkResponse.clone());
+        }
+        return networkResponse;
+      }).catch(() => {
+        // عند فشل الشبكة نرجع للمخزّن (يعمل offline)
+        return cachedResponse;
+      });
+
+      // أرجع المخزّن فوراً إن وُجد، وإلا انتظر الشبكة
+      return cachedResponse || networkFetch;
+    })
   );
 });

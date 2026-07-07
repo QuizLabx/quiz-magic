@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -112,7 +112,7 @@ z-index: -100;
     <div class="modal-content">
         <div class="modal-header">
             <h2 class="modal-title">
-                <i class="fas fa-user-astronaut text-purple-400"></i>
+                <i class="fas fa-user-astronaut text-accent"></i>
                 <span id="username-modal-title">مرحباً أيها المسافر!</span>
             </h2>
         </div>
@@ -174,7 +174,7 @@ z-index: -100;
     <div class="modal-content">
         <div class="modal-header">
             <h2 class="modal-title">
-                <i class="fas fa-palette text-purple-400"></i>
+                <i class="fas fa-palette text-accent"></i>
                 <span id="theme-picker-title">السمات</span>
             </h2>
             <button onclick="closeThemeModal()" class="modal-close" aria-label="إغلاق">
@@ -196,7 +196,7 @@ z-index: -100;
 <div class="modal-content">
 <div class="modal-header">
 <h2 class="modal-title">
-<i class="fas fa-book-open text-purple-400"></i>
+<i class="fas fa-book-open text-accent"></i>
 <span id="pokedex-modal-title">موسوعة المخلوقات</span>
 </h2>
 <button onclick="closePokedexModal()" class="modal-close" aria-label="إغلاق">
@@ -236,7 +236,7 @@ z-index: -100;
     <div class="modal-content">
         <div class="modal-header">
             <h2 class="modal-title">
-                <i class="fas fa-user text-purple-400"></i>
+                <i class="fas fa-user text-accent"></i>
                 <span id="profile-modal-title">ملفي الشخصي</span>
             </h2>
             <button onclick="closeProfileModal()" class="modal-close" aria-label="إغلاق">
@@ -246,7 +246,7 @@ z-index: -100;
         <div class="modal-body">
             <!-- بطاقات الإحصائيات الرئيسية -->
             <h3 class="text-lg font-bold theme-text-primary mb-4 flex items-center gap-2">
-                <i class="fas fa-chart-bar text-purple-400"></i>
+                <i class="fas fa-chart-bar text-accent"></i>
                 <span id="profile-stats-title">إحصائياتي</span>
             </h3>
             <div id="profile-stats-grid" class="profile-stats-grid">
@@ -255,7 +255,7 @@ z-index: -100;
 
             <!-- التفاصيل الإضافية -->
             <h3 class="text-lg font-bold theme-text-primary mb-4 mt-6 flex items-center gap-2">
-                <i class="fas fa-list text-purple-400"></i>
+                <i class="fas fa-list text-accent"></i>
                 <span id="profile-details-title">تفاصيل إضافية</span>
             </h3>
             <div id="profile-details" class="profile-details">
@@ -265,7 +265,7 @@ z-index: -100;
 
             <!-- ⚙️ الإعدادات (NEW) -->
             <h3 class="text-lg font-bold theme-text-primary mb-4 mt-6 flex items-center gap-2">
-                <i class="fas fa-cog text-purple-400"></i>
+                <i class="fas fa-cog text-accent"></i>
                 <span id="profile-settings-title">الإعدادات</span>
             </h3>
             <div class="settings-section">
@@ -287,7 +287,7 @@ z-index: -100;
             
             <!-- أزرار الإجراءات -->
             <h3 class="text-lg font-bold theme-text-primary mb-4 mt-6 flex items-center gap-2">
-                <i class="fas fa-cogs text-purple-400"></i>
+                <i class="fas fa-cogs text-accent"></i>
                 <span id="profile-actions-title">إدارة البيانات</span>
             </h3>
             <div class="profile-actions">
@@ -323,7 +323,7 @@ z-index: -100;
             <p id="confirm-dialog-message" class="theme-text-secondary text-lg leading-relaxed mb-6"></p>
             <div id="confirm-dialog-input-wrapper" class="hidden mb-6">
                 <label id="confirm-dialog-input-label" class="block text-sm font-bold theme-text-muted mb-2"></label>
-                <input type="text" id="confirm-dialog-input" class="w-full theme-bg-tertiary/20 border theme-border rounded-xl py-3 px-4 theme-text-primary focus:outline-none focus:border-purple-500 transition-all">
+                <input type="text" id="confirm-dialog-input" class="w-full theme-bg-tertiary/20 border theme-border rounded-xl py-3 px-4 theme-text-primary focus:outline-none focus:border-accent transition-all">
             </div>
             <div class="flex gap-3">
                 <button id="confirm-dialog-cancel-btn" onclick="dismissConfirmDialog(false)" class="flex-1 py-3 rounded-xl font-bold theme-bg-tertiary theme-border theme-text-primary hover:opacity-80 transition-all">
@@ -401,12 +401,12 @@ Mythical Analysis Result
 <!-- Language Selector Screen -->
 <div id="language-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center transition-all duration-500 overlay-bg">
 <div class="text-center p-6">
-<div class="mb-8 text-7xl text-purple-500 animate-pulse">
+<div class="mb-8 text-7xl text-accent-strong animate-pulse">
 <i class="fas fa-magic"></i>
 </div>
 <h1 class="text-3xl font-bold mb-8 theme-text-primary">اختر اللغة / Choose Language</h1>
 <div class="flex flex-col sm:flex-row gap-4 justify-center">
-<button onclick="setLanguage('ar')" class="bg-purple-600 hover:bg-purple-700 text-white px-12 py-4 rounded-full font-bold text-xl transition-all transform hover:scale-105 shadow-lg shadow-purple-500/20">العربية</button>
+<button onclick="setLanguage('ar')" class="btn-primary-solid px-12 py-4 rounded-full font-bold text-xl transition-all transform hover:scale-105">العربية</button>
 <button onclick="setLanguage('en')" class="bg-slate-700 hover:bg-slate-600 text-white px-12 py-4 rounded-full font-bold text-xl transition-all transform hover:scale-105">English</button>
 </div>
 </div>
@@ -473,7 +473,7 @@ Mythical Analysis Result
 <!-- Header -->
 <header class="p-4 border-b sticky top-0 z-40 theme-bg-secondary theme-border">
 <div class="container mx-auto flex justify-between items-center">
-<a href="index.html" class="text-2xl font-bold text-purple-500 flex items-center gap-2">
+<a href="index.html" class="text-2xl font-bold text-accent-strong flex items-center gap-2">
 <i class="fas fa-magic"></i>
 <span id="site-title">QuizMagic</span>
 </a>
@@ -532,7 +532,7 @@ Mythical Analysis Result
 <main id="main-content" class="flex-grow container mx-auto px-4 py-8" tabindex="-1">
 <!-- Hero Section -->
 <section id="hero-section" class="text-center mb-12">
-<h2 id="hero-title" class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent pb-2">
+<h2 id="hero-title" class="gradient-title text-4xl md:text-5xl font-bold mb-4 pb-2">
 اكتشف أسرار شخصيتك الخفية
 </h2>
 <p id="hero-subtitle" class="text-lg max-w-2xl mx-auto theme-text-secondary">
@@ -568,7 +568,7 @@ Mythical Analysis Result
 <div class="container mx-auto px-4">
 <div id="footer-links-container" class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
 <div>
-<h3 class="text-2xl font-bold text-purple-500 mb-4 flex items-center gap-2">
+<h3 class="text-2xl font-bold text-accent-strong mb-4 flex items-center gap-2">
 <i class="fas fa-magic"></i> QuizMagic
 </h3>
 <p id="footer-desc" class="text-sm max-w-md leading-relaxed theme-text-secondary">
