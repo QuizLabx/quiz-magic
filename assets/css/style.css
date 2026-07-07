@@ -39,6 +39,269 @@ html.light-mode {
 --bg-secondary-rgb: 224, 242, 254;
 --accent-primary-rgb: 124, 58, 237;
 }
+
+/* ==================== CUSTOM THEMES (NEW) ==================== */
+
+/* 🌌 Cyberpunk Theme - ألوان نيون على خلفية داكنة جداً */
+html.theme-cyberpunk {
+--bg-primary: #0a0a0f;
+--bg-secondary: #12121f;
+--bg-tertiary: #1f1f33;
+--text-primary: #e0e0ff;
+--text-secondary: #a0a0d0;
+--text-muted: #6c6c8c;
+--border-color: rgba(255, 0, 200, 0.3);
+--accent-primary: #ff00aa;
+--accent-secondary: #00f0ff;
+--overlay-bg: rgba(10, 10, 15, 0.95);
+--card-shadow: rgba(255, 0, 170, 0.2);
+--glass-bg: rgba(31, 31, 51, 0.4);
+--skeleton-bg: rgba(255, 0, 200, 0.15);
+--bg-secondary-rgb: 18, 18, 31;
+--accent-primary-rgb: 255, 0, 170;
+}
+html.theme-cyberpunk body {
+background-image:
+linear-gradient(rgba(255, 0, 200, 0.03) 1px, transparent 1px),
+linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+background-size: 40px 40px;
+}
+html.theme-cyberpunk h1,
+html.theme-cyberpunk h2,
+html.theme-cyberpunk h3 {
+text-shadow: 0 0 8px var(--accent-primary), 0 0 16px rgba(0, 240, 255, 0.4);
+}
+html.theme-cyberpunk .theme-toggle-btn:hover {
+box-shadow: 0 0 12px var(--accent-primary);
+}
+html.theme-cyberpunk .glass {
+box-shadow: 0 0 20px rgba(255, 0, 170, 0.2), inset 0 0 20px rgba(0, 240, 255, 0.05);
+}
+
+/* 🌿 Nature Theme - ألوان غابة دافئة */
+html.theme-nature {
+--bg-primary: #1a2e1a;
+--bg-secondary: #243824;
+--bg-tertiary: #344d34;
+--text-primary: #e8f0e0;
+--text-secondary: #c0d4b0;
+--text-muted: #8aa078;
+--border-color: rgba(120, 160, 80, 0.3);
+--accent-primary: #4ade80;
+--accent-secondary: #a3e635;
+--overlay-bg: rgba(26, 46, 26, 0.95);
+--card-shadow: rgba(50, 100, 30, 0.3);
+--glass-bg: rgba(52, 77, 52, 0.4);
+--skeleton-bg: rgba(120, 160, 80, 0.2);
+--bg-secondary-rgb: 36, 56, 36;
+--accent-primary-rgb: 74, 222, 128;
+}
+html.theme-nature body {
+background-image: radial-gradient(circle at 20% 30%, rgba(74, 222, 128, 0.08) 0%, transparent 50%),
+radial-gradient(circle at 80% 70%, rgba(163, 230, 53, 0.06) 0%, transparent 50%);
+}
+html.theme-nature .glass {
+border-color: rgba(74, 222, 128, 0.25);
+}
+
+/* 🚀 Space Theme - أزرق كوني مع بنفسجي */
+html.theme-space {
+--bg-primary: #020617;
+--bg-secondary: #0f172a;
+--bg-tertiary: #1e1b4b;
+--text-primary: #e0e7ff;
+--text-secondary: #b0b8e0;
+--text-muted: #787aa0;
+--border-color: rgba(139, 92, 246, 0.3);
+--accent-primary: #8b5cf6;
+--accent-secondary: #3b82f6;
+--overlay-bg: rgba(2, 6, 23, 0.96);
+--card-shadow: rgba(99, 102, 241, 0.25);
+--glass-bg: rgba(30, 27, 75, 0.4);
+--skeleton-bg: rgba(139, 92, 246, 0.2);
+--bg-secondary-rgb: 15, 23, 42;
+--accent-primary-rgb: 139, 92, 246;
+}
+html.theme-space body {
+background-image:
+radial-gradient(2px 2px at 20% 30%, white, transparent),
+radial-gradient(2px 2px at 60% 70%, white, transparent),
+radial-gradient(1px 1px at 50% 50%, rgba(255,255,255,0.7), transparent),
+radial-gradient(1px 1px at 80% 10%, white, transparent),
+radial-gradient(2px 2px at 90% 60%, rgba(255,255,255,0.8), transparent),
+radial-gradient(1px 1px at 33% 80%, white, transparent),
+radial-gradient(1.5px 1.5px at 15% 85%, rgba(255,255,255,0.6), transparent),
+radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.08) 0%, transparent 70%);
+background-size: 200px 200px, 250px 250px, 180px 180px, 220px 220px, 260px 260px, 190px 190px, 210px 210px, 100% 100%;
+background-repeat: repeat, repeat, repeat, repeat, repeat, repeat, repeat, no-repeat;
+animation: space-stars 120s linear infinite;
+}
+@keyframes space-stars {
+from { background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0; }
+to   { background-position: 200px 200px, 250px 250px, 180px 180px, 220px 220px, 260px 260px, 190px 190px, 210px 210px, 0 0; }
+}
+html.theme-space h1,
+html.theme-space h2 {
+text-shadow: 0 0 12px rgba(139, 92, 246, 0.5);
+}
+html.theme-space .glass {
+box-shadow: 0 0 25px rgba(139, 92, 246, 0.15), inset 0 0 30px rgba(59, 130, 246, 0.04);
+}
+
+/* 🕹️ Retro 80s Theme - ألوان زاهية بأسلوب Synthwave */
+html.theme-retro {
+--bg-primary: #1a0033;
+--bg-secondary: #2d0a4e;
+--bg-tertiary: #441966;
+--text-primary: #fff0ff;
+--text-secondary: #e0b0e0;
+--text-muted: #a070a0;
+--border-color: rgba(255, 105, 180, 0.35);
+--accent-primary: #ff69b4;
+--accent-secondary: #ffeb3b;
+--overlay-bg: rgba(26, 0, 51, 0.95);
+--card-shadow: rgba(255, 105, 180, 0.25);
+--glass-bg: rgba(68, 25, 102, 0.4);
+--skeleton-bg: rgba(255, 105, 180, 0.2);
+--bg-secondary-rgb: 45, 10, 78;
+--accent-primary-rgb: 255, 105, 180;
+}
+html.theme-retro body {
+background-image:
+linear-gradient(0deg, rgba(255, 105, 180, 0.12) 0%, transparent 40%),
+linear-gradient(180deg, rgba(255, 235, 59, 0.05) 0%, transparent 30%);
+}
+/* خطوط VHS/Scanlines فوق المحتوى */
+html.theme-retro body::after {
+content: '';
+position: fixed;
+inset: 0;
+pointer-events: none;
+z-index: 9998;
+background: repeating-linear-gradient(
+0deg,
+rgba(0, 0, 0, 0.15) 0px,
+rgba(0, 0, 0, 0.15) 1px,
+transparent 1px,
+transparent 3px
+);
+opacity: 0.5;
+}
+html.theme-retro h1,
+html.theme-retro h2,
+html.theme-retro .gradient-text-animated {
+text-shadow: 2px 2px 0 #ffeb3b, -2px -2px 0 #00f0ff;
+}
+html.theme-retro .theme-toggle-btn {
+border: 2px solid var(--accent-primary);
+}
+
+/* 📋 Theme Picker Modal - مودال اختيار السمة (NEW) */
+.theme-picker-modal {
+position: fixed;
+inset: 0;
+z-index: 9990;
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 1rem;
+opacity: 0;
+pointer-events: none;
+transition: opacity 0.3s ease;
+}
+.theme-picker-modal.show {
+opacity: 1;
+pointer-events: auto;
+}
+.theme-picker-modal .modal-content {
+max-width: 720px;
+width: 100%;
+max-height: 85vh;
+overflow-y: auto;
+}
+.theme-picker-grid {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+gap: 1rem;
+margin-top: 1rem;
+}
+.theme-card {
+position: relative;
+border-radius: 1.25rem;
+overflow: hidden;
+cursor: pointer;
+border: 2px solid var(--border-color);
+transition: all 0.3s ease;
+aspect-ratio: 4 / 3;
+display: flex;
+flex-direction: column;
+justify-content: flex-end;
+padding: 1rem;
+}
+.theme-card:hover {
+transform: translateY(-4px) scale(1.02);
+border-color: var(--accent-primary);
+box-shadow: 0 12px 30px -8px var(--card-shadow);
+}
+.theme-card-preview {
+position: absolute;
+inset: 0;
+z-index: 0;
+}
+.theme-card-content {
+position: relative;
+z-index: 1;
+background: rgba(0, 0, 0, 0.55);
+backdrop-filter: blur(4px);
+border-radius: 0.75rem;
+padding: 0.6rem 0.75rem;
+margin: -0.5rem;
+}
+.theme-card-icon {
+font-size: 1.5rem;
+line-height: 1;
+}
+.theme-card-name {
+font-weight: 800;
+color: #fff;
+font-size: 1rem;
+margin-top: 0.25rem;
+}
+.theme-card-desc {
+font-size: 0.75rem;
+color: rgba(255,255,255,0.8);
+margin-top: 0.15rem;
+}
+.theme-card.active {
+border-color: var(--accent-primary);
+box-shadow: 0 0 0 3px var(--accent-primary);
+}
+.theme-card-badge {
+position: absolute;
+top: 0.5rem;
+left: 0.5rem;
+z-index: 2;
+background: var(--accent-primary);
+color: #fff;
+font-size: 0.7rem;
+font-weight: 800;
+padding: 0.2rem 0.5rem;
+border-radius: 9999px;
+display: flex;
+align-items: center;
+gap: 0.25rem;
+}
+
+/* معاينات ألوان البطاقات */
+.theme-preview-dark { background: linear-gradient(135deg, #0f172a, #1e293b); }
+.theme-preview-light { background: linear-gradient(135deg, #f0f9ff, #bae6fd); }
+.theme-preview-cyberpunk { background: linear-gradient(135deg, #0a0a0f 40%, #ff00aa 100%); }
+.theme-preview-nature { background: linear-gradient(135deg, #1a2e1a, #4ade80); }
+.theme-preview-space { background: radial-gradient(circle, #1e1b4b, #020617); }
+.theme-preview-retro {
+background: linear-gradient(180deg, #2d0a4e 0%, #ff69b4 100%);
+}
+
 /* ==================== BASE STYLES ==================== */
 body {
 background-color: var(--bg-primary);
