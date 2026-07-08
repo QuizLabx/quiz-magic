@@ -136,8 +136,6 @@ function renderProfileStats() {
             <span class="detail-value">${visitDaysCount}</span>
         </div>
     `;
-    // ✨ تحديث حالة زر الشاشة الترحيبية
-    updateWelcomeScreenToggleState();
 }
 
 // ==================== HELPER FUNCTIONS ====================
@@ -406,48 +404,34 @@ document.addEventListener('keydown', (e) => {
     }
 });
 // ==================== WELCOME SCREEN PREFERENCE ====================
+// (تم نقل الإعدادات وإدارة البيانات لمودال الإعدادات الجديد في app.js)
+// هذه الدوال تُترك كـ fallback للتوافق مع الصفحات الفرعية (about.html)
+
 function toggleWelcomeScreenPreference() {
-    const toggle = document.getElementById('welcome-screen-toggle');
+    const toggle = document.getElementById('welcome-screen-toggle') || document.getElementById('welcome-screen-toggle-settings');
     if (!toggle) return;
-    
+
     const isEnabled = toggle.checked;
-    
-    // حفظ التفضيل في localStorage
     localStorage.setItem('quiz_welcome_screen_enabled', isEnabled.toString());
-    
-    // إظهار إشعار للمستخدم
+
     const isAr = currentLang === 'ar';
     const message = isEnabled
         ? (isAr ? '✅ سيتم إظهار الشاشة الترحيبية عند فتح الموقع' : '✅ Welcome screen will be shown')
         : (isAr ? '🔕 تم إيقاف الشاشة الترحيبية' : '🔕 Welcome screen disabled');
-    
+
     showProfileNotification(message, 'success');
-    
-    // 📊 Analytics tracking
+
     if (typeof trackEvent === 'function') {
-        trackEvent('welcome_screen_preference_changed', {
-            'enabled': isEnabled
-        });
+        trackEvent('welcome_screen_preference_changed', { enabled: isEnabled });
     }
 }
 
 function updateWelcomeScreenToggleState() {
-    const toggle = document.getElementById('welcome-screen-toggle');
+    // يعمل مع كلا المودالين (القديم في profile إن وُجد، أو الجديد في settings)
+    const toggle = document.getElementById('welcome-screen-toggle') || document.getElementById('welcome-screen-toggle-settings');
     if (!toggle) return;
-    
-    // قراءة التفضيل من localStorage (الافتراضي: true)
+
     const savedPreference = localStorage.getItem('quiz_welcome_screen_enabled');
     const isEnabled = savedPreference === null ? true : savedPreference === 'true';
-    
     toggle.checked = isEnabled;
-    
-    // تحديث النصوص حسب اللغة
-    const isAr = currentLang === 'ar';
-    const label = document.getElementById('settings-welcome-label');
-    const desc = document.getElementById('settings-welcome-desc');
-    const title = document.getElementById('profile-settings-title');
-    
-    if (label) label.textContent = isAr ? 'إظهار الشاشة الترحيبية' : 'Show Welcome Screen';
-    if (desc) desc.textContent = isAr ? 'تظهر عند فتح الموقع' : 'Shown when opening the site';
-    if (title) title.textContent = isAr ? 'الإعدادات' : 'Settings';
 }

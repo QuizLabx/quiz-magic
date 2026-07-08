@@ -1497,6 +1497,11 @@ function setLanguage(lang) {
     if (welcomeScreen && !welcomeScreen.classList.contains('hidden')) {
         renderWelcomeScreenContent();
     }
+
+    // 🔄 تحديث القائمة الجانبية والإعدادات باللغة الجديدة (إن وُجدتا)
+    if (typeof updateDrawerContent === 'function') updateDrawerContent();
+    if (typeof updateSettingsModalContent === 'function') updateSettingsModalContent();
+    if (typeof updateSettingsToggleStates === 'function') updateSettingsToggleStates();
 }
 
 // ==================== LAZY LOADING HELPER ====================
@@ -3391,3 +3396,281 @@ async function downloadCollectibleCard(btn, creature, tier) {
         btn.disabled = false;
     }
 }
+
+// ========================================================================
+// 📋 MENU DRAWER SYSTEM (القائمة الجانبية الجديدة)
+// ========================================================================
+
+// فتح القائمة الجانبية
+function openMenuDrawer() {
+    const drawer = document.getElementById('menu-drawer');
+    const overlay = document.getElementById('menu-drawer-overlay');
+    const btn = document.querySelector('.menu-drawer-btn');
+    if (!drawer || !overlay) return;
+
+    // تحديث المحتوى قبل الفتح (اللغة + اسم المستخدم)
+    updateDrawerContent();
+
+    drawer.classList.add('open');
+    overlay.classList.add('open');
+    if (btn) {
+        btn.setAttribute('aria-expanded', 'true');
+        btn.innerHTML = '<i class="fas fa-times" aria-hidden="true"></i>';
+    }
+
+    // حبس التركيز داخل القائمة
+    if (typeof trapFocus === 'function') trapFocus(drawer);
+
+    // 🎵 مؤثر صوتي
+    if (window.audioManager) window.audioManager.play('ui-click');
+
+    // منع التمرير في الخلفية
+    document.body.style.overflow = 'hidden';
+
+    // ♿ التركيز على زر الإغلاق
+    setTimeout(() => {
+        const closeBtn = drawer.querySelector('.drawer-close-btn');
+        if (closeBtn) closeBtn.focus();
+    }, 300);
+}
+
+// إغلاق القائمة الجانبية
+function closeMenuDrawer() {
+    const drawer = document.getElementById('menu-drawer');
+    const overlay = document.getElementById('menu-drawer-overlay');
+    const btn = document.querySelector('.menu-drawer-btn');
+    if (!drawer || !overlay) return;
+
+    drawer.classList.remove('open');
+    overlay.classList.remove('open');
+    if (btn) {
+        btn.setAttribute('aria-expanded', 'false');
+        btn.innerHTML = '<i class="fas fa-bars" aria-hidden="true"></i>';
+    }
+
+    if (typeof removeFocusTrap === 'function') removeFocusTrap(drawer);
+
+    // إعادة التمرير
+    document.body.style.overflow = '';
+}
+
+// تحديث محتوى القائمة (اللغة + اسم المستخدم)
+function updateDrawerContent() {
+    const isAr = currentLang === 'ar';
+
+    // اسم المستخدم
+    const usernameEl = document.getElementById('drawer-username');
+    const subtitleEl = document.getElementById('drawer-user-subtitle');
+    const rawName = (typeof getUsername === 'function') ? getUsername() : (localStorage.getItem('quiz_username') || '');
+    if (usernameEl) {
+        usernameEl.textContent = rawName || (isAr ? 'زائر' : 'Guest');
+    }
+    if (subtitleEl) {
+        subtitleEl.textContent = isAr ? 'اضغط لعرض ملفك' : 'Tap to view profile';
+    }
+
+    // النصوص حسب اللغة
+    const subtitle = document.getElementById('drawer-brand-subtitle');
+    if (subtitle) subtitle.textContent = isAr ? 'عالم الأساطير' : 'Mythical World';
+
+    const achievementsText = document.getElementById('drawer-achievements-text');
+    if (achievementsText) achievementsText.textContent = isAr ? 'إنجازاتي' : 'Achievements';
+
+    const pokedexText = document.getElementById('drawer-pokedex-text');
+    if (pokedexText) pokedexText.textContent = isAr ? 'موسوعة المخلوقات' : 'Pokédex';
+
+    const themesText = document.getElementById('drawer-themes-text');
+    if (themesText) themesText.textContent = isAr ? 'السمات' : 'Themes';
+
+    const settingsText = document.getElementById('drawer-settings-text');
+    if (settingsText) settingsText.textContent = isAr ? 'الإعدادات' : 'Settings';
+
+    const footerText = document.getElementById('drawer-footer-text');
+    if (footerText) footerText.textContent = '© 2026 QuizMagic';
+}
+
+// ========================================================================
+// ⚙️ SETTINGS MODAL SYSTEM (مودال الإعدادات الجديد)
+// ========================================================================
+
+function showSettingsModal() {
+    const modal = document.getElementById('settings-modal');
+    if (!modal) return;
+
+    // تحديث النصوص حسب اللغة
+    updateSettingsModalContent();
+    // تحديث الحالات (toggle + اللغة + حجم الخط)
+    updateSettingsToggleStates();
+
+    modal.classList.add('show');
+    if (typeof trapFocus === 'function') trapFocus(modal);
+
+    // ♿ التركيز على زر الإغلاق
+    setTimeout(() => {
+        const closeBtn = modal.querySelector('.modal-close');
+        if (closeBtn) closeBtn.focus();
+    }, 100);
+
+    if (typeof trackEvent === 'function') trackEvent('settings_opened');
+}
+
+function closeSettingsModal() {
+    const modal = document.getElementById('settings-modal');
+    if (!modal) return;
+    modal.classList.remove('show');
+    if (typeof removeFocusTrap === 'function') removeFocusTrap(modal);
+}
+
+// تحديث نصوص مودال الإعدادات حسب اللغة
+function updateSettingsModalContent() {
+    const isAr = currentLang === 'ar';
+    const map = {
+        'settings-modal-title': isAr ? 'الإعدادات' : 'Settings',
+        'settings-prefs-title': isAr ? 'التفضيلات' : 'Preferences',
+        'settings-welcome-label': isAr ? 'إظهار الشاشة الترحيبية' : 'Show Welcome Screen',
+        'settings-welcome-desc': isAr ? 'تظهر عند فتح الموقع لأول مرة' : 'Shown when opening the site',
+        'settings-lang-label': isAr ? 'اللغة' : 'Language',
+        'settings-lang-desc': isAr ? 'اختر لغة الموقع' : 'Choose site language',
+        'settings-fontsize-label': isAr ? 'حجم الخط' : 'Font Size',
+        'settings-fontsize-desc': isAr ? 'حجم النصوص في الموقع' : 'Text size across the site',
+        'settings-data-title': isAr ? 'إدارة البيانات' : 'Data Management',
+        'settings-export-text': isAr ? 'تصدير البيانات كملف JSON' : 'Export data as JSON',
+        'settings-import-text': isAr ? 'استيراد بيانات من ملف' : 'Import data from file',
+        'settings-delete-text': isAr ? 'حذف جميع البيانات' : 'Delete all data'
+    };
+    for (const [id, val] of Object.entries(map)) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val;
+    }
+
+    // تحديث نصوص أزرار اللغة نفسها
+    const arBtn = document.getElementById('settings-lang-ar');
+    const enBtn = document.getElementById('settings-lang-en');
+    if (arBtn) arBtn.textContent = 'العربية';
+    if (enBtn) enBtn.textContent = 'English';
+
+    // تحديث نصوص أزرار حجم الخط
+    const fsSmall = document.getElementById('fontsize-small');
+    const fsMed = document.getElementById('fontsize-medium');
+    const fsLarge = document.getElementById('fontsize-large');
+    if (fsSmall) fsSmall.textContent = isAr ? 'صغير' : 'Small';
+    if (fsMed) fsMed.textContent = isAr ? 'متوسط' : 'Medium';
+    if (fsLarge) fsLarge.textContent = isAr ? 'كبير' : 'Large';
+}
+
+// تحديث حالات المفاتيح في مودال الإعدادات
+function updateSettingsToggleStates() {
+    const isAr = currentLang === 'ar';
+
+    // 🎬 الشاشة الترحيبية
+    const welcomeToggle = document.getElementById('welcome-screen-toggle-settings');
+    if (welcomeToggle) {
+        const saved = localStorage.getItem('quiz_welcome_screen_enabled');
+        welcomeToggle.checked = saved === null ? true : saved === 'true';
+    }
+
+    // 🌐 اللغة: تحديد الزر النشط
+    const arBtn = document.getElementById('settings-lang-ar');
+    const enBtn = document.getElementById('settings-lang-en');
+    if (arBtn && enBtn) {
+        arBtn.classList.toggle('active', currentLang === 'ar');
+        enBtn.classList.toggle('active', currentLang === 'en');
+    }
+
+    // 🔤 حجم الخط: تحديد الزر النشط
+    const savedFont = localStorage.getItem('quiz_fontsize') || 'medium';
+    ['small', 'medium', 'large'].forEach(size => {
+        const btn = document.getElementById('fontsize-' + size);
+        if (btn) btn.classList.toggle('active', savedFont === size);
+    });
+}
+
+// تبديل الشاشة الترحيبية (من مودال الإعدادات)
+function toggleWelcomeScreenPreferenceSettings() {
+    const toggle = document.getElementById('welcome-screen-toggle-settings');
+    if (!toggle) return;
+    const isEnabled = toggle.checked;
+    localStorage.setItem('quiz_welcome_screen_enabled', isEnabled.toString());
+
+    const isAr = currentLang === 'ar';
+    const message = isEnabled
+        ? (isAr ? '✅ سيتم إظهار الشاشة الترحيبية عند فتح الموقع' : '✅ Welcome screen will be shown')
+        : (isAr ? '🔕 تم إيقاف الشاشة الترحيبية' : '🔕 Welcome screen disabled');
+    if (typeof showProfileNotification === 'function') showProfileNotification(message, 'success');
+
+    if (typeof trackEvent === 'function') {
+        trackEvent('welcome_screen_preference_changed', { enabled: isEnabled });
+    }
+}
+
+// تغيير اللغة من مودال الإعدادات
+function setLanguageFromSettings(lang) {
+    setLanguage(lang);
+    // إعادة تحديث نصوص المودال بعد تغيير اللغة
+    updateSettingsModalContent();
+    updateSettingsToggleStates();
+    // تحديث القائمة الجانبية أيضاً
+    updateDrawerContent();
+
+    const isAr = currentLang === 'ar';
+    if (typeof showProfileNotification === 'function') {
+        showProfileNotification(isAr ? '🌐 تم تغيير اللغة' : '🌐 Language changed', 'success');
+    }
+}
+
+// 🔤 تطبيق حجم الخط
+function setFontSize(size) {
+    const sizes = ['small', 'medium', 'large'];
+    if (!sizes.includes(size)) return;
+
+    localStorage.setItem('quiz_fontsize', size);
+    document.documentElement.setAttribute('data-fontsize', size);
+
+    // تحديث الأزرار النشطة
+    sizes.forEach(s => {
+        const btn = document.getElementById('fontsize-' + s);
+        if (btn) btn.classList.toggle('active', s === size);
+    });
+
+    const isAr = currentLang === 'ar';
+    const labels = {
+        small: isAr ? 'صغير' : 'Small',
+        medium: isAr ? 'متوسط' : 'Medium',
+        large: isAr ? 'كبير' : 'Large'
+    };
+    if (typeof showProfileNotification === 'function') {
+        showProfileNotification((isAr ? '🔤 حجم الخط: ' : '🔤 Font size: ') + labels[size], 'success');
+    }
+
+    if (typeof trackEvent === 'function') {
+        trackEvent('font_size_changed', { size: size });
+    }
+}
+
+// تطبيق حجم الخط المحفوظ عند تحميل الصفحة
+function applySavedFontSize() {
+    const saved = localStorage.getItem('quiz_fontsize') || 'medium';
+    document.documentElement.setAttribute('data-fontsize', saved);
+}
+
+// إغلاق القائمة بـ Escape (يضاف للمستمع العام الموجود)
+function initMenuDrawerKeyboard() {
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            const drawer = document.getElementById('menu-drawer');
+            if (drawer && drawer.classList.contains('open')) {
+                closeMenuDrawer();
+            }
+            const settingsModal = document.getElementById('settings-modal');
+            if (settingsModal && settingsModal.classList.contains('show')) {
+                closeSettingsModal();
+            }
+        }
+    });
+}
+
+// تهيئة النظام عند تحميل DOM
+document.addEventListener('DOMContentLoaded', () => {
+    applySavedFontSize();
+    initMenuDrawerKeyboard();
+});
