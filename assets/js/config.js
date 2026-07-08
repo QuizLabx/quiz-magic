@@ -140,5 +140,48 @@ const config = {
                 skipButton: "Skip"
             }
         }
+    },
+
+    // ==================== XP & LEVELS SYSTEM ====================
+    xpSystem: {
+        enabled: true,
+
+        // نقاط XP حسب الندرة
+        rarityXP: {
+            'شائع': 30, 'Common': 30,
+            'نادر': 80, 'Rare': 80,
+            'نادر جداً': 150, 'Very Rare': 150,
+            'أسطوري': 300, 'Legendary': 300
+        },
+
+        // مكافآت إضافية
+        bonuses: {
+            speedThreshold: 180,   // أقل من 3 دقائق
+            speedBonus: 30,
+            newCreatureBonus: 100, // كائن جديد لأول مرة
+            retakeBonus: 10       // تكرار اختبار
+        },
+
+        // تعريف المستويات
+        levels: {
+            1: { xp: 0,     name: { ar: 'المبتدئ',    en: 'Novice' },   icon: '🌱', title: { ar: 'مبتدئ', en: 'Novice' } },
+            2: { xp: 500,   name: { ar: 'المستكشف',  en: 'Explorer' }, icon: '🧭', title: { ar: 'مستكشف', en: 'Explorer' } },
+            3: { xp: 2000,  name: { ar: 'المحارب',    en: 'Warrior' },  icon: '⚔️', title: { ar: 'محارب', en: 'Warrior' } },
+            4: { xp: 5000,  name: { ar: 'البطل',      en: 'Champion' }, icon: '👑', title: { ar: 'بطل', en: 'Champion' } },
+            5: { xp: 15000, name: { ar: 'الأسطورة',   en: 'Legend' },   icon: '🐉', title: { ar: 'أسطوري', en: 'Legendary' } }
+        },
+
+        // قفل السمات: null = مفتوحة، { level: N } = يتطلب مستوى N، { achievements: N } = يتطلب N إنجازات
+        themeLocks: {
+            dark:     null,
+            light:    null,
+            cyberpunk: { level: 2, requirement: { ar: 'المستوى 2 — المستكشف', en: 'Level 2 — Explorer' } },
+            nature:   { level: 3, requirement: { ar: 'المستوى 3 — المحارب', en: 'Level 3 — Warrior' } },
+            space:    { achievements: 8, requirement: { ar: '8 إنجازات مفتوحة', en: '8 achievements unlocked' } },
+            retro:    { level: 5, requirement: { ar: 'المستوى 5 — الأسطورة', en: 'Level 5 — Legend' } }
+        },
+
+        // XP من الإنجازات
+        achievementXP: 50
     }
 };
