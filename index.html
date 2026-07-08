@@ -263,47 +263,6 @@ z-index: -100;
             </div>
 
 
-            <!-- ⚙️ الإعدادات (NEW) -->
-            <h3 class="text-lg font-bold theme-text-primary mb-4 mt-6 flex items-center gap-2">
-                <i class="fas fa-cog text-accent"></i>
-                <span id="profile-settings-title">الإعدادات</span>
-            </h3>
-            <div class="settings-section">
-                <div class="settings-item">
-                    <div class="settings-item-info">
-                        <span class="settings-item-icon">🎬</span>
-                        <div class="settings-item-text">
-                            <span class="settings-item-label" id="settings-welcome-label">إظهار الشاشة الترحيبية</span>
-                            <span class="settings-item-description" id="settings-welcome-desc">تظهر عند فتح الموقع لأول مرة</span>
-                        </div>
-                    </div>
-                    <label class="toggle-switch" aria-label="تبديل الشاشة الترحيبية">
-                        <input type="checkbox" id="welcome-screen-toggle" onchange="toggleWelcomeScreenPreference()">
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-            </div>
-
-            
-            <!-- أزرار الإجراءات -->
-            <h3 class="text-lg font-bold theme-text-primary mb-4 mt-6 flex items-center gap-2">
-                <i class="fas fa-cogs text-accent"></i>
-                <span id="profile-actions-title">إدارة البيانات</span>
-            </h3>
-            <div class="profile-actions">
-                <button onclick="exportUserData()" class="profile-action-btn export-btn">
-                    <i class="fas fa-download btn-icon"></i>
-                    <span class="btn-text" id="profile-export-text">تصدير البيانات كملف JSON</span>
-                </button>
-                <button onclick="importUserData()" class="profile-action-btn import-btn">
-                    <i class="fas fa-upload btn-icon"></i>
-                    <span class="btn-text" id="profile-import-text">استيراد بيانات من ملف</span>
-                </button>
-                <button onclick="deleteAllData()" class="profile-action-btn delete-btn">
-                    <i class="fas fa-trash btn-icon"></i>
-                    <span class="btn-text" id="profile-delete-text">حذف جميع البيانات</span>
-                </button>
-            </div>
         </div>
     </div>
 </div>
@@ -477,29 +436,20 @@ Mythical Analysis Result
 <i class="fas fa-magic"></i>
 <span id="site-title">QuizMagic</span>
 </a>
-<div class="flex items-center gap-3">
-    <!-- 🎵 Music Toggle Button (NEW) -->
-    <button id="music-toggle" onclick="audioManager.toggleMusic()" class="theme-toggle-btn text-sm px-3 py-2 rounded-md border transition-all transform hover:scale-105" title="إيقاف الموسيقى / Mute Music" aria-label="إيقاف أو تشغيل الموسيقى الخلفية">
-        <i class="fas fa-volume-up" aria-hidden="true"></i>
+<div class="flex items-center gap-2 sm:gap-3">
+    <!-- ☰ Menu Drawer Button (NEW) -->
+    <button onclick="openMenuDrawer()" class="theme-toggle-btn menu-drawer-btn text-sm px-3 py-2 rounded-md border transition-all transform hover:scale-105" title="القائمة / Menu" aria-label="فتح القائمة الرئيسية" aria-haspopup="true" aria-expanded="false">
+        <i class="fas fa-bars" aria-hidden="true"></i>
     </button>
-    <!-- 🔔 SFX Toggle Button (NEW) -->
+
+    <!-- 🔔 SFX Toggle Button -->
     <button id="sfx-toggle" onclick="audioManager.toggleSfx()" class="theme-toggle-btn text-sm px-3 py-2 rounded-md border transition-all transform hover:scale-105" title="إيقاف المؤثرات / Mute SFX" aria-label="إيقاف أو تشغيل المؤثرات الصوتية">
         <i class="fas fa-bell" aria-hidden="true"></i>
     </button>
-	<!-- 📖 Pokédex Button (NEW) -->
-	<button onclick="showPokedexModal()" class="theme-toggle-btn text-sm px-3 py-2 rounded-md border transition-all transform hover:scale-105" title="موسوعة المخلوقات / Pokédex" aria-label="فتح موسوعة المخلوقات">
-	<i class="fas fa-book-open" aria-hidden="true"></i>
-	</button>
 
-	
-    <!-- Achievements Button -->
-    <button onclick="showAchievementsModal()" class="theme-toggle-btn text-sm px-3 py-2 rounded-md border transition-all transform hover:scale-105" title="إنجازاتي / My Achievements" aria-label="فتح صفحة الإنجازات">
-        <i class="fas fa-trophy" aria-hidden="true"></i>
-    </button>
-
-    <!-- 👤 Profile Button (NEW) -->
-    <button onclick="showProfileModal()" class="theme-toggle-btn text-sm px-3 py-2 rounded-md border transition-all transform hover:scale-105" title="ملفي الشخصي / My Profile" aria-label="فتح الملف الشخصي">
-        <i class="fas fa-user" aria-hidden="true"></i>
+    <!-- 🎵 Music Toggle Button -->
+    <button id="music-toggle" onclick="audioManager.toggleMusic()" class="theme-toggle-btn text-sm px-3 py-2 rounded-md border transition-all transform hover:scale-105" title="إيقاف الموسيقى / Mute Music" aria-label="إيقاف أو تشغيل الموسيقى الخلفية">
+        <i class="fas fa-volume-up" aria-hidden="true"></i>
     </button>
 
     <!-- Theme Toggle Button -->
@@ -507,9 +457,9 @@ Mythical Analysis Result
         <i class="fas fa-moon" aria-hidden="true"></i>
     </button>
 
-    <!-- 🎨 Theme Picker Button (NEW) -->
-    <button onclick="showThemeModal()" class="theme-toggle-btn text-sm px-3 py-2 rounded-md border transition-all transform hover:scale-105" title="السمات / Themes" aria-label="اختيار سمة مخصصة">
-        <i class="fas fa-palette" aria-hidden="true"></i>
+    <!-- Language Toggle Button -->
+    <button onclick="showLanguageScreen()" class="text-sm px-3 py-2 rounded-md border transition-all theme-bg-tertiary theme-border theme-text-primary" aria-label="تغيير اللغة">
+        <i class="fas fa-globe mr-1" aria-hidden="true"></i> <span id="lang-btn-text">العربية</span>
     </button>
 
 	<!-- 🔥 Streak Counter (دائم الظهور) -->
@@ -519,14 +469,152 @@ Mythical Analysis Result
         	<div id="streak-number" class="streak-number">0</div>
     	</div>
 	</div>
-
-    <!-- Language Toggle Button -->
-    <button onclick="showLanguageScreen()" class="text-sm px-3 py-2 rounded-md border transition-all theme-bg-tertiary theme-border theme-text-primary" aria-label="تغيير اللغة">
-        <i class="fas fa-globe mr-1" aria-hidden="true"></i> <span id="lang-btn-text">العربية</span>
-    </button>
 </div>
 </div>
 </header>
+
+<!-- ==================== MENU DRAWER (NEW) ==================== -->
+<div id="menu-drawer-overlay" class="menu-drawer-overlay" onclick="closeMenuDrawer()"></div>
+<aside id="menu-drawer" class="menu-drawer" role="dialog" aria-modal="true" aria-label="القائمة الرئيسية">
+    <!-- 🪙 الرأس: الشعار + اسم الموقع + زر الإغلاق -->
+    <div class="drawer-header">
+        <div class="drawer-brand">
+            <div class="drawer-logo"><i class="fas fa-magic"></i></div>
+            <div class="drawer-brand-text">
+                <h2 class="drawer-brand-name">QuizMagic</h2>
+                <p id="drawer-brand-subtitle" class="drawer-brand-subtitle">عالم الأساطير</p>
+            </div>
+        </div>
+        <button onclick="closeMenuDrawer()" class="drawer-close-btn" aria-label="إغلاق القائمة">
+            <i class="fas fa-times" aria-hidden="true"></i>
+        </button>
+    </div>
+
+    <!-- 👤 بطاقة المستخدم (تفتح الملف الشخصي) -->
+    <button onclick="showProfileModal(); closeMenuDrawer();" class="drawer-user-card" aria-label="فتح الملف الشخصي">
+        <div class="drawer-user-avatar"><i class="fas fa-user-astronaut"></i></div>
+        <div class="drawer-user-info">
+            <span id="drawer-username" class="drawer-username">زائر</span>
+            <span id="drawer-user-subtitle" class="drawer-user-subtitle">اضغط لعرض ملفك</span>
+        </div>
+        <i class="fas fa-chevron-left drawer-user-chevron" aria-hidden="true"></i>
+    </button>
+
+    <!-- 📋 قائمة الخيارات -->
+    <nav class="drawer-nav">
+        <button onclick="showAchievementsModal(); closeMenuDrawer();" class="drawer-nav-item">
+            <i class="fas fa-trophy drawer-nav-icon" aria-hidden="true"></i>
+            <span id="drawer-achievements-text">إنجازاتي</span>
+        </button>
+        <button onclick="showPokedexModal(); closeMenuDrawer();" class="drawer-nav-item">
+            <i class="fas fa-book-open drawer-nav-icon" aria-hidden="true"></i>
+            <span id="drawer-pokedex-text">موسوعة المخلوقات</span>
+        </button>
+        <button onclick="showThemeModal(); closeMenuDrawer();" class="drawer-nav-item">
+            <i class="fas fa-palette drawer-nav-icon" aria-hidden="true"></i>
+            <span id="drawer-themes-text">السمات</span>
+        </button>
+        <button onclick="showSettingsModal(); closeMenuDrawer();" class="drawer-nav-item">
+            <i class="fas fa-cog drawer-nav-icon" aria-hidden="true"></i>
+            <span id="drawer-settings-text">الإعدادات</span>
+        </button>
+    </nav>
+
+    <!-- ℹ️ تذييل القائمة -->
+    <div class="drawer-footer">
+        <p id="drawer-footer-text">&copy; 2026 QuizMagic</p>
+    </div>
+</aside>
+
+<!-- ==================== SETTINGS MODAL (NEW) ==================== -->
+<div id="settings-modal" class="achievements-modal">
+    <div class="modal-overlay" onclick="closeSettingsModal()"></div>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">
+                <i class="fas fa-cog text-accent"></i>
+                <span id="settings-modal-title">الإعدادات</span>
+            </h2>
+            <button onclick="closeSettingsModal()" class="modal-close" aria-label="إغلاق">
+                <i class="fas fa-times" aria-hidden="true"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <!-- 🎬 قسم التفضيلات -->
+            <h3 class="text-lg font-bold theme-text-primary mb-4 flex items-center gap-2">
+                <i class="fas fa-sliders-h text-accent"></i>
+                <span id="settings-prefs-title">التفضيلات</span>
+            </h3>
+            <div class="settings-section">
+                <!-- 🎬 إظهار الشاشة الترحيبية -->
+                <div class="settings-item">
+                    <div class="settings-item-info">
+                        <span class="settings-item-icon">🎬</span>
+                        <div class="settings-item-text">
+                            <span class="settings-item-label" id="settings-welcome-label">إظهار الشاشة الترحيبية</span>
+                            <span class="settings-item-description" id="settings-welcome-desc">تظهر عند فتح الموقع لأول مرة</span>
+                        </div>
+                    </div>
+                    <label class="toggle-switch" aria-label="تبديل الشاشة الترحيبية">
+                        <input type="checkbox" id="welcome-screen-toggle-settings" onchange="toggleWelcomeScreenPreferenceSettings()">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+
+                <!-- 🌐 اللغة -->
+                <div class="settings-item">
+                    <div class="settings-item-info">
+                        <span class="settings-item-icon">🌐</span>
+                        <div class="settings-item-text">
+                            <span class="settings-item-label" id="settings-lang-label">اللغة</span>
+                            <span class="settings-item-description" id="settings-lang-desc">اختر لغة الموقع</span>
+                        </div>
+                    </div>
+                    <div class="settings-lang-switch">
+                        <button id="settings-lang-ar" onclick="setLanguageFromSettings('ar')" class="settings-lang-btn active">العربية</button>
+                        <button id="settings-lang-en" onclick="setLanguageFromSettings('en')" class="settings-lang-btn">English</button>
+                    </div>
+                </div>
+
+                <!-- 🔤 حجم الخط -->
+                <div class="settings-item">
+                    <div class="settings-item-info">
+                        <span class="settings-item-icon">🔤</span>
+                        <div class="settings-item-text">
+                            <span class="settings-item-label" id="settings-fontsize-label">حجم الخط</span>
+                            <span class="settings-item-description" id="settings-fontsize-desc">حجم النصوص في الموقع</span>
+                        </div>
+                    </div>
+                    <div class="settings-fontsize-switch">
+                        <button id="fontsize-small" onclick="setFontSize('small')" class="settings-fontsize-btn">أ-</button>
+                        <button id="fontsize-medium" onclick="setFontSize('medium')" class="settings-fontsize-btn active">أ</button>
+                        <button id="fontsize-large" onclick="setFontSize('large')" class="settings-fontsize-btn">أ+</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 📦 قسم إدارة البيانات -->
+            <h3 class="text-lg font-bold theme-text-primary mb-4 mt-6 flex items-center gap-2">
+                <i class="fas fa-database text-accent"></i>
+                <span id="settings-data-title">إدارة البيانات</span>
+            </h3>
+            <div class="profile-actions">
+                <button onclick="exportUserData()" class="profile-action-btn export-btn">
+                    <i class="fas fa-download btn-icon"></i>
+                    <span class="btn-text" id="settings-export-text">تصدير البيانات كملف JSON</span>
+                </button>
+                <button onclick="importUserData()" class="profile-action-btn import-btn">
+                    <i class="fas fa-upload btn-icon"></i>
+                    <span class="btn-text" id="settings-import-text">استيراد بيانات من ملف</span>
+                </button>
+                <button onclick="deleteAllData()" class="profile-action-btn delete-btn">
+                    <i class="fas fa-trash btn-icon"></i>
+                    <span class="btn-text" id="settings-delete-text">حذف جميع البيانات</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Main Content -->
 <main id="main-content" class="flex-grow container mx-auto px-4 py-8" tabindex="-1">
