@@ -3677,3 +3677,168 @@ html.light-mode .menu-drawer-overlay {
 	}
 }
 
+/* ========================================================================
+   📢 ANNOUNCEMENTS SYSTEM (نظام الإشعارات / المستجدّات)
+   ======================================================================== */
+
+/* 🔴 النقطة الحمراء فوق زر القائمة */
+.notification-dot {
+	position: absolute;
+	top: 2px;
+	inset-inline-end: 2px;
+	width: 9px;
+	height: 9px;
+	background: #ef4444;
+	border: 2px solid var(--bg-secondary, #0f172a);
+	border-radius: 50%;
+	z-index: 2;
+	animation: notification-pulse 1.8s ease-in-out infinite;
+}
+.notification-dot.hidden { display: none; }
+
+@keyframes notification-pulse {
+	0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6); }
+	50% { transform: scale(1.15); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+}
+/* زر القائمة يحتاج position relative لاحتواء النقطة */
+.menu-drawer-btn { position: relative; }
+
+/* 📦 حاوية الإشعارات في القائمة */
+.announcements-container {
+	display: flex;
+	flex-direction: column;
+	gap: 0.6rem;
+	padding: 1rem 1rem 0;
+}
+.announcements-container:empty { padding: 0; }
+
+/* 📢 بطاقة الإشعار الواحدة */
+.announcement-card {
+	position: relative;
+	background: linear-gradient(135deg, rgba(var(--c-primary-rgb, 168, 85, 247), 0.12), rgba(var(--c-secondary-rgb, 236, 72, 153), 0.08));
+	border: 1px solid rgba(var(--c-primary-rgb, 168, 85, 247), 0.35);
+	border-radius: 16px;
+	padding: 0.9rem 2.5rem 0.9rem 0.9rem;
+	overflow: hidden;
+	animation: announcement-slide-in 0.4s ease-out;
+}
+@keyframes announcement-slide-in {
+	from { opacity: 0; transform: translateY(-8px); }
+	to { opacity: 1; transform: translateY(0); }
+}
+
+/* الخط الملوّن على يمين البطاقة */
+.announcement-card::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	inset-inline-start: 0;
+	width: 4px;
+	height: 100%;
+	background: linear-gradient(180deg, var(--c-primary, #a855f7), var(--c-secondary, #ec4899));
+}
+
+/* رأس البطاقة: الأيقونة + العنوان + التاريخ */
+.announcement-header {
+	display: flex;
+	align-items: flex-start;
+	gap: 0.55rem;
+	margin-bottom: 0.4rem;
+}
+.announcement-icon {
+	font-size: 1.4rem;
+	line-height: 1;
+	flex-shrink: 0;
+}
+.announcement-title-wrap {
+	flex: 1;
+	min-width: 0;
+}
+.announcement-title {
+	font-size: 0.92rem;
+	font-weight: 800;
+	color: var(--text-primary, #fff);
+	margin: 0 0 0.15rem;
+	line-height: 1.3;
+}
+.announcement-date {
+	font-size: 0.68rem;
+	color: var(--text-muted, #94a3b8);
+	font-weight: 600;
+}
+
+/* نص الرسالة (يدعم أسطر متعددة) */
+.announcement-message {
+	font-size: 0.82rem;
+	color: var(--text-secondary, #cbd5e1);
+	line-height: 1.65;
+	margin: 0;
+	white-space: pre-line; /* يحترم \n من JSON */
+}
+
+/* رابط اختياري */
+.announcement-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.3rem;
+	margin-top: 0.6rem;
+	font-size: 0.78rem;
+	font-weight: 700;
+	color: var(--c-primary, #a855f7);
+	text-decoration: none;
+	padding: 0.3rem 0.7rem;
+	border: 1px solid rgba(var(--c-primary-rgb, 168, 85, 247), 0.4);
+	border-radius: 8px;
+	transition: all 0.2s ease;
+}
+.announcement-link:hover {
+	background: rgba(var(--c-primary-rgb, 168, 85, 247), 0.15);
+	transform: translateX(-3px);
+}
+
+/* ✕ زر إغلاق/إزالة الإشعار */
+.announcement-close {
+	position: absolute;
+	top: 0.5rem;
+	inset-inline-end: 0.5rem;
+	width: 26px;
+	height: 26px;
+	border-radius: 50%;
+	border: none;
+	background: rgba(var(--text-muted, 148, 163, 184), 0.15);
+	color: var(--text-muted, #94a3b8);
+	font-size: 0.7rem;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: all 0.2s ease;
+	z-index: 2;
+}
+.announcement-close:hover {
+	background: #ef4444;
+	color: #fff;
+	transform: rotate(90deg);
+}
+
+/* 💡 حالة "لا توجد إشعارات" */
+.announcement-empty {
+	text-align: center;
+	padding: 0.5rem;
+	font-size: 0.8rem;
+	color: var(--text-muted, #94a3b8);
+}
+
+/* 🎨 تخصيص حسب السمة */
+html.theme-cyberpunk .announcement-card {
+	border-color: rgba(0, 240, 255, 0.4);
+	box-shadow: 0 0 12px rgba(0, 240, 255, 0.15);
+}
+html.theme-retro .announcement-card {
+	border: 2px solid rgba(255, 255, 255, 0.3);
+}
+html.light-mode .announcement-card {
+	background: linear-gradient(135deg, rgba(168, 85, 247, 0.08), rgba(236, 72, 153, 0.05));
+}
+
+
