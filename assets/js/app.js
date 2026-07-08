@@ -2177,7 +2177,6 @@ function showResult() {
     if (typeof awardQuizXP === 'function') awardQuizXP(winnerId, duration);
             localStorage.setItem('quiz_stats', JSON.stringify(userStats));
         }
-    }
     
     applyCreatureTheme(winnerId);
     document.getElementById('quiz-container').classList.add('hidden');
