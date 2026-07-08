@@ -18,23 +18,36 @@ function initFirebase() {
         console.warn('🔥 Firebase SDK not loaded yet');
         return false;
     }
-    if (fbApp) return true; // تم التهيئة مسبقاً
+    if (fbApp && fbDb) return true; // تم التهيئة مسبقاً
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyAj_Ii34FnOqxna_pvkS8ipKSOjckIriH0",
-        authDomain: "quizmagic-38873.firebaseapp.com",
-        projectId: "quizmagic-38873",
-        storageBucket: "quizmagic-38873.firebasestorage.app",
-        messagingSenderId: "944588707129",
-        appId: "1:944588707129:web:8682f9ca9b0099aa5304e8",
-        measurementId: "G-MR5K4ZBPMT"
-    };
+    try {
+        const firebaseConfig = {
+            apiKey: "AIzaSyAj_Ii34FnOqxna_pvkS8ipKSOjckIriH0",
+            authDomain: "quizmagic-38873.firebaseapp.com",
+            projectId: "quizmagic-38873",
+            storageBucket: "quizmagic-38873.firebasestorage.app",
+            messagingSenderId: "944588707129",
+            appId: "1:944588707129:web:8682f9ca9b0099aa5304e8",
+            measurementId: "G-MR5K4ZBPMT"
+        };
 
-    fbApp = firebase.initializeApp(firebaseConfig);
-    fbAuth = firebase.auth();
-    fbDb = firebase.firestore();
-    console.log('🔥 Firebase initialized successfully');
-    return true;
+        fbApp = firebase.initializeApp(firebaseConfig);
+        // auth اختياري (نستخدم نظام كلمة سر مخصص) لكن نحمّله إن وُجد
+        if (typeof firebase.auth === 'function') {
+            fbAuth = firebase.auth();
+        }
+        // firestore ضروري
+        if (typeof firebase.firestore !== 'function') {
+            console.error('🔥 Firestore SDK not available');
+            return false;
+        }
+        fbDb = firebase.firestore();
+        console.log('🔥 Firebase initialized successfully');
+        return true;
+    } catch (e) {
+        console.error('🔥 Firebase init error:', e);
+        return false;
+    }
 }
 
 // ==================== ID GENERATION ====================
