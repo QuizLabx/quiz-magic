@@ -3629,17 +3629,40 @@ html.light-mode .menu-drawer-overlay {
 	/* تقليل حجم الأزرار لتناسب الشاشة */
 	header .theme-toggle-btn,
 	header .menu-drawer-btn {
-		padding: 0.35rem 0.5rem !important;
-		font-size: 0.78rem !important;
+		padding: 0.35rem 0.45rem !important;
+		font-size: 0.75rem !important;
 		min-width: auto;
 	}
-	/* إخفاء نص زر اللغة على الشاشات الصغيرة */
+	/* إخفاء نص زر اللغة على الشاشات الصغيرة — يبقى أيقونة 🌐 فقط */
 	header #lang-btn-text {
 		display: none;
 	}
-	header .streak-counter {
-		margin-inline-start: 0.25rem;
+	/* ضمان عدم تجاوز الأزرار لعرض الشاشة */
+	header .flex.items-center {
+		gap: 0.2rem !important;
+		flex-shrink: 0;
+		overflow: visible;
 	}
+	/* منع انكسار الهيدر */
+	header .container {
+		overflow: visible;
+	}
+	header .streak-counter {
+		margin-inline-start: 0.15rem;
+	}
+	/* تصغير streak قليلاً */
+	.streak-flame-wrapper {
+		transform: scale(0.9);
+	}
+}
+/* 📱 شاشات أصغر جداً */
+@media (max-width: 380px) {
+	header .theme-toggle-btn,
+	header .menu-drawer-btn {
+		padding: 0.25rem 0.35rem !important;
+		font-size: 0.7rem !important;
+	}
+	#lang-btn-text { display: none; }
 }
 
 /* ♿ احترام تقليل الحركة */
