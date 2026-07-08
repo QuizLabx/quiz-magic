@@ -3841,4 +3841,131 @@ html.light-mode .announcement-card {
 	background: linear-gradient(135deg, rgba(168, 85, 247, 0.08), rgba(236, 72, 153, 0.05));
 }
 
+/* ========================================================================
+   🎮 XP & LEVELS SYSTEM (نظام النقاط والمستويات)
+   ======================================================================== */
+
+/* 📊 بطاقة شريط XP في الملف الشخصي */
+.xp-bar-container { margin-bottom: 1.5rem; }
+.xp-card {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	padding: 1rem 1.25rem;
+	background: linear-gradient(135deg, rgba(var(--c-primary-rgb, 168, 85, 247), 0.12), rgba(var(--c-secondary-rgb, 236, 72, 153), 0.08));
+	border: 1px solid rgba(var(--c-primary-rgb, 168, 85, 247), 0.3);
+	border-radius: 1.25rem;
+	position: relative;
+	overflow: hidden;
+}
+.xp-card::before {
+	content: '';
+	position: absolute;
+	inset-inline-start: 0;
+	top: 0;
+	width: 5px;
+	height: 100%;
+	background: linear-gradient(180deg, var(--c-primary, #a855f7), var(--c-secondary, #ec4899));
+}
+
+/* شارة المستوى (يسار/يمين) */
+.xp-level-badge {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	min-width: 70px;
+	padding: 0.5rem 0.75rem;
+	background: linear-gradient(135deg, var(--c-primary, #a855f7), var(--c-secondary, #ec4899));
+	border-radius: 0.9rem;
+	color: #fff;
+	box-shadow: 0 4px 14px rgba(var(--c-primary-rgb, 168, 85, 247), 0.4);
+	flex-shrink: 0;
+}
+.xp-level-icon { font-size: 1.8rem; line-height: 1; }
+.xp-level-number { font-size: 0.65rem; font-weight: 700; margin-top: 0.25rem; opacity: 0.95; }
+
+/* معلومات المستوى + شريط التقدم */
+.xp-level-info { flex: 1; min-width: 0; }
+.xp-level-name {
+	font-size: 1.15rem;
+	font-weight: 800;
+	color: var(--text-primary, #fff);
+	margin: 0 0 0.5rem;
+}
+.xp-progress-text {
+	display: flex;
+	justify-content: space-between;
+	font-size: 0.75rem;
+	font-weight: 700;
+	color: var(--text-secondary, #cbd5e1);
+	margin-bottom: 0.3rem;
+}
+.xp-progress-text.xp-max span:first-child {
+	color: var(--c-primary, #a855f7);
+}
+.xp-progress-bar-wrapper {
+	height: 10px;
+	background: var(--bg-tertiary, rgba(255,255,255,0.08));
+	border-radius: 6px;
+	overflow: hidden;
+}
+.xp-progress-bar {
+	height: 100%;
+	background: linear-gradient(90deg, var(--c-primary, #a855f7), var(--c-secondary, #ec4899));
+	border-radius: 6px;
+	transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+	box-shadow: 0 0 10px rgba(var(--c-primary-rgb, 168, 85, 247), 0.5);
+}
+.xp-next-hint {
+	font-size: 0.7rem;
+	color: var(--text-muted, #94a3b8);
+	margin: 0.4rem 0 0;
+}
+
+/* ========================================================================
+   🔒 THEME LOCK STYLING (تصميم السمات المقفلة)
+   ======================================================================== */
+.theme-card.locked {
+	position: relative;
+	opacity: 0.55;
+	cursor: not-allowed;
+	filter: grayscale(0.4);
+}
+.theme-card.locked:hover {
+	transform: none !important;
+	opacity: 0.7;
+}
+.theme-card-content.blurred {
+	filter: blur(1.5px);
+}
+.theme-card-lock {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 48px;
+	height: 48px;
+	border-radius: 50%;
+	background: rgba(0, 0, 0, 0.6);
+	color: #fbbf24;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 1.3rem;
+	z-index: 3;
+	box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+	border: 2px solid rgba(251, 191, 36, 0.5);
+}
+
+/* 🎨 تخصيص شريط XP حسب السمة */
+html.theme-cyberpunk .xp-card,
+html.theme-cyberpunk .xp-level-badge {
+	box-shadow: 0 0 16px rgba(0, 240, 255, 0.3);
+}
+html.theme-retro .xp-card {
+	border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+
 
