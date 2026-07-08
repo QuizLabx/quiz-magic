@@ -3410,6 +3410,8 @@ function openMenuDrawer() {
 
     // تحديث المحتوى قبل الفتح (اللغة + اسم المستخدم)
     updateDrawerContent();
+    // 📢 بناء بطاقات الإشعارات قبل الفتح
+    renderAnnouncements();
 
     drawer.classList.add('open');
     overlay.classList.add('open');
@@ -3739,4 +3741,151 @@ function initMenuDrawerKeyboard() {
 document.addEventListener('DOMContentLoaded', () => {
     applySavedFontSize();
     initMenuDrawerKeyboard();
+    // 📢 جلب الإشعارات عند فتح الموقع
+    fetchAnnouncements();
 });
+
+// ========================================================================
+// 📢 ANNOUNCEMENTS SYSTEM (نظام الإشعارات / المستجدّات)
+// ========================================================================
+
+let announcementsData = [];
+
+// 🌐 جلب announcements.json (مع fallback لتجاوز الكاش)
+async function fetchAnnouncements() {
+    try {
+        const url = 'announcements.json?t=' + Date.now();
+        const res = await fetch(url, { cache: 'no-store' });
+        if (!res.ok) {
+            console.warn('📢 تعذر جلب ملف الإشعارات:', res.status);
+            return;
+        }
+        const data = await res.json();
+        if (data && Array.isArray(data.announcements)) {
+            announcementsData = data.announcements;
+            updateNotificationDot();
+        }
+    } catch (err) {
+        console.warn('📢 تعذر تحميل الإشعارات (قد يكون الملف محلياً):', err.message);
+    }
+}
+
+// 🔴 إظهار/إخفاء النقطة الحمراء حسب وجود إشعارات غير مقروءة
+function updateNotificationDot() {
+    const dot = document.getElementById('menu-notification-dot');
+    if (!dot) return;
+    const unread = getUnreadAnnouncements();
+    dot.classList.toggle('hidden', unread.length === 0);
+}
+
+// 📋 الإشعارات غير المقروءة (لم يُDismissها المستخدم بعد)
+function getUnreadAnnouncements() {
+    const dismissed = getDismissedAnnouncements();
+    return announcementsData.filter(a => a && a.id && !dismissed.includes(a.id));
+}
+
+// 💾 قائمة الإشعارات المُDismissة (المخزّنة في localStorage)
+function getDismissedAnnouncements() {
+    try {
+        return JSON.parse(localStorage.getItem('quiz_dismissed_announcements') || '[]');
+    } catch (e) {
+        return [];
+    }
+}
+
+function saveDismissedAnnouncements(ids) {
+    localStorage.setItem('quiz_dismissed_announcements', JSON.stringify(ids));
+}
+
+// 🎨 بناء بطاقات الإشعارات داخل القائمة الجانبية
+function renderAnnouncements() {
+    const container = document.getElementById('announcements-container');
+    if (!container) return;
+
+    const unread = getUnreadAnnouncements();
+
+    if (unread.length === 0) {
+        container.innerHTML = '';
+        return;
+    }
+
+    const isAr = currentLang === 'ar';
+    container.innerHTML = '';
+
+    unread.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'announcement-card';
+        card.setAttribute('data-announcement-id', item.id);
+
+        // تنسيق التاريخ
+        let dateStr = '';
+        if (item.date) {
+            try {
+                const d = new Date(item.date);
+                if (!isNaN(d)) {
+                    dateStr = isAr
+                        ? d.toLocaleDateString('ar-EG', { day: 'numeric', month: 'long' })
+                        : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                } else {
+                    dateStr = item.date;
+                }
+            } catch (e) {
+                dateStr = item.date;
+            }
+        }
+
+        // الرابط الاختياري
+        let linkHtml = '';
+        if (item.link && item.link.trim()) {
+            const linkText = isAr ? 'المزيد من التفاصيل' : 'Learn more';
+            linkHtml = `<a href="${escapeHtml(item.link)}" target="_blank" rel="noopener noreferrer" class="announcement-link">
+                <i class="fas fa-arrow-left" aria-hidden="true"></i> ${linkText}
+            </a>`;
+        }
+
+        card.innerHTML = `
+            <button class="announcement-close" onclick="dismissAnnouncement('${escapeHtml(item.id)}')" aria-label="${isAr ? 'إزالة الإشعار' : 'Dismiss'}">
+                <i class="fas fa-times" aria-hidden="true"></i>
+            </button>
+            <div class="announcement-header">
+                <span class="announcement-icon">${escapeHtml(item.icon || '📢')}</span>
+                <div class="announcement-title-wrap">
+                    <h4 class="announcement-title">${escapeHtml(item.title || '')}</h4>
+                    ${dateStr ? `<span class="announcement-date">${dateStr}</span>` : ''}
+                </div>
+            </div>
+            <p class="announcement-message">${escapeHtml(item.message || '')}</p>
+            ${linkHtml}
+        `;
+        container.appendChild(card);
+    });
+}
+
+// ✕ إزالة/إغلاق إشعار (تسجيله كمقروء)
+function dismissAnnouncement(id) {
+    if (!id) return;
+    const dismissed = getDismissedAnnouncements();
+    if (!dismissed.includes(id)) {
+        dismissed.push(id);
+        saveDismissedAnnouncements(dismissed);
+    }
+    // إزالة البطاقة بصرياً مع أنيميشن
+    const card = document.querySelector(`.announcement-card[data-announcement-id="${id}"]`);
+    if (card) {
+        card.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+        card.style.opacity = '0';
+        card.style.transform = 'translateX(-20px)';
+        setTimeout(() => {
+            card.remove();
+            // إذا لم تبقَ إشعارات، نظّف الحاوية
+            const container = document.getElementById('announcements-container');
+            if (container && container.children.length === 0) container.innerHTML = '';
+        }, 250);
+    }
+    // تحديث النقطة الحمراء
+    updateNotificationDot();
+
+    if (typeof trackEvent === 'function') {
+        trackEvent('announcement_dismissed', { id: id });
+    }
+}
