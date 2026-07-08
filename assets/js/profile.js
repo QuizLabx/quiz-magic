@@ -108,6 +108,16 @@ function renderProfileStats() {
             <div class="stat-value" style="font-size: 1rem;">${mostFrequentCreature}</div>
             <div class="stat-label">${isAr ? 'أكثر كائن' : 'Most Frequent'}</div>
         </div>
+        <div class="profile-stat-card profile-gems-card">
+            <div class="stat-icon">💎</div>
+            <div class="stat-value">${getGemsCount()}</div>
+            <div class="stat-label">${isAr ? 'جوهرة' : 'Gems'}</div>
+        </div>
+        <div class="profile-stat-card profile-id-card" onclick="showAccountModal()" style="cursor:pointer">
+            <div class="stat-icon">🆔</div>
+            <div class="stat-value" style="font-size: 1.1rem;">${getProfileIdDisplay(isAr)}</div>
+            <div class="stat-label">${isAr ? 'معرّف الحساب' : 'Account ID'}</div>
+        </div>
     `;
     
     // عرض تفاصيل إضافية
@@ -436,4 +446,19 @@ function updateWelcomeScreenToggleState() {
     const savedPreference = localStorage.getItem('quiz_welcome_screen_enabled');
     const isEnabled = savedPreference === null ? true : savedPreference === 'true';
     toggle.checked = isEnabled;
+}
+
+// ==================== GEMS & ID HELPERS ====================
+
+// 💎 عدد الجواهر (من localStorage — تتم مزامنتها مع Firebase)
+function getGemsCount() {
+    return parseInt(localStorage.getItem('quiz_gems') || '0', 10);
+}
+
+// 🆔 عرض الـ ID في الملف الشخصي
+function getProfileIdDisplay(isAr) {
+    if (window.firebaseDB && window.firebaseDB.isLoggedIn()) {
+        return window.firebaseDB.getCurrentUserId();
+    }
+    return isAr ? 'زائر' : 'Guest';
 }

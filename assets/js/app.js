@@ -4039,6 +4039,11 @@ function addXP(amount, reason) {
     // تحديث شريط XP في الملف الشخصي إن كان مفتوحاً
     if (typeof renderXPBar === 'function') renderXPBar();
 
+    // ☁️ مزامنة XP مع Firebase (إن كان مسجّل دخول)
+    if (window.firebaseDB && window.firebaseDB.isLoggedIn()) {
+        window.firebaseDB.addXPToCloud(amount, reason).catch(e => console.warn('XP cloud sync failed:', e));
+    }
+
     if (typeof trackEvent === 'function') {
         trackEvent('xp_gained', { amount: amount, reason: reason, total_xp: newXP });
     }
