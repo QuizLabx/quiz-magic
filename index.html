@@ -440,6 +440,7 @@ Mythical Analysis Result
     <!-- ☰ Menu Drawer Button (NEW) -->
     <button onclick="openMenuDrawer()" class="theme-toggle-btn menu-drawer-btn text-sm px-3 py-2 rounded-md border transition-all transform hover:scale-105" title="القائمة / Menu" aria-label="فتح القائمة الرئيسية" aria-haspopup="true" aria-expanded="false">
         <i class="fas fa-bars" aria-hidden="true"></i>
+        <span id="menu-notification-dot" class="notification-dot hidden" aria-hidden="true"></span>
     </button>
 
     <!-- 🔔 SFX Toggle Button -->
@@ -488,6 +489,11 @@ Mythical Analysis Result
         <button onclick="closeMenuDrawer()" class="drawer-close-btn" aria-label="إغلاق القائمة">
             <i class="fas fa-times" aria-hidden="true"></i>
         </button>
+    </div>
+
+    <!-- 📢 بطاقة الإشعارات (تُملأ ديناميكياً من announcements.json) -->
+    <div id="announcements-container" class="announcements-container">
+        <!-- سيتم بناء بطاقات الإشعارات هنا بواسطة JS -->
     </div>
 
     <!-- 👤 بطاقة المستخدم (تفتح الملف الشخصي) -->
