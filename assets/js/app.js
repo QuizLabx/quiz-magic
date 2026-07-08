@@ -646,6 +646,11 @@ function checkAchievements() {
     if (newAchievements.length > 0) {
         saveAchievements();
         showAchievementToast(newAchievements[0]);
+        // 🎮 منح XP عن كل إنجاز جديد
+        if (typeof config !== 'undefined' && config.xpSystem && config.xpSystem.achievementXP) {
+            const totalXP = newAchievements.length * config.xpSystem.achievementXP;
+            if (typeof addXP === 'function') addXP(totalXP, 'achievement_unlocked');
+        }
     }
 }
 
@@ -1170,12 +1175,23 @@ function initializeTheme(savedTheme) {
     if (preferredTheme === 'auto' || !THEMES[preferredTheme]) {
         preferredTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
+    // 🔒 إن كانت السمة المحفوظة مقفلة الآن (مثلاً بعد حذف البيانات)، ارجع للداكن
+    if (typeof isThemeLocked === 'function' && isThemeLocked(preferredTheme)) {
+        preferredTheme = 'dark';
+        localStorage.setItem('quiz_theme', 'dark');
+    }
     applyTheme(preferredTheme);
 }
 
 function applyTheme(theme) {
     // التحقق من صحة السمة، والرجوع للداكن عند عدم التعرّف
     if (!THEMES[theme]) theme = 'dark';
+    // 🔒 التحقق من قفل السمة (إن لم تكن محفوظة سابقاً = مفتوحة فعلاً)
+    if (typeof isThemeLocked === 'function' && isThemeLocked(theme)) {
+        const isAr = currentLang === 'ar';
+        if (typeof showThemeLockedMessage === 'function') showThemeLockedMessage(theme);
+        return; // لا تطبّق السمة المقفلة
+    }
     currentTheme = theme;
     const html = document.documentElement;
 
@@ -1319,33 +1335,51 @@ function renderThemePickerGrid() {
 
     Object.values(THEMES).forEach(theme => {
         const isActive = currentTheme === theme.id;
+        // 🔒 التحقق من القفل
+        const locked = (typeof isThemeLocked === 'function') ? isThemeLocked(theme.id) : false;
+        const lockText = locked ? ((typeof getThemeLockText === 'function') ? getThemeLockText(theme.id) : '') : '';
+
         const card = document.createElement('div');
-        card.className = `theme-card ${theme.previewClass} ${isActive ? 'active' : ''}`;
+        card.className = `theme-card ${theme.previewClass} ${isActive ? 'active' : ''} ${locked ? 'locked' : ''}`;
         card.setAttribute('role', 'button');
-        card.setAttribute('tabindex', '0');
-        card.setAttribute('aria-label', `${isAr ? theme.name.ar : theme.name.en} ${isActive ? (isAr ? '(مفعّلة)' : '(active)') : ''}`);
+        card.setAttribute('tabindex', locked ? '-1' : '0');
+        card.setAttribute('aria-label', `${isAr ? theme.name.ar : theme.name.en} ${isActive ? (isAr ? '(مفعّلة)' : '(active)') : ''} ${locked ? (isAr ? '(مقفلة)' : '(locked)') : ''}`);
+        if (locked) card.setAttribute('aria-disabled', 'true');
 
         const name = isAr ? theme.name.ar : theme.name.en;
         const desc = isAr ? theme.desc.ar : theme.desc.en;
 
         card.innerHTML = `
             ${isActive ? `<span class="theme-card-badge"><i class="fas fa-check"></i> ${isAr ? 'الحالية' : 'Active'}</span>` : ''}
-            <div class="theme-card-content">
+            ${locked ? `<span class="theme-card-lock"><i class="fas fa-lock"></i></span>` : ''}
+            <div class="theme-card-content ${locked ? 'blurred' : ''}">
                 <div class="theme-card-icon">${theme.icon}</div>
                 <div class="theme-card-name">${name}</div>
-                <div class="theme-card-desc">${desc}</div>
+                <div class="theme-card-desc">${locked ? lockText : desc}</div>
             </div>
         `;
 
-        // التطبيق عند النقر أو الضغط بـ Enter/Space
-        const activate = () => selectTheme(theme.id);
-        card.addEventListener('click', activate);
-        card.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                activate();
-            }
-        });
+        if (locked) {
+            // عند الضغط على سمة مقفلة → رسالة القفل
+            const showLock = () => showThemeLockedMessage(theme.id);
+            card.addEventListener('click', showLock);
+            card.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    showLock();
+                }
+            });
+        } else {
+            // التطبيق عند النقر أو الضغط بـ Enter/Space
+            const activate = () => selectTheme(theme.id);
+            card.addEventListener('click', activate);
+            card.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    activate();
+                }
+            });
+        }
 
         grid.appendChild(card);
     });
@@ -1353,6 +1387,12 @@ function renderThemePickerGrid() {
 
 function selectTheme(themeId) {
     if (!THEMES[themeId]) return;
+
+    // 🔒 التحقق من القفل قبل أي شيء
+    if (typeof isThemeLocked === 'function' && isThemeLocked(themeId)) {
+        if (typeof showThemeLockedMessage === 'function') showThemeLockedMessage(themeId);
+        return;
+    }
 
     // 🎵 مؤثر صوتي للنقر
     if (window.audioManager) {
@@ -1373,6 +1413,22 @@ function selectTheme(themeId) {
 
     if (typeof trackEvent === 'function') {
         trackEvent('theme_changed', { theme: themeId });
+    }
+}
+
+// 🔒 رسالة السمة المقفلة
+function showThemeLockedMessage(themeId) {
+    const isAr = currentLang === 'ar';
+    const themeName = THEMES[themeId] ? (isAr ? THEMES[themeId].name.ar : THEMES[themeId].name.en) : themeId;
+    const lockText = typeof getThemeLockText === 'function' ? getThemeLockText(themeId) : '';
+    const message = isAr
+        ? `🔒 السمة "${themeName}" مقفلة\nتحتاج: ${lockText}`
+        : `🔒 Theme "${themeName}" is locked\nRequires: ${lockText}`;
+    if (typeof showProfileNotification === 'function') {
+        showProfileNotification(message, 'error');
+    }
+    if (typeof trackEvent === 'function') {
+        trackEvent('theme_locked_attempt', { theme: themeId });
     }
 }
 
@@ -2113,6 +2169,12 @@ function showResult() {
     if (duration > 0) {
         if (!userStats.fastestQuiz || duration < userStats.fastestQuiz) {
             userStats.fastestQuiz = duration;
+            localStorage.setItem('quiz_stats', JSON.stringify(userStats));
+        }
+    }
+
+    // 🎮 منح XP (بعد حفظ الإحصائيات حتى يُحتسب "كائن جديد" بشكل صحيح)
+    if (typeof awardQuizXP === 'function') awardQuizXP(winnerId, duration);
             localStorage.setItem('quiz_stats', JSON.stringify(userStats));
         }
     }
@@ -3468,7 +3530,15 @@ function updateDrawerContent() {
         usernameEl.textContent = rawName || (isAr ? 'زائر' : 'Guest');
     }
     if (subtitleEl) {
-        subtitleEl.textContent = isAr ? 'اضغط لعرض ملفك' : 'Tap to view profile';
+        // 🎮 عرض المستوى بدل النص العادي
+        const xp = (typeof getXP === 'function') ? getXP() : 0;
+        const level = (typeof calculateLevel === 'function') ? calculateLevel(xp) : 1;
+        const levelData = (typeof getLevelData === 'function') ? getLevelData(level) : null;
+        if (levelData) {
+            subtitleEl.textContent = (isAr ? 'المستوى' : 'Level') + ' ' + level + ' · ' + (isAr ? levelData.name.ar : levelData.name.en) + ' ' + levelData.icon;
+        } else {
+            subtitleEl.textContent = isAr ? 'اضغط لعرض ملفك' : 'Tap to view profile';
+        }
     }
 
     // النصوص حسب اللغة
@@ -3888,4 +3958,246 @@ function dismissAnnouncement(id) {
     if (typeof trackEvent === 'function') {
         trackEvent('announcement_dismissed', { id: id });
     }
+}
+
+// ========================================================================
+// 🎮 XP & LEVELS SYSTEM (نظام النقاط والمستويات)
+// ========================================================================
+
+const XP_KEY = 'quiz_xp';
+const LEVEL_KEY = 'quiz_level';
+
+// 💾 حفظ واسترجاع XP
+function getXP() {
+    return parseInt(localStorage.getItem(XP_KEY) || '0', 10);
+}
+function saveXP(xp) {
+    localStorage.setItem(XP_KEY, String(xp));
+}
+function getLevel() {
+    return parseInt(localStorage.getItem(LEVEL_KEY) || '1', 10);
+}
+function saveLevel(level) {
+    localStorage.setItem(LEVEL_KEY, String(level));
+}
+
+// 📊 تحديد المستوى الحالي بناءً على XP
+function calculateLevel(xp) {
+    if (typeof config === 'undefined' || !config.xpSystem || !config.xpSystem.levels) return 1;
+    const levels = config.xpSystem.levels;
+    let currentLevel = 1;
+    for (const [lvl, data] of Object.entries(levels)) {
+        if (xp >= data.xp) currentLevel = parseInt(lvl);
+    }
+    return currentLevel;
+}
+
+// 🔍 معرفة بيانات المستوى (الاسم، الأيقونة...)
+function getLevelData(level) {
+    if (typeof config === 'undefined' || !config.xpSystem || !config.xpSystem.levels) return null;
+    return config.xpSystem.levels[level] || null;
+}
+
+// 📈 حساب XP المطلوب للمستوى التالي
+function getXPProgress(xp) {
+    if (typeof config === 'undefined' || !config.xpSystem || !config.xpSystem.levels) return { current: 0, needed: 0, percent: 0, currentXP: 0, nextXP: 0 };
+    const levels = config.xpSystem.levels;
+    const lvlKeys = Object.keys(levels).map(Number).sort((a, b) => a - b);
+    const currentLevel = calculateLevel(xp);
+    const currentLvlIdx = lvlKeys.indexOf(currentLevel);
+
+    if (currentLvlIdx >= lvlKeys.length - 1) {
+        // المستخدم في أعلى مستوى
+        const maxXP = levels[lvlKeys[lvlKeys.length - 1]].xp;
+        return { current: currentLevel, needed: 0, percent: 100, currentXP: xp, nextXP: maxXP, isMax: true };
+    }
+
+    const nextLevel = lvlKeys[currentLvlIdx + 1];
+    const currentXP = levels[lvlKeys[currentLvlIdx]].xp;
+    const nextXP = levels[nextLevel].xp;
+    const range = nextXP - currentXP;
+    const progress = range > 0 ? ((xp - currentXP) / range) * 100 : 0;
+
+    return { current: currentLevel, needed: nextLevel, percent: Math.min(100, Math.max(0, progress)), currentXP: xp, nextXP: nextXP, isMax: false };
+}
+
+// 🎯 إضافة XP (مع فحص الترقية)
+function addXP(amount, reason) {
+    if (typeof config === 'undefined' || !config.xpSystem || !config.xpSystem.enabled) return 0;
+    const oldXP = getXP();
+    const oldLevel = calculateLevel(oldXP);
+    const newXP = oldXP + amount;
+    const newLevel = calculateLevel(newXP);
+
+    saveXP(newXP);
+
+    let levelUp = false;
+    if (newLevel > oldLevel) {
+        saveLevel(newLevel);
+        levelUp = true;
+        // إظهار إشعار الترقية
+        setTimeout(() => showLevelUpNotification(oldLevel, newLevel), 600);
+    }
+
+    // تحديث شريط XP في الملف الشخصي إن كان مفتوحاً
+    if (typeof renderXPBar === 'function') renderXPBar();
+
+    if (typeof trackEvent === 'function') {
+        trackEvent('xp_gained', { amount: amount, reason: reason, total_xp: newXP });
+    }
+
+    return newXP;
+}
+
+// 🎉 إشعار ترقية المستوى
+function showLevelUpNotification(oldLevel, newLevel) {
+    const isAr = currentLang === 'ar';
+    const oldData = getLevelData(oldLevel);
+    const newData = getLevelData(newLevel);
+
+    const toast = document.getElementById('achievement-toast');
+    if (!toast) return;
+
+    const title = toast.querySelector('.toast-title');
+    const message = toast.querySelector('.toast-message');
+    const icon = toast.querySelector('.toast-icon');
+
+    title.textContent = isAr ? '🎉 ترقية!' : '🎉 Level Up!';
+    icon.textContent = newData ? newData.icon : '⬆️';
+    message.textContent = isAr
+        ? `ارتقيت من "${oldData ? oldData.name.ar : ''}" إلى "${newData ? newData.name.ar : ''}"!`
+        : `Leveled up from "${oldData ? oldData.name.en : ''}" to "${newData ? newData.name.en : ''}"!`;
+
+    toast.style.background = 'linear-gradient(135deg, #7c3aed, #a855f7)';
+    toast.classList.add('show');
+    setTimeout(() => {
+        toast.classList.remove('show');
+        toast.style.background = '';
+    }, 5000);
+}
+
+// 🎮 حساب XP عند إكمال اختبار (تُستدعى من showResult)
+function awardQuizXP(creatureId, durationSeconds) {
+    if (typeof config === 'undefined' || !config.xpSystem || !config.xpSystem.enabled) return;
+    const isAr = currentLang === 'ar';
+    let totalXP = 0;
+    let details = [];
+
+    // 1. XP حسب الندرة
+    const creature = findCreatureById(creatureId);
+    if (creature) {
+        const rarityXP = config.xpSystem.rarityXP[creature.rarity] || 30;
+        totalXP += rarityXP;
+        details.push(`${isAr ? 'ندرة' : 'Rarity'}: +${rarityXP}`);
+    }
+
+    // 2. مكافأة السرعة
+    if (durationSeconds && durationSeconds < config.xpSystem.bonuses.speedThreshold) {
+        totalXP += config.xpSystem.bonuses.speedBonus;
+        details.push(`${isAr ? 'سرعة' : 'Speed'}: +${config.xpSystem.bonuses.speedBonus}`);
+    }
+
+    // 3. مكافأة كائن جديد (أول مرة)
+    const stats = getUserStats();
+    const creatureCount = stats.creatures && stats.creatures[creatureId] ? stats.creatures[creatureId] : 0;
+    if (creatureCount <= 1) {
+        totalXP += config.xpSystem.bonuses.newCreatureBonus;
+        details.push(`${isAr ? 'كائن جديد!' : 'New creature!'}: +${config.xpSystem.bonuses.newCreatureBonus}`);
+    } else {
+        totalXP += config.xpSystem.bonuses.retakeBonus;
+        details.push(`${isAr ? 'إعادة' : 'Retake'}: +${config.xpSystem.bonuses.retakeBonus}`);
+    }
+
+    // تطبيق XP
+    const newTotal = addXP(totalXP, 'quiz_complete');
+
+    // إظهار إشعار مختصر
+    if (typeof showProfileNotification === 'function') {
+        showProfileNotification(
+            (isAr ? '🎮 +' : '🎮 +') + totalXP + ' XP (' + details.join(', ') + ')',
+            'success'
+        );
+    }
+}
+
+// 🔒 التحقق مما إذا كانت السمة مقفلة
+function isThemeLocked(themeId) {
+    if (typeof config === 'undefined' || !config.xpSystem || !config.xpSystem.themeLocks) return false;
+    const lock = config.xpSystem.themeLocks[themeId];
+    if (!lock) return false; // مفتوحة
+
+    if (lock.level) {
+        const currentLevel = calculateLevel(getXP());
+        if (currentLevel < lock.level) return true;
+    }
+
+    if (lock.achievements) {
+        const achievements = JSON.parse(localStorage.getItem('quiz_achievements') || '{}');
+        const unlockedCount = Object.values(achievements).filter(a => a.unlocked).length;
+        if (unlockedCount < lock.achievements) return true;
+    }
+
+    return false;
+}
+
+// 📝 نص القفل (ما يحتاجه المستخدم لفتح السمة)
+function getThemeLockText(themeId) {
+    if (typeof config === 'undefined' || !config.xpSystem || !config.xpSystem.themeLocks) return '';
+    const lock = config.xpSystem.themeLocks[themeId];
+    if (!lock) return '';
+    const isAr = currentLang === 'ar';
+    return lock.requirement ? lock.requirement[isAr ? 'ar' : 'en'] : '';
+}
+
+// 📊 بناء شريط XP (يُعرض في الملف الشخصي)
+function renderXPBar() {
+    const container = document.getElementById('xp-bar-container');
+    if (!container) return;
+    const isAr = currentLang === 'ar';
+
+    const xp = getXP();
+    const level = calculateLevel(xp);
+    const levelData = getLevelData(level);
+    const progress = getXPProgress(xp);
+
+    const levelName = levelData ? (isAr ? levelData.name.ar : levelData.name.en) : '';
+    const levelIcon = levelData ? levelData.icon : '';
+
+    let progressHtml = '';
+    if (progress.isMax) {
+        // أعلى مستوى
+        progressHtml = `
+            <div class="xp-progress-text xp-max">
+                <span>${isAr ? '🌟 وصلت أعلى مستوى!' : '🌟 Max level reached!'}</span>
+                <span>${xp} XP</span>
+            </div>
+            <div class="xp-progress-bar-wrapper">
+                <div class="xp-progress-bar" style="width: 100%"></div>
+            </div>
+        `;
+    } else {
+        progressHtml = `
+            <div class="xp-progress-text">
+                <span>${xp} / ${progress.nextXP} XP</span>
+                <span>${Math.round(progress.percent)}%</span>
+            </div>
+            <div class="xp-progress-bar-wrapper">
+                <div class="xp-progress-bar" style="width: ${progress.percent}%"></div>
+            </div>
+            <p class="xp-next-hint">${isAr ? `يتبقى ${progress.nextXP - xp} XP للمستوى التالي` : `${progress.nextXP - xp} XP to next level`}</p>
+        `;
+    }
+
+    container.innerHTML = `
+        <div class="xp-card">
+            <div class="xp-level-badge">
+                <span class="xp-level-icon">${levelIcon}</span>
+                <span class="xp-level-number">${isAr ? 'المستوى' : 'Level'} ${level}</span>
+            </div>
+            <div class="xp-level-info">
+                <h3 class="xp-level-name">${levelName}</h3>
+                ${progressHtml}
+            </div>
+        </div>
+    `;
 }

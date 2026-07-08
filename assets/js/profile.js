@@ -7,8 +7,10 @@
 function showProfileModal() {
     const modal = document.getElementById('profile-modal');
     if (!modal) return;
-    
+
     renderProfileStats();
+    // 🎮 عرض شريط XP
+    if (typeof renderXPBar === 'function') renderXPBar();
     modal.classList.add('show');
     
     // ♿ Focus Trap
