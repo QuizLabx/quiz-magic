@@ -3967,5 +3967,350 @@ html.theme-retro .xp-card {
 	border: 2px solid rgba(255, 255, 255, 0.3);
 }
 
+/* ========================================================================
+   🆔 ACCOUNT MODAL (مودال الحساب / التسجيل / الدخول)
+   ======================================================================== */
+
+/* 🔘 اختيار التسجيل أو الدخول */
+.account-choice {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	padding: 0.5rem 0;
+}
+.account-choice-intro {
+	text-align: center;
+	margin-bottom: 0.5rem;
+}
+.account-choice-icon {
+	font-size: 2.5rem;
+	color: var(--c-primary, #a855f7);
+	margin-bottom: 0.75rem;
+}
+.account-choice-intro h3 {
+	font-size: 1.15rem;
+	font-weight: 800;
+	color: var(--text-primary, #fff);
+	margin: 0 0 0.5rem;
+}
+.account-choice-intro p {
+	font-size: 0.82rem;
+	color: var(--text-secondary, #cbd5e1);
+	line-height: 1.6;
+	margin: 0 auto;
+	max-width: 90%;
+}
+
+/* أزرار الاختيار */
+.account-choice-btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.6rem;
+	padding: 0.9rem 1.25rem;
+	border: none;
+	border-radius: 0.9rem;
+	font-size: 0.95rem;
+	font-weight: 700;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	width: 100%;
+}
+.account-choice-btn.primary {
+	background: linear-gradient(135deg, var(--c-primary, #a855f7), var(--c-secondary, #ec4899));
+	color: #fff;
+	box-shadow: 0 4px 14px rgba(var(--c-primary-rgb, 168, 85, 247), 0.35);
+}
+.account-choice-btn.primary:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 6px 20px rgba(var(--c-primary-rgb, 168, 85, 247), 0.5);
+}
+.account-choice-btn.secondary {
+	background: var(--bg-tertiary, rgba(255,255,255,0.06));
+	color: var(--text-primary, #fff);
+	border: 1px solid var(--border-color, rgba(255,255,255,0.12));
+}
+.account-choice-btn.secondary:hover {
+	background: rgba(var(--c-primary-rgb, 168, 85, 247), 0.15);
+}
+.account-choice-btn.danger {
+	background: linear-gradient(135deg, #dc2626, #e11d48);
+	color: #fff;
+}
+
+/* 📝 نموذج التسجيل/الدخول */
+.auth-form {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	padding: 0.5rem 0;
+}
+.auth-back-btn {
+	align-self: flex-start;
+	background: transparent;
+	border: none;
+	color: var(--text-muted, #94a3b8);
+	font-size: 0.85rem;
+	font-weight: 600;
+	cursor: pointer;
+	padding: 0.3rem 0;
+	transition: color 0.2s ease;
+}
+.auth-back-btn:hover { color: var(--c-primary, #a855f7); }
+
+.auth-info-banner {
+	display: flex;
+	gap: 0.5rem;
+	align-items: flex-start;
+	background: rgba(var(--c-primary-rgb, 168, 85, 247), 0.1);
+	border: 1px solid rgba(var(--c-primary-rgb, 168, 85, 247), 0.3);
+	border-radius: 0.75rem;
+	padding: 0.75rem;
+	font-size: 0.78rem;
+	color: var(--text-secondary, #cbd5e1);
+	line-height: 1.5;
+}
+.auth-info-banner i { color: var(--c-primary, #a855f7); margin-top: 2px; }
+
+.auth-field { display: flex; flex-direction: column; gap: 0.4rem; }
+.auth-field label {
+	font-size: 0.8rem;
+	font-weight: 700;
+	color: var(--text-secondary, #cbd5e1);
+}
+.auth-input-wrapper { position: relative; }
+.auth-input {
+	width: 100%;
+	padding: 0.75rem 1rem;
+	background: var(--bg-tertiary, rgba(255,255,255,0.06));
+	border: 1px solid var(--border-color, rgba(255,255,255,0.12));
+	border-radius: 0.7rem;
+	color: var(--text-primary, #fff);
+	font-size: 0.95rem;
+	font-family: inherit;
+	transition: all 0.2s ease;
+	box-sizing: border-box;
+}
+.auth-input:focus {
+	outline: none;
+	border-color: var(--c-primary, #a855f7);
+	box-shadow: 0 0 0 3px rgba(var(--c-primary-rgb, 168, 85, 247), 0.2);
+}
+.auth-input::placeholder { color: var(--text-muted, #94a3b8); }
+.auth-toggle-pass {
+	position: absolute;
+	inset-inline-end: 0.6rem;
+	top: 50%;
+	transform: translateY(-50%);
+	background: transparent;
+	border: none;
+	color: var(--text-muted, #94a3b8);
+	cursor: pointer;
+	padding: 0.3rem;
+	font-size: 0.9rem;
+}
+.auth-toggle-pass:hover { color: var(--c-primary, #a855f7); }
+
+.auth-submit-btn { margin-top: 0.5rem; }
+
+/* ⚠️ رسائل الخطأ/النجاح */
+.auth-error {
+	font-size: 0.82rem;
+	font-weight: 600;
+	padding: 0.6rem 0.75rem;
+	border-radius: 0.6rem;
+	margin: 0;
+}
+.auth-error.error {
+	background: rgba(220, 38, 38, 0.12);
+	border: 1px solid rgba(220, 38, 38, 0.35);
+	color: #fca5a5;
+}
+.auth-error.success {
+	background: rgba(34, 197, 94, 0.12);
+	border: 1px solid rgba(34, 197, 94, 0.35);
+	color: #86efac;
+}
+.auth-error.hidden { display: none; }
+
+/* 🎉 نجاح التسجيل */
+.auth-success {
+	text-align: center;
+	padding: 1rem 0;
+}
+.auth-success-icon { font-size: 3.5rem; margin-bottom: 0.5rem; }
+.auth-success h3 {
+	font-size: 1.3rem;
+	font-weight: 800;
+	color: var(--text-primary, #fff);
+	margin: 0 0 0.5rem;
+}
+.auth-success > p {
+	font-size: 0.85rem;
+	color: var(--text-secondary, #cbd5e1);
+	margin: 0 0 1rem;
+}
+.auth-user-id-display {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.75rem;
+	background: linear-gradient(135deg, rgba(var(--c-primary-rgb, 168, 85, 247), 0.15), rgba(var(--c-secondary-rgb, 236, 72, 153), 0.1));
+	border: 2px solid rgba(var(--c-primary-rgb, 168, 85, 247), 0.4);
+	border-radius: 1rem;
+	padding: 1rem 1.25rem;
+	margin: 0 auto 1.5rem;
+	max-width: 280px;
+}
+.auth-id-label {
+	font-size: 0.7rem;
+	font-weight: 800;
+	color: var(--text-muted, #94a3b8);
+	letter-spacing: 2px;
+}
+.auth-id-value {
+	font-size: 1.8rem;
+	font-weight: 900;
+	color: var(--c-primary, #a855f7);
+	letter-spacing: 3px;
+}
+.auth-copy-btn {
+	background: var(--bg-tertiary, rgba(255,255,255,0.08));
+	border: 1px solid var(--border-color, rgba(255,255,255,0.15));
+	color: var(--text-secondary, #cbd5e1);
+	width: 34px;
+	height: 34px;
+	border-radius: 8px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: all 0.2s ease;
+}
+.auth-copy-btn:hover {
+	background: var(--c-primary, #a855f7);
+	color: #fff;
+}
+
+/* 📊 معلومات الحساب (بعد الدخول) */
+.account-info { display: flex; flex-direction: column; gap: 1rem; }
+.account-info-loading {
+	text-align: center;
+	padding: 2rem;
+	font-size: 1.5rem;
+	color: var(--c-primary, #a855f7);
+}
+.account-id-card {
+	background: linear-gradient(135deg, rgba(var(--c-primary-rgb, 168, 85, 247), 0.12), rgba(var(--c-secondary-rgb, 236, 72, 153), 0.08));
+	border: 1px solid rgba(var(--c-primary-rgb, 168, 85, 247), 0.3);
+	border-radius: 1rem;
+	padding: 1rem 1.25rem;
+	position: relative;
+}
+.account-id-row {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+}
+.account-id-label {
+	font-size: 0.7rem;
+	font-weight: 800;
+	color: var(--text-muted, #94a3b8);
+	letter-spacing: 2px;
+}
+.account-id-value {
+	font-size: 1.6rem;
+	font-weight: 900;
+	color: var(--c-primary, #a855f7);
+	letter-spacing: 2px;
+	flex: 1;
+}
+.account-admin-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.3rem;
+	background: linear-gradient(135deg, #fbbf24, #f59e0b);
+	color: #1a1a1a;
+	font-size: 0.72rem;
+	font-weight: 800;
+	padding: 0.25rem 0.6rem;
+	border-radius: 0.5rem;
+	margin-top: 0.5rem;
+}
+
+/* شبكة إحصائيات الحساب */
+.account-stats-grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 0.75rem;
+}
+.account-stat {
+	background: var(--bg-tertiary, rgba(255,255,255,0.04));
+	border: 1px solid var(--border-color, rgba(255,255,255,0.08));
+	border-radius: 0.85rem;
+	padding: 1rem 0.5rem;
+	text-align: center;
+}
+.account-stat-icon { font-size: 1.5rem; margin-bottom: 0.3rem; }
+.account-stat-value {
+	font-size: 1.4rem;
+	font-weight: 900;
+	color: var(--text-primary, #fff);
+	line-height: 1.2;
+}
+.account-stat-label {
+	font-size: 0.7rem;
+	color: var(--text-muted, #94a3b8);
+	margin-top: 0.2rem;
+}
+
+/* 👑 لوحة الأدمن */
+.admin-panel {
+	background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(245, 158, 11, 0.05));
+	border: 1px solid rgba(251, 191, 36, 0.35);
+	border-radius: 1rem;
+	padding: 1rem;
+}
+.admin-panel-title {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	font-size: 1rem;
+	font-weight: 800;
+	color: #fbbf24;
+	margin: 0 0 0.75rem;
+}
+
+/* 🆔 بطاقة ID في الملف الشخصي */
+.profile-id-card {
+	cursor: pointer;
+	background: linear-gradient(135deg, rgba(var(--c-primary-rgb, 168, 85, 247), 0.12), rgba(var(--c-secondary-rgb, 236, 72, 153), 0.08)) !important;
+	border: 1px solid rgba(var(--c-primary-rgb, 168, 85, 247), 0.35) !important;
+}
+.profile-id-card:hover { transform: translateY(-2px); }
+.profile-gems-card {
+	background: linear-gradient(135deg, rgba(34, 211, 238, 0.1), rgba(59, 130, 246, 0.08)) !important;
+	border: 1px solid rgba(34, 211, 238, 0.3) !important;
+}
+
+/* فاصل في القائمة الجانبية */
+.drawer-divider {
+	height: 1px;
+	background: var(--border-color, rgba(255,255,255,0.1));
+	margin: 0.5rem 1rem;
+}
+.drawer-id-btn.logged-in .drawer-nav-icon {
+	color: #22d3ee;
+}
+
+/* 📱 responsive للمودال */
+@media (max-width: 480px) {
+	.account-stats-grid { grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+	.account-stat { padding: 0.75rem 0.3rem; }
+	.account-stat-value { font-size: 1.2rem; }
+	.auth-id-value { font-size: 1.5rem; }
+}
+
+
 
 
