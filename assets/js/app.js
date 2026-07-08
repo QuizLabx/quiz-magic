@@ -3527,6 +3527,10 @@ function updateSettingsModalContent() {
     const map = {
         'settings-modal-title': isAr ? 'الإعدادات' : 'Settings',
         'settings-prefs-title': isAr ? 'التفضيلات' : 'Preferences',
+        'settings-music-label': isAr ? 'الموسيقى الخلفية' : 'Background Music',
+        'settings-music-desc': isAr ? 'تشغيل أو إيقاف الموسيقى' : 'Play or mute background music',
+        'settings-sfx-label': isAr ? 'المؤثرات الصوتية' : 'Sound Effects',
+        'settings-sfx-desc': isAr ? 'أصوات النقر والتفاعلات' : 'Click and interaction sounds',
         'settings-welcome-label': isAr ? 'إظهار الشاشة الترحيبية' : 'Show Welcome Screen',
         'settings-welcome-desc': isAr ? 'تظهر عند فتح الموقع لأول مرة' : 'Shown when opening the site',
         'settings-lang-label': isAr ? 'اللغة' : 'Language',
@@ -3561,6 +3565,18 @@ function updateSettingsModalContent() {
 // تحديث حالات المفاتيح في مودال الإعدادات
 function updateSettingsToggleStates() {
     const isAr = currentLang === 'ar';
+
+    // 🎵 الموسيقى الخلفية
+    const musicToggle = document.getElementById('settings-music-toggle');
+    if (musicToggle && window.audioManager) {
+        musicToggle.checked = window.audioManager.settings.musicEnabled;
+    }
+
+    // 🔔 المؤثرات الصوتية
+    const sfxToggle = document.getElementById('settings-sfx-toggle');
+    if (sfxToggle && window.audioManager) {
+        sfxToggle.checked = window.audioManager.settings.sfxEnabled;
+    }
 
     // 🎬 الشاشة الترحيبية
     const welcomeToggle = document.getElementById('welcome-screen-toggle-settings');
@@ -3600,6 +3616,56 @@ function toggleWelcomeScreenPreferenceSettings() {
 
     if (typeof trackEvent === 'function') {
         trackEvent('welcome_screen_preference_changed', { enabled: isEnabled });
+    }
+}
+
+// 🎵 تبديل الموسيقى الخلفية (من مودال الإعدادات)
+function toggleMusicFromSettings() {
+    const toggle = document.getElementById('settings-music-toggle');
+    if (!toggle || !window.audioManager) return;
+    const isEnabled = toggle.checked;
+
+    // مزامنة حالة audioManager مع التوجل
+    window.audioManager.settings.musicEnabled = isEnabled;
+    localStorage.setItem('quiz_music_enabled', isEnabled.toString());
+
+    if (isEnabled) {
+        window.audioManager.play('background').catch(() => {});
+    } else {
+        window.audioManager.stop('background');
+    }
+    // تحديث أيقونة زر الهيدر
+    window.audioManager.updateUI();
+
+    const isAr = currentLang === 'ar';
+    if (typeof showProfileNotification === 'function') {
+        showProfileNotification(
+            isEnabled ? (isAr ? '🎵 تم تشغيل الموسيقى' : '🎵 Music enabled') : (isAr ? '🔇 تم إيقاف الموسيقى' : '🔇 Music muted'),
+            'success'
+        );
+    }
+}
+
+// 🔔 تبديل المؤثرات الصوتية (من مودال الإعدادات)
+function toggleSfxFromSettings() {
+    const toggle = document.getElementById('settings-sfx-toggle');
+    if (!toggle || !window.audioManager) return;
+    const isEnabled = toggle.checked;
+
+    window.audioManager.settings.sfxEnabled = isEnabled;
+    localStorage.setItem('quiz_sfx_enabled', isEnabled.toString());
+
+    // تشغيل مؤثر تجريبي عند التفعيل
+    if (isEnabled) window.audioManager.play('ui-click');
+    // تحديث أيقونة زر الهيدر
+    window.audioManager.updateUI();
+
+    const isAr = currentLang === 'ar';
+    if (typeof showProfileNotification === 'function') {
+        showProfileNotification(
+            isEnabled ? (isAr ? '🔔 تم تفعيل المؤثرات الصوتية' : '🔔 Sound effects enabled') : (isAr ? '🔕 تم إيقاف المؤثرات الصوتية' : '🔕 Sound effects muted'),
+            'success'
+        );
     }
 }
 
