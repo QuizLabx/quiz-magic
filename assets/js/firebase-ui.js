@@ -1,11 +1,11 @@
 /**
- * 🎨 QuizMagic Firebase UI
- * واجهة التسجيل/الدخول وعرض معلومات الحساب
+ * 🎨 QuizMagic Account UI
+ * واجهة التسجيل/الدخول وعرض معلومات الحساب + لوحة الأدمن
+ * (تعمل مع Supabase عبر window.firebaseDB)
  */
 
 // ==================== ACCOUNT MODAL ====================
 
-// فتح مودال الحساب (يحدد المحتوى حسب الحالة)
 function showAccountModal() {
     const modal = document.getElementById('account-modal');
     const body = document.getElementById('account-modal-body');
@@ -36,7 +36,7 @@ function closeAccountModal() {
     if (typeof removeFocusTrap === 'function') removeFocusTrap(modal);
 }
 
-// ==================== AUTH CHOICE (تسجيل أو دخول) ====================
+// ==================== AUTH CHOICE ====================
 
 function renderAuthChoice(container) {
     const isAr = (typeof currentLang !== 'undefined' && currentLang === 'ar');
@@ -115,7 +115,6 @@ async function handleRegister() {
         return;
     }
 
-    // تعطيل الزر أثناء المعالجة
     if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>' + (isAr ? 'جاري الإنشاء...' : 'Creating...') + '</span>'; }
 
     const result = await window.firebaseDB.registerUser(pwd);
@@ -130,9 +129,10 @@ async function handleRegister() {
         const errMap = {
             'password_short': isAr ? 'كلمة السر قصيرة' : 'Password too short',
             'id_generation_failed': isAr ? 'تعذّر توليد ID، حاول مجدداً' : 'Failed to generate ID',
+            'insert_failed': isAr ? 'تعذّر حفظ الحساب (تحقق من قاعدة البيانات)' : 'Failed to save account',
             'server_error': isAr ? 'خطأ في الخادم، حاول لاحقاً' : 'Server error'
         };
-        showAuthError(errorEl, errMap[result.error] || (isAr ? 'حدث خطأ' : 'An error occurred'));
+        showAuthError(errorEl, errMap[result.error] || (isAr ? 'حدث خطأ: ' + (result.details || '') : 'Error: ' + (result.details || '')));
     }
 }
 
@@ -158,7 +158,6 @@ function renderRegisterSuccess(userId) {
         </div>
     `;
 
-    // 🔄 تحديث القائمة الجانبية + الملف الشخصي
     updateDrawerIdState();
     if (typeof trackEvent === 'function') trackEvent('account_registered');
 }
@@ -214,7 +213,6 @@ async function handleLogin() {
     if (btn) { btn.disabled = false; }
 
     if (result.success) {
-        // مزامنة البيانات السحابية محلياً
         await applyCloudDataToLocal(result.userData);
         renderAccountInfo(document.getElementById('account-modal-body'));
         updateDrawerIdState();
@@ -228,34 +226,33 @@ async function handleLogin() {
             'user_not_found': isAr ? '❌ هذا الـ ID غير موجود' : '❌ This ID does not exist',
             'wrong_password': isAr ? '❌ كلمة السر خاطئة' : '❌ Wrong password',
             'invalid_id_format': isAr ? '❌ الـ ID يجب أن يكون 6 أرقام' : '❌ ID must be 6 digits',
+            'banned_permanent': isAr ? '🚫 تم حظرك دائماً' : '🚫 You are permanently banned',
+            'banned_temporary': isAr ? '⏰ تم حظرك مؤقتاً' : '⏰ You are temporarily banned',
             'missing_fields': isAr ? '⚠️ الرجاء ملء جميع الحقول' : '⚠️ Please fill all fields'
         };
         showAuthError(errorEl, errMap[result.error] || (isAr ? 'حدث خطأ' : 'An error occurred'));
     }
 }
 
-// ==================== ACCOUNT INFO (معلومات الحساب بعد الدخول) ====================
+// ==================== ACCOUNT INFO ====================
 
 async function renderAccountInfo(container) {
     const isAr = (typeof currentLang !== 'undefined' && currentLang === 'ar');
     const userId = window.firebaseDB.getCurrentUserId();
 
-    container.innerHTML = `
-        <div class="account-info-loading">
-            <i class="fas fa-spinner fa-spin"></i>
-        </div>
-    `;
+    container.innerHTML = `<div class="account-info-loading"><i class="fas fa-spinner fa-spin"></i></div>`;
 
     const data = await window.firebaseDB.fetchUserData(userId);
     if (!data) {
-        container.innerHTML = `<p class="auth-error">${isAr ? 'تعذّر تحميل البيانات' : 'Failed to load data'}</p>`;
+        container.innerHTML = `<p class="auth-error error">${isAr ? 'تعذّر تحميل البيانات' : 'Failed to load data'}</p>`;
         return;
     }
 
-    const isAdmin = !!data.isAdmin;
+    const isAdmin = !!data.is_admin;
     const xp = data.xp || 0;
     const gems = data.gems || 0;
     const level = data.level || 1;
+    const isMod = data.mod_permissions && Object.keys(data.mod_permissions).length > 0;
 
     let levelName = '';
     let levelIcon = '🌱';
@@ -264,9 +261,11 @@ async function renderAccountInfo(container) {
         levelIcon = config.xpSystem.levels[level].icon;
     }
 
-    let adminBadge = '';
+    let roleBadge = '';
     if (isAdmin) {
-        adminBadge = `<span class="account-admin-badge"><i class="fas fa-crown"></i> ${isAr ? 'أدمن' : 'Admin'}</span>`;
+        roleBadge = `<span class="account-admin-badge"><i class="fas fa-crown"></i> ${isAr ? 'أدمن' : 'Admin'}</span>`;
+    } else if (isMod) {
+        roleBadge = `<span class="account-admin-badge" style="background:linear-gradient(135deg,#22d3ee,#3b82f6);color:#fff"><i class="fas fa-shield-alt"></i> ${isAr ? 'مشرف' : 'Mod'}</span>`;
     }
 
     container.innerHTML = `
@@ -277,28 +276,16 @@ async function renderAccountInfo(container) {
                     <span class="account-id-value">${userId}</span>
                     <button onclick="copyIdToClipboard('${userId}')" class="auth-copy-btn" aria-label="نسخ"><i class="fas fa-copy"></i></button>
                 </div>
-                ${adminBadge}
+                ${roleBadge}
             </div>
 
             <div class="account-stats-grid">
-                <div class="account-stat">
-                    <div class="account-stat-icon">💎</div>
-                    <div class="account-stat-value">${gems}</div>
-                    <div class="account-stat-label">${isAr ? 'جوهرة' : 'Gems'}</div>
-                </div>
-                <div class="account-stat">
-                    <div class="account-stat-icon">${levelIcon}</div>
-                    <div class="account-stat-value">${level}</div>
-                    <div class="account-stat-label">${isAr ? 'المستوى' : 'Level'}</div>
-                </div>
-                <div class="account-stat">
-                    <div class="account-stat-icon">⚡</div>
-                    <div class="account-stat-value">${xp}</div>
-                    <div class="account-stat-label">XP</div>
-                </div>
+                <div class="account-stat"><div class="account-stat-icon">💎</div><div class="account-stat-value">${gems}</div><div class="account-stat-label">${isAr ? 'جوهرة' : 'Gems'}</div></div>
+                <div class="account-stat"><div class="account-stat-icon">${levelIcon}</div><div class="account-stat-value">${level}</div><div class="account-stat-label">${isAr ? 'المستوى' : 'Level'}</div></div>
+                <div class="account-stat"><div class="account-stat-icon">⚡</div><div class="account-stat-value">${xp}</div><div class="account-stat-label">XP</div></div>
             </div>
 
-            ${isAdmin ? renderAdminPanel(isAr) : ''}
+            ${(isAdmin || isMod) ? renderAdminPanel(isAr) : ''}
 
             <button onclick="handleLogout()" class="account-choice-btn danger auth-submit-btn">
                 <i class="fas fa-sign-out-alt"></i>
@@ -308,9 +295,9 @@ async function renderAccountInfo(container) {
     `;
 }
 
-// لوحة الأدمن (شحن جواهر)
+// ==================== ADMIN PANEL (تابات) ====================
+
 function renderAdminPanel(isAr) {
-    // لوحة احترافية بتابات
     return `
         <div class="admin-panel pro-admin-panel">
             <h4 class="admin-panel-title"><i class="fas fa-crown"></i> ${isAr ? 'لوحة التحكم' : 'Control Panel'}</h4>
@@ -329,9 +316,7 @@ function renderAdminPanel(isAr) {
     `;
 }
 
-// ===== تبديل التابات =====
 function switchAdminTab(tabName, btn) {
-    // تحديث التابات النشطة
     document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
     if (btn) btn.classList.add('active');
 
@@ -352,7 +337,6 @@ function switchAdminTab(tabName, btn) {
     if (html !== null) content.innerHTML = html;
 }
 
-// ===== تاب الجواهر =====
 function renderAdminGemsTab(isAr) {
     return `
         <div class="admin-section">
@@ -375,7 +359,6 @@ function renderAdminGemsTab(isAr) {
     `;
 }
 
-// ===== تاب XP/المستوى =====
 function renderAdminXPTab(isAr) {
     return `
         <div class="admin-section">
@@ -404,7 +387,6 @@ function renderAdminXPTab(isAr) {
     `;
 }
 
-// ===== تاب المستخدمين =====
 async function renderAdminUsersTab(isAr) {
     const content = document.getElementById('admin-tab-content');
     if (!content) return;
@@ -412,24 +394,18 @@ async function renderAdminUsersTab(isAr) {
 
     const result = await window.firebaseDB.getAllUsers();
     if (!result.success) {
-        content.innerHTML = `<p class="auth-error error">${isAr ? '❌ تعذّر التحميل' : '❌ Failed to load'}</p>`;
+        content.innerHTML = `<p class="auth-error error">${result.error || (isAr ? '❌ تعذّر التحميل' : '❌ Failed to load')}</p>`;
         return;
     }
 
     let rows = '';
     result.users.forEach(u => {
-        const role = u.isAdmin ? '👑' : (u.modPermissions ? '🛡️' : '👤');
+        const role = u.is_admin ? '👑' : (u.mod_permissions && Object.keys(u.mod_permissions).length ? '🛡️' : '👤');
         const status = u.banned ? '🚫' : '✅';
-        rows += `
-            <tr onclick="showUserDetails('${u.id}')" style="cursor:pointer">
-                <td><strong>${u.id}</strong></td>
-                <td>${role}</td>
-                <td>💎 ${u.gems}</td>
-                <td>⚡ ${u.xp}</td>
-                <td>L${u.level}</td>
-                <td>${status}</td>
-            </tr>
-        `;
+        rows += `<tr onclick="showUserDetails('${u.id}')" style="cursor:pointer">
+            <td><strong>${u.id}</strong></td><td>${role}</td>
+            <td>💎 ${u.gems||0}</td><td>⚡ ${u.xp||0}</td>
+            <td>L${u.level||1}</td><td>${status}</td></tr>`;
     });
 
     content.innerHTML = `
@@ -440,21 +416,11 @@ async function renderAdminUsersTab(isAr) {
             <p class="admin-count">${isAr ? 'إجمالي المستخدمين' : 'Total users'}: ${result.count}</p>
             <div class="admin-table-wrap">
                 <table class="admin-table" id="users-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>${isAr ? 'النوع' : 'Role'}</th>
-                            <th>💎</th>
-                            <th>⚡</th>
-                            <th>${isAr ? 'مستوى' : 'Lvl'}</th>
-                            <th>${isAr ? 'حالة' : 'Status'}</th>
-                        </tr>
-                    </thead>
+                    <thead><tr><th>ID</th><th>${isAr ? 'النوع' : 'Role'}</th><th>💎</th><th>⚡</th><th>${isAr ? 'مستوى' : 'Lvl'}</th><th>${isAr ? 'حالة' : 'Status'}</th></tr></thead>
                     <tbody>${rows}</tbody>
                 </table>
             </div>
-        </div>
-    `;
+        </div>`;
 }
 
 function filterUsersTable(query) {
@@ -463,12 +429,10 @@ function filterUsersTable(query) {
     const rows = table.querySelectorAll('tbody tr');
     const q = query.trim().toLowerCase();
     rows.forEach(row => {
-        const id = row.cells[0].textContent.toLowerCase();
-        row.style.display = id.includes(q) ? '' : 'none';
+        row.style.display = row.cells[0].textContent.toLowerCase().includes(q) ? '' : 'none';
     });
 }
 
-// نافذة تفاصيل مستخدم
 async function showUserDetails(userId) {
     const isAr = (typeof currentLang !== 'undefined' && currentLang === 'ar');
     const result = await window.firebaseDB.searchUserById(userId);
@@ -476,15 +440,11 @@ async function showUserDetails(userId) {
 
     const u = result.userData;
     const myData = await window.firebaseDB.fetchUserData();
-    const isMyAccountAdmin = myData && myData.isAdmin;
+    const isAdmin = myData && myData.is_admin;
 
-    let modBadge = '';
-    if (u.isAdmin) modBadge = `<span class="account-admin-badge"><i class="fas fa-crown"></i> ${isAr ? 'أدمن' : 'Admin'}</span>`;
-    else if (u.modPermissions) modBadge = `<span class="account-admin-badge" style="background:linear-gradient(135deg,#22d3ee,#3b82f6);color:#fff"><i class="fas fa-shield-alt"></i> ${isAr ? 'مشرف' : 'Mod'}</span>`;
-
-    // زر تعديل كلمة السر (للأدمن أو مشرف له صلاحية)
-    let pwdBtn = '';
-    pwdBtn = `<button onclick="adminResetPassword('${userId}')" class="admin-action-btn"><i class="fas fa-key"></i> ${isAr ? 'إعادة تعيين كلمة السر' : 'Reset Password'}</button>`;
+    let roleBadge = '';
+    if (u.is_admin) roleBadge = `<span class="account-admin-badge"><i class="fas fa-crown"></i> ${isAr ? 'أدمن' : 'Admin'}</span>`;
+    else if (u.mod_permissions && Object.keys(u.mod_permissions).length) roleBadge = `<span class="account-admin-badge" style="background:linear-gradient(135deg,#22d3ee,#3b82f6);color:#fff"><i class="fas fa-shield-alt"></i> ${isAr ? 'مشرف' : 'Mod'}</span>`;
 
     const banStatus = u.banned ? `🚫 ${isAr ? 'محظور' : 'Banned'}` : `✅ ${isAr ? 'نشط' : 'Active'}`;
 
@@ -495,11 +455,8 @@ async function showUserDetails(userId) {
                 <i class="fas fa-arrow-right"></i> ${isAr ? 'رجوع للوحة' : 'Back to panel'}
             </button>
             <div class="account-id-card">
-                <div class="account-id-row">
-                    <span class="account-id-label">ID</span>
-                    <span class="account-id-value">${userId}</span>
-                </div>
-                ${modBadge}
+                <div class="account-id-row"><span class="account-id-label">ID</span><span class="account-id-value">${userId}</span></div>
+                ${roleBadge}
             </div>
             <div class="account-stats-grid">
                 <div class="account-stat"><div class="account-stat-icon">💎</div><div class="account-stat-value">${u.gems||0}</div><div class="account-stat-label">${isAr?'جوهرة':'Gems'}</div></div>
@@ -507,19 +464,16 @@ async function showUserDetails(userId) {
                 <div class="account-stat"><div class="account-stat-icon">🎮</div><div class="account-stat-value">${u.level||1}</div><div class="account-stat-label">${isAr?'مستوى':'Level'}</div></div>
             </div>
             <p style="text-align:center;font-size:0.85rem;color:var(--text-secondary)">${isAr?'الحالة':'Status'}: <strong>${banStatus}</strong></p>
-            ${isMyAccountAdmin ? `
+            ${isAdmin ? `
                 <div class="admin-quick-actions">
                     <button onclick="adminQuickGift('${userId}')" class="admin-action-btn primary"><i class="fas fa-gem"></i> ${isAr?'شحن جواهر':'Gift Gems'}</button>
                     <button onclick="adminQuickBan('${userId}')" class="admin-action-btn danger"><i class="fas fa-ban"></i> ${isAr?'حظر':'Ban'}</button>
-                    ${pwdBtn}
-                    ${u.isAdmin ? '' : `<button onclick="adminQuickDelete('${userId}')" class="admin-action-btn danger"><i class="fas fa-trash"></i> ${isAr?'حذف':'Delete'}</button>`}
-                </div>
-            ` : pwdBtn}
-        </div>
-    `;
+                    <button onclick="adminResetPassword('${userId}')" class="admin-action-btn"><i class="fas fa-key"></i> ${isAr?'إعادة كلمة سر':'Reset Pwd'}</button>
+                    ${u.is_admin ? '' : `<button onclick="adminQuickDelete('${userId}')" class="admin-action-btn danger"><i class="fas fa-trash"></i> ${isAr?'حذف':'Delete'}</button>`}
+                </div>` : ''}
+        </div>`;
 }
 
-// ===== تاب الحظر =====
 function renderAdminBanTab(isAr) {
     return `
         <div class="admin-section">
@@ -550,11 +504,9 @@ function renderAdminBanTab(isAr) {
                 </div>
             </div>
             <div id="admin-ban-result" class="auth-error hidden"></div>
-        </div>
-    `;
+        </div>`;
 }
 
-// ===== تاب الإدارة (مشرفون + أدمن) =====
 function renderAdminStaffTab(isAr) {
     return `
         <div class="admin-section">
@@ -563,27 +515,24 @@ function renderAdminStaffTab(isAr) {
                     <h5><i class="fas fa-user-shield" style="color:#22d3ee"></i> ${isAr ? 'تعيين مشرف' : 'Set Moderator'}</h5>
                     <input type="text" id="mod-target-id" class="auth-input" placeholder="${isAr ? 'ID' : 'ID'}" inputmode="numeric" maxlength="6">
                     <p style="font-size:0.75rem;color:var(--text-muted);margin:0.3rem 0">${isAr ? 'اختر الصلاحيات:' : 'Select permissions:'}</p>
-                    <div class="mod-perms-grid" id="mod-perms-grid">
-                        ${renderModPermsCheckboxes(isAr)}
-                    </div>
+                    <div class="mod-perms-grid" id="mod-perms-grid">${renderModPermsCheckboxes(isAr)}</div>
                     <button onclick="handleAdminAction('setMod')" class="admin-action-btn primary"><i class="fas fa-save"></i> ${isAr ? 'حفظ' : 'Save'}</button>
                 </div>
                 <div class="admin-action-card">
                     <h5><i class="fas fa-crown" style="color:#fbbf24"></i> ${isAr ? 'تعيين أدمن' : 'Set Admin'}</h5>
                     <input type="text" id="admin-target-id-input" class="auth-input" placeholder="${isAr ? 'ID' : 'ID'}" inputmode="numeric" maxlength="6">
                     <div class="admin-duration-row">
-                        <button onclick="handleAdminAction('makeAdmin')" class="admin-action-btn primary" style="flex:1"><i class="fas fa-crown"></i> ${isAr ? 'جعله أدمن' : 'Make Admin'}</button>
+                        <button onclick="handleAdminAction('makeAdmin')" class="admin-action-btn primary" style="flex:1"><i class="fas fa-crown"></i> ${isAr ? 'جعله أدمن' : 'Make'}</button>
                         <button onclick="handleAdminAction('removeAdmin')" class="admin-action-btn danger" style="flex:1"><i class="fas fa-crown"></i> ${isAr ? 'إزالة' : 'Remove'}</button>
                     </div>
                 </div>
             </div>
             <div id="admin-staff-result" class="auth-error hidden"></div>
-        </div>
-    `;
+        </div>`;
 }
 
 function renderModPermsCheckboxes(isAr) {
-    const perms = window.firebaseDB.MOD_PERMISSIONS;
+    const perms = window.firebaseDB.MOD_PERMISSIONS || {};
     let html = '';
     for (const [key, val] of Object.entries(perms)) {
         html += `<label class="mod-perm-item"><input type="checkbox" class="mod-perm-check" value="${key}"><span>${isAr ? val.ar : val.en}</span></label>`;
@@ -591,7 +540,6 @@ function renderModPermsCheckboxes(isAr) {
     return html;
 }
 
-// ===== تاب الإحصائيات =====
 async function renderAdminStatsTab(isAr) {
     const content = document.getElementById('admin-tab-content');
     if (!content) return;
@@ -599,26 +547,26 @@ async function renderAdminStatsTab(isAr) {
 
     const result = await window.firebaseDB.getSiteStats();
     if (!result.success) {
-        content.innerHTML = `<p class="auth-error error">${isAr ? '❌ تحتاج صلاحية أدمن' : '❌ Admin only'}</p>`;
+        content.innerHTML = `<p class="auth-error error">${result.error || (isAr ? '❌ تحتاج صلاحية أدمن' : '❌ Admin only')}</p>`;
         return;
     }
-    const s = result.stats;
+    const s = result.stats || result;
     content.innerHTML = `
         <div class="admin-stats-grid">
-            <div class="admin-stat-big"><div class="as-icon">👥</div><div class="as-value">${s.totalUsers}</div><div class="as-label">${isAr?'مستخدم':'Users'}</div></div>
-            <div class="admin-stat-big"><div class="as-icon">💎</div><div class="as-value">${s.totalGems}</div><div class="as-label">${isAr?'جواهر متداولة':'Gems'}</div></div>
-            <div class="admin-stat-big"><div class="as-icon">⚡</div><div class="as-value">${s.totalXP}</div><div class="as-label">XP</div></div>
-            <div class="admin-stat-big"><div class="as-icon">👑</div><div class="as-value">${s.adminsCount}</div><div class="as-label">${isAr?'أدمن':'Admins'}</div></div>
-            <div class="admin-stat-big"><div class="as-icon">🛡️</div><div class="as-value">${s.modsCount}</div><div class="as-label">${isAr?'مشرفون':'Mods'}</div></div>
-            <div class="admin-stat-big"><div class="as-icon">🚫</div><div class="as-value">${s.bannedCount}</div><div class="as-label">${isAr?'محظورون':'Banned'}</div></div>
-        </div>
-    `;
+            <div class="admin-stat-big"><div class="as-icon">👥</div><div class="as-value">${s.total_users||0}</div><div class="as-label">${isAr?'مستخدم':'Users'}</div></div>
+            <div class="admin-stat-big"><div class="as-icon">💎</div><div class="as-value">${s.total_gems||0}</div><div class="as-label">${isAr?'جواهر':'Gems'}</div></div>
+            <div class="admin-stat-big"><div class="as-icon">⚡</div><div class="as-value">${s.total_xp||0}</div><div class="as-label">XP</div></div>
+            <div class="admin-stat-big"><div class="as-icon">👑</div><div class="as-value">${s.admins_count||0}</div><div class="as-label">${isAr?'أدمن':'Admins'}</div></div>
+            <div class="admin-stat-big"><div class="as-icon">🛡️</div><div class="as-value">${s.mods_count||0}</div><div class="as-label">${isAr?'مشرفون':'Mods'}</div></div>
+            <div class="admin-stat-big"><div class="as-icon">🚫</div><div class="as-value">${s.banned_count||0}</div><div class="as-label">${isAr?'محظورون':'Banned'}</div></div>
+        </div>`;
 }
 
 // ===== معالج الإجراءات الموحّد =====
 async function handleAdminAction(action) {
     const isAr = (typeof currentLang !== 'undefined' && currentLang === 'ar');
-    const resultEl = document.getElementById(`admin-${getActionResultContainer(action)}-result`) || document.getElementById('admin-gems-result');
+    const container = getActionResultContainer(action);
+    const resultEl = document.getElementById(`admin-${container}-result`) || document.getElementById('admin-gems-result');
     const val = (id) => (document.getElementById(id) || {}).value;
 
     let result = { success: false, error: 'invalid' };
@@ -649,7 +597,7 @@ async function handleAdminAction(action) {
             targetId = (val('tempban-target-id') || '').replace(/\D/g, '');
             const dur = parseInt(val('tempban-duration'), 10) || 0;
             const unit = val('tempban-unit');
-            let ms = dur * 3600000; // ساعات
+            let ms = dur * 3600000;
             if (unit === 'days') ms = dur * 86400000;
             if (unit === 'weeks') ms = dur * 604800000;
             result = await window.firebaseDB.tempBanUser(targetId, ms, '');
@@ -677,19 +625,11 @@ async function handleAdminAction(action) {
             break;
     }
 
-    if (result.success) {
+    if (result && result.success) {
         showAuthSuccess(resultEl, isAr ? `✅ تم بنجاح (${targetId})` : `✅ Done (${targetId})`);
         if (typeof trackEvent === 'function') trackEvent('admin_action', { action, target: targetId });
     } else {
-        const errMap = {
-            'unauthorized': isAr ? '❌ لا تملك صلاحية' : '❌ Unauthorized',
-            'user_not_found': isAr ? '❌ الـ ID غير موجود' : '❌ Not found',
-            'cannot_ban_admin': isAr ? '❌ لا يمكن حظر أدمن' : '❌ Cannot ban admin',
-            'cannot_delete_admin': isAr ? '❌ لا يمكن حذف أدمن' : '❌ Cannot delete admin',
-            'already_admin': isAr ? '❌ هذا المستخدم أدمن بالفعل' : '❌ Already admin',
-            'password_short': isAr ? '❌ كلمة سر قصيرة' : '❌ Password too short'
-        };
-        showAuthError(resultEl, errMap[result.error] || (isAr ? '❌ خطأ' : '❌ Error'));
+        showAuthError(resultEl, (isAr ? '❌ خطأ: ' : '❌ Error: ') + (result.error || ''));
     }
 }
 
@@ -701,7 +641,7 @@ function getActionResultContainer(action) {
     return 'gems';
 }
 
-// ===== إجراءات سريعة من نافذة المستخدم =====
+// ===== إجراءات سريعة =====
 async function adminQuickGift(userId) {
     const isAr = (typeof currentLang !== 'undefined' && currentLang === 'ar');
     const amountStr = prompt(isAr ? `كم جوهرة تريد شحنها لـ ${userId}؟` : `How many gems to gift ${userId}?`, '100');
@@ -735,22 +675,7 @@ async function adminQuickDelete(userId) {
     renderAccountInfo(document.getElementById('account-modal-body'));
 }
 
-// معالج شحن الجواهر القديم (للتوافق)
-async function handleAdminGift() {
-    return handleAdminAction('giftGems');
-}
-
-function handleLogout() {
-    const isAr = (typeof currentLang !== 'undefined' && currentLang === 'ar');
-    window.firebaseDB.logoutUser();
-    renderAuthChoice(document.getElementById('account-modal-body'));
-    updateDrawerIdState();
-    if (typeof showProfileNotification === 'function') {
-        showProfileNotification(isAr ? '👋 تم تسجيل الخروج' : '👋 Logged out', 'success');
-    }
-}
-
-// ==================== HELPERS ====================
+// ===== HELPERS =====
 
 function showAuthError(el, msg) {
     if (!el) return;
@@ -788,19 +713,16 @@ function copyIdToClipboard(id) {
     }).catch(() => {});
 }
 
-// مزامنة البيانات السحابية إلى localStorage عند الدخول
 async function applyCloudDataToLocal(cloudData) {
     try {
         if (!cloudData) return;
-        // XP و gems و level من السحابة
+        // Supabase يستخدم snake_case
         if (typeof cloudData.xp === 'number') localStorage.setItem('quiz_xp', String(cloudData.xp));
         if (typeof cloudData.gems === 'number') localStorage.setItem('quiz_gems', String(cloudData.gems));
         if (typeof cloudData.level === 'number') localStorage.setItem('quiz_level', String(cloudData.level));
-        // الإحصائيات (إن وُجدت في السحابة)
         if (cloudData.stats) localStorage.setItem('quiz_stats', JSON.stringify(cloudData.stats));
         if (cloudData.achievements) localStorage.setItem('quiz_achievements', JSON.stringify(cloudData.achievements));
         if (cloudData.cards) localStorage.setItem('quiz_cards', JSON.stringify(cloudData.cards));
-        // تحديث الواجهة
         if (typeof renderXPBar === 'function') renderXPBar();
         if (typeof updateDrawerContent === 'function') updateDrawerContent();
     } catch (e) {
@@ -808,7 +730,6 @@ async function applyCloudDataToLocal(cloudData) {
     }
 }
 
-// تحديث حالة زر ID في القائمة الجانبية
 function updateDrawerIdState() {
     const btn = document.getElementById('drawer-id-btn');
     const text = document.getElementById('drawer-id-text');
@@ -825,7 +746,6 @@ function updateDrawerIdState() {
     }
 }
 
-// تهيئة عند تحميل DOM
 document.addEventListener('DOMContentLoaded', () => {
     updateDrawerIdState();
 });
