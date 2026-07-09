@@ -442,20 +442,10 @@ Mythical Analysis Result
 <span id="site-title">QuizMagic</span>
 </a>
 <div class="flex items-center gap-2 sm:gap-3">
-    <!-- ☰ Menu Drawer Button (NEW) -->
+    <!-- ☰ Menu Drawer Button -->
     <button onclick="openMenuDrawer()" class="theme-toggle-btn menu-drawer-btn text-sm px-3 py-2 rounded-md border transition-all transform hover:scale-105" title="القائمة / Menu" aria-label="فتح القائمة الرئيسية" aria-haspopup="true" aria-expanded="false">
         <i class="fas fa-bars" aria-hidden="true"></i>
         <span id="menu-notification-dot" class="notification-dot hidden" aria-hidden="true"></span>
-    </button>
-
-    <!-- 🔔 SFX Toggle Button -->
-    <button id="sfx-toggle" onclick="audioManager.toggleSfx()" class="theme-toggle-btn text-sm px-3 py-2 rounded-md border transition-all transform hover:scale-105" title="إيقاف المؤثرات / Mute SFX" aria-label="إيقاف أو تشغيل المؤثرات الصوتية">
-        <i class="fas fa-bell" aria-hidden="true"></i>
-    </button>
-
-    <!-- 🎵 Music Toggle Button -->
-    <button id="music-toggle" onclick="audioManager.toggleMusic()" class="theme-toggle-btn text-sm px-3 py-2 rounded-md border transition-all transform hover:scale-105" title="إيقاف الموسيقى / Mute Music" aria-label="إيقاف أو تشغيل الموسيقى الخلفية">
-        <i class="fas fa-volume-up" aria-hidden="true"></i>
     </button>
 
     <!-- Theme Toggle Button -->
@@ -463,10 +453,11 @@ Mythical Analysis Result
         <i class="fas fa-moon" aria-hidden="true"></i>
     </button>
 
-    <!-- Language Toggle Button -->
-    <button onclick="showLanguageScreen()" class="text-sm px-3 py-2 rounded-md border transition-all theme-bg-tertiary theme-border theme-text-primary" aria-label="تغيير اللغة">
-        <i class="fas fa-globe mr-1" aria-hidden="true"></i> <span id="lang-btn-text">العربية</span>
-    </button>
+    <!-- 💎 Gems Counter (جديد) -->
+    <div id="gems-header-display" class="gems-header-display" onclick="showAccountModal()" title="جواهري">
+        <span class="gems-header-icon">💎</span>
+        <span id="gems-header-count" class="gems-header-count">0</span>
+    </div>
 
 	<!-- 🔥 Streak Counter (دائم الظهور) -->
 	<div id="streak-counter" class="streak-counter" title="أيام متتالية">
@@ -478,6 +469,29 @@ Mythical Analysis Result
 </div>
 </div>
 </header>
+
+<!-- ==================== FLOATING ACTION BUTTON (FAB) - يجمع الأزرار الصغيرة ==================== -->
+<div class="fab-container">
+    <!-- الأزرار الفرعية (تظهر عند الضغط) -->
+    <div class="fab-actions" id="fab-actions">
+        <!-- 🎵 الموسيقى -->
+        <button id="music-toggle" onclick="audioManager.toggleMusic()" class="fab-mini fab-music" title="الموسيقى / Music" aria-label="الموسيقى">
+            <i class="fas fa-volume-up" aria-hidden="true"></i>
+        </button>
+        <!-- 🔔 المؤثرات الصوتية -->
+        <button id="sfx-toggle" onclick="audioManager.toggleSfx()" class="fab-mini fab-sfx" title="المؤثرات / SFX" aria-label="المؤثرات">
+            <i class="fas fa-bell" aria-hidden="true"></i>
+        </button>
+        <!-- 🌐 اللغة -->
+        <button onclick="showLanguageScreen()" class="fab-mini fab-lang" title="اللغة / Language" aria-label="تغيير اللغة">
+            <i class="fas fa-globe" aria-hidden="true"></i> <span id="lang-btn-text" class="fab-lang-text">ع</span>
+        </button>
+    </div>
+    <!-- الزر الرئيسي -->
+    <button onclick="toggleFab()" class="fab-main" id="fab-main" title="خيارات سريعة / Quick Options" aria-label="خيارات سريعة" aria-expanded="false">
+        <i class="fas fa-sliders-h" aria-hidden="true"></i>
+    </button>
+</div>
 
 <!-- ==================== MENU DRAWER (NEW) ==================== -->
 <div id="menu-drawer-overlay" class="menu-drawer-overlay" onclick="closeMenuDrawer()"></div>
