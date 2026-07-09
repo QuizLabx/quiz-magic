@@ -4311,6 +4311,409 @@ html.theme-retro .xp-card {
 	.auth-id-value { font-size: 1.5rem; }
 }
 
+/* ========================================================================
+   👑 ADMIN PANEL PRO (لوحة الأدمن الاحترافية)
+   ======================================================================== */
+
+.pro-admin-panel { padding: 1.25rem; }
+
+/* التابات */
+.admin-tabs {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.35rem;
+	margin-bottom: 1rem;
+	padding-bottom: 0.75rem;
+	border-bottom: 1px solid var(--border-color, rgba(255,255,255,0.1));
+}
+.admin-tab {
+	flex: 1;
+	min-width: 70px;
+	padding: 0.5rem 0.4rem;
+	background: var(--bg-tertiary, rgba(255,255,255,0.05));
+	border: 1px solid var(--border-color, rgba(255,255,255,0.1));
+	border-radius: 0.6rem;
+	color: var(--text-secondary, #cbd5e1);
+	font-size: 0.72rem;
+	font-weight: 700;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.2rem;
+}
+.admin-tab span { font-size: 0.65rem; }
+.admin-tab:hover {
+	color: var(--c-primary, #a855f7);
+	border-color: var(--c-primary, #a855f7);
+}
+.admin-tab.active {
+	background: linear-gradient(135deg, var(--c-primary, #a855f7), var(--c-secondary, #ec4899));
+	color: #fff;
+	border-color: transparent;
+}
+
+.admin-tab-content { min-height: 150px; }
+
+/* بطاقات الإجراءات */
+.admin-action-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	gap: 0.75rem;
+}
+.admin-action-card {
+	background: var(--bg-tertiary, rgba(255,255,255,0.04));
+	border: 1px solid var(--border-color, rgba(255,255,255,0.08));
+	border-radius: 0.85rem;
+	padding: 0.9rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+.admin-action-card h5 {
+	display: flex;
+	align-items: center;
+	gap: 0.4rem;
+	font-size: 0.85rem;
+	font-weight: 700;
+	color: var(--text-primary, #fff);
+	margin: 0 0 0.2rem;
+}
+.admin-action-card .auth-input {
+	padding: 0.5rem 0.7rem;
+	font-size: 0.85rem;
+}
+
+/* أزرار الإجراءات */
+.admin-action-btn {
+	padding: 0.55rem 0.8rem;
+	border: none;
+	border-radius: 0.6rem;
+	font-size: 0.8rem;
+	font-weight: 700;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.4rem;
+	color: var(--text-primary, #fff);
+	background: var(--bg-tertiary, rgba(255,255,255,0.1));
+}
+.admin-action-btn.primary {
+	background: linear-gradient(135deg, var(--c-primary, #a855f7), var(--c-secondary, #ec4899));
+	color: #fff;
+}
+.admin-action-btn.danger {
+	background: linear-gradient(135deg, #dc2626, #e11d48);
+	color: #fff;
+}
+.admin-action-btn:hover { transform: translateY(-1px); }
+
+/* صف المدة (ساعات/أيام) */
+.admin-duration-row {
+	display: flex;
+	gap: 0.4rem;
+}
+
+/* جدول المستخدمين */
+.admin-users-wrap { display: flex; flex-direction: column; gap: 0.5rem; }
+.admin-search-bar { margin-bottom: 0.3rem; }
+.admin-count {
+	font-size: 0.78rem;
+	color: var(--text-muted, #94a3b8);
+	margin: 0;
+}
+.admin-table-wrap {
+	overflow-x: auto;
+	max-height: 350px;
+	overflow-y: auto;
+	border-radius: 0.6rem;
+	border: 1px solid var(--border-color, rgba(255,255,255,0.1));
+}
+.admin-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 0.8rem;
+}
+.admin-table thead {
+	position: sticky;
+	top: 0;
+	background: var(--bg-secondary, #1e293b);
+	z-index: 1;
+}
+.admin-table th {
+	padding: 0.6rem 0.5rem;
+	text-align: center;
+	font-size: 0.72rem;
+	font-weight: 700;
+	color: var(--text-secondary, #cbd5e1);
+	border-bottom: 1px solid var(--border-color, rgba(255,255,255,0.1));
+}
+.admin-table td {
+	padding: 0.55rem 0.5rem;
+	text-align: center;
+	color: var(--text-primary, #fff);
+	border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.admin-table tbody tr:hover {
+	background: rgba(var(--c-primary-rgb, 168, 85, 247), 0.1);
+}
+
+/* صلاحيات المشرف */
+.mod-perms-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 0.4rem;
+	max-height: 180px;
+	overflow-y: auto;
+	padding: 0.2rem;
+}
+.mod-perm-item {
+	display: flex;
+	align-items: center;
+	gap: 0.4rem;
+	font-size: 0.75rem;
+	color: var(--text-secondary, #cbd5e1);
+	cursor: pointer;
+	padding: 0.3rem;
+	border-radius: 0.4rem;
+	transition: background 0.15s ease;
+}
+.mod-perm-item:hover { background: rgba(var(--c-primary-rgb, 168, 85, 247), 0.1); }
+.mod-perm-item input { accent-color: var(--c-primary, #a855f7); cursor: pointer; }
+
+/* إحصائيات الموقع */
+.admin-stats-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+	gap: 0.75rem;
+}
+.admin-stat-big {
+	background: linear-gradient(135deg, rgba(var(--c-primary-rgb, 168, 85, 247), 0.12), rgba(var(--c-secondary-rgb, 236, 72, 153), 0.08));
+	border: 1px solid rgba(var(--c-primary-rgb, 168, 85, 247), 0.3);
+	border-radius: 0.85rem;
+	padding: 1rem 0.5rem;
+	text-align: center;
+}
+.admin-stat-big .as-icon { font-size: 1.6rem; }
+.admin-stat-big .as-value {
+	font-size: 1.6rem;
+	font-weight: 900;
+	color: var(--c-primary, #a855f7);
+	margin: 0.2rem 0;
+}
+.admin-stat-big .as-label {
+	font-size: 0.7rem;
+	color: var(--text-muted, #94a3b8);
+}
+
+/* أزرار الإجراءات السريعة في تفاصيل المستخدم */
+.admin-quick-actions {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 0.5rem;
+}
+
+/* responsive */
+@media (max-width: 480px) {
+	.admin-action-grid { grid-template-columns: 1fr; }
+	.admin-tab { min-width: 60px; font-size: 0.68rem; }
+	.admin-tab span { font-size: 0.6rem; }
+	.mod-perms-grid { grid-template-columns: 1fr; }
+	.admin-quick-actions { grid-template-columns: 1fr; }
+}
+
+/* ========================================================================
+   🎨 ADMIN DASHBOARD (تصميم مسطح احترافي جديد)
+   ======================================================================== */
+
+.admin-dashboard {
+	background: var(--bg-secondary, #0f172a);
+	border: 1px solid var(--border-color, rgba(255,255,255,0.1));
+	border-radius: 1rem;
+	padding: 1rem;
+}
+
+/* رأس الـ Dashboard */
+.dashboard-header {
+	margin-bottom: 0.75rem;
+}
+.dashboard-title {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	font-size: 1.1rem;
+	font-weight: 800;
+	color: #fbbf24;
+	margin: 0;
+	padding-bottom: 0.5rem;
+	border-bottom: 1px solid var(--border-color, rgba(255,255,255,0.1));
+}
+
+/* التابات الأفقية */
+.dashboard-tabs {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.3rem;
+	margin-bottom: 1rem;
+	padding: 0.4rem;
+	background: var(--bg-tertiary, rgba(255,255,255,0.03));
+	border-radius: 0.6rem;
+}
+.dash-tab {
+	flex: 1;
+	min-width: 75px;
+	padding: 0.5rem 0.5rem;
+	background: transparent;
+	border: none;
+	border-radius: 0.5rem;
+	color: var(--text-secondary, #cbd5e1);
+	font-size: 0.72rem;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all 0.15s ease;
+	white-space: nowrap;
+}
+.dash-tab:hover {
+	color: var(--text-primary, #fff);
+	background: rgba(255,255,255,0.05);
+}
+.dash-tab.active {
+	background: linear-gradient(135deg, var(--c-primary, #a855f7), var(--c-secondary, #ec4899));
+	color: #fff;
+	box-shadow: 0 2px 8px rgba(var(--c-primary-rgb, 168, 85, 247), 0.3);
+}
+
+.dashboard-content {
+	min-height: 150px;
+}
+
+/* أقسام الـ Dashboard */
+.dashboard-section {
+	padding: 0.25rem;
+}
+.section-title {
+	font-size: 0.9rem;
+	font-weight: 700;
+	color: var(--text-primary, #fff);
+	margin: 0 0 0.75rem;
+}
+
+/* شبكة البطاقات */
+.dashboard-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+	gap: 0.75rem;
+}
+
+/* بطاقة Dashboard (Flat design) */
+.dash-card {
+	background: var(--bg-tertiary, rgba(255,255,255,0.03));
+	border: 1px solid var(--border-color, rgba(255,255,255,0.08));
+	border-radius: 0.7rem;
+	padding: 0.9rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+.dash-card h6 {
+	display: flex;
+	align-items: center;
+	gap: 0.4rem;
+	font-size: 0.85rem;
+	font-weight: 700;
+	color: var(--text-primary, #fff);
+	margin: 0 0 0.2rem;
+}
+.dash-desc {
+	font-size: 0.72rem;
+	color: var(--text-muted, #94a3b8);
+	margin: 0;
+	line-height: 1.4;
+}
+
+/* حقول الإدخال المسطحة */
+.dash-input {
+	width: 100%;
+	padding: 0.55rem 0.75rem;
+	background: var(--bg-primary, rgba(0,0,0,0.2));
+	border: 1px solid var(--border-color, rgba(255,255,255,0.1));
+	border-radius: 0.5rem;
+	color: var(--text-primary, #fff);
+	font-size: 0.85rem;
+	font-family: inherit;
+	box-sizing: border-box;
+	transition: border-color 0.15s ease;
+}
+.dash-input:focus {
+	outline: none;
+	border-color: var(--c-primary, #a855f7);
+}
+.dash-input::placeholder { color: var(--text-muted, #94a3b8); }
+.dash-textarea {
+	resize: vertical;
+	min-height: 70px;
+}
+
+/* صف الأزرار */
+.dash-btn-row {
+	display: flex;
+	gap: 0.4rem;
+}
+
+/* أزرار Dashboard المسطحة */
+.dash-btn {
+	flex: 1;
+	padding: 0.55rem 0.7rem;
+	border: none;
+	border-radius: 0.5rem;
+	font-size: 0.8rem;
+	font-weight: 700;
+	cursor: pointer;
+	transition: all 0.15s ease;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.35rem;
+	color: var(--text-primary, #fff);
+	background: var(--bg-tertiary, rgba(255,255,255,0.1));
+}
+.dash-btn.primary {
+	background: linear-gradient(135deg, var(--c-primary, #a855f7), var(--c-secondary, #ec4899));
+	color: #fff;
+}
+.dash-btn.success {
+	background: #16a34a;
+	color: #fff;
+}
+.dash-btn.danger {
+	background: #dc2626;
+	color: #fff;
+}
+.dash-btn:hover {
+	transform: translateY(-1px);
+	filter: brightness(1.1);
+}
+
+/* 💌 الرسائل المخصصة في الـ Drawer */
+.announcement-card.personal-message {
+	background: linear-gradient(135deg, rgba(34, 211, 238, 0.12), rgba(59, 130, 246, 0.08));
+	border: 1px solid rgba(34, 211, 238, 0.35);
+}
+.announcement-card.personal-message::before {
+	background: linear-gradient(180deg, #22d3ee, #3b82f6);
+}
+
+/* responsive للـ Dashboard */
+@media (max-width: 480px) {
+	.dashboard-grid { grid-template-columns: 1fr; }
+	.dash-tab { min-width: 70px; font-size: 0.68rem; }
+}
+
+
+
 
 
 
