@@ -251,6 +251,14 @@ async function fetchUserData(userId) {
             console.error('fetchUserData error:', error);
             return null;
         }
+
+        // 🔄 مزامنة البيانات السحابية مع localStorage (لإبقاء الواجهة محدّثة)
+        if (data && id === getCurrentUserId()) {
+            if (typeof data.xp === 'number') localStorage.setItem('quiz_xp', String(data.xp));
+            if (typeof data.gems === 'number') localStorage.setItem('quiz_gems', String(data.gems));
+            if (typeof data.level === 'number') localStorage.setItem('quiz_level', String(data.level));
+        }
+
         return data;
     } catch (e) {
         console.error('fetchUserData error:', e);

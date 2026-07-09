@@ -12,6 +12,17 @@ function showProfileModal() {
     // 🎮 عرض شريط XP
     if (typeof renderXPBar === 'function') renderXPBar();
     modal.classList.add('show');
+
+    // 🔄 جلب أحدث البيانات من السحابة وتحديث الواجهة
+    if (window.firebaseDB && window.firebaseDB.isLoggedIn()) {
+        window.firebaseDB.fetchUserData().then(cloudData => {
+            if (cloudData) {
+                // تحديث الواجهة بالبيانات الجديدة
+                renderProfileStats();
+                if (typeof renderXPBar === 'function') renderXPBar();
+            }
+        }).catch(() => {});
+    }
     
     // ♿ Focus Trap
     if (typeof trapFocus === 'function') trapFocus(modal);
