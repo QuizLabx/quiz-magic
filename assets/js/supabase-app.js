@@ -154,7 +154,7 @@ async function registerUser(password) {
         }
 
         // حفظ حالة الدخول
-        sessionStorage.setItem('quiz_logged_in_id', userId);
+        localStorage.setItem('quiz_logged_in_id', userId);
 
         return { success: true, userId: userId };
     } catch (error) {
@@ -210,7 +210,7 @@ async function loginUser(userId, password) {
             .update({ last_login: new Date().toISOString() })
             .eq('id', cleanId);
 
-        sessionStorage.setItem('quiz_logged_in_id', cleanId);
+        localStorage.setItem('quiz_logged_in_id', cleanId);
 
         return { success: true, userId: cleanId, userData: userData };
     } catch (error) {
@@ -220,13 +220,14 @@ async function loginUser(userId, password) {
 }
 
 // ==================== SESSION MANAGEMENT ====================
+// نستخدم localStorage بدل sessionStorage للحفاظ على تسجيل الدخول بعد إغلاق المتصفح
 
 function getCurrentUserId() {
-    return sessionStorage.getItem('quiz_logged_in_id') || null;
+    return localStorage.getItem('quiz_logged_in_id') || null;
 }
 
 function logoutUser() {
-    sessionStorage.removeItem('quiz_logged_in_id');
+    localStorage.removeItem('quiz_logged_in_id');
 }
 
 function isLoggedIn() {
@@ -874,3 +875,4 @@ window.firebaseDB = {
     setAllAchievements, setAllPokedex,
     sendMessageToUser, fetchMyMessages, deleteMessage
 };
+

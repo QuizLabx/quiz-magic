@@ -1579,6 +1579,7 @@ function loadScript(src) {
 // ==================== QUIZ GRID ====================
 function renderQuizGrid() {
     isQuizActive = false;
+    document.body.classList.remove('quiz-active'); // إعادة ظهور FAB
     showSkeletonLoaders();
 
     // 🚀 Lazy Loading للصور - تحمل فقط عند الاقتراب منها
@@ -1699,6 +1700,7 @@ function showWelcomeScreen(quizId) {
 // ==================== QUIZ ENGINE ====================
 function startQuiz(quizId) {
     isQuizActive = true;
+    document.body.classList.add('quiz-active'); // إخفاء FAB أثناء الاختبار
     const data = quizzesData[currentLang];
     currentQuiz = data.quizzes.find(q => q.id === quizId);
     currentStepId = 0;
@@ -3812,7 +3814,75 @@ document.addEventListener('DOMContentLoaded', () => {
     initMenuDrawerKeyboard();
     // 📢 جلب الإشعارات عند فتح الموقع
     fetchAnnouncements();
+    // 💎 تحديث عداد الجواهر في الهيدر
+    updateGemsHeader();
+    // 📱 تهيئة زر FAB (إغلاق عند النقر خارجه)
+    initFabOutsideClick();
 });
+
+// ========================================================================
+// 📱 FLOATING ACTION BUTTON (FAB) - زر الأزرار العائم
+// ========================================================================
+
+function toggleFab() {
+    const actions = document.getElementById('fab-actions');
+    const main = document.getElementById('fab-main');
+    if (!actions || !main) return;
+
+    const isOpen = actions.classList.contains('open');
+    if (isOpen) {
+        actions.classList.remove('open');
+        main.classList.remove('active');
+        main.setAttribute('aria-expanded', 'false');
+        main.querySelector('i').className = 'fas fa-sliders-h';
+    } else {
+        actions.classList.add('open');
+        main.classList.add('active');
+        main.setAttribute('aria-expanded', 'true');
+        main.querySelector('i').className = 'fas fa-times';
+    }
+}
+
+function initFabOutsideClick() {
+    document.addEventListener('click', (e) => {
+        const fab = document.querySelector('.fab-container');
+        const actions = document.getElementById('fab-actions');
+        if (!fab || !actions) return;
+        if (!fab.contains(e.target) && actions.classList.contains('open')) {
+            actions.classList.remove('open');
+            const main = document.getElementById('fab-main');
+            if (main) {
+                main.classList.remove('active');
+                main.setAttribute('aria-expanded', 'false');
+                main.querySelector('i').className = 'fas fa-sliders-h';
+            }
+        }
+    });
+}
+
+// ========================================================================
+// 💎 GEMS HEADER DISPLAY (عداد الجواهر في الهيدر)
+// ========================================================================
+
+function updateGemsHeader() {
+    const countEl = document.getElementById('gems-header-count');
+    if (!countEl) return;
+    const gems = parseInt(localStorage.getItem('quiz_gems') || '0', 10);
+    countEl.textContent = gems;
+}
+
+// تحديث عداد الجواهر كل 3 ثوانٍ إن كان مسجّل دخول
+setInterval(() => {
+    if (window.firebaseDB && window.firebaseDB.isLoggedIn()) {
+        window.firebaseDB.fetchUserGems().then(gems => {
+            const current = parseInt(localStorage.getItem('quiz_gems') || '0', 10);
+            if (gems !== current) {
+                localStorage.setItem('quiz_gems', String(gems));
+                updateGemsHeader();
+            }
+        }).catch(() => {});
+    }
+}, 3000);
 
 // ========================================================================
 // 📢 ANNOUNCEMENTS SYSTEM (نظام الإشعارات / المستجدّات)

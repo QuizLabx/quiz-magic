@@ -216,6 +216,8 @@ async function handleLogin() {
         await applyCloudDataToLocal(result.userData);
         renderAccountInfo(document.getElementById('account-modal-body'));
         updateDrawerIdState();
+        // 🆔 ربط الاسم المحلي بالحساب السحابي (للمزامنة)
+        syncLocalNameToCloud();
         if (typeof showProfileNotification === 'function') {
             showProfileNotification(isAr ? '✅ تم تسجيل الدخول!' : '✅ Logged in!', 'success');
         }
@@ -843,6 +845,10 @@ async function applyCloudDataToLocal(cloudData) {
         if (cloudData.stats) localStorage.setItem('quiz_stats', JSON.stringify(cloudData.stats));
         if (cloudData.achievements) localStorage.setItem('quiz_achievements', JSON.stringify(cloudData.achievements));
         if (cloudData.cards) localStorage.setItem('quiz_cards', JSON.stringify(cloudData.cards));
+        // 🆔 ربط اسم المستخدم السحابي بالاسم المحلي (إن وُجد)
+        if (cloudData.display_name) {
+            localStorage.setItem('quiz_username', cloudData.display_name);
+        }
         if (typeof renderXPBar === 'function') renderXPBar();
         if (typeof updateDrawerContent === 'function') updateDrawerContent();
     } catch (e) {
@@ -868,4 +874,40 @@ function updateDrawerIdState() {
 
 document.addEventListener('DOMContentLoaded', () => {
     updateDrawerIdState();
+    // 🔄 تسجيل الدخول التلقائي + جلب البيانات السحابية
+    if (window.firebaseDB && window.firebaseDB.isLoggedIn()) {
+        window.firebaseDB.fetchUserData().then(cloudData => {
+            if (cloudData) {
+                applyCloudDataToLocal(cloudData);
+                updateDrawerIdState();
+            }
+        }).catch(() => {});
+    }
 });
+
+// 🆔 مزامنة الاسم المحلي مع الحساب السحابي
+async function syncLocalNameToCloud() {
+    try {
+        if (!window.firebaseDB || !window.firebaseDB.isLoggedIn()) return;
+        if (!window.supabase) return;
+
+        const userId = window.firebaseDB.getCurrentUserId();
+        const localName = localStorage.getItem('quiz_username') || '';
+
+        // إن لم يكن للمستخدم اسم سحابي، نرسل الاسم المحلي
+        const cloudData = await window.firebaseDB.fetchUserData(userId);
+        if (cloudData && !cloudData.display_name && localName) {
+            // إرسال الاسم المحلي للسحابة
+            const client = window.supabase.createClient(
+                'https://vjjdwsocdstdszjmbxvm.supabase.co',
+                'sb_publishable_eiX6vg9Lz3wORPn1fRAQ2A_tR4h_mF7'
+            );
+            await client.rpc('update_display_name', {
+                p_user_id: userId,
+                p_name: localName
+            });
+        }
+    } catch (e) {
+        console.warn('syncLocalNameToCloud error:', e);
+    }
+}
