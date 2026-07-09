@@ -695,6 +695,125 @@ async function fetchUserGems(userId) {
     return data ? (data.gems || 0) : 0;
 }
 
+// ==================== EVENTS MANAGEMENT (الإنجازات + الموسوعة) ====================
+
+// فتح/إغلاق كل الإنجازات لمستخدم
+async function setAllAchievements(targetUserId, unlock) {
+    try {
+        if (!isLoggedIn()) return { success: false, error: 'not_logged_in' };
+        if (!initSupabase()) return { success: false, error: 'supabase_not_ready' };
+
+        const myId = getCurrentUserId();
+        const { data, error } = await sbClient.rpc('admin_set_all_achievements', {
+            p_admin_id: myId,
+            p_target_id: targetUserId,
+            p_unlock: unlock
+        });
+
+        if (error) return { success: false, error: error.message || 'rpc_failed' };
+
+        // مزامنة محلية لو كان الهدف هو نفسي
+        if (targetUserId === myId && data && data.success) {
+            // تحديث الإنجازات محلياً (سيُجلب تلقائياً عند فتح صفحة الإنجازات)
+        }
+        return data || { success: true };
+    } catch (e) {
+        console.error('setAllAchievements error:', e);
+        return { success: false, error: 'server_error' };
+    }
+}
+
+// فتح/إغلاق كل الموسوعة لمستخدم
+async function setAllPokedex(targetUserId, unlock) {
+    try {
+        if (!isLoggedIn()) return { success: false, error: 'not_logged_in' };
+        if (!initSupabase()) return { success: false, error: 'supabase_not_ready' };
+
+        const myId = getCurrentUserId();
+        const { data, error } = await sbClient.rpc('admin_set_all_pokedex', {
+            p_admin_id: myId,
+            p_target_id: targetUserId,
+            p_unlock: unlock
+        });
+
+        if (error) return { success: false, error: error.message || 'rpc_failed' };
+        return data || { success: true };
+    } catch (e) {
+        console.error('setAllPokedex error:', e);
+        return { success: false, error: 'server_error' };
+    }
+}
+
+// ==================== PERSONAL MESSAGES (الرسائل المخصصة) ====================
+
+// إرسال رسالة لمستخدم
+async function sendMessageToUser(targetUserId, title, message, icon) {
+    try {
+        if (!isLoggedIn()) return { success: false, error: 'not_logged_in' };
+        if (!initSupabase()) return { success: false, error: 'supabase_not_ready' };
+
+        const myId = getCurrentUserId();
+        const { data, error } = await sbClient.rpc('admin_send_message', {
+            p_admin_id: myId,
+            p_target_id: targetUserId,
+            p_title: title,
+            p_message: message,
+            p_icon: icon || '💌'
+        });
+
+        if (error) return { success: false, error: error.message || 'rpc_failed' };
+        return data || { success: true };
+    } catch (e) {
+        console.error('sendMessageToUser error:', e);
+        return { success: false, error: 'server_error' };
+    }
+}
+
+// جلب رسائل المستخدم الحالي
+async function fetchMyMessages() {
+    try {
+        if (!isLoggedIn()) return [];
+        if (!initSupabase()) return [];
+
+        const userId = getCurrentUserId();
+        const { data, error } = await sbClient.rpc('get_user_messages', {
+            p_user_id: userId
+        });
+
+        if (error) {
+            console.error('fetchMyMessages error:', error);
+            return [];
+        }
+        return data || [];
+    } catch (e) {
+        console.error('fetchMyMessages error:', e);
+        return [];
+    }
+}
+
+// حذف رسالة (عند الضغط على x)
+async function deleteMessage(messageId) {
+    try {
+        if (!isLoggedIn()) return false;
+        if (!initSupabase()) return false;
+
+        const userId = getCurrentUserId();
+        const { data, error } = await sbClient.rpc('delete_user_message', {
+            p_user_id: userId,
+            p_message_id: messageId
+        });
+
+        if (error) {
+            console.error('deleteMessage error:', error);
+            return false;
+        }
+        return !!data;
+    } catch (e) {
+        console.error('deleteMessage error:', e);
+        return false;
+    }
+}
+
 async function syncStatsToCloud() {
     try {
         if (!isLoggedIn()) return { success: false, error: 'not_logged_in' };
@@ -750,5 +869,8 @@ window.firebaseDB = {
     setModerator, setAdmin, resetUserPassword,
     deleteUserPermanent, getSiteStats,
     checkBanStatus, hasPermission, MOD_PERMISSIONS,
-    fetchUserGems, isCurrentUserAdmin, syncStatsToCloud
+    fetchUserGems, isCurrentUserAdmin, syncStatsToCloud,
+    // أحداث + رسائل
+    setAllAchievements, setAllPokedex,
+    sendMessageToUser, fetchMyMessages, deleteMessage
 };

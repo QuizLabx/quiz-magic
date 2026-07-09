@@ -295,21 +295,35 @@ async function renderAccountInfo(container) {
     `;
 }
 
-// ==================== ADMIN PANEL (تابات) ====================
+// ==================== ADMIN PANEL (Dashboard مسطح جديد) ====================
 
 function renderAdminPanel(isAr) {
+    const t = isAr ? {
+        title: 'لوحة التحكم',
+        gems: 'الجواهر', xp: 'النقاط والمستوى', users: 'المستخدمون',
+        ban: 'الحظر', events: 'الأحداث', msg: 'الرسائل', staff: 'الإدارة', stats: 'الإحصائيات'
+    } : {
+        title: 'Control Panel',
+        gems: 'Gems', xp: 'XP & Level', users: 'Users',
+        ban: 'Bans', events: 'Events', msg: 'Messages', staff: 'Staff', stats: 'Stats'
+    };
+
     return `
-        <div class="admin-panel pro-admin-panel">
-            <h4 class="admin-panel-title"><i class="fas fa-crown"></i> ${isAr ? 'لوحة التحكم' : 'Control Panel'}</h4>
-            <div class="admin-tabs">
-                <button onclick="switchAdminTab('gems', this)" class="admin-tab active" data-tab="gems">💎 <span>${isAr ? 'جواهر' : 'Gems'}</span></button>
-                <button onclick="switchAdminTab('xp', this)" class="admin-tab" data-tab="xp">⚡ <span>${isAr ? 'XP/مستوى' : 'XP/Level'}</span></button>
-                <button onclick="switchAdminTab('users', this)" class="admin-tab" data-tab="users">📋 <span>${isAr ? 'مستخدمون' : 'Users'}</span></button>
-                <button onclick="switchAdminTab('ban', this)" class="admin-tab" data-tab="ban">🚫 <span>${isAr ? 'حظر' : 'Ban'}</span></button>
-                <button onclick="switchAdminTab('staff', this)" class="admin-tab" data-tab="staff">👑 <span>${isAr ? 'إدارة' : 'Staff'}</span></button>
-                <button onclick="switchAdminTab('stats', this)" class="admin-tab" data-tab="stats">📊 <span>${isAr ? 'إحصائيات' : 'Stats'}</span></button>
+        <div class="admin-panel admin-dashboard">
+            <div class="dashboard-header">
+                <h4 class="dashboard-title"><i class="fas fa-crown"></i> ${t.title}</h4>
             </div>
-            <div id="admin-tab-content" class="admin-tab-content">
+            <div class="dashboard-tabs">
+                <button onclick="switchAdminTab('gems', this)" class="dash-tab active">${isAr ? '💎 جواهر' : '💎 Gems'}</button>
+                <button onclick="switchAdminTab('xp', this)" class="dash-tab">${isAr ? '⚡ نقاط' : '⚡ XP'}</button>
+                <button onclick="switchAdminTab('events', this)" class="dash-tab">${isAr ? '🏆 أحداث' : '🏆 Events'}</button>
+                <button onclick="switchAdminTab('msg', this)" class="dash-tab">${isAr ? '💌 رسائل' : '💌 Messages'}</button>
+                <button onclick="switchAdminTab('users', this)" class="dash-tab">${isAr ? '👥 مستخدمون' : '👥 Users'}</button>
+                <button onclick="switchAdminTab('ban', this)" class="dash-tab">${isAr ? '🚫 حظر' : '🚫 Bans'}</button>
+                <button onclick="switchAdminTab('staff', this)" class="dash-tab">${isAr ? '👑 إدارة' : '👑 Staff'}</button>
+                <button onclick="switchAdminTab('stats', this)" class="dash-tab">${isAr ? '📊 إحصائيات' : '📊 Stats'}</button>
+            </div>
+            <div id="admin-tab-content" class="dashboard-content">
                 <div class="account-info-loading"><i class="fas fa-spinner fa-spin"></i></div>
             </div>
         </div>
@@ -317,7 +331,7 @@ function renderAdminPanel(isAr) {
 }
 
 function switchAdminTab(tabName, btn) {
-    document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.dash-tab').forEach(t => t.classList.remove('active'));
     if (btn) btn.classList.add('active');
 
     const content = document.getElementById('admin-tab-content');
@@ -327,6 +341,8 @@ function switchAdminTab(tabName, btn) {
     const renderers = {
         gems: () => renderAdminGemsTab(isAr),
         xp: () => renderAdminXPTab(isAr),
+        events: () => renderAdminEventsTab(isAr),
+        msg: () => renderAdminMessagesTab(isAr),
         users: () => { renderAdminUsersTab(isAr); return null; },
         ban: () => renderAdminBanTab(isAr),
         staff: () => renderAdminStaffTab(isAr),
@@ -337,6 +353,76 @@ function switchAdminTab(tabName, btn) {
     if (html !== null) content.innerHTML = html;
 }
 
+// ===== تاب الأحداث (الإنجازات + الموسوعة) =====
+function renderAdminEventsTab(isAr) {
+    const t = isAr ? {
+        title: 'إدارة الأحداث', ach: 'الإنجازات', dex: 'الموسوعة',
+        targetId: 'ID المستخدم', unlock: 'فتح الكل', lock: 'إغلاق الكل',
+        achDesc: 'فتح أو إغلاق كل الإنجازات لمستخدم',
+        dexDesc: 'فتح أو إغلاق كل مخلوقات الموسوعة لمستخدم'
+    } : {
+        title: 'Events Management', ach: 'Achievements', dex: 'Pokédex',
+        targetId: 'User ID', unlock: 'Unlock All', lock: 'Lock All',
+        achDesc: 'Unlock or lock all achievements for a user',
+        dexDesc: 'Unlock or lock all Pokédex creatures for a user'
+    };
+
+    return `
+        <div class="dashboard-section">
+            <h5 class="section-title">${isAr ? '🏆 ' + t.title : '🏆 ' + t.title}</h5>
+            <div class="dashboard-grid">
+                <div class="dash-card">
+                    <h6><i class="fas fa-trophy" style="color:#fbbf24"></i> ${t.ach}</h6>
+                    <p class="dash-desc">${t.achDesc}</p>
+                    <input type="text" id="ach-target-id" class="dash-input" placeholder="${t.targetId}" inputmode="numeric" maxlength="6">
+                    <div class="dash-btn-row">
+                        <button onclick="handleAdminAction('unlockAch')" class="dash-btn success"><i class="fas fa-unlock"></i> ${t.unlock}</button>
+                        <button onclick="handleAdminAction('lockAch')" class="dash-btn danger"><i class="fas fa-lock"></i> ${t.lock}</button>
+                    </div>
+                </div>
+                <div class="dash-card">
+                    <h6><i class="fas fa-book-open" style="color:#22d3ee"></i> ${t.dex}</h6>
+                    <p class="dash-desc">${t.dexDesc}</p>
+                    <input type="text" id="dex-target-id" class="dash-input" placeholder="${t.targetId}" inputmode="numeric" maxlength="6">
+                    <div class="dash-btn-row">
+                        <button onclick="handleAdminAction('unlockDex')" class="dash-btn success"><i class="fas fa-unlock"></i> ${t.unlock}</button>
+                        <button onclick="handleAdminAction('lockDex')" class="dash-btn danger"><i class="fas fa-lock"></i> ${t.lock}</button>
+                    </div>
+                </div>
+            </div>
+            <div id="admin-events-result" class="auth-error hidden"></div>
+        </div>
+    `;
+}
+
+// ===== تاب الرسائل المخصصة =====
+function renderAdminMessagesTab(isAr) {
+    const t = isAr ? {
+        title: 'إرسال رسالة مخصصة', targetId: 'ID المستلم',
+        titleField: 'العنوان', messageField: 'الرسالة', iconField: 'الأيقونة (إيموجي)',
+        send: 'إرسال الرسالة', desc: 'ستصل الرسالة في قائمة المستلم (☰) مع نقطة حمراء'
+    } : {
+        title: 'Send Personal Message', targetId: 'Recipient ID',
+        titleField: 'Title', messageField: 'Message', iconField: 'Icon (emoji)',
+        send: 'Send Message', desc: 'Message will appear in recipient menu (☰) with red dot'
+    };
+
+    return `
+        <div class="dashboard-section">
+            <h5 class="section-title">💌 ${t.title}</h5>
+            <div class="dash-card" style="max-width:500px;margin:0 auto">
+                <input type="text" id="msg-target-id" class="dash-input" placeholder="${t.targetId}" inputmode="numeric" maxlength="6">
+                <input type="text" id="msg-title" class="dash-input" placeholder="${t.titleField}" maxlength="50">
+                <textarea id="msg-body" class="dash-input dash-textarea" placeholder="${t.messageField}" rows="4" maxlength="500"></textarea>
+                <input type="text" id="msg-icon" class="dash-input" placeholder="${t.iconField}" value="💌" maxlength="4">
+                <p class="dash-desc">${t.desc}</p>
+                <button onclick="handleAdminAction('sendMessage')" class="dash-btn primary" style="width:100%"><i class="fas fa-paper-plane"></i> ${t.send}</button>
+            </div>
+            <div id="admin-msg-result" class="auth-error hidden"></div>
+        </div>
+    `;
+}
+
 function renderAdminGemsTab(isAr) {
     return `
         <div class="admin-section">
@@ -345,12 +431,14 @@ function renderAdminGemsTab(isAr) {
                     <h5><i class="fas fa-gem" style="color:#22d3ee"></i> ${isAr ? 'شحن جواهر' : 'Gift Gems'}</h5>
                     <input type="text" id="gift-target-id" class="auth-input" placeholder="${isAr ? 'ID المستلم' : 'Recipient ID'}" inputmode="numeric" maxlength="6">
                     <input type="number" id="gift-amount" class="auth-input" placeholder="${isAr ? 'الكمية' : 'Amount'}" min="1">
+                    <input type="text" id="gift-message" class="auth-input" placeholder="${isAr ? '💌 رسالة (اختياري)' : '💌 Message (optional)'}" maxlength="200">
                     <button onclick="handleAdminAction('giftGems')" class="admin-action-btn primary"><i class="fas fa-paper-plane"></i> ${isAr ? 'إرسال' : 'Send'}</button>
                 </div>
                 <div class="admin-action-card">
                     <h5><i class="fas fa-minus-circle" style="color:#f87171"></i> ${isAr ? 'سحب جواهر' : 'Remove Gems'}</h5>
                     <input type="text" id="remove-target-id" class="auth-input" placeholder="${isAr ? 'ID المستهدف' : 'Target ID'}" inputmode="numeric" maxlength="6">
                     <input type="number" id="remove-amount" class="auth-input" placeholder="${isAr ? 'الكمية' : 'Amount'}" min="1">
+                    <input type="text" id="remove-message" class="auth-input" placeholder="${isAr ? '💌 سبب (اختياري)' : '💌 Reason (optional)'}" maxlength="200">
                     <button onclick="handleAdminAction('removeGems')" class="admin-action-btn danger"><i class="fas fa-minus"></i> ${isAr ? 'سحب' : 'Remove'}</button>
                 </div>
             </div>
@@ -562,7 +650,7 @@ async function renderAdminStatsTab(isAr) {
         </div>`;
 }
 
-// ===== معالج الإجراءات الموحّد =====
+// ===== معالج الإجراءات الموحّد (مع دعم إرسال رسالة مع الإجراء) =====
 async function handleAdminAction(action) {
     const isAr = (typeof currentLang !== 'undefined' && currentLang === 'ar');
     const container = getActionResultContainer(action);
@@ -571,38 +659,29 @@ async function handleAdminAction(action) {
 
     let result = { success: false, error: 'invalid' };
     let targetId = '';
+    let customMessage = ''; // رسالة تُرسل مع الإجراء (إن وُجدت)
 
     switch (action) {
         case 'giftGems':
             targetId = (val('gift-target-id') || '').replace(/\D/g, '');
+            customMessage = val('gift-message') || '';
             result = await window.firebaseDB.addGemsToUser(targetId, parseInt(val('gift-amount'), 10) || 0);
             break;
         case 'removeGems':
             targetId = (val('remove-target-id') || '').replace(/\D/g, '');
+            customMessage = val('remove-message') || '';
             result = await window.firebaseDB.removeGemsFromUser(targetId, parseInt(val('remove-amount'), 10) || 0);
             break;
         case 'setXP':
             targetId = (val('xp-target-id') || '').replace(/\D/g, '');
+            customMessage = val('xp-message') || '';
             result = await window.firebaseDB.setUserXP(targetId, val('xp-amount'));
-            break;
-        case 'setLevel':
-            targetId = (val('level-target-id') || '').replace(/\D/g, '');
-            result = await window.firebaseDB.setUserLevel(targetId, val('level-value'));
             break;
         case 'ban':
             targetId = (val('ban-target-id') || '').replace(/\D/g, '');
-            result = await window.firebaseDB.banUser(targetId, val('ban-reason'));
+            customMessage = val('ban-reason') || '';
+            result = await window.firebaseDB.banUser(targetId, customMessage);
             break;
-        case 'tempBan': {
-            targetId = (val('tempban-target-id') || '').replace(/\D/g, '');
-            const dur = parseInt(val('tempban-duration'), 10) || 0;
-            const unit = val('tempban-unit');
-            let ms = dur * 3600000;
-            if (unit === 'days') ms = dur * 86400000;
-            if (unit === 'weeks') ms = dur * 604800000;
-            result = await window.firebaseDB.tempBanUser(targetId, ms, '');
-            break;
-        }
         case 'unban':
             targetId = (val('unban-target-id') || '').replace(/\D/g, '');
             result = await window.firebaseDB.unbanUser(targetId);
@@ -623,10 +702,49 @@ async function handleAdminAction(action) {
             targetId = (val('admin-target-id-input') || '').replace(/\D/g, '');
             result = await window.firebaseDB.setAdmin(targetId, false);
             break;
+        case 'unlockAch':
+            targetId = (val('ach-target-id') || '').replace(/\D/g, '');
+            result = await window.firebaseDB.setAllAchievements(targetId, true);
+            break;
+        case 'lockAch':
+            targetId = (val('ach-target-id') || '').replace(/\D/g, '');
+            result = await window.firebaseDB.setAllAchievements(targetId, false);
+            break;
+        case 'unlockDex':
+            targetId = (val('dex-target-id') || '').replace(/\D/g, '');
+            result = await window.firebaseDB.setAllPokedex(targetId, true);
+            break;
+        case 'lockDex':
+            targetId = (val('dex-target-id') || '').replace(/\D/g, '');
+            result = await window.firebaseDB.setAllPokedex(targetId, false);
+            break;
+        case 'sendMessage':
+            targetId = (val('msg-target-id') || '').replace(/\D/g, '');
+            result = await window.firebaseDB.sendMessageToUser(
+                targetId,
+                val('msg-title'),
+                val('msg-body'),
+                val('msg-icon') || '💌'
+            );
+            break;
+    }
+
+    // 💌 إرسال رسالة مخصصة مع الإجراء (إن كُتبت)
+    if (result.success && customMessage && targetId && action !== 'sendMessage') {
+        try {
+            const msgTitle = isAr ? 'رسالة من الإدارة' : 'Message from Admin';
+            const msgIcon = (action === 'giftGems') ? '💎' :
+                           (action === 'removeGems') ? '⚠️' :
+                           (action === 'ban') ? '🚫' : '📢';
+            await window.firebaseDB.sendMessageToUser(targetId, msgTitle, customMessage, msgIcon);
+        } catch (e) { /* تجاهل فشل الرسالة */ }
     }
 
     if (result && result.success) {
-        showAuthSuccess(resultEl, isAr ? `✅ تم بنجاح (${targetId})` : `✅ Done (${targetId})`);
+        const successMsg = customMessage && action !== 'sendMessage'
+            ? (isAr ? `✅ تم + تم إرسال الرسالة (${targetId})` : `✅ Done + Message sent (${targetId})`)
+            : (isAr ? `✅ تم بنجاح (${targetId})` : `✅ Done (${targetId})`);
+        showAuthSuccess(resultEl, successMsg);
         if (typeof trackEvent === 'function') trackEvent('admin_action', { action, target: targetId });
     } else {
         showAuthError(resultEl, (isAr ? '❌ خطأ: ' : '❌ Error: ') + (result.error || ''));
@@ -636,6 +754,8 @@ async function handleAdminAction(action) {
 function getActionResultContainer(action) {
     if (['giftGems','removeGems'].includes(action)) return 'gems';
     if (['setXP','setLevel'].includes(action)) return 'xp';
+    if (['unlockAch','lockAch','unlockDex','lockDex'].includes(action)) return 'events';
+    if (['sendMessage'].includes(action)) return 'msg';
     if (['ban','tempBan','unban'].includes(action)) return 'ban';
     if (['setMod','makeAdmin','removeAdmin'].includes(action)) return 'staff';
     return 'gems';

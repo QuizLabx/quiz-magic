@@ -3471,6 +3471,8 @@ function openMenuDrawer() {
     updateDrawerContent();
     // 📢 بناء بطاقات الإشعارات قبل الفتح
     renderAnnouncements();
+    // 💌 بناء الرسائل المخصصة
+    renderPersonalMessages();
 
     drawer.classList.add('open');
     overlay.classList.add('open');
@@ -3837,12 +3839,23 @@ async function fetchAnnouncements() {
     }
 }
 
-// 🔴 إظهار/إخفاء النقطة الحمراء حسب وجود إشعارات غير مقروءة
-function updateNotificationDot() {
+// 🔴 إظهار/إخفاء النقطة الحمراء حسب وجود إشعارات غير مقروءة أو رسائل مخصصة
+async function updateNotificationDot() {
     const dot = document.getElementById('menu-notification-dot');
     if (!dot) return;
+
     const unread = getUnreadAnnouncements();
-    dot.classList.toggle('hidden', unread.length === 0);
+    let hasMessages = false;
+
+    // فحص الرسائل المخصصة (إن كان مسجّل دخول)
+    if (window.firebaseDB && window.firebaseDB.isLoggedIn()) {
+        try {
+            const messages = await window.firebaseDB.fetchMyMessages();
+            hasMessages = messages && messages.length > 0;
+        } catch (e) { /* تجاهل */ }
+    }
+
+    dot.classList.toggle('hidden', unread.length === 0 && !hasMessages);
 }
 
 // 📋 الإشعارات غير المقروءة (لم يُDismissها المستخدم بعد)
@@ -4202,4 +4215,76 @@ function renderXPBar() {
             </div>
         </div>
     `;
+}
+
+// ========================================================================
+// 💌 PERSONAL MESSAGES (الرسائل المخصصة في الـ Drawer)
+// ========================================================================
+
+// 🎨 بناء بطاقات الرسائل المخصصة في القائمة الجانبية
+async function renderPersonalMessages() {
+    const container = document.getElementById('announcements-container');
+    if (!container) return;
+    if (!window.firebaseDB || !window.firebaseDB.isLoggedIn()) return;
+
+    try {
+        const messages = await window.firebaseDB.fetchMyMessages();
+        if (!messages || messages.length === 0) return;
+
+        const isAr = currentLang === 'ar';
+        messages.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'announcement-card personal-message';
+            card.setAttribute('data-message-id', item.id);
+
+            // تنسيق التاريخ
+            let dateStr = '';
+            if (item.created_at) {
+                try {
+                    const d = new Date(item.created_at);
+                    dateStr = isAr
+                        ? d.toLocaleDateString('ar-EG', { day: 'numeric', month: 'long' })
+                        : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                } catch (e) { dateStr = ''; }
+            }
+
+            card.innerHTML = `
+                <button class="announcement-close" onclick="dismissPersonalMessage('${item.id}')" aria-label="${isAr ? 'إزالة الرسالة' : 'Dismiss'}">
+                    <i class="fas fa-times" aria-hidden="true"></i>
+                </button>
+                <div class="announcement-header">
+                    <span class="announcement-icon">${escapeHtml(item.icon || '💌')}</span>
+                    <div class="announcement-title-wrap">
+                        <h4 class="announcement-title">${escapeHtml(item.title || '')}</h4>
+                        ${dateStr ? `<span class="announcement-date">${dateStr}</span>` : ''}
+                    </div>
+                </div>
+                <p class="announcement-message">${escapeHtml(item.message || '')}</p>
+            `;
+            container.appendChild(card);
+        });
+    } catch (e) {
+        console.warn('renderPersonalMessages error:', e);
+    }
+}
+
+// ✕ حذف رسالة مخصصة (عند الضغط على x)
+async function dismissPersonalMessage(messageId) {
+    if (!messageId) return;
+    const card = document.querySelector(`.announcement-card[data-message-id="${messageId}"]`);
+    if (card) {
+        card.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+        card.style.opacity = '0';
+        card.style.transform = 'translateX(-20px)';
+        setTimeout(() => {
+            card.remove();
+            const container = document.getElementById('announcements-container');
+            if (container && container.children.length === 0) container.innerHTML = '';
+        }, 250);
+    }
+    // حذف من السحابة
+    if (window.firebaseDB && window.firebaseDB.deleteMessage) {
+        await window.firebaseDB.deleteMessage(messageId);
+    }
+    updateNotificationDot();
 }
