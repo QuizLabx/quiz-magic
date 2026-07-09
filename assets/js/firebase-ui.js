@@ -849,8 +849,14 @@ async function applyCloudDataToLocal(cloudData) {
         if (cloudData.display_name) {
             localStorage.setItem('quiz_username', cloudData.display_name);
         }
+
+        // 🔄 إعادة تحميل البيانات في الذاكرة (مهم جداً للإنجازات والموسوعة)
+        if (typeof loadAchievements === 'function') loadAchievements();
+        if (typeof loadUserStats === 'function') loadUserStats();
+
         if (typeof renderXPBar === 'function') renderXPBar();
         if (typeof updateDrawerContent === 'function') updateDrawerContent();
+        if (typeof updateGemsHeader === 'function') updateGemsHeader();
     } catch (e) {
         console.warn('applyCloudDataToLocal error:', e);
     }

@@ -733,9 +733,22 @@ function showAchievementsModal() {
     const modal = document.getElementById('achievements-modal');
     if (!modal) return;
 
+    // 🔄 إعادة تحميل الإنجازات من localStorage في الذاكرة
+    if (typeof loadAchievements === 'function') loadAchievements();
     renderAchievementsGrid();
     modal.classList.add('show');
     trapFocus(modal);
+
+    // 🔄 جلب أحدث الإنجازات من السحابة (إن كان مسجّل دخول)
+    if (window.firebaseDB && window.firebaseDB.isLoggedIn()) {
+        window.firebaseDB.fetchUserData().then(cloudData => {
+            if (cloudData && cloudData.achievements) {
+                localStorage.setItem('quiz_achievements', JSON.stringify(cloudData.achievements));
+                if (typeof loadAchievements === 'function') loadAchievements();
+                renderAchievementsGrid(); // إعادة العرض بالبيانات الجديدة
+            }
+        }).catch(() => {});
+    }
 
     // ♿ التركيز على أول عنصر تفاعلي داخل المودال
     setTimeout(() => {
@@ -906,6 +919,17 @@ if (!modal) return;
 // 🎵 صوت فتح الموسوعة
 if (window.audioManager) {
 window.audioManager.play('ui-click');
+}
+
+// 🔄 جلب أحدث بيانات الموسوعة من السحابة (إن كان مسجّل دخول)
+if (window.firebaseDB && window.firebaseDB.isLoggedIn()) {
+    window.firebaseDB.fetchUserData().then(cloudData => {
+        if (cloudData && cloudData.stats) {
+            localStorage.setItem('quiz_stats', JSON.stringify(cloudData.stats));
+            if (typeof loadUserStats === 'function') loadUserStats();
+            showPokedexList(); // إعادة العرض بالبيانات الجديدة
+        }
+    }).catch(() => {});
 }
 
 // إظهار عرض القائمة افتراضياً
