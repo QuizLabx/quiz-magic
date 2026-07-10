@@ -1967,7 +1967,7 @@ function showLoading() {
 }
 
 // ==================== RESULT CALCULATION (FINGERPRINT MATCHING ALGORITHM) ====================
-// 🧬 خوارزمية البصمة الكاملة (Cosine Similarity + Novelty System)
+// 🧬 خوارزمية البصمة الكاملة (Cosine Similarity)
 function calculateResult() {
     // 1. حساب نقاط كل محور (Axis) من إجابات المستخدم
     const axisScores = {
@@ -1996,7 +1996,6 @@ function calculateResult() {
     }
 
     // 3. دالة Cosine Similarity الرياضية
-    // تقيس التشابه بين متجهين (بصمة المستخدم وبصمة الكائن)
     function cosineSimilarity(vecA, vecB) {
         let dotProduct = 0;
         let magA = 0;
@@ -2011,7 +2010,7 @@ function calculateResult() {
         }
         const magnitude = Math.sqrt(magA) * Math.sqrt(magB);
         if (magnitude === 0) return 0;
-        return dotProduct / magnitude; // قيمة بين 0 و 1
+        return dotProduct / magnitude;
     }
 
     // 4. حساب التوافق مع كل كائن باستخدام بصمته الكاملة
@@ -2019,7 +2018,6 @@ function calculateResult() {
     let creatureScores = [];
 
     results.forEach(creature => {
-        // البصمة الكاملة للكائن (من CREATURE_FINGERPRINTS)
         const creatureFingerprint = (typeof CREATURE_FINGERPRINTS !== 'undefined' && CREATURE_FINGERPRINTS[creature.id])
             ? CREATURE_FINGERPRINTS[creature.id]
             : null;
@@ -2029,7 +2027,7 @@ function calculateResult() {
             // ✨ الخوارزمية الجديدة: مطابقة كل المحاور الستة
             similarity = cosineSimilarity(userFingerprint, creatureFingerprint);
         } else {
-            // Fallback للخوارزمية القديمة في حال عدم وجود بصمة
+            // Fallback للخوارزمية القديمة
             const axes = creature.axes || [];
             let total = 0;
             axes.forEach(axis => { total += (userFingerprint[axis] || 50); });
@@ -2038,44 +2036,37 @@ function calculateResult() {
 
         creatureScores.push({
             id: creature.id,
-            score: similarity, // القيمة الأساسية (0-1)
-            compatibility: similarity * 100, // للنسبة المئوية
+            score: similarity,
+            compatibility: similarity * 100,
             rarity: creature.rarity,
             creature: creature
         });
     });
 
-    // 5. 🎁 نظام الجدة (Novelty Bonus) - لتشجيع رؤية كل الكائنات
+    // 5. 🎁 نظام الجدة (Novelty Bonus)
     try {
         const stats = getUserStats();
         const discoveredCreatures = stats.creatures ? Object.keys(stats.creatures) : [];
-        const recentCreatures = []; // يمكن تفعيلها لاحقاً
 
         creatureScores.forEach(score => {
-            // +10% boost للكائنات التي لم يرها المستخدم أبداً
             if (!discoveredCreatures.includes(score.id)) {
                 score.score *= 1.10;
                 score.compatibility = score.score * 100;
             }
         });
-    } catch (e) {
-        // تجاهل الأخطاء - النظام يعمل بدون bonus أيضاً
-    }
+    } catch (e) {}
 
-    // 6. ⚖️ نظام كسر التعادل الرياضي العادل
+    // 6. ⚖️ كسر التعادل الرياضي العادل (ليس بالندرة!)
     creatureScores.sort((a, b) => {
-        // الأولوية للأعلى توافقاً (الفرق يجب أن يكون أكبر من 0.005 = 0.5%)
         if (Math.abs(b.score - a.score) > 0.005) {
             return b.score - a.score;
         }
-        // كسر التعادل: عشوائي عادل (ليس بالندرة!)
         return Math.random() - 0.5;
     });
 
     const winner = creatureScores[0];
     const secondary = creatureScores[1];
 
-    // 7. التحقق من الحد الأدنى (Threshold)
     const isBelowThreshold = winner.compatibility < 55;
 
     return {
