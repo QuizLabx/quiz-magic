@@ -155,7 +155,7 @@ const quizzesData = {
             image: "assets/images/dragon.jpg",
             description: "أنت تجسيد للقوة والقيادة. تمتلك روحاً نارية لا تقهر وطموحاً يتجاوز السحاب.",
             axes: ["willpower", "energy"],
-            multiplier: 1.25,
+
             narrative: "في أعماق الجبال القديمة، حيث تلامس القمم السماء وتُخفي كنوز العصور، استيقظت روحك من سباتها الأبدي. أنت التنين الذي لا يُقهر، الملك الذي يحمل في عينيه حكمة ألف عام وفي قلبه نار لا تنطفئ. كل خطوة تخطوها تهز الأرض، وكل نظرة منك تحمل سلطة الملوك وشجاعة الفرسان الذين لا يعرفون التراجع.\n\nلست مجرد كائن قوي، بل أنت تجسيد للقوة التي تحكمها الحكمة. رؤيتك تتجاوز الأفق، وطموحك لا تعرف الحدود. عندما تتحدث، تصغي الجبال، وعندما تقرر، تتحرك الأمم. الناس ينجذبون إليك كالفراشات نحو النور، يرون فيك القائد الطبيعي الذي يولد مرة كل ألف عام.\n\nلكن تذكر أيها التنين العظيم: القوة الحقيقية ليست في السيطرة على الآخرين، بل في السيطرة على الذات. النار التي تحرق كل ما حولها تترك رماداً، لكن النار التي تدفئ وتُنير تبني ممالك. استخدم لهبك بحكمة، فالتنين الحكيم أعظم من التنين القوي.",
             advice: "تذكر أن القوة الحقيقية تكمن في كبح جماح نارك واستخدامها للتدفئة بدلاً من الحرق.",
             badge: "المفكر الأسطوري",
@@ -193,7 +193,7 @@ const quizzesData = {
             image: "assets/images/phoenix.jpg",
             description: "أنت رمز للتجدد والأمل. تمتلك قدرة مذهلة على النهوض من الرماد أقوى من ذي قبل.",
             axes: ["energy", "empathy"],
-            multiplier: 1.15,
+
             narrative: "في لحظة الاحتراق الأخيرة، عندما ظن العالم أنك انتهيت، أشرقت من رمادك روح العنقاء. لستَ مجرد ناجٍ من العواصف، بل أنت العاصفة نفسها التي تتجدد. كل خسارة علّمتك درساً، كل فشل بنى فيك حكمة، وكل دموع سقتها أرض روحك لتزهر من جديد.\n\nأنت لا تعرف معنى الاستسلام، فالكلمة غير موجودة في قاموسك. عندما يسقط الآخرون، أنت تنهض أقوى. عندما يُغلق باب، تفتح نافذة. عندما يظلم العالم، تصبح أنت النور.\n\nلكن تذكر: حتى العنقاء تحتاج للراحة بين دورات التجديد. لا تحرق نفسك باستمرار إثباتاً لقوتك، فالنور الهادئ المستدام أقوى من اللهب العنيف الزائل.",
             advice: "تذكر أنك لست مضطراً للاحتراق دائماً لتثبت وجودك؛ النور الهادئ يدوم أطول.",
             badge: "الروح المتجددة",
@@ -231,7 +231,7 @@ const quizzesData = {
             image: "assets/images/unicorn.jpg",
             description: "أنت تجسيد للنقاء واللطف. تمتلك روحاً بريئة تهدف دائماً لنشر الخير والجمال.",
             axes: ["empathy", "mystery"],
-            multiplier: 1.20,
+
             narrative: "في غابة مسحورة لم تطأها قدم بشر، حيث تتراقص أشعة الشمس بين أغصان الأشجار القديمة، تسكن روحك النقية كقطرة ندى على بتلة ورد. أنت وحيد القرن الذي لا يظهر إلا للقلوب الطاهرة، ذلك الكائن الذي يمشي على الأرض دون أن يثقلها، ويلمس القلوب دون أن يجرحها.\n\nضوء قلبك ينير الدروب المظلمة للآخرين، ولمسة يديك تشفي جروحاً لا يراها أحد. في عالم مليء بالضجيج والزيف، أنت الحقيقة الهادئة التي يبحث عنها الجميع. براءتك ليست ضعفاً، بل هي أقوى درع في الكون، لأنها لا تعرف الخداع ولا تحمل الحقد.\n\nالناس يأتون إليك عندما تنكسر قلوبهم، لأنهم يعرفون أنك لن تحكم عليهم، بل ستحتضنهم كما تحتضن الأم طفلاً باكياً. لكن تذكر أيها النقي: العالم ليس كله طيباً مثلك. هناك من سيحاول استغلال نقاء قلبك، وهناك من لا يستحق دموعك الثمينة. تعلم أن تحمي ضوءك الداخلي دون أن تخفيه، فالحكمة تكمن في معرفة من يستحق أن يرى جمالك الحقيقي.",
             advice: "نقاء قلبك هو أقوى درع تملكه، لا تسمح للعالم أن يغير جوهرك.",
             badge: "حارس النقاء",
@@ -269,7 +269,7 @@ const quizzesData = {
             image: "assets/images/sphinx.jpg",
             description: "أنت حارس الأسرار والحكمة. تمتلك عقلاً تحليلياً يرى ما وراء الستار ويحل أعقد الألغاز.",
             axes: ["intelligence", "mystery"],
-            multiplier: 1.15,
+
             narrative: "بين رمال الزمن وأسرار الحضارات، تقف روحك صامدة كتمثال أبو الهول. أنت اللغز الذي لا يحل، والعين التي ترى ما لا يراه الآخرون. صمتك حكمة وكلامك حقيقة.\n\nفي عالم يصرخ فيه الجميع ليجذب الانتباه، أنت تفضل المراقبة الصامتة. تزن كل كلمة قبل أن تنطقها، وتحلل كل موقف قبل أن تتفاعل معه. هذه ليست عزلة، بل هي استراتيجية حياة.\n\nلكن تذكر: الحكمة التي لا تُشارك تصبح عبئاً. أحياناً، كسر الصمت وفتح قلبك لشخص واحد يستحق الثقة، أقوى من حل ألف لغز.",
             advice: "مشاركة جزء من أسرارك قد يفتح لك أبواباً من الصداقة لم تكن تتوقعها.",
             badge: "سيد الألغاز",
@@ -307,7 +307,7 @@ const quizzesData = {
             image: "assets/images/kraken.jpg",
             description: "أنت قوة الأعماق الغامضة. تمتلك نفوذاً واسعاً وقدرة على التحكم في الأمور من خلف الكواليس.",
             axes: ["strategy", "mystery"],
-            multiplier: 1.20,
+
             narrative: "في المحيطات المظلمة حيث لا يصل النور، حيث الضغط يسحق كل شيء ضعيف، تتحرك روحك بعظمة وهدوء الكراكن العظيم. أنت القوة التي لا تُرى لكن الجميع يشعر بها، المخطط الذي يدير الدفة من خلف الستار بينما يظن الآخرون أنهم يقودون السفينة.\n\nأعماقك لا حدود لها، وأسرارك أكثر من نجوم السماء. كل مجس من مجساتك يمثل استراتيجية مختلفة، وكل حركة تخطط لها بعناية تفوق إدراك الآخرين. أنت لا تحتاج للصراخ لتُسمع، فصمتك أقوى من ألف صرخة.\n\nفي عالم سطحي يسعى الجميع فيه للظهور، أنت تعرف أن القوة الحقيقية تكمن في الخفاء. الذين يرونك يظنون أنهم فهموك، لكنهم رأوا فقط ما أردت أن يروه. أنت اللغز الذي لا يُحل، واللاعب الذي يحرك القطع دون أن يراه أحد.\n\nلكن تذكر أيها العملاق: الأعماق جميلة لكنها باردة ومظلمة. لا تنسَ الصعود للسطح أحياناً لتشعر بدفء الشمس وترى وجوه من تحبهم بوضوح. القوة الحقيقية ليست في السيطرة الخفية، بل في القدرة على الظهور والثقة بالآخرين.",
             advice: "الأعماق جميلة، لكن لا تنسَ الصعود للسطح أحياناً لتستمتع بنور الشمس.",
             badge: "سيد الأعماق",
@@ -345,7 +345,7 @@ const quizzesData = {
             image: "assets/images/owl_of_athena.jpg",
             description: "أنت رمز الحكمة والمعرفة. ترى في الظلام ما يعجز الآخرون عن رؤيته في وضح النهار.",
             axes: ["intelligence", "strategy"],
-            multiplier: 1.20,
+
             narrative: "في سكون الليل العميق، عندما ينام العالم وتهدأ الأصوات، تحلق روحك تحت ضوء النجوم باحثة عن الحقيقة المطلقة. أنت بومة أثينا، عيناك تخترقان الظلام لترى ما يخفى على الآخرين، وعقلك يحلل كل شيء بدقة جراح ماهر.\n\nفي مكتبة الكون اللامتناهية، أنت القارئ الأبدي الذي لا يشبع. كل معلومة تلتقطها، كل فكرة تحللها، كل لغز تفككه يضيف طبقة أخرى من الحكمة إلى روحك. الناس يأتون إليك عندما يحتارون، لأنهم يعرفون أن لديك الإجابة، أو على الأقل الطريقة الصحيحة للوصول إليها.\n\nصمتك ليس فراغاً، بل هو تأمل عميق. كلامك ليس ثرثرة، بل هو خلاصة التفكير. أنت الحكيم الذي يعرف أن الحقيقة ليست دائماً جميلة، لكنها دائماً ضرورية.\n\nلكن تذكر أيها الحكيم: الحكمة التي لا ترحم قاسية كالسيف. أحياناً، يحتاج الناس للكذبة الجميلة أكثر من الحقيقة المؤلمة. تعلم متى تتحدث بالمنطق ومتى تتحدث بالقلب. فالحكمة الحقيقية هي التي تجمع بين ذكاء العقل ورحمة القلب.",
             advice: "الحكمة الحقيقية هي التي تجمع بين ذكاء العقل ورحمة القلب.",
             badge: "عين الحقيقة",
@@ -383,7 +383,7 @@ const quizzesData = {
             image: "assets/images/centaur.jpg",
             description: "أنت رمز للتوازن بين العقل والقوة البدنية. تمتلك حكمة فطرية وروحاً حرة.",
             axes: ["willpower", "intelligence"],
-            multiplier: 1.20,
+
             narrative: "بين الغابات الكثيفة والسهول الواسعة، تجري روحك بحرية لا تعرف القيود كالقنطور الحكيم. نصفك إنسان يحمل الحكمة والعقل، ونصفك الآخر حصان يرمز للقوة والحرية الغريزية. أنت التوازن النادر الذي يحققه قلة من البشر.\n\nفي عالم يقسم الناس إلى عقليين وعاطفيين، إلى حضريين وبدو، أنت تجمع النقيضين في تناغم مذهل. تحمل قوسك الذي لا يخطئ الهدف، وعقلك الذي لا يخطئ الحكم. معلمك هو الطبيعة، ومدرستك هي الحياة نفسها.\n\nأنت الفيلسوف الذي لا يحتاج قاعات محاضرات، والمحارب الذي لا يحتاج ساحات قتال. حكمتك تأتي من مراقبة النجوم في الليل، وقوتك تأتي من الجري مع الرياح في النهار. لا تتبع قواعد الآخرين، بل تصنع قواعده الخاصة من خبرتك وتجاربك.\n\nلكن تذكر أيها القنطور: حريتك كنز لا يقدر بثمن، لكن الحرية دون مسؤولية تتحول إلى فوضى. أحياناً، القيود التي نختارها بأنفسنا أقوى من القيود التي تُفرض علينا. تعلم أن تلتزم بشيء ما دون أن تفقد جوهر الحرية فيك.",
             advice: "توازنك هو سر قوتك، لا تترك جانباً يطغى على الآخر.",
             badge: "المحارب الحكيم",
@@ -421,7 +421,7 @@ const quizzesData = {
             image: "assets/images/cerberus.jpg",
             description: "أنت الحامي الوفي والدرع المنيع. تمتلك يقظة دائمة وقدرة على حماية ما هو ثمين.",
             axes: ["willpower", "strategy"],
-            multiplier: 1.20,
+
             narrative: "على بوابات ما هو مقدس، حيث يلتقي العالم المرئي بعالم الأسرار، تقف روحك حارساً لا يغفل كسيربيروس العظيم. ثلاث رؤوس لك، كل واحدة تراقب اتجاهاً مختلفاً، لا يفوتها شيء، ولا يغفل طرفها لحظة واحدة.\n\nأنت اليقظة التي لا تعرف النوم، والولاء الذي لا يتزعزع. عندما ينام الجميع، أنت ساهر تحميهم. عندما يثق الجميع، أنت تشك لتحميهم. عندما يستسلم الجميع، أنت تقف لتدافع عنهم. درعك ليس من حديد، بل من إيمانك الراسخ بأن ما تحميه يستحق كل هذا التضحية.\n\nالناس قد يخافون من مظهرك الصارم، لكنهم ينامون ملء جفونهم لأنهم يعرفون أنك هناك. أنت الحارس الذي لا ينتظر شكوراً، لأن حماية ما تحبه هو أعظم شكر لنفسك.\n\nلكن تذكر أيها الحارس: ليس كل الغرباء أعداء، وليس كل اقتراب خطر. أحياناً، الحماية المفرطة تصبح سجناً لمن تحميهم. تعلم أن تفرق بين التهديد الحقيقي والوهمي. القوة الحقيقية ليست في منع كل دخول، بل في معرفة من يستحق العبور.",
             advice: "الحماية لا تعني دائماً القسوة؛ أحياناً يكون اللين هو أقوى دفاع.",
             badge: "الدرع المنيع",
@@ -459,7 +459,7 @@ const quizzesData = {
             image: "assets/images/faun.jpg",
             description: "أنت روح الطبيعة والمرح. تمتلك قدرة على الاستمتاع بالحياة ونشر البهجة من حولك.",
             axes: ["energy", "empathy"],
-            multiplier: 1.15,
+
             narrative: "مع أنغام الناي ورقصات الطبيعة، تتمايل روحك بمرح. أنت البهجة في يوم غائم، والعفوية التي تعيد الحياة للأشياء الجامدة من حولك.\n\nفي عالم جاد جداً، أنت التذكير بأن الحياة يجب أن تُعاَش لا أن تُحلل. ضحكتك معدية، وروحك المرحة تحول أي Gathering إلى احتفال. لا تحتاج سبباً للفرح، فالفرح هو حالتك الطبيعية.\n\nلكن تذكر: المرح وحده لا يبني مستقبلاً. أحياناً، تحتاج للجلوس بجدية والتخطيط لأحلامك الكبرى. التوازن بين المرح والمسؤولية هو سر نجاحك.",
             advice: "المرح ضروري، لكن القليل من الجدية يساعدك على تحقيق أحلامك الكبرى.",
             badge: "روح المرح",
@@ -497,7 +497,7 @@ const quizzesData = {
             image: "assets/images/golem.jpg",
             description: "أنت رمز للاستقرار والصلابة. تمتلك إرادة من حجر وقدرة على تحمل أصعب الظروف.",
             axes: ["strategy", "willpower"],
-            multiplier: 1.20,
+
             narrative: "من طين الأرض وقوة الجبال، صُيغت روحك الصابرة كالجولم الذي لا يتزعزع. أنت الجبل الذي لا تهزه الرياح، والسند الذي يعتمد عليه الجميع في أوقات العواصف. عندما ينهار كل شيء من حولك، أنت تبقى ثابتاً كالجذور العميقة للأشجار القديمة.\n\nكلمتك عهد، ووعدك قانون. عندما تقول شيئاً، تفعله مهما كلف الأمر. الناس يعرفون أنك الصخرة التي يمكنهم البناء عليها، والحائط الذي يحمي ظهورهم. أنت لا تعد كثيراً، لكن ما تعد به تنفذه بدقة.\n\nصبرك ليس ضعفاً، بل هو قوة من نوع خاص. أنت تعرف أن الأشياء العظيمة تأخذ وقتاً، وأن الجبال لم تُبنَ في يوم واحد. لا تستعجل النتائج، ولا تيأس من الطريق الطويل. أنت تعرف أن الثبات هو الذي يصنع التاريخ، لا السرعة.\n\nلكن تذكر أيها الصخر: حتى الجبال تتآكل مع الزمن، وحتى الصخر يمكن أن ينبت منه الزهر. لا تخشَ إظهار جانبك اللين أحياناً. القوة الحقيقية ليست في أن تكون دائماً قاسياً، بل في أن تعرف متى تكون قوياً ومتى تكون لطيفاً. أحياناً، البكاء أقوى من الصمود.",
             advice: "حتى الصخر يمكن أن ينبت منه الزهر؛ لا تخشَ إظهار جانبك اللين.",
             badge: "الجبل الصامد",
@@ -535,7 +535,7 @@ const quizzesData = {
             image: "assets/images/hydra.jpg",
             description: "أنت رمز للإصرار والتعددية. كلما واجهت تحدياً، خرجت منه بأفكار وحلول أكثر.",
             axes: ["energy", "strategy"],
-            multiplier: 1.20,
+
             narrative: "في مواجهة الصعاب التي تحطم الآخرين، تتضاعف قوتك كالهيدرا التي تنمو لها رأسان كلما قُطع رأس. كل ضربة تتلقاها لا تضعفك، بل تزيدك قوة وذكاءً وحكمة. أنت لا تعرف الهزيمة، لأن كل هزيمة هي مجرد بداية جديدة.\n\nفي عالم يحاول أن يجعلك نسخة واحدة من نفسك، أنت متعدد الأوجه كالجوهرة. لديك ألف فكرة لكل مشكلة، وألف حل لكل تحدٍ. عندما يُغلق باب، لا تفتح نافذة فقط، بل تفتح ألف نافذة. عقلك لا يتوقف عن التولد والإبداع.\n\nأنت المثابرة في أبهى صورها، والإصرار في أسمى معانيه. كل فشل هو درس، وكل خسارة هي استثمار في نجاح قادم. لا تستسلم أبداً، لأن الاستسلام ليس في قاموسك. لكن في نفس الوقت، تعرف أن الإصرار الأعمى قد يكون ضاراً.\n\nتذكر أيها الهيدرا: التعددية قوة، لكن التركيز أقوى. عندما توجه كل رؤوسك نحو هدف واحد، تصبح قوة لا تُقهر. لكن عندما تتشتت بين ألف هدف، تفقد قوتك. تعلم أن تجمع بين التعددية والتركيز، بين المرونة والإصرار.",
             advice: "تركيز كل رؤوسك على هدف واحد سيجعلك لا تقهر.",
             badge: "المثابر الذي لا يقهر",
@@ -573,7 +573,7 @@ const quizzesData = {
             image: "assets/images/kitsune.jpg",
             description: "أنت رمز للذكاء التكيفي والسحر. تمتلك قدرة على تغيير شكلك وأسلوبك حسب الموقف.",
             axes: ["mystery", "intelligence"],
-            multiplier: 1.20,
+
             narrative: "بألف وجه ووجه، وبذكاء يسبق الريح، تتلاعب روحك بالواقع كالكيتسوني الأسطوري. أنت السحر والغموض، والقدرة المذهلة على التكيف مع أي عالم تدخل إليه. كل موقف له وجهك المناسب، وكل شخص يرى فيك ما يريد أن يراه.\n\nأنت الثعلب الذي يعرف متى يظهر ومتى يختفي، متى يتكلم ومتى يصمت، متى يقترب ومتى يبتعد. ذكاؤك ليس مكرراً خبيثاً، بل هو حكمة الحياة التي تعرف أن العالم ليس أبيض وأسود، بل ألف لون ولون.\n\nفي عالم يبحث عن البساطة، أنت تعقيد جميل. في عالم يريد إجابات واضحة، أنت السؤال الذكي. الناس ينجذبون إليك بسحرك الغامض، لكنهم لا يعرفون أبداً من أنت حقاً. وهذا ما يجعلك جذاباً وخطيراً في نفس الوقت.\n\nلكن تذكر أيها الكيتسوني: الأقنعة التي ترتديها قد تصبح وجهك الحقيقي. عندما تتقمص دوراً طويلاً، قد تنسى من أنت حقاً. أحياناً، الصدق المؤلم أقوى من الكذبة الجميلة. تعلم أن تخلع أقنعتك أمام من يستحقون رؤية حقيقتك.",
             advice: "الذكاء موهبة، استخدمها لبناء الجسور وليس فقط لخداع العابرين.",
             badge: "سيد التكيف",
@@ -611,7 +611,7 @@ const quizzesData = {
             image: "assets/images/pegasus.jpg",
             description: "أنت رمز للحرية والإلهام. تمتلك روحاً تحلق فوق المصاعب وتسعى دائماً للأفق البعيد.",
             axes: ["energy", "intelligence"],
-            multiplier: 1.20,
+
             narrative: "بجناحين من خيال وإلهام، تحلق روحك فوق قيود الواقع كبيجاسوس المجنح. أنت الحرية التي لا يمكن حبسها في قفص، والحلم الذي يرفض أن يبقى على الأرض. عالمك هو الأفق، وسماء الاحتمالات اللامتناهية هي ملعبك.\n\nأنت الإلهام الذي يزور المبدعين في لحظات التأمل، والفكرة التي تلمع فجأة في العقول. عندما يحلق بيجاسوس، يولد الشعر في قلوب الشعراء، وتولد اللوحات في مخيلة الفنانين، وتولد الأفكار العظيمة في عقول المفكرين.\n\nحوافرك تضرب الأرض لتفجر ينابيع الإبداع، وأجنحتك تحلق في السماء لترسم أحلام المستقبل. أنت الجسر بين الأرض والسماء، بين الواقع والخيال، بين الممكن والمستحيل.\n\nلكن تذكر أيها المحلق: أجنحتك تحملك للسماء، لكن حوافرك هي التي تثبتك على الأرض. الخيال دون واقع يصبح هروباً، والواقع دون خيال يصبح سجن. تعلم أن تحلق عالياً دون أن تفقد اتصالك بالأرض.",
             advice: "جناحاك يحملانك للسماء، لكن حوافرك هي التي تثبتك على الأرض؛ اعتني بكليهما.",
             badge: "الملهم الطائر",
@@ -649,7 +649,7 @@ const quizzesData = {
             image: "assets/images/simurgh.jpg",
             description: "أنت رمز للكمال والمعرفة الشاملة. تمتلك رؤية شاملة للكون وتفهم ترابط الأشياء.",
             axes: ["intelligence", "empathy"],
-            multiplier: 1.15,
+
             narrative: "من قمة جبل 'قاف' الأسطوري، حيث تلتقي الأرض بالسماء، تطل روحك على حكمة العصور كالسيمرغ العظيم. أنت الطائر الذي شهد خلق العالم، وعاش آلاف السنين ليجمع حكمة الكون كله في روحه. رؤيتك شاملة، ومعرفتك لا حدود لها.\n\nأنت الجامع بين الأضداد، الروح التي ترى الترابط الخفي بين كل الأشياء. تعرف أن الفرح والحزن وجهان لعملة واحدة، وأن البداية تحتوي على النهاية، وأن الصغير يعكس الكبير. هذه الرؤية الشاملة تجعلك حكيماً يفوق سنك.\n\nالناس يأتون إليك طلباً للحكمة، لأنهم يعرفون أنك ترى الصورة الكاملة. أنت المرشد الذي لا يفرض رأيه، بل يضيء الدروب للآخرين ليكتشفوا الحقيقة بأنفسهم. كلمتك قليلة لكنها عميقة كالمحيط.\n\nلكن تذكر أيها الحكيم: المثالية هدف جميل، لكن الكمال غير موجود في عالم البشر. أحياناً، تقبل النقص البشري هو قمة الحكمة. لا تحكم على الآخرين بمعاييرك العالية، فلكل شخص رحلته الخاصة. تعلم أن تحب الناس كما هم، لا كما تريد أن يكونوا.",
             advice: "المثالية هدف جميل، لكن تقبل النقص البشري هو قمة الحكمة.",
             badge: "الحكيم المطلق",
@@ -687,7 +687,7 @@ const quizzesData = {
             image: "assets/images/siren.jpg",
             description: "أنت رمز للجاذبية والحدس. تمتلك صوتاً يسحر العقول وقدرة على قراءة المشاعر.",
             axes: ["empathy", "mystery"],
-            multiplier: 1.20,
+
             narrative: "من أعماق البحار الأسطورية، حيث تلتقي الأمواج بالأغاني القديمة، يصدح صوتك الساحر كالسيرين. أنت الجاذبية التي لا تُقاوم، والحدس الذي يرى ما لا يراه الآخرون. صوتك يحمل قوة قديمة تحرك القلوب وتفتح الأبواب المغلقة.\n\nأنت الساحرة التي تعرف كيف تقرأ المشاعر قبل أن تُنطق، وتفهم الرغبات قبل أن تُعبر عنها. جاذبيتك ليست في جمالك الخارجي فقط، بل في قدرتك على جعل الآخرين يشعرون بأنهم مسموعون ومفهومون.\n\nفي عالم مليء بالضجيج، صوتك هو الذي يُستمع إليه. في عالم مليء بالأقنعة، أنت من يكشف الأقنعة الأخرى. لديك قدرة فطرية على فهم ما يريده الناس حقاً، حتى عندما لا يعرفون هم أنفسهم.\n\nلكن تذكر أيها الساحر: الجاذبية التي تُستخدم للتلاعب تدمر العلاقات، بينما الجاذبية التي تُستخدم للبناء تصنع معجزات. لا تستخدم سحرك للسيطرة على الآخرين، بل لتمكينهم. الصوت الذي يبني أعظم من الصوت الذي يسحر.",
             advice: "استخدم جاذبيتك لبناء علاقات حقيقية، وليس فقط للإغواء.",
             badge: "ساحرة الأعماق",
@@ -725,7 +725,7 @@ const quizzesData = {
             image: "assets/images/valkyrie.jpg",
             description: "أنت رمز للشرف والشجاعة. تمتلك روحاً مقاتلة تدافع عن الحق وتختار طريق الأبطال.",
             axes: ["willpower", "empathy"],
-            multiplier: 1.15,
+
             narrative: "في ساحات الشرف، تلمع روحك كالسيف الصقيل. أنت الشجاعة التي لا تهاب، والعدل الذي لا يميل. اختيارك دائماً هو طريق الأبطال مهما كان صعباً.\n\nلستَ من يختار المعركة السهلة، بل تختار المعركة الصحيحة. عندما يصمت الآخرون عن الظلم، أنت تتحدث. عندما ينحني الآخرون للخوف، أنت تقف. شرفك ليس كلمة تقال، بل هو طريقة تعيش بها كل لحظة.\n\nلكن تذكر: الشجاعة الحقيقية ليست في القتال فقط، بل في معرفة متى تقاتل ومتى تسامح. أحياناً، القوة الحقيقية تكمن في خفض السيف لا في رفعه.",
             advice: "الشجاعة ليست غياب الخوف، بل هي المضي قدماً رغم وجوده.",
             badge: "حارس الشرف",
@@ -780,7 +780,7 @@ const quizzesData = {
             image: "assets/images/dragon.jpg",
             description: "You are the embodiment of power and leadership. You possess an indomitable fiery spirit and ambition that exceeds the clouds.",
             axes: ["willpower", "energy"],
-            multiplier: 1.25,
+
             narrative: "In the depths of ancient mountains, where peaks touch the sky and hide treasures of ages, your soul awoke from its eternal slumber. You are the unconquerable dragon, the king who carries in his eyes the wisdom of a thousand years and in his heart an unquenchable fire. Every step you take shakes the earth, and every glance carries the authority of kings and the courage of warriors who never retreat.\n\nYou are not merely a powerful being, but the embodiment of power governed by wisdom. Your vision extends beyond the horizon, and your ambition knows no bounds. When you speak, mountains listen, and when you decide, nations move. People are drawn to you like moths to the flame, seeing in you the natural leader born once in a millennium.\n\nBut remember, mighty dragon: true power lies not in dominating others, but in mastering oneself. The fire that burns everything around leaves only ashes, but the fire that warms and illuminates builds kingdoms. Use your flame wisely, for the wise dragon is greater than the powerful dragon.",
             advice: "Remember that true power lies in restraining your fire and using it for warmth instead of burning.",
             badge: "Mythical Thinker",
@@ -818,7 +818,7 @@ const quizzesData = {
             image: "assets/images/phoenix.jpg",
             description: "You are a symbol of renewal and hope. You have an amazing ability to rise from the ashes stronger than before.",
             axes: ["energy", "empathy"],
-            multiplier: 1.15,
+
             narrative: "In the moment of final burning, when the world thought you were finished, the spirit of the phoenix rose from your ashes. You are not just a survivor of storms, you are the storm itself that renews. Every loss taught you a lesson, every failure built wisdom within you, and every tear watered the soil of your soul to bloom anew.\n\nYou do not know the meaning of surrender, for the word does not exist in your dictionary. When others fall, you rise stronger. When a door closes, you open a window. When the world darkens, you become the light.\n\nBut remember: even the phoenix needs rest between cycles of renewal. Do not burn yourself constantly to prove your strength, for a calm sustained light is stronger than a violent fleeting flame.",
             advice: "Remember that you don't always have to burn to prove your existence; a calm light lasts longer.",
             badge: "Renewed Spirit",
@@ -856,7 +856,7 @@ const quizzesData = {
             image: "assets/images/unicorn.jpg",
             description: "You are the embodiment of purity and kindness. You possess a pure soul that always aims to spread goodness and beauty.",
             axes: ["empathy", "mystery"],
-            multiplier: 1.20,
+
             narrative: "In an enchanted forest where no human foot has stepped, where sunlight dances between ancient branches, your pure soul dwells like a dewdrop on a rose petal. You are the unicorn that appears only to pure hearts, the creature that walks the earth without burdening it, and touches hearts without wounding them.\n\nThe light of your heart illuminates the dark paths of others, and the touch of your hands heals wounds no one sees. In a world full of noise and falsehood, you are the quiet truth everyone seeks. Your innocence is not weakness, but the strongest shield in the universe, for it knows no deception and holds no malice.\n\nPeople come to you when their hearts break, because they know you will not judge them, but will embrace them as a mother embraces a crying child. But remember, pure one: the world is not all good like you. There are those who will try to exploit your pure heart, and those who do not deserve your precious tears. Learn to protect your inner light without hiding it, for wisdom lies in knowing who deserves to see your true beauty.",
             advice: "The purity of your heart is the strongest shield you own, don't let the world change your essence.",
             badge: "Guardian of Purity",
@@ -894,7 +894,7 @@ const quizzesData = {
             image: "assets/images/sphinx.jpg",
             description: "You are the guardian of secrets and wisdom. You possess an analytical mind that sees behind the curtain and solves the most complex puzzles.",
             axes: ["intelligence", "mystery"],
-            multiplier: 1.15,
+
             narrative: "Between the sands of time and the secrets of civilizations, your soul stands firm like the Sphinx statue. You are the riddle that cannot be solved, the eye that sees what others do not. Your silence is wisdom and your words are truth.\n\nIn a world where everyone screams to attract attention, you prefer silent observation. You weigh every word before speaking, and analyze every situation before reacting. This is not isolation, but a life strategy.\n\nBut remember: wisdom that is not shared becomes a burden. Sometimes, breaking silence and opening your heart to one trustworthy person is stronger than solving a thousand riddles.",
             advice: "Sharing part of your secrets may open doors of friendship you didn't expect.",
             badge: "Master of Riddles",
@@ -932,7 +932,7 @@ const quizzesData = {
             image: "assets/images/kraken.jpg",
             description: "You are the power of the mysterious depths. You possess wide influence and the ability to control things from behind the scenes.",
             axes: ["strategy", "mystery"],
-            multiplier: 1.20,
+
             narrative: "In the dark oceans where light does not reach, where pressure crushes everything weak, your soul moves with the majesty and calm of the Great Kraken. You are the unseen power that everyone feels, the planner who steers from behind the curtain while others think they are captaining the ship.\n\nYour depths are boundless, and your secrets outnumber the stars in the sky. Each of your tentacles represents a different strategy, and every move you make is planned with care beyond others' comprehension. You do not need to shout to be heard, for your silence is stronger than a thousand screams.\n\nIn a superficial world where everyone seeks to appear, you know that true power lies in the hidden. Those who see you think they understand you, but they have only seen what you wanted them to see. You are the unsolvable riddle, the player who moves the pieces unseen.\n\nBut remember, mighty one: the depths are beautiful but cold and dark. Do not forget to rise to the surface sometimes to feel the warmth of the sun and see the faces of those you love clearly. True power is not in hidden control, but in the ability to appear and trust others.",
             advice: "The depths are beautiful, but don't forget to come to the surface sometimes to enjoy the sunlight.",
             badge: "Master of Depths",
@@ -970,7 +970,7 @@ const quizzesData = {
             image: "assets/images/owl_of_athena.jpg",
             description: "You are a symbol of wisdom and knowledge. You see in the dark what others fail to see in broad daylight.",
             axes: ["intelligence", "strategy"],
-            multiplier: 1.20,
+
             narrative: "In the deep stillness of night, when the world sleeps and voices quiet, your soul flies under the starlight seeking absolute truth. You are the Owl of Athena, your eyes pierce the darkness to see what is hidden from others, and your mind analyzes everything with the precision of a skilled surgeon.\n\nIn the infinite library of the universe, you are the eternal insatiable reader. Every piece of information you absorb, every idea you analyze, every riddle you solve adds another layer of wisdom to your soul. People come to you when they are confused, because they know you have the answer, or at least the right way to reach it.\n\nYour silence is not emptiness, but deep contemplation. Your words are not chatter, but the essence of thought. You are the sage who knows that truth is not always beautiful, but it is always necessary.\n\nBut remember, wise one: wisdom without mercy is as harsh as a sword. Sometimes, people need a beautiful lie more than a painful truth. Learn when to speak with logic and when to speak with the heart. For true wisdom is that which combines the intelligence of the mind with the mercy of the heart.",
             advice: "True wisdom is that which combines mind intelligence and heart mercy.",
             badge: "Eye of Truth",
@@ -1008,7 +1008,7 @@ const quizzesData = {
             image: "assets/images/centaur.jpg",
             description: "You are a symbol of balance between mind and physical strength. You possess innate wisdom and a free spirit.",
             axes: ["willpower", "intelligence"],
-            multiplier: 1.20,
+
             narrative: "Between dense forests and vast plains, your soul runs with freedom that knows no bounds like the Wise Centaur. Half of you is human carrying wisdom and reason, the other half is horse symbolizing strength and instinctive freedom. You are the rare balance that few humans achieve.\n\nIn a world that divides people into rational and emotional, urban and nomadic, you combine opposites in amazing harmony. You carry your bow that never misses the target, and your mind that never misses judgment. Your teacher is nature, and your school is life itself.\n\nYou are the philosopher who needs no lecture halls, the warrior who needs no battlefields. Your wisdom comes from watching the stars at night, and your strength comes from running with the winds during the day. You do not follow others' rules, but make your own from your experience and trials.\n\nBut remember, Centaur: your freedom is a priceless treasure, but freedom without responsibility turns to chaos. Sometimes, the constraints we choose for ourselves are stronger than those imposed on us. Learn to commit to something without losing the essence of freedom within you.",
             advice: "Your balance is your strength, don't let one side dominate the other.",
             badge: "Wise Warrior",
@@ -1046,7 +1046,7 @@ const quizzesData = {
             image: "assets/images/cerberus.jpg",
             description: "You are the loyal protector and the impenetrable shield. You possess constant vigilance and the ability to protect what is precious.",
             axes: ["willpower", "strategy"],
-            multiplier: 1.20,
+
             narrative: "At the gates of what is sacred, where the visible world meets the world of secrets, your soul stands as an unblinking guardian like the Great Cerberus. Three heads you have, each watching a different direction, nothing escapes them, and their eyes never close for a moment.\n\nYou are the vigilance that knows no sleep, the loyalty that never wavers. When everyone sleeps, you watch over them. When everyone trusts, you doubt to protect them. When everyone surrenders, you stand to defend them. Your shield is not of iron, but of your firm belief that what you protect is worth all this sacrifice.\n\nPeople may fear your stern appearance, but they sleep soundly because they know you are there. You are the guardian who expects no thanks, because protecting what you love is the greatest thanks to yourself.\n\nBut remember, Guardian: not all strangers are enemies, and not every approach is danger. Sometimes, excessive protection becomes a prison for those you protect. Learn to distinguish between real threats and imaginary ones. True power is not in preventing every entry, but in knowing who deserves to pass.",
             advice: "Protection doesn't always mean harshness; sometimes softness is the strongest defense.",
             badge: "Impenetrable Shield",
@@ -1084,7 +1084,7 @@ const quizzesData = {
             image: "assets/images/faun.jpg",
             description: "You are the spirit of nature and fun. You have the ability to enjoy life and spread joy around you.",
             axes: ["energy", "empathy"],
-            multiplier: 1.15,
+
             narrative: "With flute melodies and nature dances, your soul sways with fun. You are the joy on a cloudy day, the spontaneity that brings life back to the static things around you.\n\nIn a very serious world, you are the reminder that life should be lived not analyzed. Your laughter is contagious, and your cheerful spirit turns any gathering into a celebration. You don't need a reason for joy, for joy is your natural state.\n\nBut remember: fun alone does not build a future. Sometimes, you need to sit seriously and plan for your big dreams. The balance between fun and responsibility is the secret of your success.",
             advice: "Fun is necessary, but a little seriousness helps you achieve your big dreams.",
             badge: "Spirit of Fun",
@@ -1122,7 +1122,7 @@ const quizzesData = {
             image: "assets/images/golem.jpg",
             description: "You are a symbol of stability and solidity. You possess a will of stone and the ability to endure the most difficult conditions.",
             axes: ["strategy", "willpower"],
-            multiplier: 1.20,
+
             narrative: "From the earth's clay and the mountains' strength, your patient soul was forged like the unshakeable Golem. You are the mountain that the winds do not shake, the support that everyone relies on in times of storms. When everything around you collapses, you remain firm like the deep roots of ancient trees.\n\nYour word is a covenant, and your promise is law. When you say something, you do it no matter the cost. People know you are the rock they can build upon, the wall that protects their backs. You do not promise much, but what you promise, you fulfill precisely.\n\nYour patience is not weakness, but a special kind of strength. You know that great things take time, and mountains were not built in a day. You do not rush results, nor despair of the long road. You know that steadfastness makes history, not speed.\n\nBut remember, Rock: even mountains erode with time, and even stone can grow flowers. Do not fear showing your soft side sometimes. True strength is not in always being hard, but in knowing when to be strong and when to be gentle. Sometimes, crying is stronger than enduring.",
             advice: "Even stone can grow flowers; don't fear showing your soft side.",
             badge: "Solid Mountain",
@@ -1160,7 +1160,7 @@ const quizzesData = {
             image: "assets/images/hydra.jpg",
             description: "You are a symbol of persistence and plurality. Every time you face a challenge, you come out of it with more ideas and solutions.",
             axes: ["energy", "strategy"],
-            multiplier: 1.20,
+
             narrative: "In the face of hardships that break others, your strength multiplies like the Hydra that grows two heads for every one cut. Every blow you receive does not weaken you, but increases your strength, intelligence, and wisdom. You do not know defeat, because every defeat is just a new beginning.\n\nIn a world that tries to make you one version of yourself, you are multi-faceted like a jewel. You have a thousand ideas for every problem, and a thousand solutions for every challenge. When a door closes, you do not just open a window, but open a thousand windows. Your mind never stops generating and creating.\n\nYou are persistence in its finest form, and determination in its highest meanings. Every failure is a lesson, and every loss is an investment in coming success. You never surrender, because surrender is not in your dictionary. But at the same time, you know that blind persistence can be harmful.\n\nRemember, Hydra: plurality is strength, but focus is stronger. When you direct all your heads toward one goal, you become an unstoppable force. But when you scatter among a thousand goals, you lose your power. Learn to combine plurality and focus, flexibility and persistence.",
             advice: "Focusing all your heads on one goal will make you invincible.",
             badge: "Invincible Persister",
@@ -1198,7 +1198,7 @@ const quizzesData = {
             image: "assets/images/kitsune.jpg",
             description: "You are a symbol of adaptive intelligence and magic. You possess the ability to change your shape and style according to the situation.",
             axes: ["mystery", "intelligence"],
-            multiplier: 1.20,
+
             narrative: "With a thousand faces, and intelligence that precedes the wind, your soul plays with reality like the legendary Kitsune. You are magic and mystery, and the amazing ability to adapt to any world you enter. Every situation has its appropriate face, and every person sees in you what they want to see.\n\nYou are the fox that knows when to appear and when to disappear, when to speak and when to be silent, when to approach and when to withdraw. Your intelligence is not malicious cunning, but the wisdom of life that knows the world is not black and white, but a thousand colors.\n\nIn a world seeking simplicity, you are beautiful complexity. In a world wanting clear answers, you are the intelligent question. People are drawn to you by your mysterious charm, but they never truly know who you are. And this is what makes you attractive and dangerous at the same time.\n\nBut remember, Kitsune: the masks you wear may become your true face. When you play a role too long, you may forget who you really are. Sometimes, painful honesty is stronger than a beautiful lie. Learn to remove your masks before those who deserve to see your truth.",
             advice: "Intelligence is a talent, use it to build bridges and not just to deceive passersby.",
             badge: "Master of Adaptation",
@@ -1236,7 +1236,7 @@ const quizzesData = {
             image: "assets/images/pegasus.jpg",
             description: "You are a symbol of freedom and inspiration. You possess a soul that flies above difficulties and always seeks the distant horizon.",
             axes: ["energy", "intelligence"],
-            multiplier: 1.20,
+
             narrative: "With wings of imagination and inspiration, your soul flies above the constraints of reality like the Winged Pegasus. You are the freedom that cannot be caged, the dream that refuses to stay on earth. Your world is the horizon, and the sky of infinite possibilities is your playground.\n\nYou are the inspiration that visits creators in moments of contemplation, the idea that suddenly shines in minds. When Pegasus flies, poetry is born in the hearts of poets, paintings are born in artists' imagination, and great ideas are born in thinkers' minds.\n\nYour hooves strike the earth to spring forth fountains of creativity, and your wings fly in the sky to paint dreams of the future. You are the bridge between earth and sky, between reality and imagination, between the possible and the impossible.\n\nBut remember, Flyer: your wings carry you to the sky, but your hooves ground you on earth. Imagination without reality becomes escape, and reality without imagination becomes prison. Learn to fly high without losing your connection to the ground.",
             advice: "Your wings carry you to the sky, but your hooves are what ground you; take care of both.",
             badge: "Flying Inspirer",
@@ -1274,7 +1274,7 @@ const quizzesData = {
             image: "assets/images/simurgh.jpg",
             description: "You are a symbol of perfection and comprehensive knowledge. You possess a comprehensive vision of the universe and understand the interconnectedness of things.",
             axes: ["intelligence", "empathy"],
-            multiplier: 1.15,
+
             narrative: "From the peak of the legendary 'Qaf' mountain, where earth meets sky, your soul overlooks the wisdom of ages like the Great Simurgh. You are the bird that witnessed the creation of the world, and lived thousands of years to gather the wisdom of the entire universe in its soul. Your vision is comprehensive, and your knowledge is boundless.\n\nYou are the gatherer of opposites, the soul that sees the hidden connection between all things. You know that joy and sorrow are two sides of the same coin, that the beginning contains the end, and that the small reflects the large. This comprehensive vision makes you wise beyond your years.\n\nPeople come to you seeking wisdom, because they know you see the whole picture. You are the guide who does not impose opinion, but illuminates paths for others to discover truth themselves. Your words are few but deep as the ocean.\n\nBut remember, Wise One: idealism is a beautiful goal, but perfection does not exist in the human world. Sometimes, accepting human imperfection is the peak of wisdom. Do not judge others by your high standards, for everyone has their own journey. Learn to love people as they are, not as you want them to be.",
             advice: "Perfection is a beautiful goal, but accepting human imperfection is the peak of wisdom.",
             badge: "Absolute Sage",
@@ -1312,7 +1312,7 @@ const quizzesData = {
             image: "assets/images/siren.jpg",
             description: "You are a symbol of allure and intuition. You possess a voice that enchants minds and the ability to read emotions.",
             axes: ["empathy", "mystery"],
-            multiplier: 1.20,
+
             narrative: "From the depths of legendary seas, where waves meet ancient songs, your enchanting voice resounds like the Siren. You are the irresistible allure, the intuition that sees what others do not. Your voice carries an ancient power that moves hearts and opens closed doors.\n\nYou are the enchantress who knows how to read emotions before they are spoken, and understand desires before they are expressed. Your allure is not only in your outer beauty, but in your ability to make others feel heard and understood.\n\nIn a world full of noise, your voice is the one that is listened to. In a world full of masks, you are the one who reveals other masks. You have an innate ability to understand what people really want, even when they do not know themselves.\n\nBut remember, Enchanter: allure used for manipulation destroys relationships, while allure used for building creates miracles. Do not use your magic to control others, but to empower them. The voice that builds is greater than the voice that enchants.",
             advice: "Use your allure to build genuine relationships, not just to seduce passersby.",
             badge: "Enchantress of the Depths",
@@ -1350,7 +1350,7 @@ const quizzesData = {
             image: "assets/images/valkyrie.jpg",
             description: "You are a symbol of honor and courage. You possess a fighting spirit that defends the right and chooses the path of heroes.",
             axes: ["willpower", "empathy"],
-            multiplier: 1.15,
+
             narrative: "In the arenas of honor, your soul shines like a polished sword. You are the courage that does not fear, the justice that does not lean. Your choice is always the path of heroes no matter how difficult.\n\nYou are not one who chooses the easy battle, but you choose the right battle. When others are silent about injustice, you speak. When others bow to fear, you stand. Your honor is not a word spoken, but a way you live every moment.\n\nBut remember: true courage is not just in fighting, but in knowing when to fight and when to forgive. Sometimes, true strength lies in lowering the sword not raising it.",
             advice: "Courage is not the absence of fear, but moving forward despite its presence.",
             badge: "Guardian of Honor",
