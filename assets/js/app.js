@@ -1842,7 +1842,7 @@ function renderQuestionContent(container, question, totalSteps, progress, slideI
             </div>
 
             <div class="mb-10">
-                <h2 class="text-2xl md:text-3xl font-bold theme-text-primary text-center leading-tight question-title-fade-in">${question.text}</h2>
+				<h2 class="text-2xl md:text-3xl font-bold theme-text-primary text-center leading-tight question-title-fade-in">${question.text?.[currentLang] || question.text || ''}</h2>
             </div>
     `;
 
