@@ -297,6 +297,25 @@ async function renderAccountInfo(container) {
     `;
 }
 
+function handleLogout() {
+    const isAr = (typeof currentLang !== 'undefined' && currentLang === 'ar');
+    if (!confirm(isAr ? 'هل أنت متأكد من تسجيل الخروج؟' : 'Are you sure you want to logout?')) return;
+
+    window.firebaseDB.logoutUser();
+    renderAuthChoice(document.getElementById('account-modal-body'));
+    updateDrawerIdState();
+
+    // مسح البيانات المحلية المتعلقة بالحساب
+    localStorage.removeItem('quiz_xp');
+    localStorage.removeItem('quiz_gems');
+    localStorage.removeItem('quiz_level');
+
+    if (typeof showProfileNotification === 'function') {
+        showProfileNotification(isAr ? '👋 تم تسجيل الخروج' : '👋 Logged out', 'success');
+    }
+    if (typeof trackEvent === 'function') trackEvent('account_logout');
+}
+
 // ==================== ADMIN PANEL (Dashboard مسطح جديد) ====================
 
 function renderAdminPanel(isAr) {
@@ -457,6 +476,7 @@ function renderAdminXPTab(isAr) {
                     <h5><i class="fas fa-bolt" style="color:#fbbf24"></i> ${isAr ? 'تعيين XP' : 'Set XP'}</h5>
                     <input type="text" id="xp-target-id" class="auth-input" placeholder="${isAr ? 'ID' : 'ID'}" inputmode="numeric" maxlength="6">
                     <input type="number" id="xp-amount" class="auth-input" placeholder="${isAr ? 'XP الجديد' : 'New XP'}" min="0">
+                    <input type="text" id="xp-message" class="auth-input" placeholder="${isAr ? '💌 رسالة (اختياري)' : '💌 Message (optional)'}" maxlength="200">
                     <button onclick="handleAdminAction('setXP')" class="admin-action-btn primary"><i class="fas fa-check"></i> ${isAr ? 'تطبيق' : 'Apply'}</button>
                 </div>
                 <div class="admin-action-card">
@@ -677,7 +697,11 @@ async function handleAdminAction(action) {
         case 'setXP':
             targetId = (val('xp-target-id') || '').replace(/\D/g, '');
             customMessage = val('xp-message') || '';
-            result = await window.firebaseDB.setUserXP(targetId, val('xp-amount'));
+            result = await window.firebaseDB.setUserXP(targetId, parseInt(val('xp-amount'), 10) || 0);
+            break;
+        case 'setLevel':
+            targetId = (val('level-target-id') || '').replace(/\D/g, '');
+            result = await window.firebaseDB.setUserLevel(targetId, parseInt(val('level-value'), 10) || 1);
             break;
         case 'ban':
             targetId = (val('ban-target-id') || '').replace(/\D/g, '');
