@@ -1758,23 +1758,25 @@ function startQuiz(quizId) {
     userResponses = [];
     quizStartTime = Date.now();  // ⚡ ابدأ تتبع الوقت
     
-    // 🎲 اختيار 30 سؤال من بنك الأسئلة الجديد
-    if (questionBankLoaded && typeof selectRandomQuestions === 'function') {
-        selectedQuestions = selectRandomQuestions(5); // 5 أسئلة من كل محور
-        console.log('🎲 Selected 30 random questions');
-    } else {
-        // Fallback: استخدام الأسئلة القديمة (في حالة عدم تحميل البنك)
-        console.warn('⚠️ Question bank not available, falling back to old questions');
-        selectedQuestions = currentQuiz.questions.filter(q => q.type !== 'visual');
-    }
-    
-    // ✅ تجاوز: إزالة أي أسئلة بصرية متبقية (احتياطاً)
-    selectedQuestions = selectedQuestions.filter(q => q.type !== 'visual');
-    
-    // ✅ تجاوز: إزالة خاصية type إن كانت "likert" (ليست ضرورية)
-    selectedQuestions.forEach(q => {
-        q.axis = q.axis || 'intelligence'; // قيمة افتراضية
-    });
+    // 🎲 اختيار 30 سؤال من بنك الأسئلة الجديد (5 من كل محور)
+	if (!questionBankLoaded || typeof selectRandomQuestions !== 'function') {
+    	console.error('❌ Question bank failed to load!');
+    	showErrorToast(
+        	currentLang === 'ar' 
+            	? 'تعذر تحميل بنك الأسئلة. يرجى تحديث الصفحة.' 
+            	: 'Failed to load question bank. Please refresh the page.',
+        	currentLang === 'ar'
+    	);
+    	return; // إيقاف الاختبار
+	}
+
+	selectedQuestions = selectRandomQuestions(5);
+	console.log('🎲 Selected 30 random questions from bank');
+
+	// ✅ ضمان وجود axis لكل سؤال (احتياطياً)
+	selectedQuestions.forEach(q => {
+    	if (!q.axis) q.axis = 'intelligence';
+	});
     
     document.getElementById('quiz-grid').classList.add('hidden');
     document.getElementById('hero-section').classList.add('hidden');
