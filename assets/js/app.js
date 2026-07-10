@@ -2833,6 +2833,141 @@ function tryUpgradeCard(creatureId) {
     return currentTier;
 }
 
+// ============================================================
+// 🎨 MYTHICAL CREATURE EFFECTS SYSTEM (نظام التأثيرات الأسطورية)
+// كل كائن له تأثيرات بصرية فريدة على البطاقة
+// ============================================================
+const CREATURE_EFFECTS = {
+    dragon: {
+        particleType: 'embers',           // جمرات متطايرة
+        particleColor: '#ff6b35',
+        particleCount: 45,
+        glowColor: 'rgba(255, 107, 53, 0.4)',
+        auraColor: 'rgba(220, 38, 38, 0.15)',
+        specialEffect: 'fire_aura'        // هالة نارية
+    },
+    phoenix: {
+        particleType: 'feathers',         // ريش ذهبي
+        particleColor: '#fbbf24',
+        particleCount: 35,
+        glowColor: 'rgba(251, 191, 36, 0.4)',
+        auraColor: 'rgba(234, 88, 12, 0.15)',
+        specialEffect: 'golden_glow'
+    },
+    unicorn: {
+        particleType: 'sparkles',         // بريق وردي
+        particleColor: '#f0abfc',
+        particleCount: 50,
+        glowColor: 'rgba(240, 171, 252, 0.4)',
+        auraColor: 'rgba(236, 72, 153, 0.15)',
+        specialEffect: 'rainbow_sparkle'
+    },
+    sphinx: {
+        particleType: 'sand',             // رمال ذهبية
+        particleColor: '#d4a574',
+        particleCount: 40,
+        glowColor: 'rgba(212, 165, 116, 0.35)',
+        auraColor: 'rgba(139, 92, 246, 0.12)',
+        specialEffect: 'mystic_runes'
+    },
+    kraken: {
+        particleType: 'bubbles',          // فقاعات
+        particleColor: '#67e8f9',
+        particleCount: 40,
+        glowColor: 'rgba(103, 232, 249, 0.4)',
+        auraColor: 'rgba(3, 105, 161, 0.15)',
+        specialEffect: 'water_waves'
+    },
+    owl_of_athena: {
+        particleType: 'stars',            // نجوم فضية
+        particleColor: '#c4b5fd',
+        particleCount: 55,
+        glowColor: 'rgba(196, 181, 253, 0.4)',
+        auraColor: 'rgba(124, 58, 237, 0.12)',
+        specialEffect: 'constellation'
+    },
+    centaur: {
+        particleType: 'leaves',           // أوراق شجر
+        particleColor: '#86efac',
+        particleCount: 35,
+        glowColor: 'rgba(134, 239, 172, 0.35)',
+        auraColor: 'rgba(5, 150, 105, 0.12)',
+        specialEffect: 'nature_aura'
+    },
+    cerberus: {
+        particleType: 'shadows',          // ظلال ودخان
+        particleColor: '#64748b',
+        particleCount: 30,
+        glowColor: 'rgba(100, 116, 139, 0.3)',
+        auraColor: 'rgba(31, 41, 55, 0.2)',
+        specialEffect: 'dark_aura'
+    },
+    faun: {
+        particleType: 'petals',           // بتلات زهور
+        particleColor: '#fda4af',
+        particleCount: 40,
+        glowColor: 'rgba(253, 164, 175, 0.35)',
+        auraColor: 'rgba(132, 204, 22, 0.1)',
+        specialEffect: 'floral_burst'
+    },
+    golem: {
+        particleType: 'crystals',         // بلورات
+        particleColor: '#a78bfa',
+        particleCount: 25,
+        glowColor: 'rgba(167, 139, 250, 0.35)',
+        auraColor: 'rgba(107, 114, 128, 0.15)',
+        specialEffect: 'crystal_shards'
+    },
+    hydra: {
+        particleType: 'droplets',         // قطرات
+        particleColor: '#7dd3fc',
+        particleCount: 45,
+        glowColor: 'rgba(125, 211, 252, 0.35)',
+        auraColor: 'rgba(127, 29, 29, 0.12)',
+        specialEffect: 'multi_heads'
+    },
+    kitsune: {
+        particleType: 'fox_fire',         // ألسنة لهب زرقاء
+        particleColor: '#60a5fa',
+        particleCount: 35,
+        glowColor: 'rgba(96, 165, 250, 0.4)',
+        auraColor: 'rgba(249, 115, 22, 0.12)',
+        specialEffect: 'illusion_trails'
+    },
+    pegasus: {
+        particleType: 'feathers_white',   // ريش أبيض
+        particleColor: '#e0e7ff',
+        particleCount: 40,
+        glowColor: 'rgba(224, 231, 255, 0.4)',
+        auraColor: 'rgba(59, 130, 246, 0.12)',
+        specialEffect: 'sky_aura'
+    },
+    simurgh: {
+        particleType: 'rainbow_feathers', // ريش ملون
+        particleColor: '#f0abfc',
+        particleCount: 45,
+        glowColor: 'rgba(217, 70, 239, 0.4)',
+        auraColor: 'rgba(217, 70, 239, 0.15)',
+        specialEffect: 'cosmic_aura'
+    },
+    siren: {
+        particleType: 'waves',            // أمواج
+        particleColor: '#22d3ee',
+        particleCount: 40,
+        glowColor: 'rgba(34, 211, 238, 0.4)',
+        auraColor: 'rgba(6, 182, 212, 0.12)',
+        specialEffect: 'ocean_depth'
+    },
+    valkyrie: {
+        particleType: 'runes',            // رونز نورسية
+        particleColor: '#fbbf24',
+        particleCount: 30,
+        glowColor: 'rgba(251, 191, 36, 0.4)',
+        auraColor: 'rgba(220, 38, 38, 0.12)',
+        specialEffect: 'divine_light'
+    }
+};
+
 // 🎨 Visual config per tier — Premium Trading Card style
 const TIER_VISUALS = {
     common:  {
@@ -2932,6 +3067,346 @@ function roundRectPath(ctx, x, y, w, h, r) {
     ctx.closePath();
 }
 
+// ============================================================
+// 🎨 MYTHICAL CREATURE EFFECT RENDERERS (رسّام التأثيرات الأسطورية)
+// دوال لرسم الجسيمات والتأثيرات الخاصة بكل كائن
+// ============================================================
+
+// دالة مساعدة لرسم جسيم متحرك
+function drawParticle(ctx, type, x, y, size, color, alpha = 1) {
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = color;
+    
+    switch(type) {
+        case 'embers': // جمرات التنين 🔥
+            ctx.shadowColor = color;
+            ctx.shadowBlur = 12;
+            ctx.beginPath();
+            ctx.arc(x, y, size, 0, Math.PI * 2);
+            ctx.fill();
+            // ذيل الجمر
+            ctx.globalAlpha = alpha * 0.3;
+            ctx.beginPath();
+            ctx.arc(x - size * 2, y + size, size * 0.6, 0, Math.PI * 2);
+            ctx.fill();
+            break;
+            
+        case 'feathers': // ريش العنقاء 🪶
+            ctx.shadowColor = color;
+            ctx.shadowBlur = 8;
+            ctx.beginPath();
+            ctx.ellipse(x, y, size * 1.5, size * 0.5, Math.random() * Math.PI, 0, Math.PI * 2);
+            ctx.fill();
+            break;
+            
+        case 'sparkles': // بريق وحيد القرن ✨
+            ctx.shadowColor = color;
+            ctx.shadowBlur = 15;
+            // نجمة رباعية
+            ctx.beginPath();
+            for (let i = 0; i < 4; i++) {
+                const angle = (i * Math.PI / 2);
+                ctx.lineTo(x + Math.cos(angle) * size * 1.5, y + Math.sin(angle) * size * 1.5);
+                ctx.lineTo(x + Math.cos(angle + Math.PI/4) * size * 0.4, y + Math.sin(angle + Math.PI/4) * size * 0.4);
+            }
+            ctx.closePath();
+            ctx.fill();
+            break;
+            
+        case 'sand': // رمال أبو الهول 🏜️
+            ctx.beginPath();
+            ctx.arc(x, y, size * 0.5, 0, Math.PI * 2);
+            ctx.fill();
+            break;
+            
+        case 'bubbles': // فقاعات الكراكن 🫧
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 1.5;
+            ctx.shadowColor = color;
+            ctx.shadowBlur = 6;
+            ctx.beginPath();
+            ctx.arc(x, y, size, 0, Math.PI * 2);
+            ctx.stroke();
+            // انعكاس الضوء
+            ctx.fillStyle = 'rgba(255,255,255,0.6)';
+            ctx.beginPath();
+            ctx.arc(x - size * 0.3, y - size * 0.3, size * 0.25, 0, Math.PI * 2);
+            ctx.fill();
+            break;
+            
+        case 'stars': // نجوم بومة أثينا ⭐
+            ctx.shadowColor = color;
+            ctx.shadowBlur = 10;
+            // نجمة سداسية
+            ctx.beginPath();
+            for (let i = 0; i < 6; i++) {
+                const angle = (i * Math.PI / 3);
+                const radius = i % 2 === 0 ? size : size * 0.4;
+                ctx.lineTo(x + Math.cos(angle) * radius, y + Math.sin(angle) * radius);
+            }
+            ctx.closePath();
+            ctx.fill();
+            break;
+            
+        case 'leaves': // أوراق القنطور 🍃
+            ctx.beginPath();
+            ctx.ellipse(x, y, size * 1.2, size * 0.6, Math.PI / 4, 0, Math.PI * 2);
+            ctx.fill();
+            // عرق الورقة
+            ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+            ctx.lineWidth = 0.5;
+            ctx.beginPath();
+            ctx.moveTo(x - size * 0.8, y - size * 0.4);
+            ctx.lineTo(x + size * 0.8, y + size * 0.4);
+            ctx.stroke();
+            break;
+            
+        case 'shadows': // ظلال سيربيروس 🌑
+            ctx.fillStyle = `rgba(30,30,30,${alpha * 0.5})`;
+            ctx.beginPath();
+            ctx.arc(x, y, size * 2, 0, Math.PI * 2);
+            ctx.fill();
+            break;
+            
+        case 'petals': // بتلات الفون 🌸
+            ctx.shadowColor = color;
+            ctx.shadowBlur = 5;
+            ctx.beginPath();
+            ctx.ellipse(x, y, size, size * 0.7, Math.random() * Math.PI, 0, Math.PI * 2);
+            ctx.fill();
+            break;
+            
+        case 'crystals': // بلورات الجولم 💎
+            ctx.shadowColor = color;
+            ctx.shadowBlur = 8;
+            // شكل ماسة
+            ctx.beginPath();
+            ctx.moveTo(x, y - size);
+            ctx.lineTo(x + size * 0.7, y);
+            ctx.lineTo(x, y + size);
+            ctx.lineTo(x - size * 0.7, y);
+            ctx.closePath();
+            ctx.fill();
+            break;
+            
+        case 'droplets': // قطرات الهيدرا 💧
+            ctx.shadowColor = color;
+            ctx.shadowBlur = 6;
+            ctx.beginPath();
+            ctx.moveTo(x, y - size);
+            ctx.bezierCurveTo(x + size, y, x + size * 0.5, y + size, x, y + size);
+            ctx.bezierCurveTo(x - size * 0.5, y + size, x - size, y, x, y - size);
+            ctx.fill();
+            break;
+            
+        case 'fox_fire': // ألسنة لهب الكيتسوني 🔵
+            ctx.shadowColor = color;
+            ctx.shadowBlur = 15;
+            ctx.beginPath();
+            ctx.moveTo(x, y - size * 1.5);
+            ctx.bezierCurveTo(x + size * 0.8, y - size * 0.5, x + size, y + size, x, y + size * 0.8);
+            ctx.bezierCurveTo(x - size, y + size, x - size * 0.8, y - size * 0.5, x, y - size * 1.5);
+            ctx.fill();
+            break;
+            
+        case 'feathers_white': // ريش بيجاسوس الأبيض 🪽
+            ctx.fillStyle = 'rgba(255,255,255,0.9)';
+            ctx.shadowColor = '#fff';
+            ctx.shadowBlur = 10;
+            ctx.beginPath();
+            ctx.ellipse(x, y, size * 1.5, size * 0.5, Math.random() * Math.PI, 0, Math.PI * 2);
+            ctx.fill();
+            break;
+            
+        case 'rainbow_feathers': // ريش ملون للسيمرغ 🌈
+            const rainbowColors = ['#ff006e', '#fb5607', '#ffbe0b', '#8338ec', '#3a86ff'];
+            ctx.fillStyle = rainbowColors[Math.floor(Math.random() * rainbowColors.length)];
+            ctx.shadowColor = ctx.fillStyle;
+            ctx.shadowBlur = 8;
+            ctx.beginPath();
+            ctx.ellipse(x, y, size * 1.3, size * 0.5, Math.random() * Math.PI, 0, Math.PI * 2);
+            ctx.fill();
+            break;
+            
+        case 'waves': // أمواج الساحرة 🌊
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(x - size * 2, y);
+            ctx.bezierCurveTo(x - size, y - size, x + size, y + size, x + size * 2, y);
+            ctx.stroke();
+            break;
+            
+        case 'runes': // رونز الفالكيري ᚱ
+            ctx.shadowColor = color;
+            ctx.shadowBlur = 10;
+            ctx.font = `${size * 2}px serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            const runes = ['ᚱ', 'ᚦ', 'ᚨ', 'ᚷ', 'ᛗ', 'ᛟ'];
+            ctx.fillText(runes[Math.floor(Math.random() * runes.length)], x, y);
+            break;
+            
+        default:
+            ctx.beginPath();
+            ctx.arc(x, y, size, 0, Math.PI * 2);
+            ctx.fill();
+    }
+    ctx.restore();
+}
+
+// دالة رسم الجسيمات حول البطاقة
+function drawCreatureParticles(ctx, creatureId, W, H, pad) {
+    const effects = CREATURE_EFFECTS[creatureId];
+    if (!effects) return;
+    
+    const { particleType, particleColor, particleCount } = effects;
+    
+    // نثر الجسيمات حول الصورة وفي الخلفية
+    const positions = [
+        // حول الإطار العلوي
+        ...Array.from({length: Math.floor(particleCount * 0.3)}, () => ({
+            x: pad + Math.random() * (W - pad * 2),
+            y: pad + 80 + Math.random() * 150
+        })),
+        // حول الصورة
+        ...Array.from({length: Math.floor(particleCount * 0.4)}, () => ({
+            x: pad + Math.random() * (W - pad * 2),
+            y: H * 0.25 + Math.random() * H * 0.3
+        })),
+        // في الخلفية السفلية
+        ...Array.from({length: Math.floor(particleCount * 0.3)}, () => ({
+            x: pad + Math.random() * (W - pad * 2),
+            y: H * 0.7 + Math.random() * (H * 0.2)
+        }))
+    ];
+    
+    positions.forEach((pos, i) => {
+        const size = 2 + Math.random() * 6;
+        const alpha = 0.4 + Math.random() * 0.6;
+        drawParticle(ctx, particleType, pos.x, pos.y, size, particleColor, alpha);
+    });
+}
+
+// دالة رسم الهالة (Aura) حول الصورة
+function drawCreatureAura(ctx, creatureId, x, y, width, height) {
+    const effects = CREATURE_EFFECTS[creatureId];
+    if (!effects || !effects.auraColor) return;
+    
+    ctx.save();
+    
+    // هالة ناعمة حول الصورة
+    const auraGradient = ctx.createRadialGradient(
+        x + width / 2, y + height / 2, Math.min(width, height) * 0.3,
+        x + width / 2, y + height / 2, Math.max(width, height) * 0.7
+    );
+    auraGradient.addColorStop(0, effects.auraColor);
+    auraGradient.addColorStop(1, 'rgba(0,0,0,0)');
+    
+    ctx.fillStyle = auraGradient;
+    ctx.fillRect(x - 50, y - 50, width + 100, height + 100);
+    
+    ctx.restore();
+}
+
+// دالة رسم توهج (Glow) خاص
+function drawCreatureGlow(ctx, creatureId, x, y, radius) {
+    const effects = CREATURE_EFFECTS[creatureId];
+    if (!effects || !effects.glowColor) return;
+    
+    ctx.save();
+    ctx.shadowColor = effects.glowColor;
+    ctx.shadowBlur = 40;
+    ctx.fillStyle = effects.glowColor;
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+}
+
+// دالة رسم تأثير Holographic محسّن (للندرة العالية)
+function drawHolographicEffect(ctx, W, H, intensity = 0.15) {
+    ctx.save();
+    ctx.globalAlpha = intensity;
+    
+    // نمط قوس قزح متحرك
+    const holoGradient = ctx.createLinearGradient(0, 0, W, H);
+    holoGradient.addColorStop(0, '#ff006e');
+    holoGradient.addColorStop(0.15, '#fb5607');
+    holoGradient.addColorStop(0.3, '#ffbe0b');
+    holoGradient.addColorStop(0.45, '#8338ec');
+    holoGradient.addColorStop(0.6, '#3a86ff');
+    holoGradient.addColorStop(0.75, '#06ffa5');
+    holoGradient.addColorStop(0.9, '#ff006e');
+    holoGradient.addColorStop(1, '#fb5607');
+    
+    ctx.fillStyle = holoGradient;
+    ctx.fillRect(0, 0, W, H);
+    
+    // إضافة خطوط مائلة
+    ctx.globalAlpha = intensity * 0.3;
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 1;
+    for (let i = -H; i < W + H; i += 40) {
+        ctx.beginPath();
+        ctx.moveTo(i, 0);
+        ctx.lineTo(i + H, H);
+        ctx.stroke();
+    }
+    
+    ctx.restore();
+}
+
+// دالة رسم Watermark (علامة مائية) خفيفة
+function drawWatermark(ctx, W, H) {
+    ctx.save();
+    ctx.globalAlpha = 0.04;
+    ctx.font = '900 200px Cairo, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText('QM', W / 2, H / 2);
+    ctx.restore();
+}
+
+// دالة رسم QR Code بسيط (Placeholder)
+function drawQRCode(ctx, x, y, size) {
+    ctx.save();
+    
+    // خلفية بيضاء
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(x, y, size, size);
+    
+    // رسم نمط QR بسيط (placeholder)
+    ctx.fillStyle = '#0f172a';
+    const cellSize = size / 21;
+    
+    // الزوايا الثلاثة المميزة
+    const drawFinderPattern = (px, py) => {
+        ctx.fillRect(px, py, cellSize * 7, cellSize * 7);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(px + cellSize, py + cellSize, cellSize * 5, cellSize * 5);
+        ctx.fillStyle = '#0f172a';
+        ctx.fillRect(px + cellSize * 2, py + cellSize * 2, cellSize * 3, cellSize * 3);
+    };
+    
+    drawFinderPattern(x, y);
+    drawFinderPattern(x + cellSize * 14, y);
+    drawFinderPattern(x, y + cellSize * 14);
+    
+    // نمط عشوائي في المنتصف
+    for (let i = 8; i < 13; i++) {
+        for (let j = 8; j < 13; j++) {
+            if (Math.random() > 0.5) {
+                ctx.fillRect(x + i * cellSize, y + j * cellSize, cellSize, cellSize);
+            }
+        }
+    }
+    
+    ctx.restore();
+}
+
 // 🖼️ PREMIUM TRADING CARD RENDERER — modular sections
 async function renderCollectibleCardCanvas(creature, tier) {
     const isAr = currentLang === 'ar';
@@ -3010,6 +3485,31 @@ async function renderCollectibleCardCanvas(creature, tier) {
         ctx.fillRect(0, 0, W, H);
         ctx.restore();
     }
+
+    // ============================================================
+    // 🎨 SECTION 1.5: MYTHICAL CREATURE EFFECTS (تأثيرات الكائنات الأسطورية)
+    // ============================================================
+
+    // 1. رسم الهالة (Aura) حول البطاقة حسب الكائن
+    if (creature && creature.id) {
+        drawCreatureAura(ctx, creature.id, 0, 0, W, H);
+    }
+
+    // 2. رسم الجسيمات الخاصة بالكائن (فقط للمستويات العالية)
+    if (creature && creature.id && tier !== 'common') {
+        drawCreatureParticles(ctx, creature.id, W, H, pad);
+    }
+
+    // 3. رسم تأثير Holographic محسّن للبطاقات الماسية
+    if (tier === 'diamond') {
+        drawHolographicEffect(ctx, W, H, 0.12);
+    } else if (tier === 'gold') {
+        drawHolographicEffect(ctx, W, H, 0.06);
+    }
+
+    // 4. رسم Watermark خفيف (علامة مائية لحماية الحقوق)
+    drawWatermark(ctx, W, H);
+
 
     // ============================================================
     // SECTION 2: Gold Metallic Border (thick + ornate corners)
@@ -3129,29 +3629,84 @@ async function renderCollectibleCardCanvas(creature, tier) {
     ctx.restore();
 
     // ============================================================
-    // SECTION 5: Main Title + Subtitle
+    // SECTION 5: Main Title + Subtitle (Enhanced with Foil Effect)
     // ============================================================
     yCursor += catH + 30;
     ctx.save();
     ctx.direction = rtl ? 'rtl' : 'ltr';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'alphabetic';
-    // Big title
-    ctx.font = '900 88px Cairo, Tajawal, sans-serif';
-    ctx.fillStyle = '#ffffff';
-    ctx.shadowColor = 'rgba(0,0,0,0.95)';
-    ctx.shadowBlur = 16;
+
+    // 🎨 Big title with metallic foil effect
     let titleText = String(creature.name || '');
     while (ctx.measureText(titleText).width > innerW - 40 && titleText.length > 4) {
         titleText = titleText.slice(0, -1);
     }
     if (titleText !== String(creature.name || '')) titleText += '…';
+
+    // 🎨 Layer 1: Shadow for depth
+    ctx.font = '900 88px Cairo, Tajawal, sans-serif';
+    ctx.shadowColor = 'rgba(0,0,0,0.95)';
+    ctx.shadowBlur = 20;
+    ctx.shadowOffsetY = 4;
+    ctx.fillStyle = 'rgba(0,0,0,0.4)';
+    ctx.fillText(titleText, W / 2 + 2, yCursor + 72);
+
+    // 🎨 Layer 2: Metallic gradient fill
+    const titleGrad = ctx.createLinearGradient(W / 2 - 200, yCursor, W / 2 + 200, yCursor + 80);
+    if (tier === 'diamond') {
+        titleGrad.addColorStop(0, '#e0e7ff');
+        titleGrad.addColorStop(0.3, '#c4b5fd');
+        titleGrad.addColorStop(0.5, '#f0abfc');
+        titleGrad.addColorStop(0.7, '#c4b5fd');
+        titleGrad.addColorStop(1, '#e0e7ff');
+    } else if (tier === 'gold') {
+        titleGrad.addColorStop(0, '#fef3c7');
+        titleGrad.addColorStop(0.3, '#fbbf24');
+        titleGrad.addColorStop(0.5, '#fff');
+        titleGrad.addColorStop(0.7, '#fbbf24');
+        titleGrad.addColorStop(1, '#fef3c7');
+    } else if (tier === 'silver') {
+        titleGrad.addColorStop(0, '#f1f5f9');
+        titleGrad.addColorStop(0.3, '#cbd5e1');
+        titleGrad.addColorStop(0.5, '#fff');
+        titleGrad.addColorStop(0.7, '#cbd5e1');
+        titleGrad.addColorStop(1, '#f1f5f9');
+    } else {
+        titleGrad.addColorStop(0, '#fff');
+        titleGrad.addColorStop(0.5, '#e2e8f0');
+        titleGrad.addColorStop(1, '#fff');
+    }
+    ctx.shadowColor = 'rgba(0,0,0,0)';
+    ctx.shadowBlur = 0;
+    ctx.shadowOffsetY = 0;
+    ctx.fillStyle = titleGrad;
     ctx.fillText(titleText, W / 2, yCursor + 70);
-    // Subtitle (rarity)
+
+    // 🎨 Layer 3: Top highlight (emboss effect)
+    ctx.globalAlpha = 0.3;
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText(titleText, W / 2, yCursor + 69);
+    ctx.globalAlpha = 1;
+
+    // 🎨 Subtitle (rarity) with glow
     ctx.font = '700 34px Cairo, Tajawal, sans-serif';
     ctx.fillStyle = visual.accent;
-    ctx.shadowBlur = 8;
+    ctx.shadowColor = visual.glow;
+    ctx.shadowBlur = 12;
     ctx.fillText(String(creature.rarity || ''), W / 2, yCursor + 118);
+
+    // 🎨 Add decorative stars around title for diamond tier
+    if (tier === 'diamond') {
+        ctx.font = '32px Cairo, Tajawal, sans-serif';
+        ctx.fillStyle = '#fbbf24';
+        ctx.shadowColor = '#fbbf24';
+        ctx.shadowBlur = 15;
+        const titleWidth = ctx.measureText(titleText).width;
+        ctx.fillText('✦', W / 2 - titleWidth / 2 - 40, yCursor + 70);
+        ctx.fillText('✦', W / 2 + titleWidth / 2 + 40, yCursor + 70);
+    }
+
     ctx.restore();
     yCursor += 140;
 
@@ -3186,32 +3741,56 @@ async function renderCollectibleCardCanvas(creature, tier) {
     yCursor += rarityBadgeH + 24;
 
     // ============================================================
-    // SECTION 7: Main Artwork (largest, ~55% of card, no UI overlay)
+    // SECTION 7: Main Artwork (Enhanced with 3D Frame + Dynamic Glow)
     // ============================================================
     const artY = yCursor;
     const artH = Math.round(H * 0.42);
     const artW = innerW;
     const artX = pad;
 
-    // Artwork shadow
+    // 🎨 1. Deep shadow (3D depth effect)
     ctx.save();
-    ctx.shadowColor = 'rgba(0,0,0,0.8)';
-    ctx.shadowBlur = 35;
-    ctx.shadowOffsetY = 10;
+    ctx.shadowColor = 'rgba(0,0,0,0.9)';
+    ctx.shadowBlur = 50;
+    ctx.shadowOffsetY = 15;
     ctx.fillStyle = '#000';
     roundRectPath(ctx, artX, artY, artW, artH, 20);
     ctx.fill();
     ctx.restore();
 
-    // Load and draw image (cover-fit)
+    // 🎨 2. Draw creature-specific aura BEHIND the image
+    if (creature && creature.id) {
+        drawCreatureAura(ctx, creature.id, artX - 30, artY - 30, artW + 60, artH + 60);
+    }
+
+    // 🎨 3. Load and draw image (cover-fit with enhancement)
     const img = await loadImageAsDataURL(creature.image);
     ctx.save();
     roundRectPath(ctx, artX, artY, artW, artH, 20);
     ctx.clip();
+
     if (img) {
         const scale = Math.max(artW / img.width, artH / img.height);
         const dw = img.width * scale, dh = img.height * scale;
         ctx.drawImage(img, artX + (artW - dw) / 2, artY + (artH - dh) / 2, dw, dh);
+    
+        // 🎨 4. Subtle vignette overlay on image (cinematic effect)
+        const imgVignette = ctx.createRadialGradient(
+            artX + artW / 2, artY + artH / 2, artW * 0.3,
+            artX + artW / 2, artY + artH / 2, artW * 0.8
+        );
+        imgVignette.addColorStop(0, 'rgba(0,0,0,0)');
+        imgVignette.addColorStop(1, 'rgba(0,0,0,0.4)');
+        ctx.fillStyle = imgVignette;
+        ctx.fillRect(artX, artY, artW, artH);
+    
+        // 🎨 5. Color tint overlay based on creature
+        if (creatureThemes[creature.id]) {
+            ctx.globalAlpha = 0.08;
+            ctx.fillStyle = creatureThemes[creature.id].primary;
+            ctx.fillRect(artX, artY, artW, artH);
+            ctx.globalAlpha = 1;
+        }
     } else {
         const phGrad = ctx.createLinearGradient(artX, artY, artX + artW, artY + artH);
         phGrad.addColorStop(0, visual.bg2);
@@ -3221,20 +3800,92 @@ async function renderCollectibleCardCanvas(creature, tier) {
     }
     ctx.restore();
 
-    // Gold frame around artwork (double border)
+    // 🎨 6. 3D Metallic Frame (triple border with bevel effect)
+    // Outer thick border with gradient
     ctx.save();
-    ctx.lineWidth = 6;
-    ctx.strokeStyle = visual.border;
+    const frameGrad = ctx.createLinearGradient(artX, artY, artX + artW, artY + artH);
+    frameGrad.addColorStop(0, visual.borderLight);
+    frameGrad.addColorStop(0.3, visual.border);
+    frameGrad.addColorStop(0.5, visual.borderDark);
+    frameGrad.addColorStop(0.7, visual.border);
+    frameGrad.addColorStop(1, visual.borderLight);
+
+    ctx.lineWidth = 8;
+    ctx.strokeStyle = frameGrad;
     ctx.shadowColor = visual.glow;
-    ctx.shadowBlur = 18;
+    ctx.shadowBlur = 25;
     roundRectPath(ctx, artX, artY, artW, artH, 20);
     ctx.stroke();
-    ctx.lineWidth = 1.5;
-    ctx.strokeStyle = visual.borderLight;
-    ctx.globalAlpha = 0.6;
-    roundRectPath(ctx, artX + 5, artY + 5, artW - 10, artH - 10, 16);
+    ctx.restore();
+
+    // Middle decorative border
+    ctx.save();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = visual.accent;
+    ctx.globalAlpha = 0.8;
+    ctx.shadowColor = visual.glow;
+    ctx.shadowBlur = 10;
+    roundRectPath(ctx, artX + 6, artY + 6, artW - 12, artH - 12, 16);
     ctx.stroke();
     ctx.restore();
+
+    // Inner thin border (subtle)
+    ctx.save();
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = visual.borderLight;
+    ctx.globalAlpha = 0.5;
+    roundRectPath(ctx, artX + 10, artY + 10, artW - 20, artH - 20, 14);
+    ctx.stroke();
+    ctx.restore();
+
+    // 🎨 7. Corner ornaments on artwork (4 small gems)
+    const gemSize = 12;
+    const gemPositions = [
+        { x: artX + 20, y: artY + 20 },           // top-left
+        { x: artX + artW - 20, y: artY + 20 },    // top-right
+        { x: artX + 20, y: artY + artH - 20 },    // bottom-left
+        { x: artX + artW - 20, y: artY + artH - 20 } // bottom-right
+    ];
+
+    gemPositions.forEach(pos => {
+        ctx.save();
+        ctx.shadowColor = visual.glow;
+        ctx.shadowBlur = 15;
+
+        // Gem outer
+        ctx.fillStyle = visual.border;
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, gemSize, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Gem inner (sparkle)
+        ctx.fillStyle = visual.borderLight;
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, gemSize * 0.6, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Gem highlight
+        ctx.fillStyle = 'rgba(255,255,255,0.8)';
+        ctx.beginPath();
+        ctx.arc(pos.x - gemSize * 0.2, pos.y - gemSize * 0.2, gemSize * 0.25, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
+    });
+
+    // 🎨 8. Dynamic glow around entire artwork (creature-specific)
+    if (creature && creature.id && creatureThemes[creature.id]) {
+        ctx.save();
+        ctx.shadowColor = creatureThemes[creature.id].glow;
+        ctx.shadowBlur = 40;
+        ctx.strokeStyle = creatureThemes[creature.id].primary;
+        ctx.lineWidth = 2;
+        ctx.globalAlpha = 0.3;
+        roundRectPath(ctx, artX - 5, artY - 5, artW + 10, artH + 10, 24);
+        ctx.stroke();
+        ctx.restore();
+    }
+
     yCursor = artY + artH + 28;
 
     // ============================================================
@@ -3282,29 +3933,66 @@ async function renderCollectibleCardCanvas(creature, tier) {
         const sx = statsPanelX + col * cellW;
         const sy = statsPanelY + row * cellH;
         const stat = axisToStat[axis] || axisToStat.willpower;
+    
         // Score derived from multiplier (primary axes get higher)
         const isPrimary = primaryAxes.includes(axis);
         const score = Math.min(99, Math.max(50, Math.round(mult * 60 + (isPrimary ? 18 : 0) + (i * 3))));
-
+    
+        // 🎨 Enhanced stat cell with background glow
+        ctx.save();
+        ctx.fillStyle = `${stat.color}15`; // 8% opacity background
+        ctx.fillRect(sx + 4, sy + 4, cellW - 8, cellH - 8);
+        ctx.restore();
+    
         ctx.save();
         ctx.direction = rtl ? 'rtl' : 'ltr';
         ctx.textBaseline = 'middle';
-        // Icon
+
+        // 🎨 Icon with glow effect
         ctx.textAlign = 'center';
-        ctx.font = '36px Cairo, Tajawal, sans-serif';
-        ctx.fillText(stat.icon, rtl ? sx + cellW - 40 : sx + 40, sy + cellH / 2 - 12);
-        // Stat name
+        ctx.font = '42px Cairo, Tajawal, sans-serif';
+        ctx.shadowColor = stat.color;
+        ctx.shadowBlur = 15;
+        ctx.fillText(stat.icon, rtl ? sx + cellW - 45 : sx + 45, sy + cellH / 2 - 12);
+        ctx.shadowBlur = 0;
+
+        // 🎨 Stat name (smaller, cleaner)
         ctx.textAlign = rtl ? 'right' : 'left';
-        ctx.font = '700 22px Cairo, Tajawal, sans-serif';
-        ctx.fillStyle = 'rgba(203,213,225,0.8)';
-        const nameX = rtl ? sx + cellW - 80 : sx + 72;
-        ctx.fillText(stat.en + ' · ' + stat.ar, nameX, sy + cellH / 2 - 14);
-        // Big number
-        ctx.font = '900 42px Cairo, Tajawal, sans-serif';
+        ctx.font = '700 20px Cairo, Tajawal, sans-serif';
+        ctx.fillStyle = 'rgba(203,213,225,0.9)';
+        const nameX = rtl ? sx + cellW - 90 : sx + 82;
+        ctx.fillText(stat.en, nameX, sy + cellH / 2 - 18);
+
+        ctx.font = '600 16px Cairo, Tajawal, sans-serif';
+        ctx.fillStyle = 'rgba(203,213,225,0.6)';
+        ctx.fillText(stat.ar, nameX, sy + cellH / 2 - 2);
+
+        // 🎨 Big number with enhanced glow
+        ctx.font = '900 48px Cairo, Tajawal, sans-serif';
         ctx.fillStyle = stat.color;
         ctx.shadowColor = stat.color;
-        ctx.shadowBlur = 8;
-        ctx.fillText(String(score), nameX, sy + cellH / 2 + 18);
+        ctx.shadowBlur = 12;
+        ctx.fillText(String(score), nameX, sy + cellH / 2 + 28);
+        ctx.shadowBlur = 0;
+
+        // 🎨 Progress bar under the number (visual indicator)
+        const barWidth = 80;
+        const barHeight = 4;
+        const barX = nameX;
+        const barY = sy + cellH / 2 + 45;
+        const barFill = (score / 100) * barWidth;
+
+        // Bar background
+        ctx.fillStyle = 'rgba(255,255,255,0.1)';
+        ctx.fillRect(barX, barY, barWidth, barHeight);
+
+        // Bar fill with gradient
+        const barGrad = ctx.createLinearGradient(barX, barY, barX + barFill, barY);
+        barGrad.addColorStop(0, stat.color);
+        barGrad.addColorStop(1, `${stat.color}80`);
+        ctx.fillStyle = barGrad;
+        ctx.fillRect(barX, barY, barFill, barHeight);
+        
         ctx.restore();
     });
 
@@ -3415,46 +4103,151 @@ async function renderCollectibleCardCanvas(creature, tier) {
     }
 
     // ============================================================
-    // SECTION 12: Footer (QuizMagic + year + edition + username)
+    // SECTION 12: Footer (Enhanced Premium Design)
     // ============================================================
-    const footerY = H - fi - 90;
+    const footerY = H - fi - 120;
     ctx.save();
-    // Divider line
+
+    // 🎨 Decorative divider with gradient
     const divGrad = ctx.createLinearGradient(pad, footerY, W - pad, footerY);
     divGrad.addColorStop(0, 'rgba(255,255,255,0)');
-    divGrad.addColorStop(0.5, visual.border);
+    divGrad.addColorStop(0.2, visual.border);
+    divGrad.addColorStop(0.5, visual.borderLight);
+    divGrad.addColorStop(0.8, visual.border);
     divGrad.addColorStop(1, 'rgba(255,255,255,0)');
     ctx.strokeStyle = divGrad;
-    ctx.lineWidth = 1.5;
+    ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(pad, footerY);
     ctx.lineTo(W - pad, footerY);
     ctx.stroke();
-    // Left: username
+
+    // 🎨 Center ornament on divider
+    ctx.fillStyle = visual.borderLight;
+    ctx.shadowColor = visual.glow;
+    ctx.shadowBlur = 10;
+    ctx.beginPath();
+    ctx.arc(W / 2, footerY, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(W / 2 - 15, footerY);
+    ctx.lineTo(W / 2, footerY - 4);
+    ctx.lineTo(W / 2 + 15, footerY);
+    ctx.closePath();
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // 🎨 Left side: Collector info with enhanced styling
     ctx.direction = rtl ? 'rtl' : 'ltr';
     ctx.textAlign = rtl ? 'right' : 'left';
     ctx.textBaseline = 'middle';
-    ctx.font = '600 20px Cairo, Tajawal, sans-serif';
-    ctx.fillStyle = 'rgba(203,213,225,0.6)';
-    const footUserX = rtl ? W - pad : pad;
-    ctx.fillText(isAr ? 'مستكشف' : 'COLLECTOR', footUserX, footerY + 24);
-    ctx.font = '700 28px Cairo, Tajawal, sans-serif';
-    ctx.fillStyle = '#fff';
-    ctx.fillText(String(username), footUserX, footerY + 52);
-    // Right: copyright
-    ctx.textAlign = rtl ? 'left' : 'right';
-    ctx.font = '600 20px Cairo, Tajawal, sans-serif';
-    ctx.fillStyle = 'rgba(203,213,225,0.6)';
-    const footRightX = rtl ? pad : W - pad;
-    ctx.fillText('QuizMagic © ' + new Date().getFullYear(), footRightX, footerY + 24);
-    ctx.font = '700 22px Cairo, Tajawal, sans-serif';
+
+    // Label
+    ctx.font = '600 22px Cairo, Tajawal, sans-serif';
     ctx.fillStyle = visual.accent;
-    ctx.fillText(isAr ? 'الإصدار ' + (cardIndex || 1) + '/' + totalCards : 'Edition ' + (cardIndex || 1) + '/' + totalCards, footRightX, footerY + 52);
-    // Center: tiny series mark
+    ctx.shadowColor = visual.glow;
+    ctx.shadowBlur = 6;
+    const footUserX = rtl ? W - pad - 20 : pad + 20;
+    ctx.fillText(isAr ? '✦ جامع البطاقات' : '✦ CARD COLLECTOR', footUserX, footerY + 28);
+
+    // Username (larger and bolder)
+    ctx.font = '900 32px Cairo, Tajawal, sans-serif';
+    ctx.fillStyle = '#fff';
+    ctx.shadowColor = 'rgba(0,0,0,0.5)';
+    ctx.shadowBlur = 4;
+    ctx.fillText(String(username), footUserX, footerY + 60);
+
+    // 🎨 Right side: Edition info
+    ctx.textAlign = rtl ? 'left' : 'right';
+    ctx.font = '600 22px Cairo, Tajawal, sans-serif';
+    ctx.fillStyle = visual.accent;
+    ctx.shadowColor = visual.glow;
+    ctx.shadowBlur = 6;
+    const footRightX = rtl ? pad + 20 : W - pad - 20;
+    ctx.fillText('QuizMagic © ' + new Date().getFullYear(), footRightX, footerY + 28);
+
+    // Edition number with metallic effect
+    const editionGrad = ctx.createLinearGradient(footRightX - 100, footerY + 60, footRightX, footerY + 60);
+    editionGrad.addColorStop(0, visual.borderLight);
+    editionGrad.addColorStop(0.5, '#fff');
+    editionGrad.addColorStop(1, visual.borderLight);
+    ctx.font = '900 26px Cairo, Tajawal, sans-serif';
+    ctx.fillStyle = editionGrad;
+    ctx.shadowColor = visual.glow;
+    ctx.shadowBlur = 8;
+    ctx.fillText(isAr ? 'الإصدار ' + (cardIndex || 1) + '/' + totalCards : 'Edition ' + (cardIndex || 1) + '/' + totalCards, footRightX, footerY + 60);
+
+    // 🎨 Center: Premium certification mark
     ctx.textAlign = 'center';
-    ctx.font = '600 16px Cairo, Tajawal, sans-serif';
-    ctx.fillStyle = 'rgba(203,213,225,0.4)';
-    ctx.fillText('QM-MC-' + String(cardIndex || 1).padStart(3, '0'), W / 2, footerY + 38);
+    ctx.font = '700 18px Cairo, Tajawal, sans-serif';
+    ctx.fillStyle = visual.accent;
+    ctx.globalAlpha = 0.9;
+    ctx.shadowColor = 'rgba(0,0,0,0.6)';
+    ctx.shadowBlur = 4;
+
+    // Serial number with decorative frame
+    const serialText = 'QM-MC-' + String(cardIndex || 1).padStart(3, '0');
+    const serialWidth = ctx.measureText(serialText).width + 30;
+    const serialX = W / 2 - serialWidth / 2;
+
+    // Frame background
+    ctx.globalAlpha = 0.3;
+    ctx.fillStyle = visual.panelBg;
+    roundRectPath(ctx, serialX, footerY + 85, serialWidth, 30, 15);
+    ctx.fill();
+
+    // Frame border
+    ctx.globalAlpha = 0.7;
+    ctx.strokeStyle = visual.border;
+    ctx.lineWidth = 1.5;
+    roundRectPath(ctx, serialX, footerY + 85, serialWidth, 30, 15);
+    ctx.stroke();
+
+    // Serial text
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = visual.accent;
+    ctx.font = '700 16px Cairo, Tajawal, sans-serif';
+    ctx.fillText(serialText, W / 2, footerY + 100);
+
+    // 🎨 "Official" stamp for diamond cards
+    if (tier === 'diamond') {
+        ctx.save();
+        ctx.translate(W - pad - 120, footerY + 50);
+        ctx.rotate(-0.2);
+
+        // Stamp border
+        ctx.strokeStyle = '#ef4444';
+        ctx.lineWidth = 3;
+        ctx.globalAlpha = 0.6;
+        roundRectPath(ctx, -50, -20, 100, 40, 8);
+        ctx.stroke();
+
+        // Stamp text
+        ctx.fillStyle = '#ef4444';
+        ctx.font = '900 20px Cairo, Tajawal, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(isAr ? 'رسمي' : 'OFFICIAL', 0, 0);
+
+        ctx.restore();
+    }
+
+    ctx.restore();
+    // ============================================================
+    // 📱 SECTION 13: QR Code (للمشاركة السريعة)
+    // ============================================================
+    const qrSize = 100;
+    const qrX = W - pad - qrSize - 10;
+    const qrY = H - fi - qrSize - 20;
+    drawQRCode(ctx, qrX, qrY, qrSize);
+
+    // نص تحت QR Code
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.font = '600 14px Cairo, Tajawal, sans-serif';
+    ctx.fillStyle = 'rgba(203,213,225,0.6)';
+    ctx.fillText(isAr ? 'امسح للعب' : 'Scan to Play', qrX + qrSize / 2, qrY + qrSize + 5);
     ctx.restore();
 
     return canvas;
