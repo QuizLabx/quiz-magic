@@ -1937,9 +1937,10 @@ function showLoading() {
     setTimeout(showResult, delay);
 }
 
-// ==================== RESULT CALCULATION (ADVANCED ALGORITHM) ====================
+// ==================== RESULT CALCULATION (FINGERPRINT MATCHING ALGORITHM) ====================
+// 🧬 خوارزمية البصمة الكاملة (Cosine Similarity + Novelty System)
 function calculateResult() {
-    // 1. حساب نقاط كل محور (Axis)
+    // 1. حساب نقاط كل محور (Axis) من إجابات المستخدم
     const axisScores = {
         intelligence: 0, energy: 0, empathy: 0, strategy: 0, mystery: 0, willpower: 0
     };
@@ -1954,95 +1955,109 @@ function calculateResult() {
         }
     });
 
-    // 2. تحويل النقاط إلى نسب مئوية (0-100)
-    const axisPercentages = {};
+    // 2. تحويل النقاط إلى بصمة المستخدم (0-100 لكل محور)
+    const userFingerprint = {};
     for (const axis in axisScores) {
         const maxPossible = axisCounts[axis] * 5;
         if (maxPossible > 0) {
-            // نضمن ألا تقل النسبة عن 15% لكي يظهر الرادار بشكل جيد
-            axisPercentages[axis] = Math.max(15, (axisScores[axis] / maxPossible) * 100);
+            userFingerprint[axis] = Math.max(10, (axisScores[axis] / maxPossible) * 100);
         } else {
-            axisPercentages[axis] = 50; // قيمة افتراضية
+            userFingerprint[axis] = 50;
         }
     }
 
-    // 3. حساب التوافق مع كل كائن بناءً على محاوره (Multi-Axis Matching)
+    // 3. دالة Cosine Similarity الرياضية
+    // تقيس التشابه بين متجهين (بصمة المستخدم وبصمة الكائن)
+    function cosineSimilarity(vecA, vecB) {
+        let dotProduct = 0;
+        let magA = 0;
+        let magB = 0;
+        const axes = Object.keys(vecA);
+        for (const axis of axes) {
+            const a = vecA[axis] || 0;
+            const b = vecB[axis] || 0;
+            dotProduct += a * b;
+            magA += a * a;
+            magB += b * b;
+        }
+        const magnitude = Math.sqrt(magA) * Math.sqrt(magB);
+        if (magnitude === 0) return 0;
+        return dotProduct / magnitude; // قيمة بين 0 و 1
+    }
+
+    // 4. حساب التوافق مع كل كائن باستخدام بصمته الكاملة
     const results = currentQuiz.results;
     let creatureScores = [];
 
     results.forEach(creature => {
-        let totalCompatibility = 0;
-        let axesCount = 0;
-        
-        // استخدام خاصية axes الجديدة من ملف quizzes.js
-        const creatureAxes = creature.axes || [];
-        
-        if (creatureAxes.length > 0) {
-            creatureAxes.forEach(axis => {
-                if (axisPercentages[axis] !== undefined) {
-                    totalCompatibility += axisPercentages[axis];
-                    axesCount++;
-                }
-            });
-        } else {
-            totalCompatibility = 50;
-            axesCount = 1;
-        }
+        // البصمة الكاملة للكائن (من CREATURE_FINGERPRINTS)
+        const creatureFingerprint = (typeof CREATURE_FINGERPRINTS !== 'undefined' && CREATURE_FINGERPRINTS[creature.id])
+            ? CREATURE_FINGERPRINTS[creature.id]
+            : null;
 
-        const avgCompatibility = totalCompatibility / axesCount;
-        
-        // استخدام خاصية multiplier الجديدة من ملف quizzes.js
-        const multiplier = creature.multiplier || 1.0;
-        const finalScore = avgCompatibility * multiplier;
+        let similarity;
+        if (creatureFingerprint) {
+            // ✨ الخوارزمية الجديدة: مطابقة كل المحاور الستة
+            similarity = cosineSimilarity(userFingerprint, creatureFingerprint);
+        } else {
+            // Fallback للخوارزمية القديمة في حال عدم وجود بصمة
+            const axes = creature.axes || [];
+            let total = 0;
+            axes.forEach(axis => { total += (userFingerprint[axis] || 50); });
+            similarity = axes.length > 0 ? (total / axes.length) / 100 : 0.5;
+        }
 
         creatureScores.push({
             id: creature.id,
-            score: finalScore,
-            compatibility: avgCompatibility,
+            score: similarity, // القيمة الأساسية (0-1)
+            compatibility: similarity * 100, // للنسبة المئوية
             rarity: creature.rarity,
             creature: creature
         });
     });
 
-    // 4. نظام كسر التعادل الذكي (Tiebreaker)
-    const rarityWeights = {
-        'أسطوري': 4, 'Legendary': 4,
-        'نادر جداً': 3, 'Very Rare': 3,
-        'نادر': 2, 'Rare': 2,
-        'شائع': 1, 'Common': 1
-    };
+    // 5. 🎁 نظام الجدة (Novelty Bonus) - لتشجيع رؤية كل الكائنات
+    try {
+        const stats = getUserStats();
+        const discoveredCreatures = stats.creatures ? Object.keys(stats.creatures) : [];
+        const recentCreatures = []; // يمكن تفعيلها لاحقاً
 
+        creatureScores.forEach(score => {
+            // +10% boost للكائنات التي لم يرها المستخدم أبداً
+            if (!discoveredCreatures.includes(score.id)) {
+                score.score *= 1.10;
+                score.compatibility = score.score * 100;
+            }
+        });
+    } catch (e) {
+        // تجاهل الأخطاء - النظام يعمل بدون bonus أيضاً
+    }
+
+    // 6. ⚖️ نظام كسر التعادل الرياضي العادل
     creatureScores.sort((a, b) => {
-        // الأولوية للأعلى نقاطاً
-        if (Math.abs(b.score - a.score) > 0.01) {
-            return b.score - a.score; 
+        // الأولوية للأعلى توافقاً (الفرق يجب أن يكون أكبر من 0.005 = 0.5%)
+        if (Math.abs(b.score - a.score) > 0.005) {
+            return b.score - a.score;
         }
-        // كسر التعادل 1: الندرة (Rarity)
-        const rarityA = rarityWeights[a.rarity] || 0;
-        const rarityB = rarityWeights[b.rarity] || 0;
-        if (rarityB !== rarityA) {
-            return rarityB - rarityA;
-        }
-        // كسر التعادل 2: عشوائي مدروس
+        // كسر التعادل: عشوائي عادل (ليس بالندرة!)
         return Math.random() - 0.5;
     });
 
     const winner = creatureScores[0];
     const secondary = creatureScores[1];
 
-    // 5. التحقق من الحد الأدنى (Threshold)
-    const isBelowThreshold = winner.compatibility < 60;
+    // 7. التحقق من الحد الأدنى (Threshold)
+    const isBelowThreshold = winner.compatibility < 55;
 
     return {
         creature: winner.creature,
         secondaryCreature: secondary.creature,
-        radar: axisPercentages,
+        radar: userFingerprint,
         winnerId: winner.id,
         isBelowThreshold: isBelowThreshold,
         allScores: creatureScores
     };
 }
-
 // ==================== USER STATISTICS ====================
 function loadUserStats() {
     const saved = localStorage.getItem('quiz_stats');
