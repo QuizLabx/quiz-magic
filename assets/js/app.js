@@ -1864,7 +1864,6 @@ function renderQuestionContent(container, question, totalSteps, progress, slideI
             `).join('')}
         </div>
     `;
-    }
     
     content += `</div>`;
 
@@ -1886,7 +1885,6 @@ function renderQuestionContent(container, question, totalSteps, progress, slideI
             options[0].focus();
         }
     }, 100);
-
 }
 
 
