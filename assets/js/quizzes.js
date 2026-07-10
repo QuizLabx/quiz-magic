@@ -1,3 +1,139 @@
+
+// ============================================================
+// 🧬 MYTHICAL CREATURE FINGERPRINTS (بصمات الشخصيات الأسطورية)
+// كل كائن له بصمة فريدة من 6 محاور بنسب مثالية (0-100)
+// يُستخدم مع خوارزمية Cosine Similarity لمطابقة دقيقة
+// ============================================================
+const CREATURE_FINGERPRINTS = {
+    dragon: {
+        willpower: 95,      // القوة المهيمنة: القيادة
+        energy: 80,         // طاقة عالية
+        intelligence: 55,   // ذكاء متوسط
+        empathy: 25,        // تعاطف منخفض
+        strategy: 70,       // تخطيط جيد
+        mystery: 35         // غموض متوسط
+    },
+    phoenix: {
+        willpower: 55,
+        energy: 95,         // الطاقة المهيمنة: التجدد
+        intelligence: 50,
+        empathy: 80,        // تعاطف عالي
+        strategy: 35,
+        mystery: 45
+    },
+    unicorn: {
+        willpower: 40,
+        energy: 50,
+        intelligence: 55,
+        empathy: 95,        // القوة المهيمنة: النقاء
+        strategy: 30,
+        mystery: 80         // غموض عالي
+    },
+    sphinx: {
+        willpower: 60,
+        energy: 40,
+        intelligence: 95,   // القوة المهيمنة: الحكمة
+        empathy: 45,
+        strategy: 70,
+        mystery: 85         // غموض عالي
+    },
+    kraken: {
+        willpower: 65,
+        energy: 55,
+        intelligence: 75,
+        empathy: 25,
+        strategy: 95,       // القوة المهيمنة: التخطيط
+        mystery: 85
+    },
+    owl_of_athena: {
+        willpower: 55,
+        energy: 40,
+        intelligence: 95,   // القوة المهيمنة: الذكاء
+        empathy: 35,
+        strategy: 85,
+        mystery: 55
+    },
+    centaur: {
+        willpower: 80,
+        energy: 70,
+        intelligence: 80,   // توازن في الذكاء
+        empathy: 55,
+        strategy: 65,
+        mystery: 45
+    },
+    cerberus: {
+        willpower: 90,      // القوة المهيمنة: الحماية
+        energy: 60,
+        intelligence: 50,
+        empathy: 45,
+        strategy: 85,
+        mystery: 40
+    },
+    faun: {
+        willpower: 35,
+        energy: 90,         // الطاقة المهيمنة: المرح
+        intelligence: 45,
+        empathy: 75,
+        strategy: 25,
+        mystery: 40
+    },
+    golem: {
+        willpower: 85,
+        energy: 45,
+        intelligence: 50,
+        empathy: 40,
+        strategy: 95,       // القوة المهيمنة: الصبر
+        mystery: 25
+    },
+    hydra: {
+        willpower: 70,
+        energy: 90,         // القوة المهيمنة: التعددية
+        intelligence: 65,
+        empathy: 40,
+        strategy: 80,
+        mystery: 50
+    },
+    kitsune: {
+        willpower: 55,
+        energy: 65,
+        intelligence: 90,
+        empathy: 45,
+        strategy: 70,
+        mystery: 95         // القوة المهيمنة: الغموض
+    },
+    pegasus: {
+        willpower: 55,
+        energy: 85,
+        intelligence: 80,   // القوة المهيمنة: الإلهام
+        empathy: 60,
+        strategy: 40,
+        mystery: 65
+    },
+    simurgh: {
+        willpower: 60,
+        energy: 50,
+        intelligence: 95,
+        empathy: 85,        // القوة المهيمنة: الحكمة الشاملة
+        strategy: 70,
+        mystery: 75
+    },
+    siren: {
+        willpower: 50,
+        energy: 60,
+        intelligence: 65,
+        empathy: 90,        // القوة المهيمنة: الجاذبية
+        strategy: 40,
+        mystery: 85
+    },
+    valkyrie: {
+        willpower: 90,      // القوة المهيمنة: الشرف
+        energy: 70,
+        intelligence: 60,
+        empathy: 75,
+        strategy: 65,
+        mystery: 45
+    }
+};
 const quizzesData = {
   ar: {
     title: "QuizMagic | عالم الاختبارات الأسطورية",
