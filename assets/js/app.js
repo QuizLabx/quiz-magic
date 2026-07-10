@@ -1,6 +1,7 @@
 let currentLang = 'ar';
 let currentQuiz = null;
-let currentStepId = 0;
+let selectedQuestions = [];  // 🎲 الـ 30 سؤال المختارة عشوائياً
+let questionBankLoaded = false; // 📊 تتبع تحميل البنكlet currentStepId = 0;
 let userResponses = [];
 let currentTheme = 'dark';
 let isQuizActive = false;
@@ -253,7 +254,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Check for comparison URL parameter
     checkComparisonParam();
-    
+
+	// 🎲 تحميل بنك الأسئلة الجديد (من questionBank.js)
+	loadQuestionBank();
+
     // Hide splash screen after loading
     hideSplashScreen();
 
@@ -1600,6 +1604,28 @@ function loadScript(src) {
     });
 }
 
+// ============================================================
+// 📦 دوال بنك الأسئلة الجديد
+// ============================================================
+
+async function loadQuestionBank() {
+    try {
+        // ✅ البنك يُحمّل تلقائياً عبر script tag في index.html
+        // نتحقق من توافر الدوال المطلوبة فقط
+        if (typeof questionBank !== 'undefined' && 
+            typeof selectRandomQuestions === 'function') {
+            questionBankLoaded = true;
+            console.log('✅ Question bank loaded: 150 questions');
+        } else {
+            console.warn('⚠️ Question bank not loaded yet');
+        }
+    } catch (e) {
+        console.warn('⚠️ Question bank loading error:', e);
+        questionBankLoaded = false;
+    }
+}
+
+
 // ==================== QUIZ GRID ====================
 function renderQuizGrid() {
     isQuizActive = false;
@@ -1725,13 +1751,34 @@ function showWelcomeScreen(quizId) {
 function startQuiz(quizId) {
     isQuizActive = true;
     document.body.classList.add('quiz-active'); // إخفاء FAB أثناء الاختبار
+    
     const data = quizzesData[currentLang];
     currentQuiz = data.quizzes.find(q => q.id === quizId);
     currentStepId = 0;
     userResponses = [];
     quizStartTime = Date.now();  // ⚡ ابدأ تتبع الوقت
+    
+    // 🎲 اختيار 30 سؤال من بنك الأسئلة الجديد
+    if (questionBankLoaded && typeof selectRandomQuestions === 'function') {
+        selectedQuestions = selectRandomQuestions(5); // 5 أسئلة من كل محور
+        console.log('🎲 Selected 30 random questions');
+    } else {
+        // Fallback: استخدام الأسئلة القديمة (في حالة عدم تحميل البنك)
+        console.warn('⚠️ Question bank not available, falling back to old questions');
+        selectedQuestions = currentQuiz.questions.filter(q => q.type !== 'visual');
+    }
+    
+    // ✅ تجاوز: إزالة أي أسئلة بصرية متبقية (احتياطاً)
+    selectedQuestions = selectedQuestions.filter(q => q.type !== 'visual');
+    
+    // ✅ تجاوز: إزالة خاصية type إن كانت "likert" (ليست ضرورية)
+    selectedQuestions.forEach(q => {
+        q.axis = q.axis || 'intelligence'; // قيمة افتراضية
+    });
+    
     document.getElementById('quiz-grid').classList.add('hidden');
     document.getElementById('hero-section').classList.add('hidden');
+    
     const container = document.getElementById('quiz-container');
     container.classList.remove('hidden');
     
@@ -1744,25 +1791,25 @@ function startQuiz(quizId) {
     trackEvent('quiz_start', {
         'quiz_id': quizId,
         'quiz_title': currentQuiz.title,
+        'question_source': questionBankLoaded ? 'questionBank_30' : 'old_40',
         'language': currentLang
     });
-
+    
     showStep();
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function showStep() {
-    const question = currentQuiz.questions[currentStepId];
+    const question = selectedQuestions[currentStepId]; // ✅ من البنك الجديد
     const container = document.getElementById('quiz-container');
-    const totalSteps = currentQuiz.questions.length;
+    const totalSteps = selectedQuestions.length; // ✅ من الـ 30 المختار
     const progress = ((currentStepId + 1) / totalSteps) * 100;
     const isRTL = currentLang === 'ar';
     const slideInClass = isRTL ? 'question-slide-in-rtl' : 'question-slide-in-ltr';
     const slideOutClass = isRTL ? 'question-slide-out-rtl' : 'question-slide-out-ltr';
-    
-    // ⏳ Show skeleton loader first
-    const isVisual = question.type === 'visual';
-    showQuestionSkeleton(isVisual);
+
+    // ⏳ Show skeleton loader first (أسئلة نصية فقط)
+    showQuestionSkeleton(false);
     
     // ⏳ Wait a bit for skeleton to render, then show real content
     setTimeout(() => {
@@ -1799,38 +1846,24 @@ function renderQuestionContent(container, question, totalSteps, progress, slideI
             </div>
     `;
 
-    if (question.type === 'visual') {
-        content += `
-            <div class="grid grid-cols-2 gap-4 sm:gap-6">
-                ${question.options.map((opt) => `
-                    <div onclick="handleVisualChoice(event, '${opt.trait}', ${opt.value}, '${opt.axis || ''}')" class="group cursor-pointer relative overflow-hidden rounded-2xl border-2 theme-border hover:border-accent transition-all transform hover:scale-[1.03] active:scale-95 shadow-lg question-option-fade-in">
-                        <div class="aspect-square overflow-hidden">
-                            <img src="${opt.image}" loading="lazy" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                        </div>
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80"></div>
-                        <div class="absolute bottom-0 left-0 right-0 p-3 text-center">
-                            <span class="text-white font-bold text-sm sm:text-lg">${opt.label}</span>
-                        </div>
-                    </div>
-                `).join('')}
-            </div>
-        `;
-    } else {
-        content += `
-            <div class="space-y-3">
-                ${[
-                    { text: currentLang === 'ar' ? 'أوافق بشدة' : 'Strongly Agree', value: 5, color: 'bg-green-600/20 border-green-500/50 hover:bg-green-600/40' },
-                    { text: currentLang === 'ar' ? 'أوافق' : 'Agree', value: 4, color: 'bg-blue-600/20 border-blue-500/50 hover:bg-blue-600/40' },
-                    { text: currentLang === 'ar' ? 'محايد' : 'Neutral', value: 3, color: 'theme-bg-tertiary/40 theme-border hover:theme-bg-tertiary/60' },
-                    { text: currentLang === 'ar' ? 'لا أوافق' : 'Disagree', value: 2, color: 'bg-orange-600/20 border-orange-500/50 hover:bg-orange-600/40' },
-                    { text: currentLang === 'ar' ? 'لا أوافق بشدة' : 'Strongly Disagree', value: 1, color: 'bg-red-600/20 border-red-500/50 hover:bg-red-600/40' }
-                ].map((opt) => `
-                    <button onclick="handleLikert(event, ${opt.value}, '${question.axis || ''}')" class="w-full p-4 text-center ${opt.color} border rounded-2xl transition-all transform hover:scale-[1.02] active:scale-95 font-bold theme-text-primary question-option-fade-in">
-                        ${opt.text}
-                    </button>
-                `).join('')}
-            </div>
-        `;
+    // ✅ تم حذف الأسئلة البصرية - جميع الأسئلة الآن من بنك Likert
+    const questionText = question.text?.[currentLang] || question.text || '...';
+    
+    content += `
+        <div class="space-y-3">
+            ${[
+                { text: currentLang === 'ar' ? 'أوافق بشدة' : 'Strongly Agree', value: 5, color: 'bg-green-600/20 border-green-500/50 hover:bg-green-600/40' },
+                { text: currentLang === 'ar' ? 'أوافق' : 'Agree', value: 4, color: 'bg-blue-600/20 border-blue-500/50 hover:bg-blue-600/40' },
+                { text: currentLang === 'ar' ? 'محايد' : 'Neutral', value: 3, color: 'theme-bg-tertiary/40 theme-border hover:theme-bg-tertiary/60' },
+                { text: currentLang === 'ar' ? 'لا أوافق' : 'Disagree', value: 2, color: 'bg-orange-600/20 border-orange-500/50 hover:bg-orange-600/40' },
+                { text: currentLang === 'ar' ? 'لا أوافق بشدة' : 'Strongly Disagree', value: 1, color: 'bg-red-600/20 border-red-500/50 hover:bg-red-600/40' }
+            ].map((opt) => `
+                <button onclick="handleLikert(event, ${opt.value}, '${question.axis || 'intelligence'}', ${question.reversed || false})" class="w-full p-4 text-center ${opt.color} border rounded-2xl transition-all transform hover:scale-[1.02] active:scale-95 font-bold theme-text-primary question-option-fade-in">
+                    ${opt.text}
+                </button>
+            `).join('')}
+        </div>
+    `;
     }
     
     content += `</div>`;
@@ -1875,40 +1908,30 @@ function updateVisualEvolution(progress) {
     }
 }
 
-function handleLikert(event, value, axis) {
-
- // ♿ إضافة تأثير بصري للخيار المحدد
+function handleLikert(event, value, axis, reversed = false) {
+    // ♿ إضافة تأثير بصري للخيار المحدد
     const clickedBtn = event?.target?.closest('button');
     if (clickedBtn) {
         clickedBtn.classList.add('option-selected');
         setTimeout(() => clickedBtn.classList.remove('option-selected'), 300);
     }
-
+    
     // 🎵 صوت الضغط
     if (window.audioManager) {
         window.audioManager.play('ui-click');
     }
-    const question = currentQuiz.questions[currentStepId];
-    userResponses.push({ trait: question.trait, value: value, axis: axis });
+    
+    const question = selectedQuestions[currentStepId]; // ✅ من البنك الجديد
+    
+    // 🔄 معالجة الأسئلة العكسية (reversed)
+    const processedResponse = (typeof processResponse === 'function') 
+        ? processResponse({ trait: question.trait || question.axis, value: value, axis: axis, reversed: reversed })
+        : { trait: question.trait || question.axis, value: reversed ? (6 - value) : value, axis: axis };
+    
+    userResponses.push(processedResponse);
     nextStep();
 }
 
-function handleVisualChoice(event, trait, value, axis) {
-
-    // ♿ إضافة تأثير بصري للخيار المحدد
-    const clickedOption = event?.target?.closest('[onclick]');
-    if (clickedOption) {
-        clickedOption.classList.add('option-selected');
-        setTimeout(() => clickedOption.classList.remove('option-selected'), 300);
-    }
-
-    // 🎵 صوت الضغط
-    if (window.audioManager) {
-        window.audioManager.play('ui-click');
-    }
-    userResponses.push({ trait: trait, value: value, axis: axis });
-    nextStep();
-}
 function nextStep() {
     currentStepId++;
     if (currentStepId < currentQuiz.questions.length) {
