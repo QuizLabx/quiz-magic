@@ -1800,7 +1800,13 @@ function startQuiz(quizId) {
 }
 
 function showStep() {
-    const question = selectedQuestions[currentStepId]; // ✅ من البنك الجديد
+    const question = selectedQuestions[currentStepId];
+    
+    // 🛡️ فحص أمان: إذا لم يكن هناك سؤال، انتقل للنتيجة
+    if (!question) {
+        showLoading();
+        return;
+    }
     const container = document.getElementById('quiz-container');
     const totalSteps = selectedQuestions.length; // ✅ من الـ 30 المختار
     const progress = ((currentStepId + 1) / totalSteps) * 100;
@@ -1932,7 +1938,7 @@ function handleLikert(event, value, axis, reversed = false) {
 
 function nextStep() {
     currentStepId++;
-    if (currentStepId < currentQuiz.questions.length) {
+    if (currentStepId < selectedQuestions.length) {
         showStep();
     } else {
         showLoading();
