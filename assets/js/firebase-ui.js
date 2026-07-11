@@ -287,7 +287,7 @@ async function renderAccountInfo(container) {
                 <div class="account-stat"><div class="account-stat-icon">⚡</div><div class="account-stat-value">${xp}</div><div class="account-stat-label">XP</div></div>
             </div>
 
-            ${(isAdmin || isMod) ? renderAdminPanel(isAr, isAdmin) : ''}
+            ${(isAdmin || isMod) ? renderAdminPanel(isAr) : ''}
 
             <button onclick="handleLogout()" class="account-choice-btn danger auth-submit-btn">
                 <i class="fas fa-sign-out-alt"></i>
@@ -295,11 +295,6 @@ async function renderAccountInfo(container) {
             </button>
         </div>
     `;
-
-    if (isAdmin || isMod) {
-        const firstTab = document.querySelector('.dash-tab');
-        if (firstTab) switchAdminTab('gems', firstTab);
-    }
 }
 
 function handleLogout() {
@@ -323,21 +318,16 @@ function handleLogout() {
 
 // ==================== ADMIN PANEL (Dashboard مسطح جديد) ====================
 
-function renderAdminPanel(isAr, isAdmin) {
+function renderAdminPanel(isAr) {
     const t = isAr ? {
         title: 'لوحة التحكم',
         gems: 'الجواهر', xp: 'النقاط والمستوى', users: 'المستخدمون',
-        ban: 'الحظر', events: 'الأحداث', msg: 'الرسائل', staff: 'الإدارة',
-        stats: 'الإحصائيات', community: 'المجتمع'
+        ban: 'الحظر', events: 'الأحداث', msg: 'الرسائل', staff: 'الإدارة', stats: 'الإحصائيات'
     } : {
         title: 'Control Panel',
         gems: 'Gems', xp: 'XP & Level', users: 'Users',
-        ban: 'Bans', events: 'Events', msg: 'Messages', staff: 'Staff',
-        stats: 'Stats', community: 'Community'
+        ban: 'Bans', events: 'Events', msg: 'Messages', staff: 'Staff', stats: 'Stats'
     };
-
-    const communityTab = isAdmin ? `
-                <button onclick="switchAdminTab('community', this)" class="dash-tab">${isAr ? '🌐 مجتمع' : '🌐 Community'}</button>` : '';
 
     return `
         <div class="admin-panel admin-dashboard">
@@ -352,7 +342,7 @@ function renderAdminPanel(isAr, isAdmin) {
                 <button onclick="switchAdminTab('users', this)" class="dash-tab">${isAr ? '👥 مستخدمون' : '👥 Users'}</button>
                 <button onclick="switchAdminTab('ban', this)" class="dash-tab">${isAr ? '🚫 حظر' : '🚫 Bans'}</button>
                 <button onclick="switchAdminTab('staff', this)" class="dash-tab">${isAr ? '👑 إدارة' : '👑 Staff'}</button>
-                <button onclick="switchAdminTab('stats', this)" class="dash-tab">${isAr ? '📊 إحصائيات' : '📊 Stats'}</button>${communityTab}
+                <button onclick="switchAdminTab('stats', this)" class="dash-tab">${isAr ? '📊 إحصائيات' : '📊 Stats'}</button>
             </div>
             <div id="admin-tab-content" class="dashboard-content">
                 <div class="account-info-loading"><i class="fas fa-spinner fa-spin"></i></div>
@@ -377,8 +367,7 @@ function switchAdminTab(tabName, btn) {
         users: () => { renderAdminUsersTab(isAr); return null; },
         ban: () => renderAdminBanTab(isAr),
         staff: () => renderAdminStaffTab(isAr),
-        stats: () => { renderAdminStatsTab(isAr); return null; },
-        community: () => { renderAdminCommunityTab(isAr); return null; }
+        stats: () => { renderAdminStatsTab(isAr); return null; }
     };
 
     const html = renderers[tabName] ? renderers[tabName]() : '';
@@ -590,7 +579,6 @@ async function showUserDetails(userId) {
                     <button onclick="adminQuickGift('${userId}')" class="admin-action-btn primary"><i class="fas fa-gem"></i> ${isAr?'شحن جواهر':'Gift Gems'}</button>
                     <button onclick="adminQuickBan('${userId}')" class="admin-action-btn danger"><i class="fas fa-ban"></i> ${isAr?'حظر':'Ban'}</button>
                     <button onclick="adminResetPassword('${userId}')" class="admin-action-btn"><i class="fas fa-key"></i> ${isAr?'إعادة كلمة سر':'Reset Pwd'}</button>
-                    <button onclick="adminQuickFeatured('${userId}')" class="admin-action-btn primary"><i class="fas fa-star"></i> ${isAr?'تعيين مميز':'Set Featured'}</button>
                     ${u.is_admin ? '' : `<button onclick="adminQuickDelete('${userId}')" class="admin-action-btn danger"><i class="fas fa-trash"></i> ${isAr?'حذف':'Delete'}</button>`}
                 </div>` : ''}
         </div>`;
@@ -684,89 +672,6 @@ async function renderAdminStatsTab(isAr) {
         </div>`;
 }
 
-async function renderAdminCommunityTab(isAr) {
-    const content = document.getElementById('admin-tab-content');
-    if (!content) return;
-
-    const t = isAr ? {
-        title: 'إدارة المجتمع',
-        massTitle: 'مكافأة جماعية',
-        massDesc: 'إرسال جواهر أو XP لكل المستخدمين النشطين (غير المحظورين)',
-        massType: 'نوع المكافأة', massAmount: 'الكمية',
-        massGems: '💎 جواهر للجميع', massXP: '⚡ XP للجميع',
-        featuredTitle: 'المستخدم المميز',
-        featuredDesc: 'يظهر في الصفحة الرئيسية لكل الزوار',
-        featuredId: 'ID المستخدم', featuredReason: 'سبب التمييز (اختياري)',
-        setFeatured: 'تعيين مميز', removeFeatured: 'إزالة المميز',
-        currentFeatured: 'المميز الحالي', none: 'لا يوجد مستخدم مميز حالياً',
-        loading: 'جاري التحميل...'
-    } : {
-        title: 'Community Management',
-        massTitle: 'Mass Reward',
-        massDesc: 'Send gems or XP to all active (non-banned) users',
-        massType: 'Reward type', massAmount: 'Amount',
-        massGems: '💎 Gems for all', massXP: '⚡ XP for all',
-        featuredTitle: 'Featured User',
-        featuredDesc: 'Shown on the homepage for all visitors',
-        featuredId: 'User ID', featuredReason: 'Reason (optional)',
-        setFeatured: 'Set Featured', removeFeatured: 'Remove Featured',
-        currentFeatured: 'Current featured', none: 'No featured user set',
-        loading: 'Loading...'
-    };
-
-    content.innerHTML = `
-        <div class="dashboard-section">
-            <h5 class="section-title">🌐 ${t.title}</h5>
-            <div class="dashboard-grid">
-                <div class="dash-card">
-                    <h6><i class="fas fa-gift" style="color:#f472b6"></i> ${t.massTitle}</h6>
-                    <p class="dash-desc">${t.massDesc}</p>
-                    <select id="mass-reward-type" class="dash-input">
-                        <option value="gems">💎 ${isAr ? 'جواهر' : 'Gems'}</option>
-                        <option value="xp">⚡ XP</option>
-                    </select>
-                    <input type="number" id="mass-reward-amount" class="dash-input" placeholder="${t.massAmount}" min="1" max="10000">
-                    <div class="dash-btn-row">
-                        <button onclick="handleAdminAction('massReward')" class="dash-btn primary" style="flex:1">
-                            <i class="fas fa-paper-plane"></i> ${isAr ? 'إرسال للجميع' : 'Send to all'}
-                        </button>
-                    </div>
-                </div>
-                <div class="dash-card">
-                    <h6><i class="fas fa-star" style="color:#fbbf24"></i> ${t.featuredTitle}</h6>
-                    <p class="dash-desc">${t.featuredDesc}</p>
-                    <div id="featured-current-info" class="featured-current-info">${t.loading}</div>
-                    <input type="text" id="featured-target-id" class="dash-input" placeholder="${t.featuredId}" inputmode="numeric" maxlength="6">
-                    <input type="text" id="featured-reason" class="dash-input" placeholder="${t.featuredReason}" maxlength="120">
-                    <div class="dash-btn-row">
-                        <button onclick="handleAdminAction('setFeatured')" class="dash-btn success" style="flex:1"><i class="fas fa-star"></i> ${t.setFeatured}</button>
-                        <button onclick="handleAdminAction('removeFeatured')" class="dash-btn danger" style="flex:1"><i class="fas fa-times"></i> ${t.removeFeatured}</button>
-                    </div>
-                </div>
-            </div>
-            <div id="admin-community-result" class="auth-error hidden"></div>
-        </div>`;
-
-    const featuredEl = document.getElementById('featured-current-info');
-    if (featuredEl && window.firebaseDB) {
-        const result = await window.firebaseDB.getFeaturedUser();
-        if (result && result.success) {
-            const levelData = (typeof config !== 'undefined' && config.xpSystem && config.xpSystem.levels[result.level])
-                ? config.xpSystem.levels[result.level] : null;
-            const levelLabel = levelData ? (isAr ? levelData.name.ar : levelData.name.en) : ('L' + result.level);
-            featuredEl.innerHTML = `
-                <p class="dash-desc" style="margin-bottom:0.5rem"><strong>${t.currentFeatured}:</strong></p>
-                <div class="featured-current-card">
-                    <span class="featured-current-name">⭐ ${escapeHtml(result.displayName || result.userId)}</span>
-                    <span class="featured-current-meta">ID ${result.userId} · ${levelLabel} · ⚡ ${result.xp || 0}</span>
-                    ${result.reason ? `<span class="featured-current-reason">${escapeHtml(result.reason)}</span>` : ''}
-                </div>`;
-        } else {
-            featuredEl.innerHTML = `<p class="dash-desc">${t.none}</p>`;
-        }
-    }
-}
-
 // ===== معالج الإجراءات الموحّد (مع دعم إرسال رسالة مع الإجراء) =====
 async function handleAdminAction(action) {
     const isAr = (typeof currentLang !== 'undefined' && currentLang === 'ar');
@@ -803,19 +708,6 @@ async function handleAdminAction(action) {
             customMessage = val('ban-reason') || '';
             result = await window.firebaseDB.banUser(targetId, customMessage);
             break;
-        case 'tempBan': {
-            targetId = (val('tempban-target-id') || '').replace(/\D/g, '');
-            const duration = parseInt(val('tempban-duration'), 10) || 0;
-            const unit = val('tempban-unit') || 'hours';
-            if (!targetId || duration <= 0) {
-                result = { success: false, error: isAr ? 'بيانات غير صالحة' : 'invalid data' };
-                break;
-            }
-            const multipliers = { hours: 3600000, days: 86400000, weeks: 604800000 };
-            const durationMs = duration * (multipliers[unit] || multipliers.hours);
-            result = await window.firebaseDB.tempBanUser(targetId, durationMs, '');
-            break;
-        }
         case 'unban':
             targetId = (val('unban-target-id') || '').replace(/\D/g, '');
             result = await window.firebaseDB.unbanUser(targetId);
@@ -861,62 +753,6 @@ async function handleAdminAction(action) {
                 val('msg-icon') || '💌'
             );
             break;
-        case 'massReward': {
-            const massType = val('mass-reward-type') || 'gems';
-            const massAmount = parseInt(val('mass-reward-amount'), 10) || 0;
-            if (massAmount <= 0) {
-                result = { success: false, error: isAr ? 'كمية غير صالحة' : 'invalid amount' };
-                break;
-            }
-            const confirmMsg = isAr
-                ? `⚠️ إرسال ${massAmount} ${massType === 'gems' ? 'جوهرة' : 'XP'} لكل المستخدمين النشطين؟`
-                : `⚠️ Send ${massAmount} ${massType} to ALL active users?`;
-            let confirmed = true;
-            if (typeof showConfirmDialog === 'function') {
-                confirmed = await showConfirmDialog({
-                    title: isAr ? 'تأكيد المكافأة الجماعية' : 'Confirm Mass Reward',
-                    message: confirmMsg,
-                    okText: isAr ? 'نعم، أرسل' : 'Yes, send',
-                    cancelText: isAr ? 'إلغاء' : 'Cancel',
-                    okType: 'danger'
-                });
-            } else {
-                confirmed = confirm(confirmMsg);
-            }
-            if (!confirmed) {
-                result = { success: false, error: isAr ? 'أُلغي' : 'cancelled' };
-                break;
-            }
-            result = await window.firebaseDB.adminMassReward(massType, massAmount);
-            break;
-        }
-        case 'setFeatured':
-            targetId = (val('featured-target-id') || '').replace(/\D/g, '');
-            result = await window.firebaseDB.adminSetFeaturedUser(targetId, val('featured-reason') || '');
-            if (result.success && typeof loadFeaturedUser === 'function') loadFeaturedUser();
-            break;
-        case 'removeFeatured': {
-            const removeMsg = isAr ? 'إزالة المستخدم المميز من الصفحة الرئيسية؟' : 'Remove featured user from homepage?';
-            let confirmed = true;
-            if (typeof showConfirmDialog === 'function') {
-                confirmed = await showConfirmDialog({
-                    title: isAr ? 'تأكيد الإزالة' : 'Confirm Removal',
-                    message: removeMsg,
-                    okText: isAr ? 'نعم، أزل' : 'Yes, remove',
-                    cancelText: isAr ? 'إلغاء' : 'Cancel',
-                    okType: 'danger'
-                });
-            } else {
-                confirmed = confirm(removeMsg);
-            }
-            if (!confirmed) {
-                result = { success: false, error: isAr ? 'أُلغي' : 'cancelled' };
-                break;
-            }
-            result = await window.firebaseDB.adminRemoveFeaturedUser();
-            if (result.success && typeof loadFeaturedUser === 'function') loadFeaturedUser();
-            break;
-        }
     }
 
     // 💌 إرسال رسالة مخصصة مع الإجراء (إن كُتبت)
@@ -931,25 +767,10 @@ async function handleAdminAction(action) {
     }
 
     if (result && result.success) {
-        let successMsg;
-        if (action === 'massReward') {
-            const recipients = result.recipients || 0;
-            successMsg = isAr
-                ? `✅ تم إرسال المكافأة لـ ${recipients} مستخدم`
-                : `✅ Reward sent to ${recipients} users`;
-        } else if (action === 'setFeatured') {
-            successMsg = isAr ? `✅ تم تعيين المستخدم المميز (${targetId})` : `✅ Featured user set (${targetId})`;
-        } else if (action === 'removeFeatured') {
-            successMsg = isAr ? '✅ تم إزالة المستخدم المميز' : '✅ Featured user removed';
-        } else if (customMessage && action !== 'sendMessage') {
-            successMsg = isAr ? `✅ تم + تم إرسال الرسالة (${targetId})` : `✅ Done + Message sent (${targetId})`;
-        } else {
-            successMsg = isAr ? `✅ تم بنجاح (${targetId})` : `✅ Done (${targetId})`;
-        }
+        const successMsg = customMessage && action !== 'sendMessage'
+            ? (isAr ? `✅ تم + تم إرسال الرسالة (${targetId})` : `✅ Done + Message sent (${targetId})`)
+            : (isAr ? `✅ تم بنجاح (${targetId})` : `✅ Done (${targetId})`);
         showAuthSuccess(resultEl, successMsg);
-        if (action === 'setFeatured' || action === 'removeFeatured') {
-            renderAdminCommunityTab(isAr);
-        }
         if (typeof trackEvent === 'function') trackEvent('admin_action', { action, target: targetId });
     } else {
         showAuthError(resultEl, (isAr ? '❌ خطأ: ' : '❌ Error: ') + (result.error || ''));
@@ -963,7 +784,6 @@ function getActionResultContainer(action) {
     if (['sendMessage'].includes(action)) return 'msg';
     if (['ban','tempBan','unban'].includes(action)) return 'ban';
     if (['setMod','makeAdmin','removeAdmin'].includes(action)) return 'staff';
-    if (['massReward','setFeatured','removeFeatured'].includes(action)) return 'community';
     return 'gems';
 }
 
@@ -999,19 +819,6 @@ async function adminQuickDelete(userId) {
     const result = await window.firebaseDB.deleteUserPermanent(userId);
     alert(result.success ? (isAr ? '🗑️ تم الحذف' : '🗑️ Deleted') : (isAr ? '❌ فشل' : '❌ Failed'));
     renderAccountInfo(document.getElementById('account-modal-body'));
-}
-
-async function adminQuickFeatured(userId) {
-    const isAr = (typeof currentLang !== 'undefined' && currentLang === 'ar');
-    const reason = prompt(
-        isAr ? `سبب تمييز المستخدم ${userId} (اختياري):` : `Reason to feature user ${userId} (optional):`,
-        ''
-    );
-    if (reason === null) return;
-    const result = await window.firebaseDB.adminSetFeaturedUser(userId, reason || '');
-    alert(result.success ? (isAr ? '⭐ تم التعيين' : '⭐ Featured set') : (isAr ? '❌ فشل: ' : '❌ Failed: ') + (result.error || ''));
-    if (result.success && typeof loadFeaturedUser === 'function') loadFeaturedUser();
-    showUserDetails(userId);
 }
 
 // ===== HELPERS =====

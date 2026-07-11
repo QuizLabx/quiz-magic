@@ -1,8 +1,7 @@
 let currentLang = 'ar';
 let currentQuiz = null;
 let selectedQuestions = [];  // 🎲 الـ 30 سؤال المختارة عشوائياً
-let questionBankLoaded = false; // 📊 تتبع تحميل البنك
-let currentStepId = 0;
+let questionBankLoaded = false; // 📊 تتبع تحميل البنكlet currentStepId = 0;
 let userResponses = [];
 let currentTheme = 'dark';
 let isQuizActive = false;
@@ -217,7 +216,6 @@ if (e.key === 'Escape') {
 closeAchievementsModal();
 closePokedexModal();
 closeThemeModal();
-closeLeaderboardModal();
 }
 });
 
@@ -1586,7 +1584,6 @@ function setLanguage(lang) {
 
     // 🔄 تحديث القائمة الجانبية والإعدادات باللغة الجديدة (إن وُجدتا)
     if (typeof updateDrawerContent === 'function') updateDrawerContent();
-    if (typeof updateFeaturedUserTexts === 'function') updateFeaturedUserTexts();
     if (typeof updateSettingsModalContent === 'function') updateSettingsModalContent();
     if (typeof updateSettingsToggleStates === 'function') updateSettingsToggleStates();
 }
@@ -4404,9 +4401,6 @@ function updateDrawerContent() {
     const achievementsText = document.getElementById('drawer-achievements-text');
     if (achievementsText) achievementsText.textContent = isAr ? 'إنجازاتي' : 'Achievements';
 
-    const leaderboardText = document.getElementById('drawer-leaderboard-text');
-    if (leaderboardText) leaderboardText.textContent = isAr ? 'المتصدرين' : 'Leaderboard';
-
     const pokedexText = document.getElementById('drawer-pokedex-text');
     if (pokedexText) pokedexText.textContent = isAr ? 'موسوعة المخلوقات' : 'Pokédex';
 
@@ -4676,153 +4670,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateGemsHeader();
     // 📱 تهيئة زر FAB (إغلاق عند النقر خارجه)
     initFabOutsideClick();
-    // ⭐ المستخدم المميز + 🏆 المتصدرين
-    loadFeaturedUser();
 });
-
-// ========================================================================
-// ⭐ FEATURED USER (المستخدم المميز)
-// ========================================================================
-
-let featuredUserData = null;
-
-async function loadFeaturedUser() {
-    if (!window.firebaseDB) return;
-    try {
-        const result = await window.firebaseDB.getFeaturedUser();
-        featuredUserData = (result && result.success) ? result : null;
-        renderFeaturedUserBanner();
-    } catch (e) {
-        console.warn('loadFeaturedUser error:', e);
-        featuredUserData = null;
-        renderFeaturedUserBanner();
-    }
-}
-
-function updateFeaturedUserTexts() {
-    const isAr = currentLang === 'ar';
-    const badge = document.getElementById('featured-user-badge-text');
-    const btn = document.getElementById('featured-leaderboard-btn-text');
-    const modalTitle = document.getElementById('leaderboard-modal-title');
-    const modalHint = document.getElementById('leaderboard-modal-hint');
-
-    if (badge) badge.textContent = isAr ? 'المستخدم المميز' : 'Featured Traveler';
-    if (btn) btn.textContent = isAr ? 'عرض المتصدرين' : 'View Leaderboard';
-    if (modalTitle) modalTitle.textContent = isAr ? 'المتصدرين' : 'Leaderboard';
-    if (modalHint) modalHint.textContent = isAr ? 'أفضل 10 مسافرين حسب نقاط XP' : 'Top 10 travelers by XP';
-
-    renderFeaturedUserBanner();
-}
-
-function renderFeaturedUserBanner() {
-    const section = document.getElementById('featured-user-section');
-    if (!section) return;
-
-    if (!featuredUserData) {
-        section.classList.add('hidden');
-        return;
-    }
-
-    const isAr = currentLang === 'ar';
-    const data = featuredUserData;
-    const level = data.level || 1;
-    const levelData = (typeof config !== 'undefined' && config.xpSystem && config.xpSystem.levels[level])
-        ? config.xpSystem.levels[level] : null;
-
-    const nameEl = document.getElementById('featured-user-name');
-    const reasonEl = document.getElementById('featured-user-reason');
-    const levelEl = document.getElementById('featured-user-level');
-    const xpEl = document.getElementById('featured-user-xp');
-    const gemsEl = document.getElementById('featured-user-gems');
-
-    if (nameEl) nameEl.textContent = data.displayName || data.userId || '—';
-    if (reasonEl) {
-        reasonEl.textContent = data.reason || (isAr ? 'بطل مميز في عالم QuizMagic' : 'A standout hero in QuizMagic');
-    }
-    if (levelEl) {
-        const levelName = levelData ? (isAr ? levelData.name.ar : levelData.name.en) : ('L' + level);
-        levelEl.textContent = (levelData ? levelData.icon + ' ' : '') + (isAr ? 'المستوى' : 'Level') + ' ' + level + ' · ' + levelName;
-    }
-    if (xpEl) xpEl.textContent = '⚡ ' + (data.xp || 0) + ' XP';
-    if (gemsEl) gemsEl.textContent = '💎 ' + (data.gems || 0);
-
-    section.classList.remove('hidden');
-}
-
-// ========================================================================
-// 🏆 LEADERBOARD (المتصدرين)
-// ========================================================================
-
-function showLeaderboardModal() {
-    const modal = document.getElementById('leaderboard-modal');
-    if (!modal) return;
-
-    updateFeaturedUserTexts();
-    modal.classList.add('show');
-    if (typeof trapFocus === 'function') trapFocus(modal);
-    renderLeaderboard();
-
-    setTimeout(() => {
-        const closeBtn = modal.querySelector('.modal-close');
-        if (closeBtn) closeBtn.focus();
-    }, 100);
-
-    if (typeof trackEvent === 'function') trackEvent('leaderboard_opened');
-}
-
-function closeLeaderboardModal() {
-    const modal = document.getElementById('leaderboard-modal');
-    if (!modal) return;
-    modal.classList.remove('show');
-    if (typeof removeFocusTrap === 'function') removeFocusTrap(modal);
-}
-
-async function renderLeaderboard() {
-    const list = document.getElementById('leaderboard-list');
-    if (!list) return;
-
-    const isAr = currentLang === 'ar';
-    list.innerHTML = `<div class="leaderboard-loading"><i class="fas fa-spinner fa-spin"></i> ${isAr ? 'جاري التحميل...' : 'Loading...'}</div>`;
-
-    if (!window.firebaseDB) {
-        list.innerHTML = `<p class="leaderboard-empty">${isAr ? 'الخدمة غير متاحة' : 'Service unavailable'}</p>`;
-        return;
-    }
-
-    const result = await window.firebaseDB.getLeaderboard(10);
-    const entries = result.leaderboard || [];
-
-    if (!entries.length) {
-        list.innerHTML = `<p class="leaderboard-empty">${isAr ? 'لا يوجد متصدرون بعد' : 'No leaders yet'}</p>`;
-        return;
-    }
-
-    const myId = window.firebaseDB.isLoggedIn() ? window.firebaseDB.getCurrentUserId() : null;
-    const medals = ['🥇', '🥈', '🥉'];
-
-    list.innerHTML = entries.map((entry, index) => {
-        const rank = index + 1;
-        const rankIcon = rank <= 3 ? medals[rank - 1] : `#${rank}`;
-        const isMe = myId && entry.id === myId;
-        const level = entry.level || 1;
-        const levelData = (typeof config !== 'undefined' && config.xpSystem && config.xpSystem.levels[level])
-            ? config.xpSystem.levels[level] : null;
-        const levelLabel = levelData ? (isAr ? levelData.name.ar : levelData.name.en) : ('L' + level);
-
-        return `
-            <div class="leaderboard-row ${isMe ? 'is-me' : ''} ${rank <= 3 ? 'top-three' : ''}">
-                <span class="leaderboard-rank">${rankIcon}</span>
-                <div class="leaderboard-info">
-                    <span class="leaderboard-name">${escapeHtml(entry.displayName || entry.id)}${isMe ? (isAr ? ' (أنت)' : ' (You)') : ''}</span>
-                    <span class="leaderboard-meta">${levelData ? levelData.icon + ' ' : ''}${levelLabel}</span>
-                </div>
-                <div class="leaderboard-scores">
-                    <span class="leaderboard-xp">⚡ ${entry.xp || 0}</span>
-                    <span class="leaderboard-gems">💎 ${entry.gems || 0}</span>
-                </div>
-            </div>`;
-    }).join('');
-}
 
 // ========================================================================
 // 📱 FLOATING ACTION BUTTON (FAB) - زر الأزرار العائم
