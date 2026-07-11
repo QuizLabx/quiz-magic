@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'quizmagic-v15-themed-buttons';
+const CACHE_VERSION = 'quizmagic-v16-community-features';
 const ASSETS = [
   '/',
   '/index.html',
@@ -6,14 +6,20 @@ const ASSETS = [
   '/contact.html',
   '/privacy.html',
   '/terms.html',
+  '/manifest.json',
+  '/announcements.json',
   '/assets/css/style.css',
   '/assets/js/config.js',
   '/assets/js/audio.js',
+  '/assets/js/questionBank.js',
   '/assets/js/quizzes.js',
   '/assets/js/app.js',
   '/assets/js/profile.js',
+  '/assets/js/supabase-app.js',
+  '/assets/js/firebase-ui.js',
   'https://cdn.tailwindcss.com',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
+  'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2',
   'https://cdn.jsdelivr.net/npm/chart.js',
   'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'
 ];
