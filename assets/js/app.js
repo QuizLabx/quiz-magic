@@ -2817,13 +2817,12 @@ function compareWithFriend() {
 
 // ==================== COLLECTIBLE CARD SYSTEM ====================
 const CARD_TIERS = {
-    common:  { key: 'common',  label: { ar: 'عادية', en: 'Common' },           weight: 45 },
-    silver:  { key: 'silver',  label: { ar: 'فضية', en: 'Silver' },            weight: 28 },
-    gold:    { key: 'gold',    label: { ar: 'ذهبية', en: 'Gold' },              weight: 17 },
-    diamond: { key: 'diamond', label: { ar: 'ماسية', en: 'Diamond' },           weight: 8 },
-    mythic:  { key: 'mythic',  label: { ar: 'أسطورية منشورية', en: 'Prismatic Mythic' }, weight: 2 }
+    common:  { key: 'common',  label: { ar: 'عادية', en: 'Common' },    weight: 50 },
+    silver:  { key: 'silver',  label: { ar: 'فضية', en: 'Silver' },    weight: 30 },
+    gold:    { key: 'gold',    label: { ar: 'ذهبية', en: 'Gold' },      weight: 15 },
+    diamond: { key: 'diamond', label: { ar: 'ماسية', en: 'Diamond' },  weight: 5 }
 };
-const TIER_ORDER = ['common', 'silver', 'gold', 'diamond', 'mythic'];
+const TIER_ORDER = ['common', 'silver', 'gold', 'diamond'];
 
 function getUserCards() {
     try { return JSON.parse(localStorage.getItem(CARDS_KEY) || '{}'); }
@@ -3006,54 +3005,33 @@ const CREATURE_EFFECTS = {
 
 // 🎨 Visual config per tier — Premium Trading Card style
 const TIER_VISUALS = {
-    common: {
+    common:  {
         border: '#a0885a', borderDark: '#6b5a3a', borderLight: '#d4b87a', glow: 'rgba(160,136,90,0.5)',
         bg1: '#0d1f12', bg2: '#1a3322', bg3: '#0a1a0f',
         accent: '#c9a84c', accentDeep: '#8b7340', textAccent: '#e8d5a0',
         panelBg: 'rgba(13,31,18,0.7)', panelBorder: 'rgba(160,136,90,0.6)',
-        rank: 'B', rankLabel: { ar: 'عادي', en: 'COMMON' }, holo: false,
-        // 🥉 Bronze: metallic multi-stop
-        metalStops: ['#6b5a3a', '#a0885a', '#d4b87a', '#a0885a', '#8b7340', '#d4b87a', '#6b5a3a'],
-        patinaColor: 'rgba(76, 120, 80, 0.15)'
+        rank: 'B', rankLabel: { ar: 'عادي', en: 'COMMON' }, holo: false
     },
-    silver: {
+    silver:  {
         border: '#b8c4d0', borderDark: '#7a8a9a', borderLight: '#e0e8f0', glow: 'rgba(184,196,208,0.6)',
         bg1: '#0d1a2a', bg2: '#1a2d40', bg3: '#0a1420',
         accent: '#c0ccd8', accentDeep: '#8a9aaa', textAccent: '#e8f0f8',
         panelBg: 'rgba(13,26,42,0.7)', panelBorder: 'rgba(184,196,208,0.6)',
-        rank: 'A', rankLabel: { ar: 'نادر', en: 'RARE' }, holo: false,
-        // 🥈 Chrome Silver: sharp highlights
-        metalStops: ['#7a8a9a', '#b8c4d0', '#ffffff', '#e0e8f0', '#b8c4d0', '#ffffff', '#7a8a9a'],
-        chromeHighlight: 'rgba(200, 220, 255, 0.12)'
+        rank: 'A', rankLabel: { ar: 'نادر', en: 'RARE' }, holo: false
     },
-    gold: {
+    gold:    {
         border: '#daa520', borderDark: '#b8860b', borderLight: '#ffd700', glow: 'rgba(218,165,32,0.75)',
         bg1: '#0f1a08', bg2: '#1a2d10', bg3: '#0a1206',
         accent: '#ffd700', accentDeep: '#b8860b', textAccent: '#fff4c4',
         panelBg: 'rgba(15,26,8,0.7)', panelBorder: 'rgba(218,165,32,0.6)',
-        rank: 'S+', rankLabel: { ar: 'أسطوري', en: 'LEGENDARY' }, holo: false,
-        // 🥇 24K Gold: rich 9-stop gradient
-        metalStops: ['#8B6914', '#b8860b', '#daa520', '#ffd700', '#fff8dc', '#ffd700', '#daa520', '#b8860b', '#8B6914'],
-        foilStamp: true
+        rank: 'S+', rankLabel: { ar: 'أسطوري', en: 'LEGENDARY' }, holo: false
     },
     diamond: {
         border: '#a78bfa', borderDark: '#7c3aed', borderLight: '#c4b5fd', glow: 'rgba(167,139,250,0.8)',
         bg1: '#0a0818', bg2: '#1a1040', bg3: '#06040f',
         accent: '#c4b5fd', accentDeep: '#7c3aed', textAccent: '#ede9fe',
         panelBg: 'rgba(10,8,24,0.7)', panelBorder: 'rgba(167,139,250,0.6)',
-        rank: 'S++', rankLabel: { ar: 'أسطوري مطلق', en: 'MYTHIC' }, holo: true,
-        metalStops: ['#7c3aed', '#a78bfa', '#c4b5fd', '#ede9fe', '#c4b5fd', '#a78bfa', '#7c3aed'],
-        prismaticIntensity: 0.18
-    },
-    mythic: {
-        border: '#e0e7ff', borderDark: '#7c3aed', borderLight: '#f0abfc', glow: 'rgba(240,171,252,0.85)',
-        bg1: '#05000a', bg2: '#120828', bg3: '#030006',
-        accent: '#f0abfc', accentDeep: '#a855f7', textAccent: '#fdf4ff',
-        panelBg: 'rgba(5,0,10,0.75)', panelBorder: 'rgba(240,171,252,0.6)',
-        rank: 'S+++', rankLabel: { ar: 'أسطوري منشوري', en: 'PRISMATIC MYTHIC' }, holo: true,
-        metalStops: ['#a855f7', '#c084fc', '#e0e7ff', '#f0abfc', '#ffffff', '#f0abfc', '#e0e7ff', '#c084fc', '#a855f7'],
-        prismaticIntensity: 0.28,
-        sparkleParticles: true
+        rank: 'S++', rankLabel: { ar: 'أسطوري مطلق', en: 'MYTHIC' }, holo: true
     }
 };
 
@@ -3427,81 +3405,6 @@ function drawWatermark(ctx, W, H) {
     ctx.restore();
 }
 
-// 🎨 رسم إطار معدني حقيقي بتدرج متعدد النقاط (Metallic Multi-Stop Frame)
-function drawMetallicFrame(ctx, x, y, w, h, radius, metalStops, lineWidth = 10, glowColor = 'rgba(255,255,255,0.3)') {
-    if (!metalStops || metalStops.length < 3) return;
-    ctx.save();
-    // تدرج معدني متعدد النقاط
-    const grad = ctx.createLinearGradient(x, y, x + w, y + h);
-    metalStops.forEach((color, i) => {
-        grad.addColorStop(i / (metalStops.length - 1), color);
-    });
-    // الظل الخارجي (العمق)
-    ctx.shadowColor = glowColor;
-    ctx.shadowBlur = 25;
-    ctx.lineWidth = lineWidth;
-    ctx.strokeStyle = grad;
-    roundRectPath(ctx, x, y, w, h, radius);
-    ctx.stroke();
-    // الحد الداخلي (Bevel Light)
-    ctx.shadowBlur = 0;
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = metalStops[metalStops.length - 2] || metalStops[metalStops.length - 1];
-    ctx.globalAlpha = 0.5;
-    roundRectPath(ctx, x + lineWidth / 2 + 2, y + lineWidth / 2 + 2, w - lineWidth - 4, h - lineWidth - 4, radius - 4);
-    ctx.stroke();
-    // الحد الخارجي (Bevel Dark)
-    ctx.strokeStyle = metalStops[0];
-    ctx.globalAlpha = 0.6;
-    roundRectPath(ctx, x - lineWidth / 2 - 1, y - lineWidth / 2 - 1, w + lineWidth + 2, h + lineWidth + 2, radius + 2);
-    ctx.stroke();
-    ctx.restore();
-}
-
-// 🎨 رسم تأثير Patina (أكسدة البرونز)
-function drawPatinaEffect(ctx, W, H, pad) {
-    ctx.save();
-    ctx.globalAlpha = 0.12;
-    const patinaGrad = ctx.createRadialGradient(pad, pad, 10, pad, pad, 200);
-    patinaGrad.addColorStop(0, '#4a7a50');
-    patinaGrad.addColorStop(1, 'transparent');
-    ctx.fillStyle = patinaGrad;
-    ctx.fillRect(0, 0, 300, 300);
-    // الزاوية الأخرى
-    const patinaGrad2 = ctx.createRadialGradient(W - pad, H - pad, 10, W - pad, H - pad, 200);
-    patinaGrad2.addColorStop(0, '#4a7a50');
-    patinaGrad2.addColorStop(1, 'transparent');
-    ctx.fillStyle = patinaGrad2;
-    ctx.fillRect(W - 300, H - 300, 300, 300);
-    ctx.restore();
-}
-
-// 🎨 رسم Sparkle Particles (للمستوى الأسطوري المنشوري)
-function drawSparkleParticles(ctx, W, H, count = 40) {
-    ctx.save();
-    for (let i = 0; i < count; i++) {
-        const x = Math.random() * W;
-        const y = Math.random() * H;
-        const size = 1 + Math.random() * 4;
-        const alpha = 0.3 + Math.random() * 0.7;
-        const colors = ['#f0abfc', '#e0e7ff', '#fbbf24', '#ffffff', '#c4b5fd', '#a78bfa'];
-        ctx.globalAlpha = alpha;
-        ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)];
-        ctx.shadowColor = ctx.fillStyle;
-        ctx.shadowBlur = 10;
-        // نجمة رباعية
-        ctx.beginPath();
-        for (let j = 0; j < 4; j++) {
-            const angle = (j * Math.PI / 2);
-            ctx.lineTo(x + Math.cos(angle) * size * 2, y + Math.sin(angle) * size * 2);
-            ctx.lineTo(x + Math.cos(angle + Math.PI / 4) * size * 0.5, y + Math.sin(angle + Math.PI / 4) * size * 0.5);
-        }
-        ctx.closePath();
-        ctx.fill();
-    }
-    ctx.restore();
-}
-
 // دالة رسم QR Code بسيط (Placeholder)
 function drawQRCode(ctx, x, y, size) {
     ctx.save();
@@ -3643,33 +3546,34 @@ async function renderCollectibleCardCanvas(creature, tier) {
     drawWatermark(ctx, W, H);
 
 
-        // ============================================================
-    // SECTION 2: Realistic Metallic Border (Multi-Stop + Bevel)
     // ============================================================
-    const fi = 36;
-    // 🎨 إطار معدني حقيقي بتدرج متعدد النقاط
-    drawMetallicFrame(ctx, fi, fi, W - fi * 2, H - fi * 2, 40, visual.metalStops, 14, visual.glow);
-    // 🥉 تأثير Patina للبرونزية
-    if (tier === 'common' && visual.patinaColor) {
-        drawPatinaEffect(ctx, W, H, fi);
-    }
-    // 💎 Sparkle Particles للأسطوري المنشوري
-    if (visual.sparkleParticles) {
-        drawSparkleParticles(ctx, W, H, 50);
-    }
-    // 🥈 Chrome Highlight للفضية
-    if (visual.chromeHighlight) {
-        ctx.save();
-        ctx.globalAlpha = 0.08;
-        const chromeGrad = ctx.createLinearGradient(0, 0, W, H * 0.5);
-        chromeGrad.addColorStop(0, 'transparent');
-        chromeGrad.addColorStop(0.45, visual.chromeHighlight);
-        chromeGrad.addColorStop(0.55, visual.chromeHighlight);
-        chromeGrad.addColorStop(1, 'transparent');
-        ctx.fillStyle = chromeGrad;
-        ctx.fillRect(0, 0, W, H);
-        ctx.restore();
-    }
+    // SECTION 2: Gold Metallic Border (thick + ornate corners)
+    // ============================================================
+    const fi = 36; // frame inset
+    // Outer thick metallic border with gradient
+    ctx.save();
+    const borderGrad = ctx.createLinearGradient(0, 0, W, H);
+    borderGrad.addColorStop(0, visual.borderLight);
+    borderGrad.addColorStop(0.3, visual.border);
+    borderGrad.addColorStop(0.5, visual.borderDark);
+    borderGrad.addColorStop(0.7, visual.border);
+    borderGrad.addColorStop(1, visual.borderLight);
+    ctx.lineWidth = 14;
+    ctx.strokeStyle = borderGrad;
+    ctx.shadowColor = visual.glow;
+    ctx.shadowBlur = 40;
+    roundRectPath(ctx, fi, fi, W - fi * 2, H - fi * 2, 40);
+    ctx.stroke();
+    ctx.restore();
+
+    // Inner thin border
+    ctx.save();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = visual.borderDark;
+    roundRectPath(ctx, fi + 16, fi + 16, W - (fi + 16) * 2, H - (fi + 16) * 2, 30);
+    ctx.stroke();
+    ctx.restore();
+
     // Ornate corner decorations (4 corners)
     function drawCornerOrnament(cx, cy, flipX, flipY) {
         ctx.save();
@@ -3678,39 +3582,42 @@ async function renderCollectibleCardCanvas(creature, tier) {
         ctx.strokeStyle = visual.borderLight;
         ctx.fillStyle = visual.border;
         ctx.lineWidth = 3;
+        // Diamond shape
         ctx.beginPath();
-        ctx.moveTo(0, -18);
-        ctx.lineTo(18, 0);
-        ctx.lineTo(0, 18);
-        ctx.lineTo(-18, 0);
+        ctx.moveTo(0, -16);
+        ctx.lineTo(16, 0);
+        ctx.lineTo(0, 16);
+        ctx.lineTo(-16, 0);
         ctx.closePath();
         ctx.fill();
         ctx.stroke();
+        // Inner gem
         ctx.fillStyle = visual.borderLight;
         ctx.shadowColor = visual.glow;
-        ctx.shadowBlur = 15;
+        ctx.shadowBlur = 12;
         ctx.beginPath();
-        ctx.arc(0, 0, 6, 0, Math.PI * 2);
+        ctx.arc(0, 0, 5, 0, Math.PI * 2);
         ctx.fill();
         ctx.shadowBlur = 0;
+        // Curling lines
         ctx.lineWidth = 2;
         ctx.globalAlpha = 0.7;
         ctx.beginPath();
-        ctx.moveTo(22, -8);
-        ctx.bezierCurveTo(45, -22, 65, -10, 75, 8);
+        ctx.moveTo(20, -8);
+        ctx.bezierCurveTo(40, -20, 60, -10, 70, 5);
         ctx.stroke();
         ctx.beginPath();
-        ctx.moveTo(-8, 22);
-        ctx.bezierCurveTo(-22, 45, -10, 65, 8, 75);
+        ctx.moveTo(-8, 20);
+        ctx.bezierCurveTo(-20, 40, -10, 60, 5, 70);
         ctx.stroke();
         ctx.restore();
     }
     const cof = fi + 30;
-    drawCornerOrnament(cof, cof, 1, 1);
-    drawCornerOrnament(W - cof, cof, -1, 1);
-    drawCornerOrnament(W - cof, H - cof, -1, -1);
-    drawCornerOrnament(cof, H - cof, 1, -1);
-    
+    drawCornerOrnament(cof, cof, 1, 1);                  // top-left
+    drawCornerOrnament(W - cof, cof, -1, 1);              // top-right
+    drawCornerOrnament(W - cof, H - cof, -1, -1);         // bottom-right
+    drawCornerOrnament(cof, H - cof, 1, -1);              // bottom-left
+
     // ============================================================
     // SECTION 3: Series Strip (top tiny bar)
     // ============================================================
