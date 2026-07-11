@@ -844,6 +844,113 @@ async function syncStatsToCloud() {
     }
 }
 
+// ==================== ADMIN: MASS REWARD ====================
+
+async function adminMassReward(type, amount) {
+    try {
+        if (!isLoggedIn()) return { success: false, error: 'not_logged_in' };
+        if (!initSupabase()) return { success: false, error: 'supabase_not_ready' };
+
+        if (!type || (type !== 'gems' && type !== 'xp')) {
+            return { success: false, error: 'invalid_type' };
+        }
+        if (!amount || amount <= 0) {
+            return { success: false, error: 'invalid_amount' };
+        }
+
+        const myId = getCurrentUserId();
+        const { data, error } = await sbClient.rpc('admin_mass_reward', {
+            p_admin_id: myId,
+            p_type: type,
+            p_amount: amount
+        });
+
+        if (error) return { success: false, error: error.message || 'rpc_failed' };
+        return data || { success: true };
+    } catch (e) {
+        console.error('adminMassReward error:', e);
+        return { success: false, error: 'server_error' };
+    }
+}
+
+// ==================== ADMIN: FEATURED USER ====================
+
+async function setFeaturedUser(targetUserId, reason) {
+    try {
+        if (!isLoggedIn()) return { success: false, error: 'not_logged_in' };
+        if (!initSupabase()) return { success: false, error: 'supabase_not_ready' };
+
+        const myId = getCurrentUserId();
+        const { data, error } = await sbClient.rpc('admin_set_featured_user', {
+            p_admin_id: myId,
+            p_target_id: targetUserId,
+            p_reason: reason || ''
+        });
+
+        if (error) return { success: false, error: error.message || 'rpc_failed' };
+        return data || { success: true };
+    } catch (e) {
+        console.error('setFeaturedUser error:', e);
+        return { success: false, error: 'server_error' };
+    }
+}
+
+async function removeFeaturedUser() {
+    try {
+        if (!isLoggedIn()) return { success: false, error: 'not_logged_in' };
+        if (!initSupabase()) return { success: false, error: 'supabase_not_ready' };
+
+        const myId = getCurrentUserId();
+        const { data, error } = await sbClient.rpc('admin_remove_featured_user', {
+            p_admin_id: myId
+        });
+
+        if (error) return { success: false, error: error.message || 'rpc_failed' };
+        return data || { success: true };
+    } catch (e) {
+        console.error('removeFeaturedUser error:', e);
+        return { success: false, error: 'server_error' };
+    }
+}
+
+async function getFeaturedUser() {
+    try {
+        if (!initSupabase()) return null;
+
+        const { data, error } = await sbClient.rpc('get_featured_user');
+
+        if (error) {
+            console.error('getFeaturedUser error:', error);
+            return null;
+        }
+        return data;
+    } catch (e) {
+        console.error('getFeaturedUser error:', e);
+        return null;
+    }
+}
+
+// ==================== LEADERBOARD ====================
+
+async function getLeaderboard(limit = 10) {
+    try {
+        if (!initSupabase()) return [];
+
+        const { data, error } = await sbClient.rpc('get_leaderboard', {
+            p_limit: limit
+        });
+
+        if (error) {
+            console.error('getLeaderboard error:', error);
+            return [];
+        }
+        return data || [];
+    } catch (e) {
+        console.error('getLeaderboard error:', e);
+        return [];
+    }
+}
+
 // قائمة صلاحيات المشرفين (للواجهة)
 const MOD_PERMISSIONS = {
     giftGems:      { ar: '💎 شحن جواهر',           en: 'Gift Gems' },
@@ -855,7 +962,9 @@ const MOD_PERMISSIONS = {
     banUser:       { ar: '🚫 حظر مستخدم',           en: 'Ban User' },
     unbanUser:     { ar: '✅ إلغاء الحظر',          en: 'Unban User' },
     deleteUser:    { ar: '🗑️ حذف مستخدم',          en: 'Delete User' },
-    resetPassword: { ar: '🔑 إعادة تعيين كلمة سر', en: 'Reset Password' }
+    resetPassword: { ar: '🔑 إعادة تعيين كلمة سر', en: 'Reset Password' },
+    massReward:    { ar: '🎁 مكافأة جماعية',        en: 'Mass Reward' },
+    featuredUser:  { ar: '⭐ مستخدم مميز',         en: 'Featured User' }
 };
 
 // تصدير على window
@@ -873,6 +982,8 @@ window.firebaseDB = {
     fetchUserGems, isCurrentUserAdmin, syncStatsToCloud,
     // أحداث + رسائل
     setAllAchievements, setAllPokedex,
-    sendMessageToUser, fetchMyMessages, deleteMessage
+    sendMessageToUser, fetchMyMessages, deleteMessage,
+    // ميزات جديدة
+    adminMassReward, setFeaturedUser, removeFeaturedUser, getFeaturedUser, getLeaderboard
 };
 
