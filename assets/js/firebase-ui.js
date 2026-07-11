@@ -322,11 +322,13 @@ function renderAdminPanel(isAr) {
     const t = isAr ? {
         title: 'لوحة التحكم',
         gems: 'الجواهر', xp: 'النقاط والمستوى', users: 'المستخدمون',
-        ban: 'الحظر', events: 'الأحداث', msg: 'الرسائل', staff: 'الإدارة', stats: 'الإحصائيات'
+        ban: 'الحظر', events: 'الأحداث', msg: 'الرسائل', staff: 'الإدارة', stats: 'الإحصائيات',
+        newFeatures: 'ميزات جديدة'
     } : {
         title: 'Control Panel',
         gems: 'Gems', xp: 'XP & Level', users: 'Users',
-        ban: 'Bans', events: 'Events', msg: 'Messages', staff: 'Staff', stats: 'Stats'
+        ban: 'Bans', events: 'Events', msg: 'Messages', staff: 'Staff', stats: 'Stats',
+        newFeatures: 'New Features'
     };
 
     return `
@@ -343,6 +345,7 @@ function renderAdminPanel(isAr) {
                 <button onclick="switchAdminTab('ban', this)" class="dash-tab">${isAr ? '🚫 حظر' : '🚫 Bans'}</button>
                 <button onclick="switchAdminTab('staff', this)" class="dash-tab">${isAr ? '👑 إدارة' : '👑 Staff'}</button>
                 <button onclick="switchAdminTab('stats', this)" class="dash-tab">${isAr ? '📊 إحصائيات' : '📊 Stats'}</button>
+                <button onclick="switchAdminTab('newFeatures', this)" class="dash-tab">${isAr ? '✨ ميزات جديدة' : '✨ New'}</button>
             </div>
             <div id="admin-tab-content" class="dashboard-content">
                 <div class="account-info-loading"><i class="fas fa-spinner fa-spin"></i></div>
@@ -367,7 +370,8 @@ function switchAdminTab(tabName, btn) {
         users: () => { renderAdminUsersTab(isAr); return null; },
         ban: () => renderAdminBanTab(isAr),
         staff: () => renderAdminStaffTab(isAr),
-        stats: () => { renderAdminStatsTab(isAr); return null; }
+        stats: () => { renderAdminStatsTab(isAr); return null; },
+        newFeatures: () => renderAdminNewFeaturesTab(isAr)
     };
 
     const html = renderers[tabName] ? renderers[tabName]() : '';
@@ -672,6 +676,87 @@ async function renderAdminStatsTab(isAr) {
         </div>`;
 }
 
+// ===== تاب الميزات الجديدة =====
+function renderAdminNewFeaturesTab(isAr) {
+    const t = isAr ? {
+        title: 'الميزات الجديدة',
+        massReward: 'المكافأة الجماعية',
+        massRewardDesc: 'إرسال جواهر أو XP لكل المستخدمين دفعة واحدة',
+        type: 'النوع',
+        amount: 'الكمية',
+        gems: 'جواهر',
+        xp: 'نقاط خبرة',
+        send: 'إرسال',
+        featuredUser: 'المستخدم المميز',
+        featuredUserDesc: 'تعيين مستخدم مميز يظهر في الموقع',
+        targetId: 'ID المستخدم',
+        reason: 'السبب',
+        setFeatured: 'تعيين كمميز',
+        removeFeatured: 'إزالة المميز',
+        leaderboard: 'المتصدرين',
+        leaderboardDesc: 'عرض قائمة المتصدرين حسب XP',
+        showLeaderboard: 'عرض المتصدرين'
+    } : {
+        title: 'New Features',
+        massReward: 'Mass Reward',
+        massRewardDesc: 'Send gems or XP to all users at once',
+        type: 'Type',
+        amount: 'Amount',
+        gems: 'Gems',
+        xp: 'XP',
+        send: 'Send',
+        featuredUser: 'Featured User',
+        featuredUserDesc: 'Set a featured user to display on the site',
+        targetId: 'User ID',
+        reason: 'Reason',
+        setFeatured: 'Set as Featured',
+        removeFeatured: 'Remove Featured',
+        leaderboard: 'Leaderboard',
+        leaderboardDesc: 'Show top users by XP',
+        showLeaderboard: 'Show Leaderboard'
+    };
+
+    return `
+        <div class="dashboard-section">
+            <h5 class="section-title">🎁 ${t.massReward}</h5>
+            <p class="dash-desc">${t.massRewardDesc}</p>
+            <div class="dash-card" style="max-width:500px;margin:0 auto">
+                <select id="mass-reward-type" class="dash-input">
+                    <option value="gems">${t.gems}</option>
+                    <option value="xp">${t.xp}</option>
+                </select>
+                <input type="number" id="mass-reward-amount" class="dash-input" placeholder="${t.amount}" min="1">
+                <button onclick="handleAdminAction('massReward')" class="dash-btn primary" style="width:100%"><i class="fas fa-paper-plane"></i> ${t.send}</button>
+            </div>
+            <div id="admin-mass-reward-result" class="auth-error hidden"></div>
+        </div>
+
+        <div class="dashboard-section">
+            <h5 class="section-title">⭐ ${t.featuredUser}</h5>
+            <p class="dash-desc">${t.featuredUserDesc}</p>
+            <div class="dash-card" style="max-width:500px;margin:0 auto">
+                <input type="text" id="featured-user-id" class="dash-input" placeholder="${t.targetId}" inputmode="numeric" maxlength="6">
+                <input type="text" id="featured-user-reason" class="dash-input" placeholder="${t.reason}" maxlength="200">
+                <div class="dash-btn-row">
+                    <button onclick="handleAdminAction('setFeatured')" class="dash-btn success"><i class="fas fa-star"></i> ${t.setFeatured}</button>
+                    <button onclick="handleAdminAction('removeFeatured')" class="dash-btn danger"><i class="fas fa-times"></i> ${t.removeFeatured}</button>
+                </div>
+            </div>
+            <div id="admin-featured-result" class="auth-error hidden"></div>
+        </div>
+
+        <div class="dashboard-section">
+            <h5 class="section-title">🏆 ${t.leaderboard}</h5>
+            <p class="dash-desc">${t.leaderboardDesc}</p>
+            <div class="dash-card" style="max-width:500px;margin:0 auto">
+                <button onclick="handleAdminAction('showLeaderboard')" class="dash-btn primary" style="width:100%"><i class="fas fa-trophy"></i> ${t.showLeaderboard}</button>
+            </div>
+            <div id="admin-leaderboard-result" class="auth-error hidden"></div>
+            <div id="leaderboard-display" class="leaderboard-display hidden"></div>
+        </div>
+    `;
+}
+
 // ===== معالج الإجراءات الموحّد (مع دعم إرسال رسالة مع الإجراء) =====
 async function handleAdminAction(action) {
     const isAr = (typeof currentLang !== 'undefined' && currentLang === 'ar');
@@ -753,6 +838,44 @@ async function handleAdminAction(action) {
                 val('msg-icon') || '💌'
             );
             break;
+        case 'massReward':
+            const massType = val('mass-reward-type');
+            const massAmount = parseInt(val('mass-reward-amount'), 10) || 0;
+            result = await window.firebaseDB.adminMassReward(massType, massAmount);
+            break;
+        case 'setFeatured':
+            targetId = (val('featured-user-id') || '').replace(/\D/g, '');
+            const featuredReason = val('featured-user-reason') || '';
+            result = await window.firebaseDB.setFeaturedUser(targetId, featuredReason);
+            break;
+        case 'removeFeatured':
+            result = await window.firebaseDB.removeFeaturedUser();
+            break;
+        case 'showLeaderboard':
+            const leaderboard = await window.firebaseDB.getLeaderboard(10);
+            const leaderboardEl = document.getElementById('leaderboard-display');
+            const leaderboardResultEl = document.getElementById('admin-leaderboard-result');
+            if (leaderboard && leaderboard.length > 0) {
+                let html = '<div class="leaderboard-list">';
+                leaderboard.forEach((user, index) => {
+                    html += `
+                        <div class="leaderboard-item">
+                            <span class="leaderboard-rank">#${user.rank}</span>
+                            <span class="leaderboard-name">${user.displayName}</span>
+                            <span class="leaderboard-xp">${user.xp} XP</span>
+                            ${user.isAdmin ? '<span class="leaderboard-admin">👑</span>' : ''}
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                leaderboardEl.innerHTML = html;
+                leaderboardEl.classList.remove('hidden');
+                showAuthSuccess(leaderboardResultEl, isAr ? '✅ تم جلب المتصدرين' : '✅ Leaderboard loaded');
+            } else {
+                leaderboardEl.classList.add('hidden');
+                showAuthError(leaderboardResultEl, isAr ? '❌ فشل جلب المتصدرين' : '❌ Failed to load leaderboard');
+            }
+            return;
     }
 
     // 💌 إرسال رسالة مخصصة مع الإجراء (إن كُتبت)
