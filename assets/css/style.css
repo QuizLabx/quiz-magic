@@ -1,4 +1,4 @@
-﻿/*
+/*
 Custom Styles for QuizMagic - Full Professional Version (Phase 4 + Achievements System)
 Includes: Dark/Light Mode, Glassmorphism, Advanced Animations, Skeleton Loaders, Fixed Dragon Progress,
 Confetti, Splash Screen, Enhanced Card Effects, Smooth Question Transitions, and Achievements System.
@@ -4827,11 +4827,68 @@ body.quiz-active .fab-container { display: none; }
 html.theme-cyberpunk .fab-main { box-shadow: 0 0 18px rgba(0, 240, 255, 0.5); }
 html.theme-space .fab-main { box-shadow: 0 0 18px rgba(168, 85, 247, 0.5); }
 
+/* ==================== LEADERBOARD STYLES (NEW) ==================== */
+.leaderboard-display {
+	margin-top: 1rem;
+	padding: 1rem;
+	background: var(--bg-tertiary);
+	border-radius: 12px;
+	border: 1px solid var(--border-color);
+}
+
+.leaderboard-list {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.leaderboard-item {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	padding: 0.75rem;
+	background: var(--bg-secondary);
+	border-radius: 8px;
+	transition: all 0.2s ease;
+}
+
+.leaderboard-item:hover {
+	background: var(--bg-tertiary);
+	transform: translateX(4px);
+}
+
+.leaderboard-rank {
+	font-weight: 800;
+	font-size: 1.1rem;
+	min-width: 2.5rem;
+	color: var(--accent-primary);
+}
+
+.leaderboard-name {
+	flex: 1;
+	font-weight: 600;
+	color: var(--text-primary);
+}
+
+.leaderboard-xp {
+	font-weight: 700;
+	color: var(--accent-secondary);
+}
+
+.leaderboard-admin {
+	font-size: 1.2rem;
+}
+
 /* 📱 Responsive */
 @media (max-width: 480px) {
 	.fab-container { bottom: 1rem; inset-inline-end: 1rem; }
 	.fab-main { width: 48px; height: 48px; font-size: 1.1rem; }
 	.fab-actions .fab-mini { width: 42px; height: 42px; font-size: 0.9rem; }
+	
+	.leaderboard-item {
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
 }
 
 
