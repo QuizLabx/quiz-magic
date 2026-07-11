@@ -4327,6 +4327,8 @@ function openMenuDrawer() {
     renderAnnouncements();
     // 💌 بناء الرسائل المخصصة
     renderPersonalMessages();
+    // ⭐ بناء بطاقة المستخدم المميز
+    renderFeaturedUser();
 
     drawer.classList.add('open');
     overlay.classList.add('open');
@@ -5187,6 +5189,48 @@ async function renderPersonalMessages() {
         });
     } catch (e) {
         console.warn('renderPersonalMessages error:', e);
+    }
+}
+
+// ⭐ FEATURED USER (المستخدم المميز في الـ Drawer)
+// ========================================================================
+
+// 🎨 بناء بطاقة المستخدم المميز في القائمة الجانبية
+async function renderFeaturedUser() {
+    const container = document.getElementById('featured-user-container');
+    if (!container) return;
+    if (!window.firebaseDB) return;
+
+    try {
+        const featured = await window.firebaseDB.getFeaturedUser();
+        if (!featured || !featured.success) {
+            container.classList.add('hidden');
+            return;
+        }
+
+        const isAr = currentLang === 'ar';
+        container.classList.remove('hidden');
+        container.innerHTML = `
+            <div class="featured-user-header">
+                <i class="fas fa-star"></i>
+                <h3>${isAr ? 'المستخدم المميز' : 'Featured User'}</h3>
+            </div>
+            <div class="featured-user-content">
+                <div class="featured-user-avatar">👤</div>
+                <div class="featured-user-info">
+                    <div class="featured-user-name">${escapeHtml(featured.displayName || featured.userId)}</div>
+                    <div class="featured-user-stats">
+                        <span>⚡ ${featured.xp} XP</span>
+                        <span>💎 ${featured.gems}</span>
+                        <span>🎮 Lv.${featured.level}</span>
+                    </div>
+                    ${featured.reason ? `<div class="featured-user-reason">${escapeHtml(featured.reason)}</div>` : ''}
+                </div>
+            </div>
+        `;
+    } catch (e) {
+        console.warn('renderFeaturedUser error:', e);
+        container.classList.add('hidden');
     }
 }
 

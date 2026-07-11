@@ -842,7 +842,13 @@ async function handleAdminAction(action) {
             const massType = val('mass-reward-type');
             const massAmount = parseInt(val('mass-reward-amount'), 10) || 0;
             result = await window.firebaseDB.adminMassReward(massType, massAmount);
-            break;
+            const massResultEl = document.getElementById('admin-mass-reward-result');
+            if (result && result.success) {
+                showAuthSuccess(massResultEl, isAr ? `✅ تم إرسال ${massType} لـ ${result.recipients} مستخدم` : `✅ Sent ${massType} to ${result.recipients} users`);
+            } else {
+                showAuthError(massResultEl, isAr ? `❌ فشل: ${result}` : `❌ Failed: ${result}`);
+            }
+            return;
         case 'setFeatured':
             targetId = (val('featured-user-id') || '').replace(/\D/g, '');
             const featuredReason = val('featured-user-reason') || '';
@@ -855,7 +861,8 @@ async function handleAdminAction(action) {
             const leaderboard = await window.firebaseDB.getLeaderboard(10);
             const leaderboardEl = document.getElementById('leaderboard-display');
             const leaderboardResultEl = document.getElementById('admin-leaderboard-result');
-            if (leaderboard && leaderboard.length > 0) {
+            console.log('Leaderboard data:', leaderboard);
+            if (leaderboard && Array.isArray(leaderboard) && leaderboard.length > 0) {
                 let html = '<div class="leaderboard-list">';
                 leaderboard.forEach((user, index) => {
                     html += `
@@ -873,7 +880,7 @@ async function handleAdminAction(action) {
                 showAuthSuccess(leaderboardResultEl, isAr ? '✅ تم جلب المتصدرين' : '✅ Leaderboard loaded');
             } else {
                 leaderboardEl.classList.add('hidden');
-                showAuthError(leaderboardResultEl, isAr ? '❌ فشل جلب المتصدرين' : '❌ Failed to load leaderboard');
+                showAuthError(leaderboardResultEl, isAr ? '❌ فشل جلب المتصدرين أو لا يوجد مستخدمين' : '❌ Failed to load leaderboard or no users');
             }
             return;
     }
