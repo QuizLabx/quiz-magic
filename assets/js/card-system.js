@@ -21,36 +21,38 @@ const CARD_TIERS = {
 const TIER_ORDER = ['common', 'silver', 'gold', 'diamond'];
 
 // التكوين البصري لكل مستوى
+// التكوين البصري لكل مستوى (محاكاة المعادن الحقيقية)
 const TIER_VISUALS = {
-    common:  {
-        border: '#a0885a', borderDark: '#6b5a3a', borderLight: '#d4b87a', glow: 'rgba(160,136,90,0.5)',
-        bg1: '#0d1f12', bg2: '#1a3322', bg3: '#0a1a0f',
-        accent: '#c9a84c', accentDeep: '#8b7340', textAccent: '#e8d5a0',
-        panelBg: 'rgba(13,31,18,0.7)', panelBorder: 'rgba(160,136,90,0.6)',
-        rank: 'B', rankLabel: { ar: 'عادي', en: 'COMMON' }, holo: false
+    common:  { // برونز / نحاس مؤكسد
+        border: '#8B5A2B', borderDark: '#3E2723', borderLight: '#CD853F', glow: 'rgba(139,90,43,0.5)',
+        bg1: '#1A110A', bg2: '#2E1D12', bg3: '#0F0905',
+        accent: '#CD853F', accentDeep: '#5C3A21', textAccent: '#E6C280',
+        panelBg: 'rgba(26,17,10,0.8)', panelBorder: 'rgba(205,133,63,0.4)',
+        rank: 'B', rankLabel: { ar: 'برونزي', en: 'BRONZE' }, holo: false
     },
-    silver:  {
-        border: '#b8c4d0', borderDark: '#7a8a9a', borderLight: '#e0e8f0', glow: 'rgba(184,196,208,0.6)',
-        bg1: '#0d1a2a', bg2: '#1a2d40', bg3: '#0a1420',
-        accent: '#c0ccd8', accentDeep: '#8a9aaa', textAccent: '#e8f0f8',
-        panelBg: 'rgba(13,26,42,0.7)', panelBorder: 'rgba(184,196,208,0.6)',
-        rank: 'A', rankLabel: { ar: 'نادر', en: 'RARE' }, holo: false
+    silver:  { // فضة مصقولة / فولاذ
+        border: '#A9B0B8', borderDark: '#4A5568', borderLight: '#E2E8F0', glow: 'rgba(169,176,184,0.6)',
+        bg1: '#0F172A', bg2: '#1E293B', bg3: '#020617',
+        accent: '#CBD5E1', accentDeep: '#64748B', textAccent: '#F8FAFC',
+        panelBg: 'rgba(15,23,42,0.8)', panelBorder: 'rgba(203,213,225,0.4)',
+        rank: 'A', rankLabel: { ar: 'فضي', en: 'SILVER' }, holo: false
     },
-    gold:    {
-        border: '#daa520', borderDark: '#b8860b', borderLight: '#ffd700', glow: 'rgba(218,165,32,0.75)',
-        bg1: '#0f1a08', bg2: '#1a2d10', bg3: '#0a1206',
-        accent: '#ffd700', accentDeep: '#b8860b', textAccent: '#fff4c4',
-        panelBg: 'rgba(15,26,8,0.7)', panelBorder: 'rgba(218,165,32,0.6)',
-        rank: 'S+', rankLabel: { ar: 'أسطوري', en: 'LEGENDARY' }, holo: false
+    gold:    { // ذهب خالص عاكس للضوء
+        border: '#D4AF37', borderDark: '#5C4000', borderLight: '#FFF8DC', glow: 'rgba(212,175,55,0.8)',
+        bg1: '#1A1300', bg2: '#332600', bg3: '#0A0700',
+        accent: '#FFD700', accentDeep: '#B8860B', textAccent: '#FFF8DC',
+        panelBg: 'rgba(26,19,0,0.8)', panelBorder: 'rgba(212,175,55,0.5)',
+        rank: 'S', rankLabel: { ar: 'ذهبي', en: 'GOLD' }, holo: true
     },
-    diamond: {
-        border: '#a78bfa', borderDark: '#7c3aed', borderLight: '#c4b5fd', glow: 'rgba(167,139,250,0.8)',
-        bg1: '#0a0818', bg2: '#1a1040', bg3: '#06040f',
-        accent: '#c4b5fd', accentDeep: '#7c3aed', textAccent: '#ede9fe',
-        panelBg: 'rgba(10,8,24,0.7)', panelBorder: 'rgba(167,139,250,0.6)',
-        rank: 'S++', rankLabel: { ar: 'أسطوري مطلق', en: 'MYTHIC' }, holo: true
+    diamond: { // ألماس / كريستال زجاجي
+        border: '#00FFFF', borderDark: '#000080', borderLight: '#E0FFFF', glow: 'rgba(0,255,255,0.9)',
+        bg1: '#000510', bg2: '#001030', bg3: '#000208',
+        accent: '#00FFFF', accentDeep: '#0055FF', textAccent: '#E0FFFF',
+        panelBg: 'rgba(0,5,16,0.8)', panelBorder: 'rgba(0,255,255,0.5)',
+        rank: 'S++', rankLabel: { ar: 'ماسي', en: 'DIAMOND' }, holo: true
     }
 };
+
 
 // تأثيرات الكائنات الأسطورية
 const CREATURE_EFFECTS = {
@@ -515,27 +517,58 @@ function drawCreatureGlow(ctx, creatureId, x, y, radius) {
     ctx.restore();
 }
 
-function drawHolographicEffect(ctx, W, H, intensity = 0.15) {
+// رسم ملمس الورق/المعدن (Noise Texture)
+function drawNoiseTexture(ctx, W, H, opacity = 0.04) {
     ctx.save();
+    ctx.globalAlpha = opacity;
+    
+    // إنشاء Canvas صغير للضوضاء وتكراره (لتحسين الأداء)
+    const noiseCanvas = document.createElement('canvas');
+    noiseCanvas.width = 200;
+    noiseCanvas.height = 200;
+    const nCtx = noiseCanvas.getContext('2d');
+    const imgData = nCtx.createImageData(200, 200);
+    const data = imgData.data;
+    for (let i = 0; i < data.length; i += 4) {
+        const val = Math.random() * 255;
+        data[i] = val;     // Red
+        data[i+1] = val;   // Green
+        data[i+2] = val;   // Blue
+        data[i+3] = 255;   // Alpha
+    }
+    nCtx.putImageData(imgData, 0, 0);
+    
+    const pattern = ctx.createPattern(noiseCanvas, 'repeat');
+    ctx.fillStyle = pattern;
+    ctx.globalCompositeOperation = 'overlay'; // دمج الملمس مع الألوان تحته
+    ctx.fillRect(0, 0, W, H);
+    ctx.restore();
+}
+
+// تأثير الهولوجرام المحدث (يتفاعل مع الضوء)
+function drawHolographicEffect(ctx, W, H, intensity = 0.3) {
+    ctx.save();
+    // استخدام color-dodge يجعل الألوان تضيء بشكل واقعي كأنها قصدير لامع (Foil)
+    ctx.globalCompositeOperation = 'color-dodge';
     ctx.globalAlpha = intensity;
     
     const holoGradient = ctx.createLinearGradient(0, 0, W, H);
-    holoGradient.addColorStop(0, '#ff006e');
-    holoGradient.addColorStop(0.15, '#fb5607');
-    holoGradient.addColorStop(0.3, '#ffbe0b');
-    holoGradient.addColorStop(0.45, '#8338ec');
-    holoGradient.addColorStop(0.6, '#3a86ff');
-    holoGradient.addColorStop(0.75, '#06ffa5');
-    holoGradient.addColorStop(0.9, '#ff006e');
-    holoGradient.addColorStop(1, '#fb5607');
+    holoGradient.addColorStop(0, 'rgba(255, 0, 110, 0.8)');
+    holoGradient.addColorStop(0.2, 'rgba(251, 86, 7, 0.8)');
+    holoGradient.addColorStop(0.4, 'rgba(255, 190, 11, 0.8)');
+    holoGradient.addColorStop(0.6, 'rgba(131, 56, 236, 0.8)');
+    holoGradient.addColorStop(0.8, 'rgba(58, 134, 255, 0.8)');
+    holoGradient.addColorStop(1, 'rgba(6, 255, 165, 0.8)');
     
     ctx.fillStyle = holoGradient;
     ctx.fillRect(0, 0, W, H);
     
-    ctx.globalAlpha = intensity * 0.3;
-    ctx.strokeStyle = '#fff';
-    ctx.lineWidth = 1;
-    for (let i = -H; i < W + H; i += 40) {
+    // خطوط الانكسار الضوئي
+    ctx.globalCompositeOperation = 'overlay';
+    ctx.globalAlpha = intensity * 0.5;
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 2;
+    for (let i = -H; i < W + H; i += 30) {
         ctx.beginPath();
         ctx.moveTo(i, 0);
         ctx.lineTo(i + H, H);
@@ -619,7 +652,7 @@ async function renderCollectibleCardCanvas(creature, tier) {
     const pad = 80;
     const innerW = W - pad * 2;
 
-    // Background
+    // 1. رسم الخلفية المعدنية الأساسية
     const bg = ctx.createLinearGradient(0, 0, W, H);
     bg.addColorStop(0, visual.bg1);
     bg.addColorStop(0.5, visual.bg2);
@@ -627,11 +660,15 @@ async function renderCollectibleCardCanvas(creature, tier) {
     ctx.fillStyle = bg;
     ctx.fillRect(0, 0, W, H);
 
+    // 2. إضافة ملمس الورق/المعدن (الضوضاء)
+    drawNoiseTexture(ctx, W, H, 0.06);
+
+    // 3. رسم خطوط الخلفية الهندسية
     ctx.save();
-    ctx.globalAlpha = 0.03;
+    ctx.globalAlpha = 0.05;
     ctx.strokeStyle = visual.accent;
-    ctx.lineWidth = 1;
-    for (let i = -H; i < W + H; i += 24) {
+    ctx.lineWidth = 2;
+    for (let i = -H; i < W + H; i += 30) {
         ctx.beginPath();
         ctx.moveTo(i, 0);
         ctx.lineTo(i + H, H);
@@ -639,27 +676,19 @@ async function renderCollectibleCardCanvas(creature, tier) {
     }
     ctx.restore();
 
-    const vig = ctx.createRadialGradient(W / 2, H / 2, W * 0.25, W / 2, H / 2, W * 0.9);
+    // 4. تظليل الحواف (Vignette) لإعطاء عمق 3D
+    const vig = ctx.createRadialGradient(W / 2, H / 2, W * 0.3, W / 2, H / 2, W * 0.9);
     vig.addColorStop(0, 'rgba(0,0,0,0)');
-    vig.addColorStop(1, 'rgba(0,0,0,0.75)');
+    vig.addColorStop(1, 'rgba(0,0,0,0.85)');
     ctx.fillStyle = vig;
     ctx.fillRect(0, 0, W, H);
 
+    // 5. تطبيق الهولوجرام إذا كان المستوى يدعم ذلك (ذهبي أو ماسي)
     if (visual.holo) {
-        ctx.save();
-        ctx.globalAlpha = 0.09;
-        const holo = ctx.createLinearGradient(0, 0, W, H);
-        holo.addColorStop(0, '#ff006e');
-        holo.addColorStop(0.2, '#fb5607');
-        holo.addColorStop(0.4, '#ffbe0b');
-        holo.addColorStop(0.6, '#8338ec');
-        holo.addColorStop(0.8, '#3a86ff');
-        holo.addColorStop(1, '#06ffa5');
-        ctx.fillStyle = holo;
-        ctx.fillRect(0, 0, W, H);
-        ctx.restore();
+        drawHolographicEffect(ctx, W, H, tier === 'diamond' ? 0.4 : 0.2);
     }
 
+    // 6. رسم هالة الكائن وجزيئاته السحرية
     if (creature && creature.id) {
         drawCreatureAura(ctx, creature.id, 0, 0, W, H);
     }
@@ -668,13 +697,9 @@ async function renderCollectibleCardCanvas(creature, tier) {
         drawCreatureParticles(ctx, creature.id, W, H, pad);
     }
 
-    if (tier === 'diamond') {
-        drawHolographicEffect(ctx, W, H, 0.12);
-    } else if (tier === 'gold') {
-        drawHolographicEffect(ctx, W, H, 0.06);
-    }
-
+    // 7. رسم العلامة المائية
     drawWatermark(ctx, W, H);
+
 
     const fi = 36;
     ctx.save();
