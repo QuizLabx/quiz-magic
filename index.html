@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -34,11 +34,6 @@
 <!-- Font Awesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="assets/css/style.css">
-<link rel="stylesheet" href="assets/css/card-system/card-base.css">
-<link rel="stylesheet" href="assets/css/card-system/card-materials.css">
-<link rel="stylesheet" href="assets/css/card-system/card-tiers.css">
-<link rel="stylesheet" href="assets/css/card-system/card-stats.css">
-<link rel="stylesheet" href="assets/css/card-system/card-ability.css">
 <!-- 📊 Google Analytics 4 -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-EZGL3HQSD2"></script>
 <script>
@@ -52,7 +47,9 @@
 </script>
 <!-- 🚀 Preload Critical Hero Image -->
 <link rel="preload" as="image" href="assets/images/dragon.jpg">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://www.googletagmanager.com https://www.google-analytics.com https://www.google.com https://analytics.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: blob: https:; connect-src 'self' https://www.google-analytics.com https://www.google.com https://analytics.google.com https://cdn.jsdelivr.net https://fonts.googleapis.com https://cdnjs.cloudflare.com https://*.google-analytics.com https://*.analytics.google.com https://*.supabase.co https://vjjdwsocdstdszjmbxvm.supabase.co wss://*.supabase.co;">/* Hidden Share Template */
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://www.googletagmanager.com https://www.google-analytics.com https://www.google.com https://analytics.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self' https://www.google-analytics.com https://www.google.com https://analytics.google.com https://cdn.jsdelivr.net https://*.google-analytics.com https://*.analytics.google.com https://*.supabase.co https://vjjdwsocdstdszjmbxvm.supabase.co wss://*.supabase.co;"><style>
+body { font-family: 'Cairo', sans-serif; }
+/* Hidden Share Template */
 #share-template {
 position: fixed;
 left: -9999px;
@@ -363,24 +360,7 @@ Mythical Analysis Result
 </div>
 </div>
 
-<!-- ==================== COLLECTIBLE CARD PREVIEW MODAL ==================== -->
-<div id="card-preview-modal" class="achievements-modal">
-    <div class="modal-overlay" onclick="closeCardPreview()"></div>
-    <div class="modal-content" style="max-width: 500px;">
-        <div class="modal-header">
-            <h2 class="modal-title">
-                <i class="fas fa-crown text-accent"></i>
-                <span id="card-preview-title">معاينة البطاقة</span>
-            </h2>
-            <button onclick="closeCardPreview()" class="modal-close" aria-label="إغلاق">
-                <i class="fas fa-times" aria-hidden="true"></i>
-            </button>
-        </div>
-        <div class="modal-body" style="display: flex; justify-content: center; padding: 1.5rem;">
-            <div id="card-preview-container"></div>
-        </div>
-    </div>
-</div>
+<!-- ==================== COLLECTIBLE CARD (rendered via Canvas API, no DOM template needed) ==================== -->
 
 <!-- Language Selector Screen -->
 <div id="language-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center transition-all duration-500 overlay-bg">
@@ -794,14 +774,7 @@ Mythical Analysis Result
 <script src="assets/js/audio.js"></script>
 <script src="assets/js/questionBank.js"></script> <!-- ✅ NEW -->
 <script src="assets/js/quizzes.js"></script>
-<script src="assets/js/card-system/card-core.js"></script>
-<script src="assets/js/card-system/card-tiers.js"></script>
-<script src="assets/js/card-system/card-abilities.js"></script>
-<script src="assets/js/card-system/card-renderer.js"></script>
-<script src="assets/js/card-system/card-export.js"></script>
 <script src="assets/js/app.js"></script>
-<!-- 🎴 Card System -->
-<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.min.js"></script>
 <!-- 👤 Profile Manager (NEW) -->
 <script src="assets/js/profile.js"></script>
 <!-- 🟢 Supabase SDK + QuizMagic Backend -->
