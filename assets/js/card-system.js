@@ -617,6 +617,7 @@ async function renderCollectibleCardCanvas(creature, tier) {
     }
 
     const pad = 80;
+    const innerW = W - pad * 2;
 
     // Background
     const bg = ctx.createLinearGradient(0, 0, W, H);
