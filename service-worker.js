@@ -21,7 +21,15 @@ const ASSETS = [
 self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_VERSION)
-            .then((cache) => cache.addAll(ASSETS))
+            .then((cache) => {
+                // 🛡️ إضافة الموارد واحدة تلو الأخرى مع معالجة الأخطاء
+                return Promise.all(ASSETS.map(url => {
+                    return cache.add(url).catch(err => {
+                        console.warn('⚠️ Failed to cache:', url, err);
+                        // نستمر حتى لو فشل بعض الموارد
+                    });
+                }));
+            })
             .then(() => self.skipWaiting())
     );
 });
