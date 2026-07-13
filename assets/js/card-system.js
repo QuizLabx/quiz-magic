@@ -622,6 +622,26 @@ function drawQRCode(ctx, x, y, size) {
 
 // ==================== MAIN CARD RENDERER ====================
 
+// دالة لرسم نصوص محفورة أو بارزة (3D Text Effect)
+function drawEngravedText(ctx, text, x, y, visual, isEmbossed = false) {
+    ctx.save();
+    const offset = 3; // عمق النحت
+    
+    // رسم الإضاءة (Highlight)
+    ctx.fillStyle = visual.borderLight;
+    ctx.fillText(text, x + (isEmbossed ? -offset : offset), y + (isEmbossed ? -offset : offset));
+    
+    // رسم الظل (Shadow)
+    ctx.fillStyle = visual.borderDark;
+    ctx.fillText(text, x + (isEmbossed ? offset : -offset), y + (isEmbossed ? offset : -offset));
+    
+    // رسم اللون الأساسي في المنتصف
+    ctx.fillStyle = visual.accent;
+    ctx.fillText(text, x, y);
+    ctx.restore();
+}
+
+
 async function renderCollectibleCardCanvas(creature, tier) {
     // الاعتمادات الخارجية: currentLang, getUsername
     const isAr = typeof currentLang !== 'undefined' ? currentLang === 'ar' : false;
@@ -701,7 +721,10 @@ async function renderCollectibleCardCanvas(creature, tier) {
     drawWatermark(ctx, W, H);
 
 
-    const fi = 36;
+    // ==========================================
+    // 8. الإطار الخارجي المعدني (Outer Metallic Border)
+    // ==========================================
+    const fi = 40;
     ctx.save();
     const borderGrad = ctx.createLinearGradient(0, 0, W, H);
     borderGrad.addColorStop(0, visual.borderLight);
@@ -709,190 +732,156 @@ async function renderCollectibleCardCanvas(creature, tier) {
     borderGrad.addColorStop(0.5, visual.borderDark);
     borderGrad.addColorStop(0.7, visual.border);
     borderGrad.addColorStop(1, visual.borderLight);
-    ctx.lineWidth = 14;
+    
+    ctx.lineWidth = 24; // إطار أسمك وأفخم
     ctx.strokeStyle = borderGrad;
-    ctx.shadowColor = visual.glow;
-    ctx.shadowBlur = 40;
+    ctx.shadowColor = 'rgba(0,0,0,0.8)';
+    ctx.shadowBlur = 30;
+    ctx.shadowOffsetX = 10;
+    ctx.shadowOffsetY = 10;
     roundRectPath(ctx, fi, fi, W - fi * 2, H - fi * 2, 40);
     ctx.stroke();
-    ctx.restore();
-
-    ctx.save();
-    ctx.lineWidth = 2;
+    
+    // حافة داخلية للإطار
+    ctx.lineWidth = 4;
     ctx.strokeStyle = visual.borderDark;
-    roundRectPath(ctx, fi + 16, fi + 16, W - (fi + 16) * 2, H - (fi + 16) * 2, 30);
+    ctx.shadowColor = 'transparent';
+    roundRectPath(ctx, fi + 12, fi + 12, W - (fi + 12) * 2, H - (fi + 12) * 2, 28);
     ctx.stroke();
     ctx.restore();
 
-    function drawCornerOrnament(cx, cy, flipX, flipY) {
+    // مسامير التثبيت المعدنية في الزوايا (Rivets)
+    function drawRivet(cx, cy) {
         ctx.save();
-        ctx.translate(cx, cy);
-        ctx.scale(flipX, flipY);
-        ctx.strokeStyle = visual.borderLight;
-        ctx.fillStyle = visual.border;
-        ctx.lineWidth = 3;
         ctx.beginPath();
-        ctx.moveTo(0, -16);
-        ctx.lineTo(16, 0);
-        ctx.lineTo(0, 16);
-        ctx.lineTo(-16, 0);
-        ctx.closePath();
+        ctx.arc(cx, cy, 8, 0, Math.PI * 2);
+        ctx.fillStyle = visual.borderDark;
         ctx.fill();
-        ctx.stroke();
         ctx.beginPath();
-        ctx.arc(0, 0, 8, 0, Math.PI * 2);
+        ctx.arc(cx - 2, cy - 2, 4, 0, Math.PI * 2);
         ctx.fillStyle = visual.borderLight;
         ctx.fill();
         ctx.restore();
     }
+    drawRivet(fi + 40, fi + 40);
+    drawRivet(W - fi - 40, fi + 40);
+    drawRivet(fi + 40, H - fi - 40);
+    drawRivet(W - fi - 40, H - fi - 40);
 
-    drawCornerOrnament(fi + 20, fi + 20, 1, 1);
-    drawCornerOrnament(W - fi - 20, fi + 20, -1, 1);
-    drawCornerOrnament(fi + 20, H - fi - 20, 1, -1);
-    drawCornerOrnament(W - fi - 20, H - fi - 20, -1, -1);
+    let yCursor = fi + 80;
 
-    let yCursor = fi + 60;
-    const catH = 56;
-    ctx.fillStyle = visual.panelBg;
-    roundRectPath(ctx, pad, yCursor, innerW, catH, 28);
-    ctx.fill();
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = visual.panelBorder;
-    ctx.stroke();
-
-    ctx.fillStyle = visual.accent;
-    ctx.shadowColor = visual.glow;
-    ctx.shadowBlur = 12;
-    const catText = (isAr ? '★ ' : '★ ') + tierLabel.toUpperCase() + (isAr ? ' ★' : ' EDITION ★');
-    ctx.fillText(catText, W / 2, yCursor + catH / 2);
+    // ==========================================
+    // 9. الترويسة: اسم الكائن (Header)
+    // ==========================================
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font = '900 75px Cairo, Tajawal, sans-serif';
+    const creatureName = creature ? (creature.name || 'Unknown') : 'Unknown';
+    // استخدام دالة النحت لاسم الكائن (نص بارز 3D)
+    drawEngravedText(ctx, creatureName, W / 2, yCursor, visual, true);
     ctx.restore();
 
-    yCursor += catH + 30;
+    yCursor += 80;
 
-    const imgH = 680;
+    // ==========================================
+    // 10. نافذة الصورة الغائرة (Deep Inset Image Window)
+    // ==========================================
+    const imgW = innerW - 40;
+    const imgH = 750;
+    const imgX = pad + 20;
     const imgY = yCursor;
+
     ctx.save();
-    roundRectPath(ctx, pad, imgY, innerW, imgH, 32);
+    // رسم الإطار المعدني الداخلي للصورة
+    ctx.lineWidth = 12;
+    ctx.strokeStyle = borderGrad;
+    roundRectPath(ctx, imgX - 6, imgY - 6, imgW + 12, imgH + 12, 24);
+    ctx.stroke();
+
+    // قص الصورة داخل الإطار
+    ctx.save();
+    roundRectPath(ctx, imgX, imgY, imgW, imgH, 18);
     ctx.clip();
     
     if (creature && creature.image) {
         const img = await loadImageAsDataURL(creature.image);
         if (img) {
-            ctx.drawImage(img, pad, imgY, innerW, imgH);
+            ctx.drawImage(img, imgX, imgY, imgW, imgH);
         }
     }
-    ctx.restore();
-
-    ctx.lineWidth = 4;
-    ctx.strokeStyle = visual.border;
-    ctx.shadowColor = visual.glow;
-    ctx.shadowBlur = 20;
-    roundRectPath(ctx, pad, imgY, innerW, imgH, 32);
+    
+    // ظل داخلي قوي (Inner Shadow) لإعطاء عمق للنافذة وكأن الصورة بالداخل
+    ctx.lineWidth = 30;
+    ctx.strokeStyle = 'rgba(0,0,0,0.6)';
+    roundRectPath(ctx, imgX, imgY, imgW, imgH, 18);
     ctx.stroke();
+    ctx.restore(); // إنهاء القص
     ctx.restore();
 
-    yCursor += imgH + 40;
+    yCursor += imgH + 60;
 
+    // ==========================================
+    // 11. شريط الندرة (Rarity Ribbon)
+    // ==========================================
     ctx.save();
+    ctx.fillStyle = visual.panelBg;
+    ctx.strokeStyle = visual.border;
+    ctx.lineWidth = 3;
+    roundRectPath(ctx, W/2 - 200, yCursor, 400, 60, 30);
+    ctx.fill();
+    ctx.stroke();
+
     ctx.textAlign = 'center';
-    ctx.font = '900 72px Cairo, Tajawal, sans-serif';
-    
-    const titleGrad = ctx.createLinearGradient(W / 2 - 200, yCursor, W / 2 + 200, yCursor + 80);
-    if (tier === 'diamond') {
-        titleGrad.addColorStop(0, '#e0e7ff');
-        titleGrad.addColorStop(0.3, '#c4b5fd');
-        titleGrad.addColorStop(0.5, '#f0abfc');
-        titleGrad.addColorStop(0.7, '#c4b5fd');
-        titleGrad.addColorStop(1, '#e0e7ff');
-    } else if (tier === 'gold') {
-        titleGrad.addColorStop(0, '#fef3c7');
-        titleGrad.addColorStop(0.3, '#fbbf24');
-        titleGrad.addColorStop(0.5, '#fff');
-        titleGrad.addColorStop(0.7, '#fbbf24');
-        titleGrad.addColorStop(1, '#fef3c7');
-    } else if (tier === 'silver') {
-        titleGrad.addColorStop(0, '#f1f5f9');
-        titleGrad.addColorStop(0.3, '#cbd5e1');
-        titleGrad.addColorStop(0.5, '#fff');
-        titleGrad.addColorStop(0.7, '#cbd5e1');
-        titleGrad.addColorStop(1, '#f1f5f9');
-    } else {
-        titleGrad.addColorStop(0, '#fef3c7');
-        titleGrad.addColorStop(0.5, '#fbbf24');
-        titleGrad.addColorStop(1, '#fef3c7');
-    }
-    
-    ctx.fillStyle = titleGrad;
-    ctx.shadowColor = visual.glow;
-    ctx.shadowBlur = 15;
-    const creatureName = creature ? (creature.name || 'Unknown') : 'Unknown';
-    ctx.fillText(creatureName, W / 2, yCursor + 60);
+    ctx.textBaseline = 'middle';
+    ctx.font = '700 30px Cairo, Tajawal, sans-serif';
+    const rarityText = (isAr ? '★ ' : '★ ') + tierLabel.toUpperCase() + (isAr ? ' ★' : ' EDITION ★');
+    // نص محفور للداخل
+    drawEngravedText(ctx, rarityText, W / 2, yCursor + 30, visual, false);
     ctx.restore();
 
     yCursor += 100;
 
+    // ==========================================
+    // 12. صندوق الوصف (Lore Box)
+    // ==========================================
+    const descH = 220;
     ctx.save();
-    ctx.textAlign = 'center';
-    ctx.font = '700 36px Cairo, Tajawal, sans-serif';
-    ctx.fillStyle = visual.textAccent;
-    ctx.shadowColor = visual.glow;
-    ctx.shadowBlur = 10;
-    ctx.fillText(String(creature.rarity || ''), W / 2, yCursor + 30);
-    ctx.restore();
-
-    if (tier === 'diamond') {
-        ctx.font = '32px Cairo, Tajawal, sans-serif';
-        ctx.fillStyle = '#fbbf24';
-        ctx.shadowColor = '#fbbf24';
-        ctx.shadowBlur = 8;
-        ctx.fillText('✦', W / 2 - 180, yCursor);
-        ctx.fillText('✦', W / 2 + 180, yCursor);
-    }
-
-    yCursor += 60;
-
-    const descH = 200;
-    ctx.fillStyle = visual.panelBg;
-    roundRectPath(ctx, pad, yCursor, innerW, descH, 24);
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.4)'; // خلفية زجاجية داكنة
+    ctx.strokeStyle = visual.borderDark;
+    ctx.lineWidth = 4;
+    roundRectPath(ctx, pad + 20, yCursor, innerW - 40, descH, 20);
     ctx.fill();
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = visual.panelBorder;
     ctx.stroke();
 
-    ctx.save();
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.font = '500 28px Cairo, Tajawal, sans-serif';
     ctx.fillStyle = visual.textAccent;
     
     const description = creature ? (creature.description || '') : '';
-    const descLines = wrapText(ctx, description, innerW - 60, 4);
+    const descLines = wrapText(ctx, description, innerW - 100, 4);
     descLines.forEach((line, i) => {
-        ctx.fillText(line, W / 2, yCursor + descH / 2 + (i - descLines.length / 2 + 0.5) * 36);
+        ctx.fillText(line, W / 2, yCursor + descH / 2 + (i - descLines.length / 2 + 0.5) * 38);
     });
     ctx.restore();
 
-    yCursor += descH + 40;
+    yCursor += descH + 60;
 
+    // ==========================================
+    // 13. اسم المستكشف (Explorer Name)
+    // ==========================================
     ctx.save();
     ctx.textAlign = 'center';
     ctx.font = '600 24px Cairo, Tajawal, sans-serif';
     ctx.fillStyle = visual.accentDeep;
     ctx.fillText(isAr ? 'المستكشف' : 'Explorer', W / 2, yCursor);
+    
+    yCursor += 40;
+    
+    ctx.font = '900 45px Cairo, Tajawal, sans-serif';
+    drawEngravedText(ctx, username, W / 2, yCursor, visual, true);
     ctx.restore();
-
-    yCursor += 35;
-
-    ctx.save();
-    ctx.textAlign = 'center';
-    ctx.font = '900 42px Cairo, Tajawal, sans-serif';
-    ctx.fillStyle = visual.textAccent;
-    ctx.shadowColor = visual.glow;
-    ctx.shadowBlur = 10;
-    ctx.fillText(username, W / 2, yCursor);
-    ctx.restore();
-
-    yCursor += 60;
 
     const footerY = H - pad - 120;
     const qrSize = 100;
