@@ -2220,6 +2220,10 @@ function showResult() {
         lastQuizResult.cardTier = getOrAssignCardTier(winnerId);
     }
 
+    // 🔒 تأكيد حفظ البطاقة بشكل صحيح
+    const verificationCards = getUserCards();
+    console.log('🔍 Card verification after quiz complete:', verificationCards, 'Winner:', winnerId, 'Tier:', lastQuizResult.cardTier);
+
     const duration = getQuizDurationSeconds();
     if (duration > 0) {
         if (!userStats.fastestQuiz || duration < userStats.fastestQuiz) {

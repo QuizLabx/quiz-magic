@@ -214,12 +214,21 @@ const CREATURE_EFFECTS = {
 // ==================== CARD MANAGEMENT FUNCTIONS ====================
 
 function getUserCards() {
-    try { return JSON.parse(localStorage.getItem(CARDS_KEY) || '{}'); }
-    catch { return {}; }
+    try { 
+        const cards = JSON.parse(localStorage.getItem(CARDS_KEY) || '{}');
+        console.log('📖 Reading cards from localStorage:', cards, 'Total:', Object.keys(cards).length);
+        return cards;
+    } 
+    catch (e) { 
+        console.log('❌ Error reading cards from localStorage:', e);
+        return {}; 
+    }
 }
 
 function saveUserCards(cards) {
+    console.log('💾 Saving cards to localStorage:', cards);
     localStorage.setItem(CARDS_KEY, JSON.stringify(cards));
+    console.log('✅ Cards saved. Verification:', getUserCards());
 }
 
 function getRandomTier() {
