@@ -3171,14 +3171,6 @@ transition: all 0.3s ease;
 }
 .btn-success:hover { transform: scale(1.03); }
 
-/* زر البطاقة الفاخرة */
-.btn-card {
-background-image: linear-gradient(to right, var(--c-accent), var(--c-primary)) !important;
-box-shadow: 0 10px 25px -5px rgba(var(--c-primary-rgb), 0.4) !important;
-transition: all 0.3s ease;
-}
-.btn-card:hover { transform: scale(1.03); }
-
 /* زر صلب بسيط (شاشة اللغة) */
 .btn-primary-solid {
 background-color: var(--c-primary) !important;
@@ -3227,24 +3219,20 @@ background-image: linear-gradient(to top right, var(--c-primary), var(--c-second
    🎨 تأثيرات إضافية خاصة بكل سمة على الأزرار
    ============================================================ */
 html.theme-cyberpunk .btn-primary,
-html.theme-cyberpunk .btn-primary-solid,
-html.theme-cyberpunk .btn-card {
+html.theme-cyberpunk .btn-primary-solid {
 text-shadow: 0 0 6px rgba(0, 240, 255, 0.6);
 }
-html.theme-cyberpunk .btn-primary:hover,
-html.theme-cyberpunk .btn-card:hover {
+html.theme-cyberpunk .btn-primary:hover {
 box-shadow: 0 0 22px var(--c-primary), 0 14px 30px -5px rgba(var(--c-primary-rgb), 0.5) !important;
 }
 html.theme-retro .btn-primary,
 html.theme-retro .btn-secondary,
 html.theme-retro .btn-success,
-html.theme-retro .btn-card,
 html.theme-retro .btn-primary-solid {
 border: 2px solid #fff !important;
 text-shadow: 2px 2px 0 #1a0033;
 }
-html.theme-space .btn-primary:hover,
-html.theme-space .btn-card:hover {
+html.theme-space .btn-primary:hover {
 box-shadow: 0 0 22px rgba(var(--c-primary-rgb), 0.6) !important;
 }
 

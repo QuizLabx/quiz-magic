@@ -1,0 +1,45 @@
+/* ============================================================
+   🃏 COLLECTIBLE CARD SYSTEM STYLES
+   نظام البطاقات القابلة للجمع - تنسيقات منفصلة
+   ============================================================ */
+
+/* زر البطاقة الفاخرة */
+.btn-card {
+    background-image: linear-gradient(to right, var(--c-accent), var(--c-primary)) !important;
+    box-shadow: 0 10px 25px -5px rgba(var(--c-primary-rgb), 0.4) !important;
+    transition: all 0.3s ease;
+}
+
+.btn-card:hover {
+    transform: scale(1.03);
+}
+
+/* زر تنزيل البطاقة */
+.card-download-btn {
+    background: linear-gradient(135deg, #ffd700 0%, #ff6b35 50%, #ff006e 100%);
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.card-download-btn:hover {
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+}
+
+/* تنسيقات خاصة للسمات المختلفة */
+html.theme-cyberpunk .btn-card {
+    text-shadow: 0 0 6px rgba(0, 240, 255, 0.6);
+}
+
+html.theme-cyberpunk .btn-card:hover {
+    box-shadow: 0 0 22px var(--c-primary), 0 14px 30px -5px rgba(var(--c-primary-rgb), 0.5) !important;
+}
+
+html.theme-retro .btn-card {
+    border: 2px solid #fff !important;
+    text-shadow: 2px 2px 0 #1a0033;
+}
+
+html.theme-space .btn-card:hover {
+    box-shadow: 0 0 22px rgba(var(--c-primary-rgb), 0.6) !important;
+}
