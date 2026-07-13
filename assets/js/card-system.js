@@ -641,6 +641,90 @@ function drawEngravedText(ctx, text, x, y, visual, isEmbossed = false) {
     ctx.restore();
 }
 
+// دالة رسم مخطط القوى السداسي (Radar Chart) على البطاقة
+function drawCardRadarChart(ctx, cx, cy, radius, creature, visual, isAr) {
+    const axes = ['willpower', 'intelligence', 'energy', 'empathy', 'strategy', 'mystery'];
+    const labelsAr = ['الإرادة', 'الذكاء', 'الطاقة', 'التعاطف', 'الاستراتيجية', 'الغموض'];
+    const labelsEn = ['Willpower', 'Intelligence', 'Energy', 'Empathy', 'Strategy', 'Mystery'];
+    const labels = isAr ? labelsAr : labelsEn;
+
+    // جلب إحصائيات الكائن (أو وضع قيم افتراضية عشوائية إذا لم تكن موجودة)
+    const stats = axes.map(axis => {
+        if (creature && creature.axes && creature.axes[axis]) return creature.axes[axis];
+        if (creature && creature.fingerprint && creature.fingerprint[axis]) return creature.fingerprint[axis];
+        return 60 + (Math.random() * 35); // قيمة بين 60 و 95
+    });
+
+    const sides = 6;
+    const angleStep = (Math.PI * 2) / sides;
+
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(-Math.PI / 2); // توجيه المخطط للأعلى
+
+    // 1. رسم الشبكة الخلفية (المضلعات المتداخلة)
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+    for (let level = 1; level <= 4; level++) {
+        const r = radius * (level / 4);
+        ctx.beginPath();
+        for (let i = 0; i < sides; i++) {
+            const x = Math.cos(i * angleStep) * r;
+            const y = Math.sin(i * angleStep) * r;
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+        ctx.stroke();
+    }
+
+    // 2. رسم خطوط المحاور من المركز
+    ctx.beginPath();
+    for (let i = 0; i < sides; i++) {
+        ctx.moveTo(0, 0);
+        ctx.lineTo(Math.cos(i * angleStep) * radius, Math.sin(i * angleStep) * radius);
+    }
+    ctx.stroke();
+
+    // 3. رسم مضلع البيانات (قوة الكائن)
+    ctx.beginPath();
+    for (let i = 0; i < sides; i++) {
+        const val = stats[i] / 100;
+        const r = radius * val;
+        const x = Math.cos(i * angleStep) * r;
+        const y = Math.sin(i * angleStep) * r;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+    
+    ctx.fillStyle = visual.glow; // استخدام لون توهج المستوى
+    ctx.fill();
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = visual.accent;
+    ctx.stroke();
+
+    // 4. رسم النصوص (أسماء المحاور)
+    ctx.rotate(Math.PI / 2); // إعادة التدوير للنصوص
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font = '700 20px Cairo, sans-serif';
+    ctx.fillStyle = visual.textAccent;
+
+    for (let i = 0; i < sides; i++) {
+        const angle = (i * angleStep) - Math.PI / 2;
+        const labelRadius = radius + 35; // إبعاد النص عن المخطط قليلاً
+        const x = Math.cos(angle) * labelRadius;
+        const y = Math.sin(angle) * labelRadius;
+        
+        // إضافة ظل للنص ليكون مقروءاً
+        ctx.shadowColor = 'rgba(0,0,0,0.8)';
+        ctx.shadowBlur = 4;
+        ctx.fillText(labels[i], x, y);
+    }
+    ctx.restore();
+}
+
 
 async function renderCollectibleCardCanvas(creature, tier) {
     // الاعتمادات الخارجية: currentLang, getUsername
@@ -883,38 +967,72 @@ async function renderCollectibleCardCanvas(creature, tier) {
     drawEngravedText(ctx, username, W / 2, yCursor, visual, true);
     ctx.restore();
 
-    const footerY = H - pad - 120;
-    const qrSize = 100;
-    const qrX = W / 2 - qrSize / 2;
-    const qrY = footerY - 20;
-    drawQRCode(ctx, qrX, qrY, qrSize);
+    // ==========================================
+    // 14. مخطط القوى (Radar Chart)
+    // ==========================================
+    yCursor += 180; // النزول للمساحة الفارغة
+    drawCardRadarChart(ctx, W / 2, yCursor, 130, creature, visual, isAr);
 
-    ctx.save();
+    // ==========================================
+    // 15. التذييل (Footer): QR Code الحقيقي والرقم التسلسلي
+    // ==========================================
+    const footerY = H - pad - 140;
+    
+    // جلب QR Code حقيقي من API مجاني (يوجه لموقعك)
+    const qrSize = 130;
+    const qrX = pad + 20;
+    const qrY = footerY;
+    const siteUrl = encodeURIComponent('https://quizlabx.github.io/quiz-magic/' );
+    const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${qrSize}x${qrSize}&data=${siteUrl}&color=0f172a&bgcolor=ffffff`;
+    
+    ctx.save( );
+    const qrImg = await loadImageAsDataURL(qrApiUrl);
+    if (qrImg) {
+        // رسم خلفية بيضاء للـ QR لضمان عمله عند المسح
+        ctx.fillStyle = '#ffffff';
+        roundRectPath(ctx, qrX - 10, qrY - 10, qrSize + 20, qrSize + 20, 16);
+        ctx.fill();
+        ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
+    } else {
+        // في حال فشل الاتصال بالإنترنت، نرسم الـ QR الوهمي القديم
+        drawQRCode(ctx, qrX, qrY, qrSize);
+    }
+    
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
-    ctx.font = '600 14px Cairo, Tajawal, sans-serif';
-    ctx.fillStyle = 'rgba(203,213,225,0.6)';
-    ctx.fillText(isAr ? 'امسح للعب' : 'Scan to Play', qrX + qrSize / 2, qrY + qrSize + 5);
+    ctx.font = '800 18px Cairo, Tajawal, sans-serif';
+    ctx.fillStyle = visual.accent;
+    ctx.fillText(isAr ? 'امسح للعب' : 'SCAN TO PLAY', qrX + qrSize / 2, qrY + qrSize + 15);
     ctx.restore();
 
-    const serialText = `#${Math.floor(Math.random() * 900000) + 100000}`;
+    // الرقم التسلسلي والختم الرسمي (Official Seal)
+    const serialText = `SN: ${Math.random().toString(36).substr(2, 6).toUpperCase()}-${Math.floor(Math.random() * 9000) + 1000}`;
     ctx.save();
+    ctx.textAlign = 'right';
+    ctx.font = '800 26px Cairo, sans-serif';
+    ctx.fillStyle = visual.borderDark;
+    ctx.fillText(serialText, W - pad - 20, footerY + 100);
+    
+    // رسم الختم الدائري
+    ctx.translate(W - pad - 90, footerY + 30);
+    ctx.rotate(-0.15);
+    ctx.beginPath();
+    ctx.arc(0, 0, 45, 0, Math.PI * 2);
+    ctx.strokeStyle = visual.accent;
+    ctx.lineWidth = 4;
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(0, 0, 38, 0, Math.PI * 2);
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    
+    ctx.font = '900 20px Cairo, sans-serif';
+    ctx.fillStyle = visual.accent;
     ctx.textAlign = 'center';
-    ctx.font = '600 18px Cairo, Tajawal, sans-serif';
-    ctx.fillStyle = visual.accentDeep;
-    ctx.fillText(serialText, W / 2, footerY + 100);
+    ctx.textBaseline = 'middle';
+    ctx.fillText('OFFICIAL', 0, -12);
+    ctx.fillText('SEAL', 0, 12);
     ctx.restore();
-
-    if (tier === 'diamond') {
-        ctx.save();
-        ctx.translate(W - pad - 120, footerY + 50);
-        ctx.rotate(-0.2);
-        ctx.font = '900 24px Cairo, Tajawal, sans-serif';
-        ctx.fillStyle = 'rgba(167,139,250,0.3)';
-        ctx.textAlign = 'center';
-        ctx.fillText('OFFICIAL', 0, 0);
-        ctx.restore();
-    }
 
     return canvas;
 }
