@@ -25,7 +25,7 @@ function escapeHtml(text) {
 
 // ==================== USERNAME SYSTEM ====================
 const USERNAME_KEY = 'quiz_username';
-const CARDS_KEY = 'quiz_cards';
+// Note: CARDS_KEY moved to card-system.js
 
 function getUsername() {
     return localStorage.getItem(USERNAME_KEY) || '';
