@@ -1,6 +1,6 @@
 let currentLang = 'ar';
 let currentQuiz = null;
-let selectedQuestions = [];  // 🎲 الـ 30 سؤال المختارة عشوائياً
+let selectedQuestions = [];  /// 🎲 الـ 30 سؤال المختارة عشوائياً
 let questionBankLoaded = false; // 📊 تتبع تحميل البنكlet currentStepId = 0;
 let userResponses = [];
 let currentTheme = 'dark';
