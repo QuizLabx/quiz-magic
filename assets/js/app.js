@@ -2469,32 +2469,34 @@ function showResult() {
     setTimeout(async () => {
         initCard3DEffect();
         try {
-            // رسم البطاقة ووضعها في الوجه الأمامي
             const canvas = await renderCollectibleCardCanvas(lastQuizResult.creature, lastQuizResult.cardTier);
             const frontFace = document.getElementById('card-front-face');
             if (frontFace) {
+                // تجهيز البطاقة للظهور الناعم (Fade-in)
                 canvas.style.width = '100%';
                 canvas.style.height = '100%';
                 canvas.style.objectFit = 'cover';
-                canvas.style.opacity = '0'; // اجعلها شفافة أولاً
-                canvas.style.transition = 'opacity 0.5s ease-in-out'; // تأثير انتقال
+                canvas.style.opacity = '0'; // تبدأ شفافة
+                canvas.style.transition = 'opacity 0.8s ease-in-out'; // انتقال ناعم لمدة 0.8 ثانية
                 
-                frontFace.innerHTML = ''; 
+                frontFace.innerHTML = ''; // مسح أيقونة التحميل
                 frontFace.appendChild(canvas);
                 
-                // إظهار البطاقة بنعومة
-                requestAnimationFrame(() => {
-                    canvas.style.opacity = '1';
-                });
-                
+                // إعادة إضافة اللمعان فوق الـ Canvas
                 const glare = document.createElement('div');
                 glare.className = 'card-glare';
                 frontFace.appendChild(glare);
+
+                // تفعيل الظهور الناعم بعد إضافتها للـ DOM
+                requestAnimationFrame(() => {
+                    canvas.style.opacity = '1';
+                });
             }
         } catch (e) {
             console.error("Failed to render preview card:", e);
         }
     }, 100);
+
 
     setTimeout(() => {
         launchConfetti(winnerId);
@@ -2556,7 +2558,7 @@ function initCard3DEffect() {
     const inner = document.getElementById('card-3d-inner');
     if (!wrapper || !inner) return;
 
-    let ticking = false; // متغير للتحكم في التحديث
+    let ticking = false; // متغير للتحكم في سرعة التحديث (Throttling)
 
     wrapper.addEventListener('mousemove', (e) => {
         if (inner.classList.contains('is-flipped')) return;
@@ -2577,10 +2579,11 @@ function initCard3DEffect() {
                 
                 const glares = wrapper.querySelectorAll('.card-glare');
                 glares.forEach(glare => {
-                    glare.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 60%)`;
+                    // لمعان أقوى يتناسب مع الزجاج النقي
+                    glare.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 60%)`;
                 });
                 
-                ticking = false; // السماح بالتحديث القادم
+                ticking = false;
             });
             ticking = true;
         }
