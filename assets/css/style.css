@@ -4822,6 +4822,114 @@ html.theme-space .fab-main { box-shadow: 0 0 18px rgba(168, 85, 247, 0.5); }
 	.fab-actions .fab-mini { width: 42px; height: 42px; font-size: 0.9rem; }
 }
 
+/* ==================== MYTHICAL GALLERY STYLES ==================== */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+@media (min-width: 768px) {
+    .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    }
+}
+
+.gallery-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.3s ease;
+}
+
+.gallery-item.unlocked {
+    cursor: pointer;
+}
+
+.gallery-item.unlocked:hover {
+    transform: translateY(-10px) scale(1.05);
+}
+
+.gallery-img-wrapper {
+    width: 100%;
+    aspect-ratio: 1 / 1.4; /* نسبة أبعاد البطاقة */
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+    border: 2px solid transparent;
+}
+
+.gallery-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: all 0.5s ease;
+}
+
+/* تأثير الظل للبطاقات المقفلة (FOMO Effect) */
+.locked-silhouette {
+    background: #0f172a;
+    border-color: #1e293b;
+}
+
+.locked-silhouette img {
+    filter: brightness(0) invert(0.1) blur(2px); /* يجعل الصورة ظلاً أسود غامضاً */
+    opacity: 0.6;
+}
+
+.locked-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2.5rem;
+    opacity: 0.5;
+    text-shadow: 0 0 10px rgba(0,0,0,0.8);
+}
+
+/* شارات الندرة */
+.gallery-badge {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    padding: 5px 0;
+    font-size: 0.8rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(5px);
+}
+
+/* ألوان الإطارات حسب الندرة */
+.tier-common { border-color: #8D6E63; }
+.tier-common .gallery-badge { color: #D7CCC8; }
+
+.tier-silver { border-color: #E0E0E0; box-shadow: 0 0 15px rgba(224,224,224,0.3); }
+.tier-silver .gallery-badge { color: #FFFFFF; }
+
+.tier-gold { border-color: #D4AF37; box-shadow: 0 0 20px rgba(212,175,55,0.5); }
+.tier-gold .gallery-badge { color: #FFF8DC; text-shadow: 0 0 5px #D4AF37; }
+
+.tier-diamond { border-color: #00FFFF; box-shadow: 0 0 25px rgba(0,255,255,0.6); }
+.tier-diamond .gallery-badge { color: #E0FFFF; text-shadow: 0 0 8px #00FFFF; }
+
+.gallery-name {
+    margin-top: 0.8rem;
+    font-weight: 700;
+    font-size: 1rem;
+    text-align: center;
+    color: var(--c-text-primary);
+}
+
+.gallery-item.locked .gallery-name {
+    color: var(--c-text-muted);
+    letter-spacing: 2px;
+}
+
 
 
 
