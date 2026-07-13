@@ -258,6 +258,12 @@ async function fetchUserData(userId) {
             if (typeof data.xp === 'number') localStorage.setItem('quiz_xp', String(data.xp));
             if (typeof data.gems === 'number') localStorage.setItem('quiz_gems', String(data.gems));
             if (typeof data.level === 'number') localStorage.setItem('quiz_level', String(data.level));
+            // 🛡️ مزامنة البطاقات السحابية مع المحلية (دمج بدلاً من استبدال)
+            if (data.cards) {
+                const localCards = JSON.parse(localStorage.getItem('quiz_cards') || '{}');
+                const mergedCards = { ...localCards, ...data.cards };
+                localStorage.setItem('quiz_cards', JSON.stringify(mergedCards));
+            }
         }
 
         return data;
@@ -871,6 +877,7 @@ window.firebaseDB = {
     deleteUserPermanent, getSiteStats,
     checkBanStatus, hasPermission, MOD_PERMISSIONS,
     fetchUserGems, isCurrentUserAdmin, syncStatsToCloud,
+    syncGameData: syncStatsToCloud, // اسم مستعار للتوافق
     // أحداث + رسائل
     setAllAchievements, setAllPokedex,
     sendMessageToUser, fetchMyMessages, deleteMessage

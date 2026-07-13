@@ -1966,6 +1966,36 @@ function showLoading() {
     setTimeout(showResult, delay);
 }
 
+// ==================== RETAKE QUIZ ====================
+function retakeQuiz() {
+    // 🛡️ حفظ البطاقات في السحابة قبل إعادة التحميل
+    if (window.firebaseDB && window.firebaseDB.isLoggedIn()) {
+        const cards = getUserCards();
+        const stats = getUserStats();
+        const achievements = JSON.parse(localStorage.getItem('quiz_achievements') || '{}');
+        
+        window.firebaseDB.syncGameData(stats, achievements, cards).then(() => {
+            console.log('✅ Cards synced before retake');
+            // زيادة عداد retakes
+            if (!userStats.retakes) userStats.retakes = 0;
+            userStats.retakes++;
+            localStorage.setItem('quiz_stats', JSON.stringify(userStats));
+            // إعادة التحميل
+            location.reload();
+        }).catch(err => {
+            console.warn('⚠️ Sync failed before retake:', err);
+            // إعادة التحميل حتى لو فشلت المزامنة
+            location.reload();
+        });
+    } else {
+        // إذا لم يكن مسجل دخول، فقط زد العداد وأعد التحميل
+        if (!userStats.retakes) userStats.retakes = 0;
+        userStats.retakes++;
+        localStorage.setItem('quiz_stats', JSON.stringify(userStats));
+        location.reload();
+    }
+}
+
 // ==================== RESULT CALCULATION (FINGERPRINT MATCHING ALGORITHM) ====================
 // 🧬 خوارزمية البصمة الكاملة (Cosine Similarity)
 function calculateResult() {
@@ -2460,7 +2490,7 @@ function showResult() {
             </button>
         </div>
 
-        <button onclick="location.reload()" class="theme-text-muted hover:theme-text-primary transition font-bold mb-20 mx-auto block">
+        <button onclick="retakeQuiz()" class="theme-text-muted hover:theme-text-primary transition font-bold mb-20 mx-auto block">
             <i class="fas fa-redo mr-2"></i> ${isAr ? 'إعادة الاختبار' : 'Retake Quiz'}
         </button>
     `;

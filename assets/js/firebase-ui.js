@@ -597,7 +597,6 @@ function renderAdminBanTab(isAr) {
                 <div class="admin-action-card">
                     <h5><i class="fas fa-clock" style="color:#f59e0b"></i> ${isAr ? 'حظر مؤقت' : 'Temporary Ban'}</h5>
                     <input type="text" id="tempban-target-id" class="auth-input" placeholder="${isAr ? 'ID' : 'ID'}" inputmode="numeric" maxlength="6">
-                    <input type="text" id="tempban-reason" class="auth-input" placeholder="${isAr ? 'السبب (اختياري)' : 'Reason (optional)'}">
                     <div class="admin-duration-row">
                         <input type="number" id="tempban-duration" class="auth-input" placeholder="${isAr ? 'المدة' : 'Duration'}" min="1" style="flex:1">
                         <select id="tempban-unit" class="auth-input" style="flex:1;max-width:90px">
@@ -708,16 +707,6 @@ async function handleAdminAction(action) {
             targetId = (val('ban-target-id') || '').replace(/\D/g, '');
             customMessage = val('ban-reason') || '';
             result = await window.firebaseDB.banUser(targetId, customMessage);
-            break;
-        case 'tempBan':
-            targetId = (val('tempban-target-id') || '').replace(/\D/g, '');
-            customMessage = val('tempban-reason') || '';
-            const duration = parseInt(val('tempban-duration'), 10) || 1;
-            const unit = val('tempban-unit') || 'hours';
-            let durationMs = duration * 60 * 60 * 1000; // hours to ms
-            if (unit === 'days') durationMs = duration * 24 * 60 * 60 * 1000;
-            if (unit === 'weeks') durationMs = duration * 7 * 24 * 60 * 60 * 1000;
-            result = await window.firebaseDB.tempBanUser(targetId, durationMs, customMessage);
             break;
         case 'unban':
             targetId = (val('unban-target-id') || '').replace(/\D/g, '');
@@ -879,7 +868,12 @@ async function applyCloudDataToLocal(cloudData) {
         if (typeof cloudData.level === 'number') localStorage.setItem('quiz_level', String(cloudData.level));
         if (cloudData.stats) localStorage.setItem('quiz_stats', JSON.stringify(cloudData.stats));
         if (cloudData.achievements) localStorage.setItem('quiz_achievements', JSON.stringify(cloudData.achievements));
-        if (cloudData.cards) localStorage.setItem('quiz_cards', JSON.stringify(cloudData.cards));
+        // 🛡️ دمج البطاقات المحلية مع السحابية للحفاظ على البيانات
+        if (cloudData.cards) {
+            const localCards = JSON.parse(localStorage.getItem('quiz_cards') || '{}');
+            const mergedCards = { ...localCards, ...cloudData.cards };
+            localStorage.setItem('quiz_cards', JSON.stringify(mergedCards));
+        }
         // 🆔 ربط اسم المستخدم السحابي بالاسم المحلي (إن وُجد)
         if (cloudData.display_name) {
             localStorage.setItem('quiz_username', cloudData.display_name);
