@@ -2202,10 +2202,8 @@ function calculateCompatibility(user1Data, user2Data) {
 
 function showResult() {
     isQuizActive = false;
-    // 🎯 هذا هو السطر المفقود الذي يحسب النتيجة ويعرف المتغيرات!
     const { creature, secondaryCreature, radar, winnerId } = calculateResult();
 
-    // 💾 حفظ النتيجة النهائية لمنع تغييرها عند المقارنة
     lastQuizResult = {
         creature: creature,
         secondaryCreature: secondaryCreature,
@@ -2215,17 +2213,13 @@ function showResult() {
 
     saveUserStats(winnerId);
 
-    // 🃏 Card tier: upgrade on retake, or assign new
     const cards = getUserCards();
     if (cards[winnerId]) {
-        // Already have this card → try to upgrade
         lastQuizResult.cardTier = tryUpgradeCard(winnerId);
     } else {
-        // First time getting this creature → assign tier
         lastQuizResult.cardTier = getOrAssignCardTier(winnerId);
     }
 
-    // ⚡ تحقق من إنجاز البرق السريع
     const duration = getQuizDurationSeconds();
     if (duration > 0) {
         if (!userStats.fastestQuiz || duration < userStats.fastestQuiz) {
@@ -2234,7 +2228,6 @@ function showResult() {
         }
     }
 
-    // 🎮 منح XP (بعد حفظ الإحصائيات حتى يُحتسب "كائن جديد" بشكل صحيح)
     if (typeof awardQuizXP === 'function') awardQuizXP(winnerId, duration);
 
     applyCreatureTheme(winnerId);
@@ -2277,7 +2270,7 @@ function showResult() {
                         ${isAr ? 'لقد تم تحليل جوهرك ودمجه مع القوى القديمة' : 'Your essence has been analyzed and merged with ancient forces'}
                     </p>
 
-	                    <button onclick="toggleDetails()" class="group flex flex-col items-center gap-3 transition-all duration-500 hover:scale-110" aria-expanded="false" aria-controls="details-section">
+                    <button onclick="toggleDetails()" class="group flex flex-col items-center gap-3 transition-all duration-500 hover:scale-110" aria-expanded="false" aria-controls="details-section">
                         <span class="text-xs font-bold text-accent uppercase tracking-[0.3em] group-hover:text-accent-strong">
                             ${isAr ? 'اكتشف أسرار هويتك' : 'Discover Your Identity Secrets'}
                         </span>
@@ -2289,10 +2282,7 @@ function showResult() {
             </div>
             
             <div id="details-section" class="max-h-0 overflow-hidden transition-all duration-700 ease-in-out">
-                <!-- ✨ Padding محسّن للهاتف -->
                 <div class="p-4 sm:p-6 md:p-10 border-t theme-border">
-        
-                    <!-- 🎨 بطاقات الكائنين -->
                     <div class="grid grid-cols-1 gap-6 md:gap-10 mb-12 md:mb-20">
                         <div class="theme-bg-tertiary/20 p-5 sm:p-6 md:p-8 rounded-2xl md:rounded-[2.5rem] border theme-border">
                             <div class="mb-4 md:mb-6">
@@ -2317,7 +2307,6 @@ function showResult() {
                         </div>
                     </div>
         
-                    <!-- 🧠 التحليل النفسي -->
                     <div class="mb-12 md:mb-20 text-center">
                         <div class="inline-block p-3 md:p-4 bg-accent-soft rounded-2xl md:rounded-3xl mb-4 md:mb-6">
                             <i class="fas fa-dna text-3xl md:text-4xl text-accent-strong"></i>
@@ -2418,25 +2407,56 @@ function showResult() {
             </div>
         </div>
 
-	        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-12">
-	            <button onclick="downloadResultAsImage(this)" class="btn-secondary flex items-center justify-center gap-3 p-5 rounded-2xl font-bold text-lg transition-all transform hover:scale-105" aria-label="${isAr ? 'تحميل نتيجة الاختبار كصورة' : 'Download quiz result as image'}">
-	                <i class="fas fa-image" aria-hidden="true"></i> ${isAr ? '🖼️ تحميل النتيجة كصورة' : '🖼️ Download as Image'}
-	            </button>
-	            <button onclick="shareResult()" class="btn-primary flex items-center justify-center gap-3 p-5 rounded-2xl font-bold text-lg transition-all transform hover:scale-105" aria-label="${isAr ? 'مشاركة نتيجة الاختبار على وسائل التواصل' : 'Share quiz result on social media'}">
-	                <i class="fas fa-share-alt" aria-hidden="true"></i> ${isAr ? '🚀 شارك النتيجة' : '🚀 Share Result'}
-	            </button>
-		            <button onclick="compareWithFriend()" class="btn-success flex items-center justify-center gap-3 p-5 rounded-2xl font-bold text-lg transition-all transform hover:scale-105" aria-label="${isAr ? 'قارن نتيجتك مع صديق' : 'Compare your result with a friend'}">
-	                <i class="fas fa-users" aria-hidden="true"></i> ${isAr ? '⚔️ قارن مع صديق' : '⚔️ Compare with Friend'}
-	            </button>
-	        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-12">
+            <button onclick="downloadResultAsImage(this)" class="btn-secondary flex items-center justify-center gap-3 p-5 rounded-2xl font-bold text-lg transition-all transform hover:scale-105">
+                <i class="fas fa-image" aria-hidden="true"></i> ${isAr ? '🖼️ تحميل النتيجة كصورة' : '🖼️ Download as Image'}
+            </button>
+            <button onclick="shareResult()" class="btn-primary flex items-center justify-center gap-3 p-5 rounded-2xl font-bold text-lg transition-all transform hover:scale-105">
+                <i class="fas fa-share-alt" aria-hidden="true"></i> ${isAr ? '🚀 شارك النتيجة' : '🚀 Share Result'}
+            </button>
+            <button onclick="compareWithFriend()" class="btn-success flex items-center justify-center gap-3 p-5 rounded-2xl font-bold text-lg transition-all transform hover:scale-105">
+                <i class="fas fa-users" aria-hidden="true"></i> ${isAr ? '⚔️ قارن مع صديق' : '⚔️ Compare with Friend'}
+            </button>
+        </div>
 
-		        <div class="flex justify-center mb-8">
-		            <button id="card-download-btn" onclick="downloadCollectibleCard(this, lastQuizResult.creature, lastQuizResult.cardTier)" class="btn-card card-download-btn flex items-center justify-center gap-3 p-5 rounded-2xl font-black text-lg transition-all transform hover:scale-105" aria-label="${isAr ? 'تحميل بطاقتك الأسطورية الفاخرة' : 'Download your premium collectible card'}">
-		                <i class="fas fa-crown" aria-hidden="true"></i> ${isAr ? '🃏 حمل بطاقتك الفاخرة' : '🃏 Download Premium Card'}
-		            </button>
-		        </div>
+        <!-- 🃏 3D CARD SECTION (NEW) -->
+        <div class="legendary-card-section">
+            <h3 class="text-3xl font-bold theme-text-primary mb-8 text-center">
+                ${isAr ? 'بطاقتك الأسطورية' : 'Your Legendary Card'}
+            </h3>
+            
+            <div class="card-3d-wrapper" id="card-3d-wrapper" onclick="flipCard()">
+                <div class="card-3d-inner" id="card-3d-inner">
+                    <!-- الوجه الأمامي (سيتم رسم البطاقة هنا) -->
+                    <div class="card-face card-front" id="card-front-face">
+                        <div class="flex items-center justify-center h-full w-full bg-slate-800">
+                            <i class="fas fa-spinner fa-spin text-4xl text-accent"></i>
+                        </div>
+                        <div class="card-glare"></div>
+                    </div>
+                    
+                    <!-- الوجه الخلفي -->
+                    <div class="card-face card-back">
+                        <i class="fas fa-magic text-5xl text-accent mb-4"></i>
+                        <h4 class="text-xl font-black text-white tracking-widest">QuizMagic</h4>
+                        <p class="text-xs text-slate-400 mt-2">${isAr ? 'إصدار محدود' : 'Limited Edition'}</p>
+                        <div class="mt-6 px-4 py-1 border border-accent/30 rounded-full text-[10px] text-accent uppercase tracking-widest">
+                            ${lastQuizResult.cardTier}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <p class="text-sm theme-text-muted mt-4 mb-6 italic">
+                ${isAr ? 'اضغط على البطاقة لقلبها، أو حرك الماوس فوقها' : 'Click to flip, or hover to inspect'}
+            </p>
 
-        <button onclick="location.reload()" class="theme-text-muted hover:theme-text-primary transition font-bold mb-20">
+            <button id="card-download-btn" onclick="downloadCollectibleCard(this, lastQuizResult.creature, lastQuizResult.cardTier)" class="btn-card card-download-btn flex items-center justify-center gap-3 p-5 rounded-2xl font-black text-lg transition-all transform hover:scale-105 mx-auto">
+                <i class="fas fa-download" aria-hidden="true"></i> ${isAr ? 'حفظ البطاقة في جهازك' : 'Save Card to Device'}
+            </button>
+        </div>
+
+        <button onclick="location.reload()" class="theme-text-muted hover:theme-text-primary transition font-bold mb-20 mx-auto block">
             <i class="fas fa-redo mr-2"></i> ${isAr ? 'إعادة الاختبار' : 'Retake Quiz'}
         </button>
     `;
@@ -2444,16 +2464,39 @@ function showResult() {
     renderRadarChart(radar);
     prepareShareTemplate(creature, secondaryCreature);
     applyCreatureTheme(winnerId);
+    
+    // 🃏 تهيئة تأثير الـ 3D ورسم البطاقة للمعاينة
+    setTimeout(async () => {
+        initCard3DEffect();
+        try {
+            // رسم البطاقة ووضعها في الوجه الأمامي
+            const canvas = await renderCollectibleCardCanvas(lastQuizResult.creature, lastQuizResult.cardTier);
+            const frontFace = document.getElementById('card-front-face');
+            if (frontFace) {
+                canvas.style.width = '100%';
+                canvas.style.height = '100%';
+                canvas.style.objectFit = 'cover';
+                frontFace.innerHTML = ''; // مسح أيقونة التحميل
+                frontFace.appendChild(canvas);
+                
+                // إعادة إضافة اللمعان فوق الـ Canvas
+                const glare = document.createElement('div');
+                glare.className = 'card-glare';
+                frontFace.appendChild(glare);
+            }
+        } catch (e) {
+            console.error("Failed to render preview card:", e);
+        }
+    }, 100);
+
     setTimeout(() => {
         launchConfetti(winnerId);
-    // 🎵 صوت ظهور النتيجة السحري
         if (window.audioManager) {
-        window.audioManager.play('magical-reveal');
+            window.audioManager.play('magical-reveal');
         }
     }, 300);
     checkAchievements();
 
-    // 📊 تتبع إكمال الاختبار
     trackEvent('quiz_complete', {
         'creature_id': winnerId,
         'creature_name': creature.name,
@@ -2461,7 +2504,6 @@ function showResult() {
         'creature_rarity': creature.rarity,
         'language': currentLang
     });
-
 
     if (friendComparisonData) {
         const currentUserData = {
@@ -2471,13 +2513,12 @@ function showResult() {
         };
         const compatibilityScore = calculateCompatibility(friendComparisonData, currentUserData);
 
-    // 🎯 تحقق من إنجاز الرفيق المثالي
         if (compatibilityScore >= 95) {
             if (!userStats.bestCompatibility || compatibilityScore > userStats.bestCompatibility) {
                 userStats.bestCompatibility = compatibilityScore;
                 localStorage.setItem('quiz_stats', JSON.stringify(userStats));
+            }
         }
-    }
 
         const comparisonResultHtml = `
             <div class="mt-12 p-8 theme-bg-tertiary/20 rounded-[2.5rem] border theme-border text-center animate-fade-in">
@@ -2498,6 +2539,66 @@ function showResult() {
             </div>
         `;
         document.getElementById('result-container').insertAdjacentHTML('beforeend', comparisonResultHtml);
+    }
+}
+
+// ==================== 3D CARD HELPER FUNCTIONS ====================
+
+function initCard3DEffect() {
+    const wrapper = document.getElementById('card-3d-wrapper');
+    const inner = document.getElementById('card-3d-inner');
+    if (!wrapper || !inner) return;
+
+    wrapper.addEventListener('mousemove', (e) => {
+        // لا تطبق التأثير إذا كانت البطاقة مقلوبة
+        if (inner.classList.contains('is-flipped')) return;
+
+        const rect = wrapper.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        
+        const rotateX = ((y - centerY) / centerY) * -15; // أقصى ميل 15 درجة
+        const rotateY = ((x - centerX) / centerX) * 15;
+
+        inner.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        
+        // تحريك اللمعان
+        const glares = wrapper.querySelectorAll('.card-glare');
+        glares.forEach(glare => {
+            glare.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 60%)`;
+        });
+    });
+
+    wrapper.addEventListener('mouseleave', () => {
+        if (!inner.classList.contains('is-flipped')) {
+            inner.style.transform = 'rotateX(0deg) rotateY(0deg)';
+        }
+        const glares = wrapper.querySelectorAll('.card-glare');
+        glares.forEach(glare => {
+            glare.style.background = 'radial-gradient(circle at 50% 50%, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 60%)';
+        });
+    });
+}
+
+function flipCard() {
+    const inner = document.getElementById('card-3d-inner');
+    if (!inner) return;
+    
+    inner.classList.toggle('is-flipped');
+    
+    // إعادة تعيين الميل عند القلب
+    if (inner.classList.contains('is-flipped')) {
+        inner.style.transform = 'rotateY(180deg)';
+    } else {
+        inner.style.transform = 'rotateX(0deg) rotateY(0deg)';
+    }
+    
+    // تشغيل صوت خفيف
+    if (window.audioManager) {
+        window.audioManager.play('ui-click');
     }
 }
 
