@@ -2476,10 +2476,17 @@ function showResult() {
                 canvas.style.width = '100%';
                 canvas.style.height = '100%';
                 canvas.style.objectFit = 'cover';
-                frontFace.innerHTML = ''; // مسح أيقونة التحميل
+                canvas.style.opacity = '0'; // اجعلها شفافة أولاً
+                canvas.style.transition = 'opacity 0.5s ease-in-out'; // تأثير انتقال
+                
+                frontFace.innerHTML = ''; 
                 frontFace.appendChild(canvas);
                 
-                // إعادة إضافة اللمعان فوق الـ Canvas
+                // إظهار البطاقة بنعومة
+                requestAnimationFrame(() => {
+                    canvas.style.opacity = '1';
+                });
+                
                 const glare = document.createElement('div');
                 glare.className = 'card-glare';
                 frontFace.appendChild(glare);
@@ -2549,27 +2556,34 @@ function initCard3DEffect() {
     const inner = document.getElementById('card-3d-inner');
     if (!wrapper || !inner) return;
 
+    let ticking = false; // متغير للتحكم في التحديث
+
     wrapper.addEventListener('mousemove', (e) => {
-        // لا تطبق التأثير إذا كانت البطاقة مقلوبة
         if (inner.classList.contains('is-flipped')) return;
 
-        const rect = wrapper.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        
-        const rotateX = ((y - centerY) / centerY) * -15; // أقصى ميل 15 درجة
-        const rotateY = ((x - centerX) / centerX) * 15;
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
+                const rect = wrapper.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = ((y - centerY) / centerY) * -15;
+                const rotateY = ((x - centerX) / centerX) * 15;
 
-        inner.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-        
-        // تحريك اللمعان
-        const glares = wrapper.querySelectorAll('.card-glare');
-        glares.forEach(glare => {
-            glare.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 60%)`;
-        });
+                inner.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                
+                const glares = wrapper.querySelectorAll('.card-glare');
+                glares.forEach(glare => {
+                    glare.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 60%)`;
+                });
+                
+                ticking = false; // السماح بالتحديث القادم
+            });
+            ticking = true;
+        }
     });
 
     wrapper.addEventListener('mouseleave', () => {
