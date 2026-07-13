@@ -21,35 +21,60 @@ const CARD_TIERS = {
 const TIER_ORDER = ['common', 'silver', 'gold', 'diamond'];
 
 // التكوين البصري لكل مستوى
-// التكوين البصري لكل مستوى (محاكاة المعادن الحقيقية)
+// ============================================================
+// التكوين البصري للمواد الفيزيائية (المرحلة الأولى: النقاء والمعدن)
+// ============================================================
 const TIER_VISUALS = {
-    common:  { // برونز / نحاس مؤكسد
-        border: '#8B5A2B', borderDark: '#3E2723', borderLight: '#CD853F', glow: 'rgba(139,90,43,0.5)',
-        bg1: '#1A110A', bg2: '#2E1D12', bg3: '#0F0905',
-        accent: '#CD853F', accentDeep: '#5C3A21', textAccent: '#E6C280',
-        panelBg: 'rgba(26,17,10,0.8)', panelBorder: 'rgba(205,133,63,0.4)',
-        rank: 'B', rankLabel: { ar: 'برونزي', en: 'BRONZE' }, holo: false
+    common: { // سبيكة برونزية / نحاس عتيق
+        // تدرجات المعدن (من الظلام إلى النور لمحاكاة الانعكاس)
+        baseGradient: ['#2E1D12', '#5D4037', '#3E2723', '#8D6E63', '#1A110A'],
+        // ألوان النحت والبروز (3D Engraving)
+        highlight: 'rgba(255, 255, 255, 0.15)',
+        shadow: 'rgba(0, 0, 0, 0.7)',
+        textAccent: '#D7CCC8',
+        glow: 'rgba(141, 110, 99, 0.4)',
+        // خصائص المادة
+        isTranslucent: false, // صلب
+        glassOpacity: 0.2,    // لمعة زجاجية خفيفة
+        rankLabel: { ar: 'برونزي', en: 'BRONZE' }
     },
-    silver:  { // فضة مصقولة / فولاذ
-        border: '#A9B0B8', borderDark: '#4A5568', borderLight: '#E2E8F0', glow: 'rgba(169,176,184,0.6)',
-        bg1: '#0F172A', bg2: '#1E293B', bg3: '#020617',
-        accent: '#CBD5E1', accentDeep: '#64748B', textAccent: '#F8FAFC',
-        panelBg: 'rgba(15,23,42,0.8)', panelBorder: 'rgba(203,213,225,0.4)',
-        rank: 'A', rankLabel: { ar: 'فضي', en: 'SILVER' }, holo: false
+    silver: { // سبيكة فضة مصقولة / فولاذ نقي
+        baseGradient: ['#212121', '#757575', '#E0E0E0', '#9E9E9E', '#121212'],
+        highlight: 'rgba(255, 255, 255, 0.7)',
+        shadow: 'rgba(0, 0, 0, 0.6)',
+        textAccent: '#FFFFFF',
+        glow: 'rgba(224, 224, 224, 0.5)',
+        isTranslucent: false,
+        glassOpacity: 0.4,
+        rankLabel: { ar: 'فضي', en: 'SILVER' }
     },
-    gold:    { // ذهب خالص عاكس للضوء
-        border: '#D4AF37', borderDark: '#5C4000', borderLight: '#FFF8DC', glow: 'rgba(212,175,55,0.8)',
-        bg1: '#1A1300', bg2: '#332600', bg3: '#0A0700',
-        accent: '#FFD700', accentDeep: '#B8860B', textAccent: '#FFF8DC',
-        panelBg: 'rgba(26,19,0,0.8)', panelBorder: 'rgba(212,175,55,0.5)',
-        rank: 'S', rankLabel: { ar: 'ذهبي', en: 'GOLD' }, holo: true
+    gold: { // سبيكة ذهب خالص عاكس للضوء
+        baseGradient: ['#332600', '#B8860B', '#FFF8DC', '#D4AF37', '#1A1300'],
+        highlight: 'rgba(255, 255, 255, 0.8)',
+        shadow: 'rgba(0, 0, 0, 0.7)',
+        textAccent: '#FFF8DC',
+        glow: 'rgba(212, 175, 55, 0.6)',
+        isTranslucent: false,
+        glassOpacity: 0.5,
+        rankLabel: { ar: 'ذهبي', en: 'GOLD' }
     },
-    diamond: { // ألماس / كريستال زجاجي
-        border: '#00FFFF', borderDark: '#000080', borderLight: '#E0FFFF', glow: 'rgba(0,255,255,0.9)',
-        bg1: '#000510', bg2: '#001030', bg3: '#000208',
-        accent: '#00FFFF', accentDeep: '#0055FF', textAccent: '#E0FFFF',
-        panelBg: 'rgba(0,5,16,0.8)', panelBorder: 'rgba(0,255,255,0.5)',
-        rank: 'S++', rankLabel: { ar: 'ماسي', en: 'DIAMOND' }, holo: true
+    diamond: { // كريستال ماسي نقي (شفاف)
+        // ألوان شبه شفافة (rgba) لدمجها مع الخلفية والصورة
+        baseGradient: [
+            'rgba(0, 10, 30, 0.5)', 
+            'rgba(0, 255, 255, 0.3)', 
+            'rgba(255, 255, 255, 0.6)', 
+            'rgba(0, 150, 255, 0.4)', 
+            'rgba(0, 5, 15, 0.7)'
+        ],
+        highlight: 'rgba(255, 255, 255, 0.95)',
+        shadow: 'rgba(0, 20, 50, 0.5)',
+        textAccent: '#E0FFFF',
+        glow: 'rgba(0, 255, 255, 0.8)',
+        // خصائص المادة الماسية
+        isTranslucent: true,  // شفاف! سيسمح بمرور الضوء والصورة
+        glassOpacity: 0.8,    // لمعة زجاجية قوية جداً (انكسار ضوئي)
+        rankLabel: { ar: 'ماسي', en: 'DIAMOND' }
     }
 };
 
@@ -620,39 +645,38 @@ function drawQRCode(ctx, x, y, size) {
     ctx.restore();
 }
 
-// ==================== MAIN CARD RENDERER ====================
+// ==================== MAIN CARD RENDERER (المرحلة 2 و 3: النقاء والمادة) ====================
 
-// دالة لرسم نصوص محفورة أو بارزة (3D Text Effect)
+// 1. دالة النحت المحدثة (تستخدم إضاءة وظلال المادة بدلاً من الألوان المسطحة)
 function drawEngravedText(ctx, text, x, y, visual, isEmbossed = false) {
     ctx.save();
-    const offset = 3; // عمق النحت
+    const offset = 2; // عمق نحت ناعم وأنيق
     
     // رسم الإضاءة (Highlight)
-    ctx.fillStyle = visual.borderLight;
+    ctx.fillStyle = visual.highlight;
     ctx.fillText(text, x + (isEmbossed ? -offset : offset), y + (isEmbossed ? -offset : offset));
     
     // رسم الظل (Shadow)
-    ctx.fillStyle = visual.borderDark;
+    ctx.fillStyle = visual.shadow;
     ctx.fillText(text, x + (isEmbossed ? offset : -offset), y + (isEmbossed ? offset : -offset));
     
-    // رسم اللون الأساسي في المنتصف
-    ctx.fillStyle = visual.accent;
+    // رسم اللون الأساسي
+    ctx.fillStyle = visual.textAccent;
     ctx.fillText(text, x, y);
     ctx.restore();
 }
 
-// دالة رسم مخطط القوى السداسي (Radar Chart) على البطاقة
+// 2. تحديث مخطط القوى ليتناسب مع النقاء الجديد
 function drawCardRadarChart(ctx, cx, cy, radius, creature, visual, isAr) {
     const axes = ['willpower', 'intelligence', 'energy', 'empathy', 'strategy', 'mystery'];
-    const labelsAr = ['الإرادة', 'الذكاء', 'الطاقة', 'التعاطف', 'الاستراتيجية', 'الغموض'];
-    const labelsEn = ['Willpower', 'Intelligence', 'Energy', 'Empathy', 'Strategy', 'Mystery'];
-    const labels = isAr ? labelsAr : labelsEn;
+    const labels = isAr ? 
+        ['الإرادة', 'الذكاء', 'الطاقة', 'التعاطف', 'الاستراتيجية', 'الغموض'] : 
+        ['Willpower', 'Intelligence', 'Energy', 'Empathy', 'Strategy', 'Mystery'];
 
-    // جلب إحصائيات الكائن (أو وضع قيم افتراضية عشوائية إذا لم تكن موجودة)
     const stats = axes.map(axis => {
         if (creature && creature.axes && creature.axes[axis]) return creature.axes[axis];
         if (creature && creature.fingerprint && creature.fingerprint[axis]) return creature.fingerprint[axis];
-        return 60 + (Math.random() * 35); // قيمة بين 60 و 95
+        return 60 + (Math.random() * 35);
     });
 
     const sides = 6;
@@ -660,11 +684,12 @@ function drawCardRadarChart(ctx, cx, cy, radius, creature, visual, isAr) {
 
     ctx.save();
     ctx.translate(cx, cy);
-    ctx.rotate(-Math.PI / 2); // توجيه المخطط للأعلى
+    ctx.rotate(-Math.PI / 2);
 
-    // 1. رسم الشبكة الخلفية (المضلعات المتداخلة)
-    ctx.lineWidth = 1.5;
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+    // الشبكة الخلفية (زجاجية ناعمة)
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = visual.highlight;
+    ctx.globalAlpha = 0.3;
     for (let level = 1; level <= 4; level++) {
         const r = radius * (level / 4);
         ctx.beginPath();
@@ -678,15 +703,8 @@ function drawCardRadarChart(ctx, cx, cy, radius, creature, visual, isAr) {
         ctx.stroke();
     }
 
-    // 2. رسم خطوط المحاور من المركز
-    ctx.beginPath();
-    for (let i = 0; i < sides; i++) {
-        ctx.moveTo(0, 0);
-        ctx.lineTo(Math.cos(i * angleStep) * radius, Math.sin(i * angleStep) * radius);
-    }
-    ctx.stroke();
-
-    // 3. رسم مضلع البيانات (قوة الكائن)
+    // مضلع البيانات (يتوهج بلون المادة)
+    ctx.globalAlpha = 1.0;
     ctx.beginPath();
     for (let i = 0; i < sides; i++) {
         const val = stats[i] / 100;
@@ -698,14 +716,14 @@ function drawCardRadarChart(ctx, cx, cy, radius, creature, visual, isAr) {
     }
     ctx.closePath();
     
-    ctx.fillStyle = visual.glow; // استخدام لون توهج المستوى
+    ctx.fillStyle = visual.glow;
     ctx.fill();
-    ctx.lineWidth = 3;
-    ctx.strokeStyle = visual.accent;
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = visual.textAccent;
     ctx.stroke();
 
-    // 4. رسم النصوص (أسماء المحاور)
-    ctx.rotate(Math.PI / 2); // إعادة التدوير للنصوص
+    // النصوص
+    ctx.rotate(Math.PI / 2);
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.font = '700 20px Cairo, sans-serif';
@@ -713,21 +731,19 @@ function drawCardRadarChart(ctx, cx, cy, radius, creature, visual, isAr) {
 
     for (let i = 0; i < sides; i++) {
         const angle = (i * angleStep) - Math.PI / 2;
-        const labelRadius = radius + 35; // إبعاد النص عن المخطط قليلاً
+        const labelRadius = radius + 35;
         const x = Math.cos(angle) * labelRadius;
         const y = Math.sin(angle) * labelRadius;
         
-        // إضافة ظل للنص ليكون مقروءاً
-        ctx.shadowColor = 'rgba(0,0,0,0.8)';
-        ctx.shadowBlur = 4;
+        ctx.shadowColor = visual.shadow;
+        ctx.shadowBlur = 6;
         ctx.fillText(labels[i], x, y);
     }
     ctx.restore();
 }
 
-
+// 3. الدالة الرئيسية (التحفة الفنية)
 async function renderCollectibleCardCanvas(creature, tier) {
-    // الاعتمادات الخارجية: currentLang, getUsername
     const isAr = typeof currentLang !== 'undefined' ? currentLang === 'ar' : false;
     const username = typeof getUsername === 'function' ? getUsername() : (isAr ? 'مجهول' : 'Unknown');
     const tierLabel = CARD_TIERS[tier] ? CARD_TIERS[tier].label[isAr ? 'ar' : 'en'] : tier;
@@ -756,120 +772,89 @@ async function renderCollectibleCardCanvas(creature, tier) {
     const pad = 80;
     const innerW = W - pad * 2;
 
-    // 1. رسم الخلفية المعدنية الأساسية
-    const bg = ctx.createLinearGradient(0, 0, W, H);
-    bg.addColorStop(0, visual.bg1);
-    bg.addColorStop(0.5, visual.bg2);
-    bg.addColorStop(1, visual.bg3);
-    ctx.fillStyle = bg;
-    ctx.fillRect(0, 0, W, H);
-
-    // 2. إضافة ملمس الورق/المعدن (الضوضاء)
-    drawNoiseTexture(ctx, W, H, 0.06);
-
-    // 3. رسم خطوط الخلفية الهندسية
-    ctx.save();
-    ctx.globalAlpha = 0.05;
-    ctx.strokeStyle = visual.accent;
-    ctx.lineWidth = 2;
-    for (let i = -H; i < W + H; i += 30) {
-        ctx.beginPath();
-        ctx.moveTo(i, 0);
-        ctx.lineTo(i + H, H);
-        ctx.stroke();
+    // ==========================================
+    // 1. بناء جسم البطاقة (المادة الأساسية)
+    // ==========================================
+    
+    // السحر الماسي: إذا كانت شفافة، نرسم صورة الكائن كخلفية ضبابية أولاً
+    if (visual.isTranslucent && creature && creature.image) {
+        const bgImg = await loadImageAsDataURL(creature.image);
+        if (bgImg) {
+            ctx.save();
+            ctx.filter = 'blur(20px) brightness(0.7)';
+            ctx.drawImage(bgImg, 0, 0, W, H);
+            ctx.restore();
+        }
     }
-    ctx.restore();
 
-    // 4. تظليل الحواف (Vignette) لإعطاء عمق 3D
-    const vig = ctx.createRadialGradient(W / 2, H / 2, W * 0.3, W / 2, H / 2, W * 0.9);
+    // رسم تدرج المادة (السبيكة أو الكريستال)
+    const bgGrad = ctx.createLinearGradient(0, 0, W, H);
+    bgGrad.addColorStop(0, visual.baseGradient[0]);
+    bgGrad.addColorStop(0.25, visual.baseGradient[1]);
+    bgGrad.addColorStop(0.5, visual.baseGradient[2]);
+    bgGrad.addColorStop(0.75, visual.baseGradient[3]);
+    bgGrad.addColorStop(1, visual.baseGradient[4]);
+    
+    ctx.fillStyle = bgGrad;
+    if (visual.isTranslucent) {
+        ctx.globalCompositeOperation = 'hard-light'; // دمج الكريستال مع الصورة
+    }
+    ctx.fillRect(0, 0, W, H);
+    ctx.globalCompositeOperation = 'source-over';
+
+    // ملمس المادة (Noise)
+    drawNoiseTexture(ctx, W, H, visual.isTranslucent ? 0.03 : 0.06);
+
+    // تظليل الحواف للعمق
+    const vig = ctx.createRadialGradient(W / 2, H / 2, W * 0.4, W / 2, H / 2, W);
     vig.addColorStop(0, 'rgba(0,0,0,0)');
-    vig.addColorStop(1, 'rgba(0,0,0,0.85)');
+    vig.addColorStop(1, visual.isTranslucent ? 'rgba(0,10,30,0.6)' : 'rgba(0,0,0,0.8)');
     ctx.fillStyle = vig;
     ctx.fillRect(0, 0, W, H);
 
-    // 5. تطبيق الهولوجرام إذا كان المستوى يدعم ذلك (ذهبي أو ماسي)
-    if (visual.holo) {
-        drawHolographicEffect(ctx, W, H, tier === 'diamond' ? 0.4 : 0.2);
-    }
-
-    // 6. رسم هالة الكائن وجزيئاته السحرية
+    // ==========================================
+    // 2. الجزيئات والهالة
+    // ==========================================
     if (creature && creature.id) {
         drawCreatureAura(ctx, creature.id, 0, 0, W, H);
+        if (tier !== 'common') {
+            drawCreatureParticles(ctx, creature.id, W, H, pad);
+        }
     }
-
-    if (creature && creature.id && tier !== 'common') {
-        drawCreatureParticles(ctx, creature.id, W, H, pad);
-    }
-
-    // 7. رسم العلامة المائية
-    drawWatermark(ctx, W, H);
-
 
     // ==========================================
-    // 8. الإطار الخارجي المعدني (Outer Metallic Border)
+    // 3. الإطار الداخلي المنحوت (نقي وبدون مسامير)
     // ==========================================
     const fi = 40;
     ctx.save();
-    const borderGrad = ctx.createLinearGradient(0, 0, W, H);
-    borderGrad.addColorStop(0, visual.borderLight);
-    borderGrad.addColorStop(0.3, visual.border);
-    borderGrad.addColorStop(0.5, visual.borderDark);
-    borderGrad.addColorStop(0.7, visual.border);
-    borderGrad.addColorStop(1, visual.borderLight);
-    
-    ctx.lineWidth = 24; // إطار أسمك وأفخم
-    ctx.strokeStyle = borderGrad;
-    ctx.shadowColor = 'rgba(0,0,0,0.8)';
-    ctx.shadowBlur = 30;
-    ctx.shadowOffsetX = 10;
-    ctx.shadowOffsetY = 10;
-    roundRectPath(ctx, fi, fi, W - fi * 2, H - fi * 2, 40);
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = visual.highlight;
+    roundRectPath(ctx, fi, fi, W - fi * 2, H - fi * 2, 30);
     ctx.stroke();
     
-    // حافة داخلية للإطار
-    ctx.lineWidth = 4;
-    ctx.strokeStyle = visual.borderDark;
-    ctx.shadowColor = 'transparent';
-    roundRectPath(ctx, fi + 12, fi + 12, W - (fi + 12) * 2, H - (fi + 12) * 2, 28);
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = visual.shadow;
+    roundRectPath(ctx, fi + 3, fi + 3, W - fi * 2, H - fi * 2, 30);
     ctx.stroke();
     ctx.restore();
-
-    // مسامير التثبيت المعدنية في الزوايا (Rivets)
-    function drawRivet(cx, cy) {
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(cx, cy, 8, 0, Math.PI * 2);
-        ctx.fillStyle = visual.borderDark;
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(cx - 2, cy - 2, 4, 0, Math.PI * 2);
-        ctx.fillStyle = visual.borderLight;
-        ctx.fill();
-        ctx.restore();
-    }
-    drawRivet(fi + 40, fi + 40);
-    drawRivet(W - fi - 40, fi + 40);
-    drawRivet(fi + 40, H - fi - 40);
-    drawRivet(W - fi - 40, H - fi - 40);
 
     let yCursor = fi + 80;
 
     // ==========================================
-    // 9. الترويسة: اسم الكائن (Header)
+    // 4. الترويسة
     // ==========================================
     ctx.save();
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.font = '900 75px Cairo, Tajawal, sans-serif';
     const creatureName = creature ? (creature.name || 'Unknown') : 'Unknown';
-    // استخدام دالة النحت لاسم الكائن (نص بارز 3D)
     drawEngravedText(ctx, creatureName, W / 2, yCursor, visual, true);
     ctx.restore();
 
     yCursor += 80;
 
     // ==========================================
-    // 10. نافذة الصورة الغائرة (Deep Inset Image Window)
+    // 5. صورة الكائن (مدمجة بنعومة)
     // ==========================================
     const imgW = innerW - 40;
     const imgH = 750;
@@ -877,89 +862,100 @@ async function renderCollectibleCardCanvas(creature, tier) {
     const imgY = yCursor;
 
     ctx.save();
-    // رسم الإطار المعدني الداخلي للصورة
-    ctx.lineWidth = 12;
-    ctx.strokeStyle = borderGrad;
-    roundRectPath(ctx, imgX - 6, imgY - 6, imgW + 12, imgH + 12, 24);
+    // إطار نحيف جداً ومضيء للصورة
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = visual.highlight;
+    roundRectPath(ctx, imgX - 2, imgY - 2, imgW + 4, imgH + 4, 20);
     ctx.stroke();
 
-    // قص الصورة داخل الإطار
-    ctx.save();
     roundRectPath(ctx, imgX, imgY, imgW, imgH, 18);
     ctx.clip();
     
     if (creature && creature.image) {
         const img = await loadImageAsDataURL(creature.image);
         if (img) {
+            // إذا كانت البطاقة ماسية، نجعل الصورة شبه شفافة لتندمج مع الكريستال
+            if (visual.isTranslucent) {
+                ctx.globalAlpha = 0.85;
+                ctx.globalCompositeOperation = 'luminosity';
+            }
             ctx.drawImage(img, imgX, imgY, imgW, imgH);
+            ctx.globalAlpha = 1.0;
+            ctx.globalCompositeOperation = 'source-over';
         }
     }
     
-    // ظل داخلي قوي (Inner Shadow) لإعطاء عمق للنافذة وكأن الصورة بالداخل
-    ctx.lineWidth = 30;
-    ctx.strokeStyle = 'rgba(0,0,0,0.6)';
+    // ظل داخلي ناعم جداً لدمج حواف الصورة مع المعدن
+    ctx.lineWidth = 15;
+    ctx.strokeStyle = visual.shadow;
     roundRectPath(ctx, imgX, imgY, imgW, imgH, 18);
     ctx.stroke();
     ctx.restore(); // إنهاء القص
-    ctx.restore();
 
     yCursor += imgH + 60;
 
     // ==========================================
-    // 11. شريط الندرة (Rarity Ribbon)
+    // 6. شريط الندرة (منحوت في المعدن)
     // ==========================================
     ctx.save();
-    ctx.fillStyle = visual.panelBg;
-    ctx.strokeStyle = visual.border;
-    ctx.lineWidth = 3;
+    // بدلاً من خلفية صلبة، نرسم تجويفاً في المعدن
+    ctx.fillStyle = visual.shadow;
+    ctx.globalAlpha = 0.3;
     roundRectPath(ctx, W/2 - 200, yCursor, 400, 60, 30);
     ctx.fill();
+    
+    ctx.globalAlpha = 1.0;
+    ctx.strokeStyle = visual.highlight;
+    ctx.lineWidth = 1;
     ctx.stroke();
 
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.font = '700 30px Cairo, Tajawal, sans-serif';
     const rarityText = (isAr ? '★ ' : '★ ') + tierLabel.toUpperCase() + (isAr ? ' ★' : ' EDITION ★');
-    // نص محفور للداخل
     drawEngravedText(ctx, rarityText, W / 2, yCursor + 30, visual, false);
     ctx.restore();
 
     yCursor += 100;
 
     // ==========================================
-    // 12. صندوق الوصف (Lore Box)
+    // 7. صندوق الوصف (زجاج نقي - Glassmorphism)
     // ==========================================
     const descH = 220;
     ctx.save();
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.4)'; // خلفية زجاجية داكنة
-    ctx.strokeStyle = visual.borderDark;
-    ctx.lineWidth = 4;
+    // خلفية زجاجية نقية جداً
+    ctx.fillStyle = visual.isTranslucent ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.2)';
     roundRectPath(ctx, pad + 20, yCursor, innerW - 40, descH, 20);
     ctx.fill();
+    
+    // لمعة الزجاج على الحواف
+    ctx.strokeStyle = visual.highlight;
+    ctx.lineWidth = 1;
+    ctx.globalAlpha = 0.5;
     ctx.stroke();
+    ctx.globalAlpha = 1.0;
 
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.font = '500 28px Cairo, Tajawal, sans-serif';
-    ctx.fillStyle = visual.textAccent;
     
     const description = creature ? (creature.description || '') : '';
     const descLines = wrapText(ctx, description, innerW - 100, 4);
     descLines.forEach((line, i) => {
-        ctx.fillText(line, W / 2, yCursor + descH / 2 + (i - descLines.length / 2 + 0.5) * 38);
+        // نصوص الوصف محفورة بنعومة
+        drawEngravedText(ctx, line, W / 2, yCursor + descH / 2 + (i - descLines.length / 2 + 0.5) * 38, visual, false);
     });
     ctx.restore();
 
     yCursor += descH + 60;
 
     // ==========================================
-    // 13. اسم المستكشف (Explorer Name)
+    // 8. اسم المستكشف
     // ==========================================
     ctx.save();
     ctx.textAlign = 'center';
     ctx.font = '600 24px Cairo, Tajawal, sans-serif';
-    ctx.fillStyle = visual.accentDeep;
-    ctx.fillText(isAr ? 'المستكشف' : 'Explorer', W / 2, yCursor);
+    drawEngravedText(ctx, isAr ? 'المستكشف' : 'Explorer', W / 2, yCursor, visual, false);
     
     yCursor += 40;
     
@@ -968,17 +964,16 @@ async function renderCollectibleCardCanvas(creature, tier) {
     ctx.restore();
 
     // ==========================================
-    // 14. مخطط القوى (Radar Chart)
+    // 9. مخطط القوى
     // ==========================================
-    yCursor += 180; // النزول للمساحة الفارغة
+    yCursor += 180;
     drawCardRadarChart(ctx, W / 2, yCursor, 130, creature, visual, isAr);
 
     // ==========================================
-    // 15. التذييل (Footer): QR Code الحقيقي والرقم التسلسلي
+    // 10. التذييل (QR Code والختم)
     // ==========================================
     const footerY = H - pad - 140;
     
-    // جلب QR Code حقيقي من API مجاني (يوجه لموقعك)
     const qrSize = 130;
     const qrX = pad + 20;
     const qrY = footerY;
@@ -988,50 +983,66 @@ async function renderCollectibleCardCanvas(creature, tier) {
     ctx.save( );
     const qrImg = await loadImageAsDataURL(qrApiUrl);
     if (qrImg) {
-        // رسم خلفية بيضاء للـ QR لضمان عمله عند المسح
-        ctx.fillStyle = '#ffffff';
+        // إطار زجاجي للـ QR
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
         roundRectPath(ctx, qrX - 10, qrY - 10, qrSize + 20, qrSize + 20, 16);
         ctx.fill();
         ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
     } else {
-        // في حال فشل الاتصال بالإنترنت، نرسم الـ QR الوهمي القديم
         drawQRCode(ctx, qrX, qrY, qrSize);
     }
     
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
     ctx.font = '800 18px Cairo, Tajawal, sans-serif';
-    ctx.fillStyle = visual.accent;
-    ctx.fillText(isAr ? 'امسح للعب' : 'SCAN TO PLAY', qrX + qrSize / 2, qrY + qrSize + 15);
+    drawEngravedText(ctx, isAr ? 'امسح للعب' : 'SCAN TO PLAY', qrX + qrSize / 2, qrY + qrSize + 15, visual, false);
     ctx.restore();
 
-    // الرقم التسلسلي والختم الرسمي (Official Seal)
+    // الرقم التسلسلي والختم
     const serialText = `SN: ${Math.random().toString(36).substr(2, 6).toUpperCase()}-${Math.floor(Math.random() * 9000) + 1000}`;
     ctx.save();
     ctx.textAlign = 'right';
     ctx.font = '800 26px Cairo, sans-serif';
-    ctx.fillStyle = visual.borderDark;
-    ctx.fillText(serialText, W - pad - 20, footerY + 100);
+    drawEngravedText(ctx, serialText, W - pad - 20, footerY + 100, visual, false);
     
-    // رسم الختم الدائري
+    // الختم محفور في المعدن
     ctx.translate(W - pad - 90, footerY + 30);
     ctx.rotate(-0.15);
     ctx.beginPath();
     ctx.arc(0, 0, 45, 0, Math.PI * 2);
-    ctx.strokeStyle = visual.accent;
+    ctx.strokeStyle = visual.shadow;
     ctx.lineWidth = 4;
     ctx.stroke();
-    ctx.beginPath();
-    ctx.arc(0, 0, 38, 0, Math.PI * 2);
-    ctx.lineWidth = 1;
+    ctx.strokeStyle = visual.highlight;
+    ctx.lineWidth = 2;
     ctx.stroke();
     
     ctx.font = '900 20px Cairo, sans-serif';
-    ctx.fillStyle = visual.accent;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('OFFICIAL', 0, -12);
-    ctx.fillText('SEAL', 0, 12);
+    drawEngravedText(ctx, 'OFFICIAL', 0, -12, visual, true);
+    drawEngravedText(ctx, 'SEAL', 0, 12, visual, true);
+    ctx.restore();
+
+    // ==========================================
+    // 11. الطبقة الزجاجية النهائية (The Pristine Glass Overlay)
+    // ==========================================
+    ctx.save();
+    // رسم مضلع يقطع البطاقة قطرياً ليعطي لمعة الزجاج
+    const glassGrad = ctx.createLinearGradient(0, 0, W, H);
+    glassGrad.addColorStop(0, `rgba(255, 255, 255, ${visual.glassOpacity})`);
+    glassGrad.addColorStop(0.4, `rgba(255, 255, 255, ${visual.glassOpacity * 0.2})`);
+    glassGrad.addColorStop(0.41, 'rgba(255, 255, 255, 0)');
+    glassGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+    ctx.fillStyle = glassGrad;
+    ctx.globalCompositeOperation = 'screen';
+    ctx.fillRect(0, 0, W, H);
+    
+    // إضافة لمعة خفيفة جداً على الحواف الخارجية للبطاقة
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = `rgba(255, 255, 255, ${visual.glassOpacity * 0.8})`;
+    ctx.strokeRect(0, 0, W, H);
     ctx.restore();
 
     return canvas;
