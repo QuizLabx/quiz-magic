@@ -1,35 +1,25 @@
 /* ============================================================
-   🎴 CARD SYSTEM BASE STYLES
-   الأنماط الأساسية لنظام البطاقات الاحترافي
+   🎴 CARD SYSTEM BASE - تصميم احترافي
    ============================================================ */
 
-/* 🎯 حاوية البطاقة */
 .magic-card {
     position: relative;
     width: 100%;
-    max-width: 400px;
+    max-width: 450px;
     aspect-ratio: 5 / 7;
-    border-radius: 20px;
+    border-radius: 24px;
     overflow: hidden;
     box-shadow: 
-        0 20px 60px rgba(0, 0, 0, 0.5),
-        0 0 0 1px rgba(255, 255, 255, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+        0 25px 70px rgba(0, 0, 0, 0.6),
+        0 0 0 2px rgba(255, 255, 255, 0.15);
     background: #0f172a;
+    font-family: 'Cairo', 'Tajawal', sans-serif;
 }
 
-.magic-card:hover {
-    transform: translateY(-8px) scale(1.02);
-    box-shadow: 
-        0 30px 80px rgba(0, 0, 0, 0.6),
-        0 0 0 2px rgba(255, 255, 255, 0.2);
-}
-
-/* 🎯 الطبقات الداخلية */
 .card-frame {
     position: absolute;
     inset: 0;
-    padding: 12px;
+    padding: 14px;
     display: flex;
     flex-direction: column;
 }
@@ -40,35 +30,35 @@
     display: flex;
     flex-direction: column;
     background: linear-gradient(180deg, 
-        rgba(15, 23, 42, 0.95) 0%, 
-        rgba(30, 41, 59, 0.98) 100%);
-    border-radius: 12px;
+        rgba(15, 23, 42, 0.97) 0%, 
+        rgba(30, 41, 59, 0.99) 100%);
+    border-radius: 14px;
     overflow: hidden;
 }
 
-/* 🎯 الهيدر */
+/* 🎯 HEADER - Logo + الاسم */
 .card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 16px 20px;
-    background: rgba(0, 0, 0, 0.3);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 14px 18px;
+    background: rgba(0, 0, 0, 0.4);
+    border-bottom: 2px solid rgba(168, 85, 247, 0.3);
 }
 
 .card-header-left {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
 }
 
 .card-logo {
-    font-size: 1.5rem;
-    filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.6));
+    font-size: 1.75rem;
+    filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.8));
 }
 
 .card-site-name {
-    font-size: 0.875rem;
+    font-size: 1rem;
     font-weight: 900;
     letter-spacing: 0.1em;
     background: linear-gradient(135deg, #a855f7, #ec4899);
@@ -77,101 +67,149 @@
     background-clip: text;
 }
 
-.card-creature-name {
-    font-size: 1.25rem;
-    font-weight: 900;
-    color: #fff;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
-}
-
 .card-level {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 6px 12px;
-    background: rgba(168, 85, 247, 0.2);
-    border: 1px solid rgba(168, 85, 247, 0.4);
-    border-radius: 8px;
-    font-weight: 800;
+    padding: 6px 14px;
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.3), rgba(236, 72, 153, 0.3));
+    border: 1px solid rgba(168, 85, 247, 0.5);
+    border-radius: 10px;
+    font-weight: 900;
     font-size: 0.875rem;
     color: #fff;
+    text-shadow: 0 0 8px rgba(168, 85, 247, 0.6);
 }
 
-/* 🎯 الصورة الرئيسية */
+/* 🖼️ ARTWORK */
 .card-artwork {
     position: relative;
-    flex: 1;
-    margin: 12px;
+    height: 220px;
+    margin: 10px;
     border-radius: 12px;
     overflow: hidden;
-    min-height: 200px;
+    border: 3px solid rgba(168, 85, 247, 0.4);
 }
 
 .card-artwork img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.5s ease;
 }
 
-.magic-card:hover .card-artwork img {
-    transform: scale(1.05);
+/* 📝 اسم الكائن */
+.card-creature-name-wrapper {
+    padding: 12px 18px 8px;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.3);
 }
 
-/* 🎯 الإحصائيات */
-.card-stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+.card-creature-name {
+    font-size: 1.75rem;
+    font-weight: 900;
+    color: #fff;
+    margin-bottom: 6px;
+    text-shadow: 0 2px 10px rgba(168, 85, 247, 0.8);
+}
+
+.card-tier-badge {
+    display: inline-flex;
+    align-items: center;
     gap: 8px;
-    padding: 16px;
-    background: rgba(0, 0, 0, 0.4);
+    padding: 5px 18px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #fff;
+    background: linear-gradient(135deg, #a855f7, #ec4899);
+    box-shadow: 0 4px 12px rgba(168, 85, 247, 0.5);
+}
+
+/* 📊 STATS - 6 إحصائيات في شبكة صحيحة */
+.card-stats-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 6px !important;
+    padding: 10px !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+    margin: 0 10px !important;
+    border-radius: 10px !important;
 }
 
 .stat-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    padding: 8px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 3px !important;
+    padding: 8px 4px !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-radius: 8px !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    min-width: 0 !important;
 }
 
 .stat-icon {
-    font-size: 1.25rem;
-    filter: drop-shadow(0 0 4px currentColor);
+    font-size: 1.25rem !important;
+    line-height: 1 !important;
 }
 
 .stat-value {
-    font-size: 1.5rem;
-    font-weight: 900;
-    color: #fff;
-    text-shadow: 0 0 8px currentColor;
+    font-size: 1.5rem !important;
+    font-weight: 900 !important;
+    color: #fff !important;
+    line-height: 1 !important;
 }
 
 .stat-label {
-    font-size: 0.625rem;
-    font-weight: 700;
-    color: rgba(255, 255, 255, 0.6);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    font-size: 0.625rem !important;
+    font-weight: 700 !important;
+    color: rgba(255, 255, 255, 0.7) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
 }
 
-/* 🎯 القدرة الخاصة */
+.stat-bar {
+    width: 100%;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 3px;
+}
+
+.stat-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, currentColor, rgba(255,255,255,0.5));
+    border-radius: 2px;
+    box-shadow: 0 0 6px currentColor;
+}
+
+/* ألوان الإحصائيات */
+.stat-atk { color: #ef4444; }
+.stat-def { color: #a855f7; }
+.stat-spd { color: #eab308; }
+.stat-int { color: #3b82f6; }
+.stat-mag { color: #06b6d4; }
+.stat-hp { color: #10b981; }
+
+/* ⚡ ABILITY */
 .card-ability {
-    padding: 16px;
+    padding: 12px 14px !important;
+    margin: 10px !important;
     background: linear-gradient(135deg, 
-        rgba(168, 85, 247, 0.1) 0%, 
-        rgba(236, 72, 153, 0.1) 100%);
-    border-top: 1px solid rgba(168, 85, 247, 0.3);
+        rgba(168, 85, 247, 0.15) 0%, 
+        rgba(236, 72, 153, 0.15) 100%) !important;
+    border: 1px solid rgba(168, 85, 247, 0.4) !important;
+    border-radius: 10px !important;
 }
 
 .ability-header {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .ability-icon {
@@ -180,77 +218,92 @@
 
 .ability-name {
     font-size: 0.875rem;
-    font-weight: 800;
+    font-weight: 900;
     color: #fff;
 }
 
 .ability-description {
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.8);
+    color: rgba(255, 255, 255, 0.85);
     line-height: 1.5;
     font-style: italic;
+    margin-bottom: 8px;
 }
 
-/* 🎯 التذييل */
+.ability-meta {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.ability-cost,
+.ability-cooldown {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+/* 🔻 FOOTER */
 .card-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 16px;
-    background: rgba(0, 0, 0, 0.5);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 10px 14px;
+    background: rgba(0, 0, 0, 0.6);
+    border-top: 2px solid rgba(168, 85, 247, 0.3);
+    margin-top: auto;
 }
 
 .card-collector {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 1px;
 }
 
 .collector-label {
-    font-size: 0.625rem;
+    font-size: 0.55rem;
     color: rgba(255, 255, 255, 0.5);
     text-transform: uppercase;
     letter-spacing: 0.1em;
 }
 
 .collector-name {
-    font-size: 0.875rem;
+    font-size: 0.8rem;
     font-weight: 800;
     color: #fff;
 }
 
 .card-number {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 700;
     color: rgba(255, 255, 255, 0.6);
 }
 
-.card-rarity {
+.card-qr {
     display: flex;
     align-items: center;
-    gap: 4px;
-    font-size: 0.75rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    justify-content: center;
 }
 
-/* 🎯 Responsive */
-@media (max-width: 768px) {
-    .magic-card {
-        max-width: 100%;
-    }
-    
-    .card-stats {
-        grid-template-columns: repeat(2, 1fr);
-    }
+.qr-placeholder {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
 }
 
-/* 🎯 Print styles */
-@media print {
-    .magic-card {
-        box-shadow: none;
-        border: 2px solid #000;
-    }
+/* 🎯 Responsive للمعاينة */
+#card-preview-container .magic-card {
+    max-width: 400px;
+    margin: 0 auto;
 }
