@@ -518,7 +518,6 @@ function renderCardGallery() {
         });
     });
 
-    // 🎯 تصفية الكائنات: نعرض فقط الكائنات التي يملك المستخدم بطاقات لها
     const unlockedCreatures = uniqueCreatures.filter(c => userCards[c.id] && userCards[c.id].length > 0);
     const total = uniqueCreatures.length;
     const unlockedCount = unlockedCreatures.length;
@@ -530,11 +529,11 @@ function renderCardGallery() {
     }
 
     container.innerHTML = '';
-    container.classList.remove('gallery-blurred'); // تصفير التأثير
+    container.classList.remove('gallery-blurred');
 
     unlockedCreatures.forEach(creature => {
-        const tiers = userCards[creature.id]; // مصفوفة البطاقات (مثلاً: ['common', 'silver'])
-        const highestTier = tiers[tiers.length - 1]; // أعلى بطاقة وصل لها
+        const tiers = userCards[creature.id]; 
+        const highestTier = tiers[tiers.length - 1]; 
         const highestTierLabel = CARD_TIERS[highestTier] ? CARD_TIERS[highestTier].label[isAr ? 'ar' : 'en'] : highestTier;
         
         const wrapper = document.createElement('div');
@@ -552,13 +551,14 @@ function renderCardGallery() {
             <div class="fan-cards-container">
         `;
 
-        // 2. البطاقات المنتشرة (تكون مخفية خلف البطاقة الأم وتخرج عند الضغط)
+        // 2. البطاقات المنتشرة (نضع ID مخصص وأيقونة تحميل مؤقتة)
         tiers.forEach((tier, index) => {
-            const tierLabel = CARD_TIERS[tier] ? CARD_TIERS[tier].label[isAr ? 'ar' : 'en'] : tier;
             html += `
-                <div class="fan-card tier-${tier}" style="--fan-idx: ${index}; --total-fan: ${tiers.length};" onclick="downloadSpecificCard(event, '${creature.id}', '${tier}')">
-                    <img src="${creature.image}" alt="${creature.name}">
-                    <div class="gallery-badge">${tierLabel}</div>
+                <div class="fan-card tier-${tier}" id="fan-card-${creature.id}-${tier}" style="--fan-idx: ${index}; --total-fan: ${tiers.length};" onclick="downloadSpecificCard(event, '${creature.id}', '${tier}')">
+                    <!-- أيقونة تحميل تظهر حتى يتم رسم البطاقة الفخمة -->
+                    <div class="loading-placeholder flex items-center justify-center h-full w-full bg-slate-800">
+                        <i class="fas fa-spinner fa-spin text-2xl text-accent"></i>
+                    </div>
                     <div class="download-overlay"><i class="fas fa-download"></i></div>
                 </div>
             `;
@@ -567,6 +567,36 @@ function renderCardGallery() {
         html += `</div>`;
         wrapper.innerHTML = html;
         container.appendChild(wrapper);
+
+        // 3. رسم البطاقات الفخمة (Canvas) في الخلفية وإضافتها
+        tiers.forEach(async (tier) => {
+            try {
+                // استخدام دالة الرسم الموجودة في card-system.js
+                const canvas = await renderCollectibleCardCanvas(creature, tier);
+                
+                // تنسيق الـ Canvas ليناسب حجم البطاقة الطافية
+                canvas.style.width = '100%';
+                canvas.style.height = '100%';
+                canvas.style.objectFit = 'cover';
+                canvas.style.borderRadius = '12px';
+                canvas.style.position = 'absolute';
+                canvas.style.top = '0';
+                canvas.style.left = '0';
+                canvas.style.zIndex = '1';
+
+                const fanCardEl = document.getElementById(`fan-card-${creature.id}-${tier}`);
+                if (fanCardEl) {
+                    // إزالة أيقونة التحميل
+                    const loader = fanCardEl.querySelector('.loading-placeholder');
+                    if (loader) loader.remove();
+                    
+                    // إضافة البطاقة الفخمة
+                    fanCardEl.insertBefore(canvas, fanCardEl.firstChild);
+                }
+            } catch (e) {
+                console.error("Failed to render gallery card:", e);
+            }
+        });
     });
 }
 
