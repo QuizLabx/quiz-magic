@@ -4917,13 +4917,22 @@ html.theme-space .fab-main { box-shadow: 0 0 18px rgba(168, 85, 247, 0.5); }
     height: 100%;
     pointer-events: none;
     z-index: 5;
+    transition: all 0.5s ease;
 }
 
+/* ✨ السحر الجديد: نقل الحاوية لمنتصف الشاشة تماماً عند التفعيل */
 .gallery-item-wrapper.is-active .fan-cards-container {
+    position: fixed; /* الخروج من قيود المعرض */
+    top: 50%;
+    left: 50%;
+    width: 220px; /* عرض ثابت للبطاقات في المنتصف */
+    height: 308px;
+    transform: translate(-50%, -50%); /* التوسيط الدقيق */
+    z-index: 9999; /* فوق كل شيء في الموقع */
     pointer-events: auto;
 }
 
-/* 🃏 البطاقات المنتشرة (مخفية افتراضياً) */
+/* 🃏 البطاقات المنتشرة */
 .fan-card {
     position: absolute;
     top: 0;
@@ -4935,9 +4944,9 @@ html.theme-space .fab-main { box-shadow: 0 0 18px rgba(168, 85, 247, 0.5); }
     border: 2px solid transparent;
     box-shadow: 0 10px 20px rgba(0,0,0,0.5);
     opacity: 0;
-    transform-origin: bottom center;
-    transform: translateY(0) rotate(0deg) scale(0.5);
-    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); /* حركة ارتدادية ناعمة */
+    transform-origin: center center; /* تغيير نقطة الارتكاز للمنتصف */
+    transform: scale(0.5);
+    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
     cursor: pointer;
 }
 
@@ -4947,27 +4956,26 @@ html.theme-space .fab-main { box-shadow: 0 0 18px rgba(168, 85, 247, 0.5); }
     object-fit: cover;
 }
 
-/* ✨ السحر: حساب زوايا الانتشار المروحي برمجياً */
+/* حساب زوايا الانتشار المروحي في المنتصف */
 .gallery-item-wrapper.is-active .fan-card {
     opacity: 1;
     --offset: calc(var(--fan-idx) - (var(--total-fan) - 1) / 2);
     transform: 
-        translateY(-15px) /* قللنا الارتفاع لكي لا تضرب في سقف المعرض */
-        translateX(calc(var(--offset) * 55%)) /* قللنا التباعد بينها */
-        rotate(calc(var(--offset) * 12deg)) 
-        scale(0.85); /* صغرناها بنسبة كبيرة (كانت 1.25) */
-    box-shadow: 0 15px 30px rgba(0,0,0,0.6);
+        translateX(calc(var(--offset) * 65%)) /* مسافة الانتشار يميناً ويساراً */
+        rotate(calc(var(--offset) * 12deg)) /* زاوية الدوران */
+        scale(0.8); /* تصغير بنسبة 20% كما طلبت لتناسب الشاشة */
+    box-shadow: 0 20px 40px rgba(0,0,0,0.7);
 }
 
-/* تأثير التحويم على بطاقة منتشرة (تبرز للأمام) */
+/* تأثير التحويم في المنتصف (تبرز للأعلى) */
 .gallery-item-wrapper.is-active .fan-card:hover {
     transform: 
-        translateY(-30px) 
-        translateX(calc(var(--offset) * 55%)) 
+        translateY(-25px) /* بروز للأعلى عند وضع الماوس */
+        translateX(calc(var(--offset) * 65%)) 
         rotate(calc(var(--offset) * 12deg)) 
-        scale(0.95); /* تكبر قليلاً عند وضع الماوس عليها */
+        scale(0.9); /* تكبير طفيف عند التحويم */
     z-index: 20;
-    box-shadow: 0 20px 40px rgba(var(--c-accent-rgb), 0.4);
+    box-shadow: 0 25px 50px rgba(var(--c-accent-rgb), 0.5);
 }
 
 /* ⬇️ أيقونة التحميل عند التحويم */
