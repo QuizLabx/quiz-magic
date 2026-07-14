@@ -633,30 +633,50 @@ function saveAchievements() {
     localStorage.setItem('quiz_achievements', JSON.stringify(userAchievements));
 }
 
-function checkAchievements() {
+async function checkAchievements() {
     const stats = getUserStats();
     let newAchievements = [];
     
     for (const [key, achievement] of Object.entries(ACHIEVEMENTS)) {
         if (!userAchievements[key] && achievement.condition(stats)) {
-            userAchievements[key] = {
-                unlocked: true,
-                unlockedAt: Date.now()
-            };
-            newAchievements.push(achievement);
+            
+            // 🛡️ النظام الآمن: السيرفر يفتح الإنجاز ويمنح الـ XP
+            if (window.firebaseDB && window.firebaseDB.isLoggedIn() && window.sbClient) {
+                const userId = window.firebaseDB.getCurrentUserId();
+                const xpReward = (typeof config !== 'undefined' && config.xpSystem) ? config.xpSystem.achievementXP : 50;
+                
+                const { data, error } = await window.sbClient.rpc('server_unlock_achievement', {
+                    p_user_id: userId,
+                    p_achievement_id: key,
+                    p_xp_reward: xpReward
+                });
+                
+                if (!error && data && data.success) {
+                    userAchievements = data.achievements;
+                    saveAchievements();
+                    newAchievements.push(achievement);
+                }
+            } else {
+                // Fallback محلي للزوار
+                userAchievements[key] = { unlocked: true, unlockedAt: Date.now() };
+                newAchievements.push(achievement);
+                saveAchievements();
+            }
         }
     }
     
     if (newAchievements.length > 0) {
-        saveAchievements();
         showAchievementToast(newAchievements[0]);
-        // 🎮 منح XP عن كل إنجاز جديد
-        if (typeof config !== 'undefined' && config.xpSystem && config.xpSystem.achievementXP) {
-            const totalXP = newAchievements.length * config.xpSystem.achievementXP;
-            if (typeof addXP === 'function') addXP(totalXP, 'achievement_unlocked');
+        // الـ XP تمت إضافته في السيرفر، نضيفه محلياً فقط للزوار
+        if (!window.firebaseDB || !window.firebaseDB.isLoggedIn()) {
+            if (typeof config !== 'undefined' && config.xpSystem && config.xpSystem.achievementXP) {
+                const totalXP = newAchievements.length * config.xpSystem.achievementXP;
+                if (typeof addXP === 'function') addXP(totalXP, 'achievement_unlocked');
+            }
         }
     }
 }
+
 
 function getUserStats() {
     const saved = localStorage.getItem('quiz_stats');
@@ -2114,13 +2134,35 @@ function loadUserStats() {
     userStats = saved ? JSON.parse(saved) : {};
 }
 
-function saveUserStats(creatureId) {
-    if (!userStats.creatures) {
-        userStats.creatures = {};
+async function saveUserStats(creatureId, durationSeconds = 0) {
+    // 🛡️ النظام الآمن: السيرفر يحدّث الإحصائيات
+    if (window.firebaseDB && window.firebaseDB.isLoggedIn() && window.sbClient) {
+        try {
+            const userId = window.firebaseDB.getCurrentUserId();
+            const { data, error } = await window.sbClient.rpc('server_update_quiz_stats', {
+                p_user_id: userId,
+                p_creature_id: creatureId,
+                p_duration_seconds: durationSeconds
+            });
+            if (!error && data) {
+                userStats = data;
+                localStorage.setItem('quiz_stats', JSON.stringify(userStats));
+                return;
+            }
+        } catch (err) { console.error("Stats sync error:", err); }
     }
+
+    // Fallback محلي للزوار
+    if (!userStats.creatures) userStats.creatures = {};
     userStats.creatures[creatureId] = (userStats.creatures[creatureId] || 0) + 1;
+    if (durationSeconds > 0) {
+        if (!userStats.fastestQuiz || durationSeconds < userStats.fastestQuiz) {
+            userStats.fastestQuiz = durationSeconds;
+        }
+    }
     localStorage.setItem('quiz_stats', JSON.stringify(userStats));
 }
+
 
 function getCreaturePercentage(creatureId) {
     if (!userStats.creatures) return 0;
@@ -2285,12 +2327,7 @@ async function showResult() {
     console.log('🔍 Card verification after quiz complete:', verificationCards, 'Winner:', winnerId, 'Tier:', lastQuizResult.cardTier);
 
     const duration = getQuizDurationSeconds();
-    if (duration > 0) {
-        if (!userStats.fastestQuiz || duration < userStats.fastestQuiz) {
-            userStats.fastestQuiz = duration;
-            localStorage.setItem('quiz_stats', JSON.stringify(userStats));
-        }
-    }
+    await saveUserStats(winnerId, duration); // 👈 هنا يتم حفظ الإحصائيات والوقت بأمان في السيرفر
 
 	if (typeof awardQuizXP === 'function') await awardQuizXP(winnerId, duration);
 
@@ -2568,7 +2605,7 @@ async function showResult() {
             window.audioManager.play('magical-reveal');
         }
     }, 300);
-    checkAchievements();
+    await checkAchievements();
 
     trackEvent('quiz_complete', {
         'creature_id': winnerId,
