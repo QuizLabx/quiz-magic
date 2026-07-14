@@ -4846,7 +4846,7 @@ html.theme-space .fab-main { box-shadow: 0 0 18px rgba(168, 85, 247, 0.5); }
 /* 🎬 تأثير البلور السينمائي على المعرض */
 .gallery-grid.gallery-blurred .gallery-item-wrapper:not(.is-active) {
     filter: blur(6px) brightness(0.4) grayscale(0.5);
-    transform: scale(0.9);
+    transform: scale(0.8);
     pointer-events: none; /* منع الضغط على الكائنات الأخرى */
 }
 
@@ -4963,7 +4963,7 @@ html.theme-space .fab-main { box-shadow: 0 0 18px rgba(168, 85, 247, 0.5); }
     transform: 
         translateX(calc(var(--offset) * 65%)) /* مسافة الانتشار يميناً ويساراً */
         rotate(calc(var(--offset) * 12deg)) /* زاوية الدوران */
-        scale(0.8); /* تصغير بنسبة 20% كما طلبت لتناسب الشاشة */
+        scale(0.6); /* تصغير بنسبة 20% كما طلبت لتناسب الشاشة */
     box-shadow: 0 20px 40px rgba(0,0,0,0.7);
 }
 
