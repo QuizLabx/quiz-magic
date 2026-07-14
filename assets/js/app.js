@@ -2250,7 +2250,7 @@ async function showResult() {
         try {
             // إرسال طلب لـ Supabase لتشغيل دالة السحب العشوائي
             const userId = window.firebaseDB.getCurrentUserId();
-            const { data, error } = await window.supabase.rpc('roll_or_upgrade_card', {
+			const { data, error } = await window.sbClient.rpc('roll_or_upgrade_card', {
                 p_user_id: userId,
                 p_creature_id: winnerId
             });
