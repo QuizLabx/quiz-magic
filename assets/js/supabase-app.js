@@ -21,6 +21,7 @@ function initSupabase() {
     if (sbClient) return true;
 
     sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    window.sbClient = sbClient
     console.log('🟢 Supabase initialized successfully');
     return true;
 }
