@@ -2292,7 +2292,7 @@ async function showResult() {
         }
     }
 
-    if (typeof awardQuizXP === 'function') awardQuizXP(winnerId, duration);
+	if (typeof awardQuizXP === 'function') await awardQuizXP(winnerId, duration);
 
     applyCreatureTheme(winnerId);
     document.getElementById('quiz-container').classList.add('hidden');
@@ -3704,27 +3704,59 @@ function showLevelUpNotification(oldLevel, newLevel) {
 }
 
 // 🎮 حساب XP عند إكمال اختبار (تُستدعى من showResult)
-function awardQuizXP(creatureId, durationSeconds) {
+async function awardQuizXP(creatureId, durationSeconds) {
     if (typeof config === 'undefined' || !config.xpSystem || !config.xpSystem.enabled) return;
     const isAr = currentLang === 'ar';
+    const creature = findCreatureById(creatureId);
+    const rarity = creature ? creature.rarity : 'Common';
+
+    // 🛡️ النظام الآمن: السيرفر هو من يحسب النقاط
+    if (window.firebaseDB && window.firebaseDB.isLoggedIn() && window.sbClient) {
+        try {
+            const userId = window.firebaseDB.getCurrentUserId();
+            const { data, error } = await window.sbClient.rpc('server_award_quiz_xp', {
+                p_user_id: userId,
+                p_creature_id: creatureId,
+                p_duration_seconds: durationSeconds || 0,
+                p_rarity: rarity
+            });
+
+            if (!error && data) {
+                // تحديث المتصفح بالبيانات الموثوقة القادمة من السيرفر
+                saveXP(data.total_xp);
+                if (data.new_level > data.old_level) {
+                    saveLevel(data.new_level);
+                    setTimeout(() => showLevelUpNotification(data.old_level, data.new_level), 600);
+                }
+                if (typeof renderXPBar === 'function') renderXPBar();
+
+                if (typeof showProfileNotification === 'function') {
+                    showProfileNotification(
+                        (isAr ? '🎮 +' : '🎮 +') + data.gained_xp + ' XP (تم الحفظ بأمان 🛡️)',
+                        'success'
+                    );
+                }
+                return; // إنهاء الدالة بنجاح
+            } else {
+                console.error("Supabase XP Error:", error);
+            }
+        } catch (err) {
+            console.error("Failed to award XP from server:", err);
+        }
+    }
+
+    // ⚠️ Fallback: النظام المحلي القديم (يعمل فقط للزوار غير المسجلين)
     let totalXP = 0;
     let details = [];
-
-    // 1. XP حسب الندرة
-    const creature = findCreatureById(creatureId);
     if (creature) {
         const rarityXP = config.xpSystem.rarityXP[creature.rarity] || 30;
         totalXP += rarityXP;
         details.push(`${isAr ? 'ندرة' : 'Rarity'}: +${rarityXP}`);
     }
-
-    // 2. مكافأة السرعة
     if (durationSeconds && durationSeconds < config.xpSystem.bonuses.speedThreshold) {
         totalXP += config.xpSystem.bonuses.speedBonus;
         details.push(`${isAr ? 'سرعة' : 'Speed'}: +${config.xpSystem.bonuses.speedBonus}`);
     }
-
-    // 3. مكافأة كائن جديد (أول مرة)
     const stats = getUserStats();
     const creatureCount = stats.creatures && stats.creatures[creatureId] ? stats.creatures[creatureId] : 0;
     if (creatureCount <= 1) {
@@ -3734,19 +3766,11 @@ function awardQuizXP(creatureId, durationSeconds) {
         totalXP += config.xpSystem.bonuses.retakeBonus;
         details.push(`${isAr ? 'إعادة' : 'Retake'}: +${config.xpSystem.bonuses.retakeBonus}`);
     }
-
-    // تطبيق XP
-    const newTotal = addXP(totalXP, 'quiz_complete');
-
-    // إظهار إشعار مختصر
+    addXP(totalXP, 'quiz_complete');
     if (typeof showProfileNotification === 'function') {
-        showProfileNotification(
-            (isAr ? '🎮 +' : '🎮 +') + totalXP + ' XP (' + details.join(', ') + ')',
-            'success'
-        );
+        showProfileNotification((isAr ? '🎮 +' : '🎮 +') + totalXP + ' XP (' + details.join(', ') + ')', 'success');
     }
 }
-
 // 🔒 التحقق مما إذا كانت السمة مقفلة
 function isThemeLocked(themeId) {
     if (typeof config === 'undefined' || !config.xpSystem || !config.xpSystem.themeLocks) return false;
