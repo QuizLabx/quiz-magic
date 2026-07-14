@@ -273,7 +273,8 @@ z-index: -100;
 </div>
 
 <!-- ==================== MYTHICAL CARD GALLERY MODAL ==================== -->
-<div id="card-gallery-modal" class="modal-overlay">
+<div id="card-gallery-modal" class="achievements-modal">
+    <div class="modal-overlay" onclick="closeCardGalleryModal()"></div>
     <div class="modal-content" style="max-width: 900px; width: 95%; max-height: 90vh; display: flex; flex-direction: column;">
         <button class="modal-close" onclick="closeCardGalleryModal()">
             <i class="fas fa-times"></i>
@@ -293,6 +294,7 @@ z-index: -100;
         </div>
     </div>
 </div>
+
 
 <!-- ==================== CONFIRM DIALOG (NEW - بديل احترافي لـ alert/confirm/prompt) ==================== -->
 <div id="confirm-dialog" class="achievements-modal">
