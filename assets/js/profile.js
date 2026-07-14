@@ -109,11 +109,12 @@ function renderProfileStats() {
             <div class="stat-value">${uniqueCreatures}</div>
             <div class="stat-label">${isAr ? 'كائنات مختلفة' : 'Unique Creatures'}</div>
         </div>
-        <div class="profile-stat-card">
+        <div class="profile-stat-card profile-cards-card" onclick="showCardGalleryModal()" style="cursor:pointer; border: 1px solid var(--c-accent); box-shadow: 0 0 15px rgba(var(--c-accent-rgb), 0.2); transform: scale(1.02);">
             <div class="stat-icon">🃏</div>
-            <div class="stat-value">${totalCards}</div>
-            <div class="stat-label">${isAr ? 'بطاقات مجمّعة' : 'Cards Collected'}</div>
+            <div class="stat-value" style="color: var(--c-accent); text-shadow: 0 0 10px var(--c-accent);">${totalCards}</div>
+            <div class="stat-label">${isAr ? 'عرض المعرض' : 'View Gallery'}</div>
         </div>
+
         <div class="profile-stat-card">
             <div class="stat-icon">🐉</div>
             <div class="stat-value" style="font-size: 1rem;">${mostFrequentCreature}</div>
@@ -473,3 +474,96 @@ function getProfileIdDisplay(isAr) {
     }
     return isAr ? 'زائر' : 'Guest';
 }
+
+// ==================== MYTHICAL CARD GALLERY ====================
+
+function showCardGalleryModal() {
+    const modal = document.getElementById('card-gallery-modal');
+    if (!modal) return;
+    
+    // إغلاق نافذة الملف الشخصي مؤقتاً
+    closeProfileModal();
+    
+    renderCardGallery();
+    modal.classList.add('show');
+}
+
+function closeCardGalleryModal() {
+    const modal = document.getElementById('card-gallery-modal');
+    if (modal) modal.classList.remove('show');
+    
+    // إعادة فتح نافذة الملف الشخصي
+    showProfileModal();
+}
+
+function renderCardGallery() {
+    const container = document.getElementById('card-gallery-grid');
+    const progressText = document.getElementById('card-gallery-progress');
+    if (!container) return;
+
+    const isAr = currentLang === 'ar';
+    const userCards = (typeof getUserCards === 'function') ? getUserCards() : {};
+    
+    // جلب جميع الكائنات من قاعدة البيانات
+    const data = quizzesData[currentLang];
+    if (!data || !data.quizzes) return;
+    
+    const uniqueCreatures = [];
+    const seenIds = new Set();
+    data.quizzes.forEach(quiz => {
+        quiz.results.forEach(creature => {
+            if (!seenIds.has(creature.id)) {
+                seenIds.add(creature.id);
+                uniqueCreatures.push(creature);
+            }
+        });
+    });
+
+    const total = uniqueCreatures.length;
+    const unlocked = Object.keys(userCards).length;
+
+    if (progressText) {
+        progressText.innerHTML = isAr 
+            ? `لقد اكتشفت <span class="text-accent font-bold">${unlocked}</span> من أصل <span class="text-accent font-bold">${total}</span> كائناً أسطورياً` 
+            : `You discovered <span class="text-accent font-bold">${unlocked}</span> out of <span class="text-accent font-bold">${total}</span> mythical creatures`;
+    }
+
+    container.innerHTML = '';
+
+    uniqueCreatures.forEach(creature => {
+        const tier = userCards[creature.id];
+        const isUnlocked = !!tier;
+        
+        const cardEl = document.createElement('div');
+        cardEl.className = `gallery-item ${isUnlocked ? 'unlocked' : 'locked'}`;
+        
+        if (isUnlocked) {
+            const tierLabel = CARD_TIERS[tier] ? CARD_TIERS[tier].label[isAr ? 'ar' : 'en'] : tier;
+            cardEl.innerHTML = `
+                <div class="gallery-img-wrapper tier-${tier}">
+                    <img src="${creature.image}" alt="${creature.name}" loading="lazy">
+                    <div class="gallery-badge">${tierLabel}</div>
+                </div>
+                <div class="gallery-name">${creature.name}</div>
+            `;
+            // عند الضغط على بطاقة مفتوحة، نقوم بتنزيلها (أو يمكنك لاحقاً ربطها بعرض 3D)
+            cardEl.onclick = () => {
+                if (typeof downloadCollectibleCard === 'function') {
+                    const btn = document.createElement('button');
+                    downloadCollectibleCard(btn, creature, tier);
+                }
+            };
+        } else {
+            // الظل الغامض للبطاقات المفقودة
+            cardEl.innerHTML = `
+                <div class="gallery-img-wrapper locked-silhouette">
+                    <img src="${creature.image}" alt="???" loading="lazy">
+                    <div class="locked-icon">🔒</div>
+                </div>
+                <div class="gallery-name">???</div>
+            `;
+        }
+        container.appendChild(cardEl);
+    });
+}
+
