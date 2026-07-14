@@ -475,208 +475,150 @@ function getProfileIdDisplay(isAr) {
     return isAr ? 'زائر' : 'Guest';
 }
 
+// ==================== MYTHICAL CARD GALLERY (FAN-OUT EFFECT) ====================
 
-/* ==================== MYTHICAL GALLERY (FAN-OUT EFFECT) ==================== */
-
-.gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 2.5rem 1.5rem;
-    margin-top: 1rem;
-    position: relative;
-    padding-top: 2rem; /* مساحة للبطاقات عند الانتشار */
+function showCardGalleryModal() {
+    const modal = document.getElementById('card-gallery-modal');
+    if (!modal) return;
+    closeProfileModal();
+    renderCardGallery();
+    modal.classList.add('show');
 }
 
-@media (min-width: 768px) {
-    .gallery-grid {
-        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+function closeCardGalleryModal() {
+    const modal = document.getElementById('card-gallery-modal');
+    if (modal) {
+        modal.classList.remove('show');
+        // إزالة تأثير البلور عند الإغلاق
+        const container = document.getElementById('card-gallery-grid');
+        if (container) container.classList.remove('gallery-blurred');
+    }
+    showProfileModal();
+}
+
+function renderCardGallery() {
+    const container = document.getElementById('card-gallery-grid');
+    const progressText = document.getElementById('card-gallery-progress');
+    if (!container) return;
+
+    const isAr = currentLang === 'ar';
+    const userCards = (typeof getUserCards === 'function') ? getUserCards() : {};
+    
+    const data = quizzesData[currentLang];
+    if (!data || !data.quizzes) return;
+    
+    const uniqueCreatures = [];
+    const seenIds = new Set();
+    data.quizzes.forEach(quiz => {
+        quiz.results.forEach(creature => {
+            if (!seenIds.has(creature.id)) {
+                seenIds.add(creature.id);
+                uniqueCreatures.push(creature);
+            }
+        });
+    });
+
+    // 🎯 تصفية الكائنات: نعرض فقط الكائنات التي يملك المستخدم بطاقات لها
+    const unlockedCreatures = uniqueCreatures.filter(c => userCards[c.id] && userCards[c.id].length > 0);
+    const total = uniqueCreatures.length;
+    const unlockedCount = unlockedCreatures.length;
+
+    if (progressText) {
+        progressText.innerHTML = isAr 
+            ? `لقد اكتشفت <span class="text-accent font-bold">${unlockedCount}</span> من أصل <span class="text-accent font-bold">${total}</span> كائناً أسطورياً` 
+            : `You discovered <span class="text-accent font-bold">${unlockedCount}</span> out of <span class="text-accent font-bold">${total}</span> mythical creatures`;
+    }
+
+    container.innerHTML = '';
+    container.classList.remove('gallery-blurred'); // تصفير التأثير
+
+    unlockedCreatures.forEach(creature => {
+        const tiers = userCards[creature.id]; // مصفوفة البطاقات (مثلاً: ['common', 'silver'])
+        const highestTier = tiers[tiers.length - 1]; // أعلى بطاقة وصل لها
+        const highestTierLabel = CARD_TIERS[highestTier] ? CARD_TIERS[highestTier].label[isAr ? 'ar' : 'en'] : highestTier;
+        
+        const wrapper = document.createElement('div');
+        wrapper.className = 'gallery-item-wrapper';
+        wrapper.onclick = (e) => toggleFanOut(e, wrapper);
+
+        // 1. البطاقة الأم (الغلاف)
+        let html = `
+            <div class="base-card tier-${highestTier}">
+                <img src="${creature.image}" alt="${creature.name}" loading="lazy">
+                <div class="gallery-badge">${highestTierLabel}</div>
+                <div class="gallery-name">${creature.name}</div>
+                <div class="cards-count-badge" title="${isAr ? 'عدد البطاقات المكتسبة' : 'Cards Owned'}">${tiers.length}</div>
+            </div>
+            <div class="fan-cards-container">
+        `;
+
+        // 2. البطاقات المنتشرة (تكون مخفية خلف البطاقة الأم وتخرج عند الضغط)
+        tiers.forEach((tier, index) => {
+            const tierLabel = CARD_TIERS[tier] ? CARD_TIERS[tier].label[isAr ? 'ar' : 'en'] : tier;
+            html += `
+                <div class="fan-card tier-${tier}" style="--fan-idx: ${index}; --total-fan: ${tiers.length};" onclick="downloadSpecificCard(event, '${creature.id}', '${tier}')">
+                    <img src="${creature.image}" alt="${creature.name}">
+                    <div class="gallery-badge">${tierLabel}</div>
+                    <div class="download-overlay"><i class="fas fa-download"></i></div>
+                </div>
+            `;
+        });
+
+        html += `</div>`;
+        wrapper.innerHTML = html;
+        container.appendChild(wrapper);
+    });
+}
+
+// دالة التفاعل: فتح وإغلاق الانتشار المروحي
+function toggleFanOut(event, wrapper) {
+    // منع الإغلاق إذا ضغط المستخدم على بطاقة منتشرة لتحميلها
+    if (event.target.closest('.fan-card')) return;
+
+    const container = document.getElementById('card-gallery-grid');
+    const isActive = wrapper.classList.contains('is-active');
+
+    // إغلاق أي بطاقة أخرى مفتوحة
+    document.querySelectorAll('.gallery-item-wrapper.is-active').forEach(el => {
+        el.classList.remove('is-active');
+    });
+
+    if (!isActive) {
+        // فتح هذه البطاقة وتفعيل البلور على الباقي
+        wrapper.classList.add('is-active');
+        container.classList.add('gallery-blurred');
+    } else {
+        // إغلاق البطاقة وإزالة البلور
+        container.classList.remove('gallery-blurred');
     }
 }
 
-/* 🎬 تأثير البلور السينمائي على المعرض */
-.gallery-grid.gallery-blurred .gallery-item-wrapper:not(.is-active) {
-    filter: blur(6px) brightness(0.4) grayscale(0.5);
-    transform: scale(0.9);
-    pointer-events: none; /* منع الضغط على الكائنات الأخرى */
+// إغلاق الانتشار عند الضغط في أي مكان فارغ في المعرض
+document.addEventListener('click', (e) => {
+    const modal = document.getElementById('card-gallery-modal');
+    if (modal && modal.classList.contains('show')) {
+        if (!e.target.closest('.gallery-item-wrapper') && !e.target.closest('.fan-card')) {
+            document.querySelectorAll('.gallery-item-wrapper.is-active').forEach(el => {
+                el.classList.remove('is-active');
+            });
+            const container = document.getElementById('card-gallery-grid');
+            if (container) container.classList.remove('gallery-blurred');
+        }
+    }
+});
+
+// دالة لتحميل بطاقة معينة من البطاقات المنتشرة
+function downloadSpecificCard(event, creatureId, tier) {
+    event.stopPropagation(); // منع إغلاق الانتشار
+    const data = quizzesData[currentLang];
+    let creature = null;
+    data.quizzes.forEach(q => {
+        const found = q.results.find(c => c.id === creatureId);
+        if (found) creature = found;
+    });
+    
+    if (creature && typeof downloadCollectibleCard === 'function') {
+        const btn = event.currentTarget.querySelector('.download-overlay');
+        downloadCollectibleCard(btn, creature, tier);
+    }
 }
-
-/* 📦 حاوية الكائن */
-.gallery-item-wrapper {
-    position: relative;
-    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    cursor: pointer;
-    z-index: 1;
-}
-
-/* رفع الـ z-index للكائن النشط ليكون فوق كل شيء */
-.gallery-item-wrapper.is-active {
-    z-index: 100;
-}
-
-/* 🃏 البطاقة الأم (الغلاف) */
-.base-card {
-    width: 100%;
-    aspect-ratio: 1 / 1.4;
-    border-radius: 12px;
-    overflow: hidden;
-    position: relative;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-    border: 2px solid transparent;
-    background: #0f172a;
-    transition: all 0.5s ease;
-}
-
-.base-card img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-/* عند فتح الانتشار، تصبح البطاقة الأم باهتة وتتراجع للخلف */
-.gallery-item-wrapper.is-active .base-card {
-    opacity: 0;
-    transform: scale(0.8) translateY(20px);
-}
-
-/* 🔢 شارة عدد البطاقات */
-.cards-count-badge {
-    position: absolute;
-    top: -10px;
-    right: -10px;
-    background: linear-gradient(135deg, #ff006e, #ffbe0b);
-    color: #fff;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 900;
-    font-size: 1.1rem;
-    box-shadow: 0 4px 15px rgba(255, 0, 110, 0.6);
-    border: 2px solid #0f172a;
-    z-index: 10;
-}
-
-/* 🎴 حاوية البطاقات المنتشرة */
-.fan-cards-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 5;
-}
-
-.gallery-item-wrapper.is-active .fan-cards-container {
-    pointer-events: auto;
-}
-
-/* 🃏 البطاقات المنتشرة (مخفية افتراضياً) */
-.fan-card {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: 12px;
-    overflow: hidden;
-    border: 2px solid transparent;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-    opacity: 0;
-    transform-origin: bottom center;
-    transform: translateY(0) rotate(0deg) scale(0.5);
-    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); /* حركة ارتدادية ناعمة */
-    cursor: pointer;
-}
-
-.fan-card img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-/* ✨ السحر: حساب زوايا الانتشار المروحي برمجياً باستخدام CSS Variables */
-.gallery-item-wrapper.is-active .fan-card {
-    opacity: 1;
-    /* حساب الإزاحة بناءً على ترتيب البطاقة وعددها الإجمالي */
-    --offset: calc(var(--fan-idx) - (var(--total-fan) - 1) / 2);
-    transform: 
-        translateY(-40px) 
-        translateX(calc(var(--offset) * 65%)) 
-        rotate(calc(var(--offset) * 14deg)) 
-        scale(1.25);
-    box-shadow: 0 25px 50px rgba(0,0,0,0.8);
-}
-
-/* تأثير التحويم على بطاقة منتشرة (تبرز للأمام) */
-.gallery-item-wrapper.is-active .fan-card:hover {
-    transform: 
-        translateY(-60px) 
-        translateX(calc(var(--offset) * 65%)) 
-        rotate(calc(var(--offset) * 14deg)) 
-        scale(1.35);
-    z-index: 20;
-    box-shadow: 0 30px 60px rgba(var(--c-accent-rgb), 0.4);
-}
-
-/* ⬇️ أيقونة التحميل عند التحويم */
-.download-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0,0,0,0.7);
-    backdrop-filter: blur(3px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 3rem;
-    color: white;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.fan-card:hover .download-overlay {
-    opacity: 1;
-}
-
-/* 🏷️ شارات الندرة والأسماء */
-.gallery-badge {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    text-align: center;
-    padding: 6px 0;
-    font-size: 0.85rem;
-    font-weight: 900;
-    text-transform: uppercase;
-    background: rgba(0,0,0,0.8);
-    backdrop-filter: blur(5px);
-}
-
-.gallery-name {
-    margin-top: 0.8rem;
-    font-weight: 800;
-    font-size: 1.1rem;
-    text-align: center;
-    color: var(--c-text-primary);
-    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-}
-
-.gallery-item-wrapper.is-active .gallery-name {
-    opacity: 0; /* إخفاء الاسم عند الانتشار للتركيز على البطاقات */
-}
-
-/* 🎨 ألوان الإطارات حسب الندرة */
-.tier-common { border-color: #8D6E63; }
-.tier-common .gallery-badge { color: #D7CCC8; }
-
-.tier-silver { border-color: #E0E0E0; box-shadow: 0 0 15px rgba(224,224,224,0.3); }
-.tier-silver .gallery-badge { color: #FFFFFF; }
-
-.tier-gold { border-color: #D4AF37; box-shadow: 0 0 20px rgba(212,175,55,0.5); }
-.tier-gold .gallery-badge { color: #FFF8DC; text-shadow: 0 0 5px #D4AF37; }
-
-.tier-diamond { border-color: #00FFFF; box-shadow: 0 0 25px rgba(0,255,255,0.6); }
-.tier-diamond .gallery-badge { color: #E0FFFF; text-shadow: 0 0 8px #00FFFF; }
