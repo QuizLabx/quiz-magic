@@ -2230,7 +2230,7 @@ function calculateCompatibility(user1Data, user2Data) {
     return Math.min(100, Math.round(score));
 }
 
-function showResult() {
+async function showResult() {
     isQuizActive = false;
     const { creature, secondaryCreature, radar, winnerId } = calculateResult();
 
@@ -2243,12 +2243,42 @@ function showResult() {
 
     saveUserStats(winnerId);
 
-    const cards = getUserCards();
-    if (cards[winnerId]) {
-        lastQuizResult.cardTier = tryUpgradeCard(winnerId);
+    // 🛡️ النظام الآمن: السيرفر هو من يقرر البطاقة
+    let finalTier = 'common';
+    
+    if (window.firebaseDB && window.firebaseDB.isLoggedIn()) {
+        try {
+            // إرسال طلب لـ Supabase لتشغيل دالة السحب العشوائي
+            const userId = window.firebaseDB.getCurrentUserId();
+            const { data, error } = await window.supabase.rpc('roll_or_upgrade_card', {
+                p_user_id: userId,
+                p_creature_id: winnerId
+            });
+            
+            if (!error && data) {
+                finalTier = data.tier;
+                // تحديث الـ LocalStorage ليعمل كـ Cache فقط
+                saveUserCards(data.full_cards_object);
+            } else {
+                console.error("Supabase RPC Error:", error);
+                finalTier = getOrAssignCardTier(winnerId); // Fallback في حال فشل الاتصال
+            }
+        } catch (err) {
+            console.error("Failed to fetch card from server:", err);
+            finalTier = getOrAssignCardTier(winnerId);
+        }
     } else {
-        lastQuizResult.cardTier = getOrAssignCardTier(winnerId);
+        // إذا كان المستخدم "زائراً" (غير مسجل دخول)، نستخدم النظام المحلي
+        const cards = getUserCards();
+        if (cards[winnerId]) {
+            finalTier = tryUpgradeCard(winnerId);
+        } else {
+            finalTier = getOrAssignCardTier(winnerId);
+        }
     }
+    
+    lastQuizResult.cardTier = finalTier;
+
 
     // 🔒 تأكيد حفظ البطاقة بشكل صحيح
     const verificationCards = getUserCards();
