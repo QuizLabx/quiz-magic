@@ -850,6 +850,13 @@ async function renderCollectibleCardCanvas(creature, tier) {
     ctx.fillStyle = vig;
     ctx.fillRect(0, 0, W, H);
 
+   // ✨ تفعيل تأثير الهولوجرام (ألوان الطيف اللامعة)
+    if (tier === 'diamond') {
+        drawHolographicEffect(ctx, W, H, 0.4); // هولوجرام قوي للماسية
+    } else if (tier === 'gold') {
+        drawHolographicEffect(ctx, W, H, 0.15); // هولوجرام خفيف جداً للذهبية
+    }
+   
     // ==========================================
     // 2. الجزيئات والهالة
     // ==========================================
