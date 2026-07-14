@@ -4822,12 +4822,15 @@ html.theme-space .fab-main { box-shadow: 0 0 18px rgba(168, 85, 247, 0.5); }
 	.fab-actions .fab-mini { width: 42px; height: 42px; font-size: 0.9rem; }
 }
 
-/* ==================== MYTHICAL GALLERY STYLES ==================== */
+/* ==================== MYTHICAL GALLERY (FAN-OUT EFFECT) ==================== */
+
 .gallery-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 2.5rem 1.5rem;
     margin-top: 1rem;
+    position: relative;
+    padding-top: 2rem; /* مساحة للبطاقات عند الانتشار */
 }
 
 @media (min-width: 768px) {
@@ -4836,75 +4839,182 @@ html.theme-space .fab-main { box-shadow: 0 0 18px rgba(168, 85, 247, 0.5); }
     }
 }
 
-.gallery-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    transition: transform 0.3s ease;
+/* 🎬 تأثير البلور السينمائي على المعرض */
+.gallery-grid.gallery-blurred .gallery-item-wrapper:not(.is-active) {
+    filter: blur(6px) brightness(0.4) grayscale(0.5);
+    transform: scale(0.9);
+    pointer-events: none; /* منع الضغط على الكائنات الأخرى */
 }
 
-.gallery-item.unlocked {
+/* 📦 حاوية الكائن */
+.gallery-item-wrapper {
+    position: relative;
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     cursor: pointer;
+    z-index: 1;
 }
 
-.gallery-item.unlocked:hover {
-    transform: translateY(-10px) scale(1.05);
+/* رفع الـ z-index للكائن النشط ليكون فوق كل شيء */
+.gallery-item-wrapper.is-active {
+    z-index: 100;
 }
 
-.gallery-img-wrapper {
+/* 🃏 البطاقة الأم (الغلاف) */
+.base-card {
     width: 100%;
-    aspect-ratio: 1 / 1.4; /* نسبة أبعاد البطاقة */
+    aspect-ratio: 1 / 1.4;
     border-radius: 12px;
     overflow: hidden;
     position: relative;
     box-shadow: 0 10px 20px rgba(0,0,0,0.5);
     border: 2px solid transparent;
-}
-
-.gallery-img-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    background: #0f172a;
     transition: all 0.5s ease;
 }
 
-/* تأثير الظل للبطاقات المقفلة (FOMO Effect) */
-.locked-silhouette {
-    background: #0f172a;
-    border-color: #1e293b;
+.base-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
-.locked-silhouette img {
-    filter: brightness(0) invert(0.1) blur(2px); /* يجعل الصورة ظلاً أسود غامضاً */
-    opacity: 0.6;
+/* عند فتح الانتشار، تصبح البطاقة الأم باهتة وتتراجع للخلف */
+.gallery-item-wrapper.is-active .base-card {
+    opacity: 0;
+    transform: scale(0.8) translateY(20px);
 }
 
-.locked-icon {
+/* 🔢 شارة عدد البطاقات */
+.cards-count-badge {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 2.5rem;
-    opacity: 0.5;
-    text-shadow: 0 0 10px rgba(0,0,0,0.8);
+    top: -10px;
+    right: -10px;
+    background: linear-gradient(135deg, #ff006e, #ffbe0b);
+    color: #fff;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 15px rgba(255, 0, 110, 0.6);
+    border: 2px solid #0f172a;
+    z-index: 10;
 }
 
-/* شارات الندرة */
+/* 🎴 حاوية البطاقات المنتشرة */
+.fan-cards-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 5;
+}
+
+.gallery-item-wrapper.is-active .fan-cards-container {
+    pointer-events: auto;
+}
+
+/* 🃏 البطاقات المنتشرة (مخفية افتراضياً) */
+.fan-card {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid transparent;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+    opacity: 0;
+    transform-origin: bottom center;
+    transform: translateY(0) rotate(0deg) scale(0.5);
+    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); /* حركة ارتدادية ناعمة */
+    cursor: pointer;
+}
+
+.fan-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ✨ السحر: حساب زوايا الانتشار المروحي برمجياً باستخدام CSS Variables */
+.gallery-item-wrapper.is-active .fan-card {
+    opacity: 1;
+    /* حساب الإزاحة بناءً على ترتيب البطاقة وعددها الإجمالي */
+    --offset: calc(var(--fan-idx) - (var(--total-fan) - 1) / 2);
+    transform: 
+        translateY(-40px) 
+        translateX(calc(var(--offset) * 65%)) 
+        rotate(calc(var(--offset) * 14deg)) 
+        scale(1.25);
+    box-shadow: 0 25px 50px rgba(0,0,0,0.8);
+}
+
+/* تأثير التحويم على بطاقة منتشرة (تبرز للأمام) */
+.gallery-item-wrapper.is-active .fan-card:hover {
+    transform: 
+        translateY(-60px) 
+        translateX(calc(var(--offset) * 65%)) 
+        rotate(calc(var(--offset) * 14deg)) 
+        scale(1.35);
+    z-index: 20;
+    box-shadow: 0 30px 60px rgba(var(--c-accent-rgb), 0.4);
+}
+
+/* ⬇️ أيقونة التحميل عند التحويم */
+.download-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(3px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: white;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.fan-card:hover .download-overlay {
+    opacity: 1;
+}
+
+/* 🏷️ شارات الندرة والأسماء */
 .gallery-badge {
     position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
     text-align: center;
-    padding: 5px 0;
-    font-size: 0.8rem;
+    padding: 6px 0;
+    font-size: 0.85rem;
     font-weight: 900;
     text-transform: uppercase;
-    background: rgba(0,0,0,0.7);
+    background: rgba(0,0,0,0.8);
     backdrop-filter: blur(5px);
 }
 
-/* ألوان الإطارات حسب الندرة */
+.gallery-name {
+    margin-top: 0.8rem;
+    font-weight: 800;
+    font-size: 1.1rem;
+    text-align: center;
+    color: var(--c-text-primary);
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.gallery-item-wrapper.is-active .gallery-name {
+    opacity: 0; /* إخفاء الاسم عند الانتشار للتركيز على البطاقات */
+}
+
+/* 🎨 ألوان الإطارات حسب الندرة */
 .tier-common { border-color: #8D6E63; }
 .tier-common .gallery-badge { color: #D7CCC8; }
 
@@ -4916,22 +5026,3 @@ html.theme-space .fab-main { box-shadow: 0 0 18px rgba(168, 85, 247, 0.5); }
 
 .tier-diamond { border-color: #00FFFF; box-shadow: 0 0 25px rgba(0,255,255,0.6); }
 .tier-diamond .gallery-badge { color: #E0FFFF; text-shadow: 0 0 8px #00FFFF; }
-
-.gallery-name {
-    margin-top: 0.8rem;
-    font-weight: 700;
-    font-size: 1rem;
-    text-align: center;
-    color: var(--c-text-primary);
-}
-
-.gallery-item.locked .gallery-name {
-    color: var(--c-text-muted);
-    letter-spacing: 2px;
-}
-
-
-
-
-
-
