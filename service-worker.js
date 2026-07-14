@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'quizmagic-v15-themed-buttons';
+const CACHE_VERSION = 'quizmagic-v16-themed-buttons';
 const ASSETS = [
   '/',
   '/index.html',
