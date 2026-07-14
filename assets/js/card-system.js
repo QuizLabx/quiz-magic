@@ -216,7 +216,20 @@ const CREATURE_EFFECTS = {
 function getUserCards() {
     try { 
         const cards = JSON.parse(localStorage.getItem(CARDS_KEY) || '{}');
-        console.log('📖 Reading cards from localStorage:', cards, 'Total:', Object.keys(cards).length);
+        
+        // 🔄 نظام التوافق (Migration): تحويل البيانات القديمة إلى النظام الجديد
+        let migrated = false;
+        for (const id in cards) {
+            // إذا كانت البطاقة محفوظة كنص (مثلاً 'gold')، نحولها لمصفوفة ['common', 'silver', 'gold']
+            if (typeof cards[id] === 'string') {
+                const tier = cards[id];
+                const tierIdx = TIER_ORDER.indexOf(tier);
+                cards[id] = TIER_ORDER.slice(0, tierIdx + 1);
+                migrated = true;
+            }
+        }
+        if (migrated) saveUserCards(cards); // حفظ التحديثات فوراً
+        
         return cards;
     } 
     catch (e) { 
@@ -226,9 +239,7 @@ function getUserCards() {
 }
 
 function saveUserCards(cards) {
-    console.log('💾 Saving cards to localStorage:', cards);
     localStorage.setItem(CARDS_KEY, JSON.stringify(cards));
-    console.log('✅ Cards saved. Verification:', getUserCards());
 }
 
 function getRandomTier() {
@@ -243,27 +254,45 @@ function getRandomTier() {
 
 function getOrAssignCardTier(creatureId) {
     const cards = getUserCards();
-    if (!cards[creatureId]) {
-        cards[creatureId] = getRandomTier();
+    
+    // إذا لم يكن يملك أي بطاقة لهذا الكائن
+    if (!cards[creatureId] || cards[creatureId].length === 0) {
+        const initialTier = getRandomTier();
+        const tierIdx = TIER_ORDER.indexOf(initialTier);
+        // نحفظ كل المستويات وصولاً للمستوى الذي حصل عليه
+        cards[creatureId] = TIER_ORDER.slice(0, tierIdx + 1);
         saveUserCards(cards);
     }
-    return cards[creatureId];
+    
+    // إرجاع أعلى مستوى (آخر عنصر في المصفوفة) لكي يعمل باقي الموقع بشكل طبيعي
+    const userTiers = cards[creatureId];
+    return userTiers[userTiers.length - 1];
 }
 
 function tryUpgradeCard(creatureId) {
     const cards = getUserCards();
-    const currentTier = cards[creatureId] || 'common';
-    const currentIdx = TIER_ORDER.indexOf(currentTier);
-    if (currentIdx >= TIER_ORDER.length - 1) return currentTier;
+    
+    // حماية إضافية
+    if (!cards[creatureId] || !Array.isArray(cards[creatureId])) {
+        return getOrAssignCardTier(creatureId);
+    }
 
-    // 30% chance to upgrade on retake
+    const currentTiers = cards[creatureId];
+    const highestTier = currentTiers[currentTiers.length - 1];
+    const currentIdx = TIER_ORDER.indexOf(highestTier);
+    
+    if (currentIdx >= TIER_ORDER.length - 1) return highestTier; // وصل للماسي
+
+    // 30% فرصة للترقية عند إعادة الاختبار
     if (Math.random() <= 0.30) {
         const newTier = TIER_ORDER[currentIdx + 1];
-        cards[creatureId] = newTier;
-        saveUserCards(cards);
+        if (!currentTiers.includes(newTier)) {
+            currentTiers.push(newTier); // إضافة البطاقة الجديدة للمجموعة
+            saveUserCards(cards);
+        }
         return newTier;
     }
-    return currentTier;
+    return highestTier;
 }
 
 // ==================== HELPER FUNCTIONS ====================
