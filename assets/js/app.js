@@ -2542,7 +2542,7 @@ async function showResult() {
                     </div>
                     
                     <!-- الوجه الخلفي -->
-                    <div class="card-face card-back">
+					<div class="card-face card-back" id="card-back-face">
                         <i class="fas fa-magic text-5xl text-accent mb-4"></i>
                         <h4 class="text-xl font-black text-white tracking-widest">QuizMagic</h4>
                         <p class="text-xs text-slate-400 mt-2">${isAr ? 'إصدار محدود' : 'Limited Edition'}</p>
@@ -2570,7 +2570,22 @@ async function showResult() {
     renderRadarChart(radar);
     prepareShareTemplate(creature, secondaryCreature);
     applyCreatureTheme(winnerId);
-    
+
+    // 🃏 تطبيق غلاف البطاقة (Sleeve) المجهز من الخزانة
+    const backFace = document.getElementById('card-back-face');
+    if (backFace && typeof equippedItems !== 'undefined' && equippedItems.sleeve !== 'default') {
+        const sleeveItem = STORE_ITEMS.sleeves.find(s => s.id === equippedItems.sleeve);
+        if (sleeveItem) {
+            // مسح المحتوى الافتراضي لكي يظهر تصميمك بالكامل
+            backFace.innerHTML = ''; 
+            // وضع تصميمك كخلفية لظهر البطاقة
+            backFace.style.backgroundImage = `url('${sleeveItem.image}')`;
+            backFace.style.backgroundSize = 'cover';
+            backFace.style.backgroundPosition = 'center';
+            backFace.style.border = 'none'; // إزالة الإطار الافتراضي
+        }
+    }
+
     // 🃏 تهيئة تأثير الـ 3D ورسم البطاقة للمعاينة
     setTimeout(async () => {
         initCard3DEffect();
