@@ -1,0 +1,44 @@
+/**
+ * 🛒 QuizMagic Store Data
+ * كتالوج بضائع متجر الأساطير
+ */
+
+const STORE_ITEMS = {
+    // 🖼️ 1. صور الملف الشخصي المربعة (PFPs)
+    pfp: [
+        { id: 'pfp_dragon_neon', price: 300, name: { ar: 'تنين النيون', en: 'Neon Dragon' }, image: 'assets/images/store/pfp/dragon_neon.jpg' },
+        { id: 'pfp_mystic_owl', price: 300, name: { ar: 'البومة الغامضة', en: 'Mystic Owl' }, image: 'assets/images/store/pfp/mystic_owl.jpg' },
+        { id: 'pfp_cyber_wolf', price: 500, name: { ar: 'ذئب السايبر', en: 'Cyber Wolf' }, image: 'assets/images/store/pfp/cyber_wolf.jpg' },
+        { id: 'pfp_golden_crown', price: 1000, name: { ar: 'التاج الذهبي', en: 'Golden Crown' }, image: 'assets/images/store/pfp/golden_crown.jpg' }
+    ],
+
+    // 👑 2. الألقاب الفخرية (Titles)
+    titles: [
+        { id: 'title_explorer', price: 100, name: { ar: 'مستكشف الأساطير', en: 'Myth Explorer' }, color: '#3b82f6' }, // أزرق
+        { id: 'title_shadow', price: 250, name: { ar: 'سيد الظلال', en: 'Shadow Lord' }, color: '#8b5cf6' }, // بنفسجي
+        { id: 'title_dragon_tamer', price: 400, name: { ar: 'مروض التنانين', en: 'Dragon Tamer' }, color: '#ef4444' }, // أحمر
+        { id: 'title_legend', price: 1000, name: { ar: 'أسطورة حية', en: 'Living Legend' }, color: '#fbbf24' } // ذهبي
+    ],
+
+    // 🌌 3. خلفيات الملف الشخصي (Banners)
+    banners: [
+        { id: 'banner_forest', price: 400, name: { ar: 'الغابة المسحورة', en: 'Enchanted Forest' }, image: 'assets/images/store/banners/forest.jpg' },
+        { id: 'banner_space', price: 600, name: { ar: 'سديم الفضاء', en: 'Space Nebula' }, image: 'assets/images/store/banners/space.jpg' },
+        { id: 'banner_hellfire', price: 800, name: { ar: 'نيران الجحيم', en: 'Hellfire' }, image: 'assets/images/store/banners/hellfire.jpg' }
+    ],
+
+    // 🃏 4. أغلفة ظهر البطاقات (Card Sleeves)
+    sleeves: [
+        { id: 'sleeve_red_dragon', price: 500, name: { ar: 'غلاف التنين الأحمر', en: 'Red Dragon Sleeve' }, image: 'assets/images/store/sleeves/red_dragon.jpg' },
+        { id: 'sleeve_cosmic', price: 800, name: { ar: 'الغلاف الكوني', en: 'Cosmic Sleeve' }, image: 'assets/images/store/sleeves/cosmic.jpg' },
+        { id: 'sleeve_royal_gold', price: 1500, name: { ar: 'الغلاف الملكي الذهبي', en: 'Royal Gold Sleeve' }, image: 'assets/images/store/sleeves/royal_gold.jpg' }
+    ]
+};
+
+// أسعار بيع البطاقات المكررة (السوق السوداء)
+const CARD_SELL_PRICES = {
+    'common': 10,
+    'silver': 50,
+    'gold': 200,
+    'diamond': 1000
+};
