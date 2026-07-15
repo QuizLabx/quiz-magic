@@ -5214,3 +5214,7 @@ html.theme-space .fab-main { box-shadow: 0 0 18px rgba(168, 85, 247, 0.5); }
     z-index: 2;
     box-shadow: 0 2px 5px rgba(0,0,0,0.5);
 }
+/* إصلاح مشكلة ظهور نافذة التأكيد خلف المتجر */
+#confirm-dialog {
+    z-index: 10000 !important;
+}
