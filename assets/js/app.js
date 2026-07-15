@@ -272,6 +272,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         showUsernameModal();
     }
+	// 🛒 تهيئة بيانات المتجر والممتلكات
+    if (typeof initStoreData === 'function') {
+        setTimeout(initStoreData, 1500); // تأخير بسيط لضمان تحميل Supabase أولاً
+    }
+
 });
 
 // ==================== GLOBAL WELCOME SCREEN (NEW) ====================
