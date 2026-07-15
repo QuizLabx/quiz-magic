@@ -400,10 +400,17 @@ async function deleteAllData() {
 
 // ==================== NOTIFICATIONS ====================
 function showProfileNotification(message, type = 'success') {
+    // 🌟 السحر هنا: حساب عدد الإشعارات الموجودة حالياً لإنزال الإشعار الجديد تحتها
+    const existingNotifications = document.querySelectorAll('.profile-notification');
+    const offset = existingNotifications.length * 75; // 75 بكسل مسافة لكل إشعار
+
     // إنشاء عنصر إشعار مؤقت
     const notification = document.createElement('div');
     notification.className = `profile-notification ${type}`;
     notification.textContent = message;
+    
+    // تطبيق المسافة الديناميكية
+    notification.style.marginTop = `${offset}px`;
     
     document.body.appendChild(notification);
     
@@ -416,6 +423,7 @@ function showProfileNotification(message, type = 'success') {
         setTimeout(() => notification.remove(), 300);
     }, 3000);
 }
+
 
 // ==================== KEYBOARD SUPPORT ====================
 document.addEventListener('keydown', (e) => {
