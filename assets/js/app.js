@@ -2288,42 +2288,63 @@ async function showResult() {
         winnerId: winnerId
     };
 
-    saveUserStats(winnerId);
+    let hasEnergy = true;
+    const isAr = currentLang === 'ar';
 
-    // 🛡️ النظام الآمن: السيرفر هو من يقرر البطاقة
-    let finalTier = 'common';
-    
-    if (window.firebaseDB && window.firebaseDB.isLoggedIn()) {
-        try {
-            // إرسال طلب لـ Supabase لتشغيل دالة السحب العشوائي
-            const userId = window.firebaseDB.getCurrentUserId();
-			const { data, error } = await window.sbClient.rpc('roll_or_upgrade_card', {
-                p_user_id: userId,
-                p_creature_id: winnerId
-            });
-            
-            if (!error && data) {
-                finalTier = data.tier;
-                // تحديث الـ LocalStorage ليعمل كـ Cache فقط
-                saveUserCards(data.full_cards_object);
-            } else {
-                console.error("Supabase RPC Error:", error);
-                finalTier = getOrAssignCardTier(winnerId); // Fallback في حال فشل الاتصال
-            }
-        } catch (err) {
-            console.error("Failed to fetch card from server:", err);
-            finalTier = getOrAssignCardTier(winnerId);
-        }
-    } else {
-        // إذا كان المستخدم "زائراً" (غير مسجل دخول)، نستخدم النظام المحلي
-        const cards = getUserCards();
-        if (cards[winnerId]) {
-            finalTier = tryUpgradeCard(winnerId);
+    // ⚡ 1. التحقق من الطاقة وخصمها من السيرفر
+    if (window.firebaseDB && window.firebaseDB.isLoggedIn() && window.sbClient) {
+        const userId = window.firebaseDB.getCurrentUserId();
+        const { data: energyData } = await window.sbClient.rpc('server_check_and_consume_energy', { p_user_id: userId });
+        
+        if (energyData && energyData.success) {
+            const energyEl = document.getElementById('energy-header-count');
+            if (energyEl) energyEl.textContent = `${energyData.remaining_energy}/5`;
         } else {
-            finalTier = getOrAssignCardTier(winnerId);
+            hasEnergy = false;
+            if (typeof showProfileNotification === 'function') {
+                showProfileNotification(isAr ? '⚡ نفدت طاقتك! تلعب الآن للمتعة (لا توجد مكافآت)' : '⚡ Out of energy! Playing for fun (No rewards)', 'error');
+            }
         }
     }
-    
+
+    let finalTier = 'common';
+
+    // 🎁 2. إعطاء المكافآت (بطاقة، XP، إحصائيات) فقط إذا كان يملك طاقة
+    if (hasEnergy) {
+        // 🛡️ النظام الآمن: السيرفر يقرر البطاقة
+        if (window.firebaseDB && window.firebaseDB.isLoggedIn() && window.sbClient) {
+            try {
+                const userId = window.firebaseDB.getCurrentUserId();
+                const { data, error } = await window.sbClient.rpc('roll_or_upgrade_card', {
+                    p_user_id: userId,
+                    p_creature_id: winnerId
+                });
+
+                if (!error && data) {
+                    finalTier = data.tier;
+                    saveUserCards(data.full_cards_object);
+                    if (typeof userCardInventory !== 'undefined') userCardInventory = data.card_inventory;
+                } else {
+                    finalTier = getOrAssignCardTier(winnerId);
+                }
+            } catch (err) {
+                finalTier = getOrAssignCardTier(winnerId);
+            }
+        } else {
+            const cards = getUserCards();
+            if (cards[winnerId]) {
+                finalTier = tryUpgradeCard(winnerId);
+            } else {
+                finalTier = getOrAssignCardTier(winnerId);
+            }
+        }
+
+        const duration = getQuizDurationSeconds();
+        await saveUserStats(winnerId, duration);
+        if (typeof awardQuizXP === 'function') await awardQuizXP(winnerId, duration);
+        await checkAchievements();
+    }
+
     lastQuizResult.cardTier = finalTier;
 
 
