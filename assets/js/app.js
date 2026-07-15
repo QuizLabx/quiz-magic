@@ -2363,8 +2363,6 @@ async function showResult() {
     container.classList.remove('hidden');
 
     const percentage = getCreaturePercentage(winnerId);
-    const isAr = currentLang === 'ar';
-
     container.innerHTML = `
         <div class="theme-bg-secondary rounded-[2.5rem] overflow-hidden border theme-border shadow-2xl mb-12 animate-fade-in">
             <div class="relative h-[28rem] md:h-[35rem] overflow-hidden bg-slate-950">
