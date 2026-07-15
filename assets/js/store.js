@@ -28,8 +28,10 @@ async function initStoreData() {
                 userCardInventory = data.card_inventory || {};
                 localStorage.setItem('quiz_gems', data.gems || 0);
                 updateGemsHeader();
+                // ⚡ جلب الطاقة الحقيقية من السيرفر (مع التجديد اليومي)
+                const { data: energyVal } = await window.sbClient.rpc('server_get_energy', { p_user_id: userId });
                 const energyEl = document.getElementById('energy-header-count');
-                if (energyEl) energyEl.textContent = `${data.energy !== undefined ? data.energy : 5}/5`;
+                if (energyEl) energyEl.textContent = `${energyVal !== null ? energyVal : 5}/5`;
                 applyEquippedItems(); // تطبيق المظهر فوراً
             }
         } catch (err) {
