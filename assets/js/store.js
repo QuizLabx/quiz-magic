@@ -7,6 +7,7 @@ let currentStoreTab = 'pfp';
 let currentInventoryTab = 'pfp';
 let userInventory = {};
 let equippedItems = { pfp: 'default', title: 'default', banner: 'default', sleeve: 'default' };
+let userCardInventory = {};
 
 // ==================== INITIALIZATION ====================
 
@@ -17,13 +18,14 @@ async function initStoreData() {
             const userId = window.firebaseDB.getCurrentUserId();
             const { data, error } = await window.sbClient
                 .from('users')
-                .select('inventory, equipped_items, gems')
+                .select('inventory, equipped_items, gems, card_inventory')
                 .eq('id', userId)
                 .single();
 
             if (!error && data) {
                 userInventory = data.inventory || {};
                 equippedItems = data.equipped_items || { pfp: 'default', title: 'default', banner: 'default', sleeve: 'default' };
+                userCardInventory = data.card_inventory || {};
                 localStorage.setItem('quiz_gems', data.gems || 0);
                 updateGemsHeader();
                 applyEquippedItems(); // تطبيق المظهر فوراً
@@ -308,42 +310,43 @@ async function equipStoreItem(category, itemId) {
 // ==================== SELL DUPLICATES (BLACK MARKET) ====================
 
 function renderSellTab(grid, isAr) {
-    const stats = getUserStats();
-    const creatures = stats.creatures || {};
-    const userCards = typeof getUserCards === 'function' ? getUserCards() : {};
-    
     let hasDuplicates = false;
 
-    Object.keys(creatures).forEach(creatureId => {
-        const count = creatures[creatureId];
-        if (count > 1) {
-            hasDuplicates = true;
-            const creatureData = findCreatureById(creatureId);
-            if (!creatureData) return;
+    Object.keys(userCardInventory).forEach(creatureId => {
+        const tiersObj = userCardInventory[creatureId];
+        const creatureData = findCreatureById(creatureId);
+        if (!creatureData) return;
 
-            // تحديد سعر البيع بناءً على أعلى بطاقة يملكها لهذا الكائن
-            const tiers = userCards[creatureId] || ['common'];
-            const highestTier = tiers[tiers.length - 1];
-            const reward = CARD_SELL_PRICES[highestTier] || 10;
+        Object.keys(tiersObj).forEach(tier => {
+            const count = tiersObj[tier];
+            if (count > 1) {
+                hasDuplicates = true;
+                const reward = CARD_SELL_PRICES[tier] || 10;
+                const tierLabel = CARD_TIERS[tier] ? CARD_TIERS[tier].label[isAr ? 'ar' : 'en'] : tier;
 
-            const card = document.createElement('div');
-            card.className = `store-item-card`;
-            card.innerHTML = `
-                <div class="store-owned-badge bg-red-500">مكرر: ${count - 1}</div>
-                <div class="store-item-image-wrapper">
-                    <img src="${creatureData.image}" alt="${creatureData.name}">
-                </div>
-                <div class="store-item-info">
-                    <div class="store-item-name">${creatureData.name}</div>
-                    <div class="text-xs text-slate-400 mb-2">${isAr ? 'أعلى ندرة:' : 'Highest Tier:'} ${highestTier}</div>
-                    <button class="store-btn store-btn-buy" style="background: linear-gradient(135deg, #ef4444, #b91c1c);" 
-                        onclick="sellDuplicateCard('${creatureId}', ${reward})">
-                        ${isAr ? 'بيع بـ' : 'Sell for'} <i class="fas fa-gem"></i> ${reward}
-                    </button>
-                </div>
-            `;
-            grid.appendChild(card);
-        }
+                const card = document.createElement('div');
+                card.className = `store-item-card`;
+                card.style.padding = '1rem';
+                card.style.alignItems = 'center';
+                
+                // 🌟 السحر هنا: استخدام تصميم البطاقة الفخمة من المعرض
+                card.innerHTML = `
+                    <div class="store-owned-badge bg-red-500" style="z-index: 10;">مكرر: ${count - 1}</div>
+                    <div class="base-card tier-${tier}" style="width: 140px; margin: 0 auto 1rem auto; pointer-events: none;">
+                        <img src="${creatureData.image}" alt="${creatureData.name}">
+                        <div class="gallery-badge">${tierLabel}</div>
+                        <div class="gallery-name">${creatureData.name}</div>
+                    </div>
+                    <div class="store-item-info" style="padding: 0; width: 100%;">
+                        <button class="store-btn store-btn-buy" style="background: linear-gradient(135deg, #ef4444, #b91c1c);" 
+                            onclick="sellDuplicateCard('${creatureId}', '${tier}', ${reward})">
+                            ${isAr ? 'بيع بـ' : 'Sell for'} <i class="fas fa-gem"></i> ${reward}
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            }
+        });
     });
 
     if (!hasDuplicates) {
@@ -354,13 +357,13 @@ function renderSellTab(grid, isAr) {
     }
 }
 
-async function sellDuplicateCard(creatureId, reward) {
+async function sellDuplicateCard(creatureId, tier, reward) {
     const isAr = currentLang === 'ar';
     if (!window.firebaseDB || !window.firebaseDB.isLoggedIn() || !window.sbClient) return;
 
     const confirm = await showConfirmDialog({
         title: isAr ? 'تأكيد البيع' : 'Confirm Sale',
-        message: isAr ? `هل تريد بيع نسخة مكررة مقابل ${reward} جوهرة؟ (ستحتفظ بنسختك الأساسية)` : `Sell a duplicate for ${reward} gems? (You keep your main copy)`,
+        message: isAr ? `هل تريد بيع نسخة مكررة (${tier}) مقابل ${reward} جوهرة؟` : `Sell a duplicate (${tier}) for ${reward} gems?`,
         okText: isAr ? 'بيع' : 'Sell',
         cancelText: isAr ? 'إلغاء' : 'Cancel',
         okType: 'danger'
@@ -370,20 +373,17 @@ async function sellDuplicateCard(creatureId, reward) {
 
     try {
         const userId = window.firebaseDB.getCurrentUserId();
-        const { data, error } = await window.sbClient.rpc('server_sell_duplicate', {
+        const { data, error } = await window.sbClient.rpc('server_sell_duplicate_card', {
             p_user_id: userId,
             p_creature_id: creatureId,
+            p_tier: tier,
             p_reward: reward
         });
 
         if (error) throw error;
 
         if (data.success) {
-            // تحديث الإحصائيات محلياً لتعكس البيع
-            const stats = getUserStats();
-            stats.creatures[creatureId] = data.new_count;
-            localStorage.setItem('quiz_stats', JSON.stringify(stats));
-            
+            userCardInventory = data.card_inventory; // تحديث المخزون محلياً
             localStorage.setItem('quiz_gems', data.new_gems);
             updateGemsHeader();
             document.getElementById('store-gems-count').textContent = data.new_gems;
