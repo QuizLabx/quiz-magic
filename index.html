@@ -744,6 +744,65 @@ Mythical Analysis Result
     </div>
 </div>
 
+
+<!-- ==================== STORE MODAL (NEW) ==================== -->
+<div id="store-modal" class="achievements-modal">
+    <div class="modal-overlay" onclick="closeStoreModal()"></div>
+    <div class="modal-content" style="max-width: 900px; height: 85vh; display: flex; flex-direction: column;">
+        <div class="modal-header">
+            <h2 class="modal-title">
+                <i class="fas fa-store text-yellow-400"></i>
+                <span id="store-modal-title">متجر الأساطير</span>
+            </h2>
+            <div class="flex items-center gap-4">
+                <div class="gems-header-display" style="margin:0;">
+                    <span class="gems-header-icon">💎</span>
+                    <span id="store-gems-count" class="gems-header-count">0</span>
+                </div>
+                <button onclick="closeStoreModal()" class="modal-close"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
+        <div class="admin-tabs" id="store-tabs" style="padding: 1rem; margin: 0; background: var(--bg-secondary);">
+            <button class="admin-tab active" onclick="changeStoreTab('pfp')">🖼️ الصور</button>
+            <button class="admin-tab" onclick="changeStoreTab('titles')">👑 الألقاب</button>
+            <button class="admin-tab" onclick="changeStoreTab('banners')">🌌 الخلفيات</button>
+            <button class="admin-tab" onclick="changeStoreTab('sleeves')">🃏 الأغلفة</button>
+            <button class="admin-tab" onclick="changeStoreTab('sell')" style="border-color: #ef4444; color: #ef4444;">⚖️ بيع البطاقات</button>
+        </div>
+        <div class="modal-body" style="flex: 1; overflow-y: auto; padding: 1.5rem;">
+            <div id="store-grid" class="store-grid">
+                <!-- سيتم ملؤها بالجافاسكريبت -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== INVENTORY MODAL (NEW) ==================== -->
+<div id="inventory-modal" class="achievements-modal">
+    <div class="modal-overlay" onclick="closeInventoryModal()"></div>
+    <div class="modal-content" style="max-width: 900px; height: 85vh; display: flex; flex-direction: column;">
+        <div class="modal-header">
+            <h2 class="modal-title">
+                <i class="fas fa-backpack text-green-400"></i>
+                <span id="inventory-modal-title">خزانتي</span>
+            </h2>
+            <button onclick="closeInventoryModal()" class="modal-close"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="admin-tabs" id="inventory-tabs" style="padding: 1rem; margin: 0; background: var(--bg-secondary);">
+            <button class="admin-tab active" onclick="changeInventoryTab('pfp')">🖼️ الصور</button>
+            <button class="admin-tab" onclick="changeInventoryTab('titles')">👑 الألقاب</button>
+            <button class="admin-tab" onclick="changeInventoryTab('banners')">🌌 الخلفيات</button>
+            <button class="admin-tab" onclick="changeInventoryTab('sleeves')">🃏 الأغلفة</button>
+        </div>
+        <div class="modal-body" style="flex: 1; overflow-y: auto; padding: 1.5rem;">
+            <div id="inventory-grid" class="store-grid">
+                <!-- سيتم ملؤها بالجافاسكريبت -->
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <!-- Main Content -->
 <main id="main-content" class="flex-grow container mx-auto px-4 py-8" tabindex="-1">
 <!-- Hero Section -->
