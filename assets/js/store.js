@@ -28,6 +28,8 @@ async function initStoreData() {
                 userCardInventory = data.card_inventory || {};
                 localStorage.setItem('quiz_gems', data.gems || 0);
                 updateGemsHeader();
+                const energyEl = document.getElementById('energy-header-count');
+                if (energyEl) energyEl.textContent = `${data.energy !== undefined ? data.energy : 5}/5`;
                 applyEquippedItems(); // تطبيق المظهر فوراً
             }
         } catch (err) {
