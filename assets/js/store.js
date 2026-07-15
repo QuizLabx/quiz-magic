@@ -184,10 +184,14 @@ function renderInventoryGrid() {
 
     const items = STORE_ITEMS[currentInventoryTab] || [];
     
+    // 🛠️ تصحيح: تحويل اسم القسم (الجمع) إلى مفتاح قاعدة البيانات (المفرد)
+    const categoryMap = { 'pfp': 'pfp', 'titles': 'title', 'banners': 'banner', 'sleeves': 'sleeve' };
+    const categoryKey = categoryMap[currentInventoryTab];
+    
     // إضافة العنصر الافتراضي (المجاني)
     const defaultCard = document.createElement('div');
     defaultCard.className = `store-item-card type-${currentInventoryTab}`;
-    const isDefaultEquipped = equippedItems[currentInventoryTab] === 'default';
+    const isDefaultEquipped = equippedItems[categoryKey] === 'default';
     
     defaultCard.innerHTML = `
         <div class="store-item-image-wrapper">
@@ -196,7 +200,7 @@ function renderInventoryGrid() {
         <div class="store-item-info">
             <div class="store-item-name">${isAr ? 'الافتراضي' : 'Default'}</div>
             <button class="store-btn ${isDefaultEquipped ? 'store-btn-equipped' : 'store-btn-equip'}" 
-                onclick="equipStoreItem('${currentInventoryTab}', 'default')" ${isDefaultEquipped ? 'disabled' : ''}>
+                onclick="equipStoreItem('${categoryKey}', 'default')" ${isDefaultEquipped ? 'disabled' : ''}>
                 ${isDefaultEquipped ? (isAr ? 'مستخدم' : 'Equipped') : (isAr ? 'استخدام' : 'Equip')}
             </button>
         </div>
@@ -206,10 +210,10 @@ function renderInventoryGrid() {
     // عرض العناصر المملوكة فقط
     items.forEach(item => {
         if (userInventory[item.id] === 'true' || userInventory[item.id] === true) {
-            const isEquipped = equippedItems[currentInventoryTab] === item.id;
+            const isEquipped = equippedItems[categoryKey] === item.id;
             const name = isAr ? item.name.ar : item.name.en;
             
-            let visualHtml = currentStoreTab === 'titles' 
+            let visualHtml = currentInventoryTab === 'titles' 
                 ? `<div class="text-2xl font-black" style="color: ${item.color};">${name}</div>` 
                 : `<img src="${item.image}" alt="${name}">`;
 
@@ -220,7 +224,7 @@ function renderInventoryGrid() {
                 <div class="store-item-info">
                     <div class="store-item-name">${name}</div>
                     <button class="store-btn ${isEquipped ? 'store-btn-equipped' : 'store-btn-equip'}" 
-                        onclick="equipStoreItem('${currentInventoryTab}', '${item.id}')" ${isEquipped ? 'disabled' : ''}>
+                        onclick="equipStoreItem('${categoryKey}', '${item.id}')" ${isEquipped ? 'disabled' : ''}>
                         ${isEquipped ? (isAr ? 'مستخدم' : 'Equipped') : (isAr ? 'استخدام' : 'Equip')}
                     </button>
                 </div>
