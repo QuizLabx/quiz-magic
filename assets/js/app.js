@@ -2301,10 +2301,15 @@ async function showResult() {
             if (energyEl) energyEl.textContent = `${energyData.remaining_energy}/5`;
         } else {
             hasEnergy = false;
+            // 👈 إصلاح العداد الوهمي: إجبار الشاشة على إظهار 0/5
+            const energyEl = document.getElementById('energy-header-count');
+            if (energyEl) energyEl.textContent = `0/5`; 
+            
             if (typeof showProfileNotification === 'function') {
                 showProfileNotification(isAr ? '⚡ نفدت طاقتك! تلعب الآن للمتعة (لا توجد مكافآت)' : '⚡ Out of energy! Playing for fun (No rewards)', 'error');
             }
         }
+
     }
 
     let finalTier = 'common';
