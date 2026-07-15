@@ -482,6 +482,12 @@ Mythical Analysis Result
         <span id="gems-header-count" class="gems-header-count">0</span>
     </div>
 
+    <!-- ⚡ Energy Counter (NEW) -->
+    <div id="energy-header-display" class="gems-header-display" title="طاقة الاستكشاف">
+        <span class="gems-header-icon">⚡</span>
+        <span id="energy-header-count" class="gems-header-count">5/5</span>
+    </div>
+	
 	<!-- 🔥 Streak Counter (دائم الظهور) -->
 	<div id="streak-counter" class="streak-counter" title="أيام متتالية">
     	<div class="streak-flame-wrapper">
@@ -538,18 +544,36 @@ Mythical Analysis Result
         <!-- سيتم بناء بطاقات الإشعارات هنا بواسطة JS -->
     </div>
 
-    <!-- 👤 بطاقة المستخدم (تفتح الملف الشخصي) -->
-    <button onclick="showProfileModal(); closeMenuDrawer();" class="drawer-user-card" aria-label="فتح الملف الشخصي">
-        <div class="drawer-user-avatar"><i class="fas fa-user-astronaut"></i></div>
-        <div class="drawer-user-info">
-            <span id="drawer-username" class="drawer-username">زائر</span>
-            <span id="drawer-user-subtitle" class="drawer-user-subtitle">اضغط لعرض ملفك</span>
+    <!-- 👤 بطاقة المستخدم (محدثة للبانر والصورة المربعة) -->
+    <button onclick="showProfileModal(); closeMenuDrawer();" class="drawer-user-card" id="drawer-user-card" aria-label="فتح الملف الشخصي">
+        <div class="drawer-user-banner" id="drawer-user-banner"></div>
+        <div class="drawer-user-content">
+            <div class="drawer-user-avatar" id="drawer-user-avatar">
+                <img src="" id="drawer-pfp-img" style="display:none; width:100%; height:100%; object-fit:cover; border-radius:inherit;">
+                <i class="fas fa-user-astronaut" id="drawer-pfp-icon"></i>
+            </div>
+            <div class="drawer-user-info">
+                <span id="drawer-username" class="drawer-username">زائر</span>
+                <span id="drawer-user-title-display" class="drawer-user-title"></span>
+                <span id="drawer-user-subtitle" class="drawer-user-subtitle">اضغط لعرض ملفك</span>
+            </div>
+            <i class="fas fa-chevron-left drawer-user-chevron" aria-hidden="true"></i>
         </div>
-        <i class="fas fa-chevron-left drawer-user-chevron" aria-hidden="true"></i>
     </button>
 
     <!-- 📋 قائمة الخيارات -->
     <nav class="drawer-nav">
+        <!-- أزرار المتجر والممتلكات الجديدة -->
+        <button onclick="showStoreModal(); closeMenuDrawer();" class="drawer-nav-item">
+            <i class="fas fa-store drawer-nav-icon text-yellow-400" aria-hidden="true"></i>
+            <span id="drawer-store-text">متجر الأساطير</span>
+        </button>
+        <button onclick="showInventoryModal(); closeMenuDrawer();" class="drawer-nav-item">
+            <i class="fas fa-backpack drawer-nav-icon text-green-400" aria-hidden="true"></i>
+            <span id="drawer-inventory-text">خزانتي (ممتلكاتي)</span>
+        </button>
+
+        <!-- الأزرار القديمة -->
         <button onclick="showAchievementsModal(); closeMenuDrawer();" class="drawer-nav-item">
             <i class="fas fa-trophy drawer-nav-icon" aria-hidden="true"></i>
             <span id="drawer-achievements-text">إنجازاتي</span>
@@ -566,6 +590,7 @@ Mythical Analysis Result
             <i class="fas fa-cog drawer-nav-icon" aria-hidden="true"></i>
             <span id="drawer-settings-text">الإعدادات</span>
         </button>
+
         <!-- 🆔 زر ID / الحساب -->
         <div class="drawer-divider"></div>
         <button id="drawer-id-btn" onclick="showAccountModal(); closeMenuDrawer();" class="drawer-nav-item drawer-id-btn">
