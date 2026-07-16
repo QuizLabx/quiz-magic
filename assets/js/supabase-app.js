@@ -348,14 +348,12 @@ async function addGemsToUser(targetUserId, amount) {
         const myId = getCurrentUserId();
         const { data, error } = await sbClient.rpc('admin_add_gems', {
             p_admin_id: myId,
+            p_admin_hash: localStorage.getItem('quiz_admin_hash'), // 👈 الدرع الأمني
             p_target_id: targetUserId,
             p_amount: amount
         });
 
-        if (error) {
-            console.error('addGemsToUser error:', error);
-            return { success: false, error: error.message || 'rpc_failed' };
-        }
+        if (error) return { success: false, error: error.message || 'rpc_failed' };
         return data || { success: true };
     } catch (e) {
         console.error('addGemsToUser error:', e);
@@ -371,6 +369,7 @@ async function removeGemsFromUser(targetUserId, amount) {
         const myId = getCurrentUserId();
         const { data, error } = await sbClient.rpc('admin_remove_gems', {
             p_admin_id: myId,
+            p_admin_hash: localStorage.getItem('quiz_admin_hash'), // 👈 الدرع الأمني
             p_target_id: targetUserId,
             p_amount: amount
         });
@@ -393,6 +392,7 @@ async function setUserXP(targetUserId, newXP) {
         const myId = getCurrentUserId();
         const { data, error } = await sbClient.rpc('admin_set_xp', {
             p_admin_id: myId,
+            p_admin_hash: localStorage.getItem('quiz_admin_hash'), // 👈 الدرع الأمني
             p_target_id: targetUserId,
             p_xp: newXP
         });
@@ -413,6 +413,7 @@ async function setUserLevel(targetUserId, newLevel) {
         const myId = getCurrentUserId();
         const { data, error } = await sbClient.rpc('admin_set_level', {
             p_admin_id: myId,
+            p_admin_hash: localStorage.getItem('quiz_admin_hash'), // 👈 الدرع الأمني
             p_target_id: targetUserId,
             p_level: newLevel
         });
