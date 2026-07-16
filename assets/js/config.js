@@ -146,13 +146,16 @@ const config = {
     xpSystem: {
         enabled: true,
 
-        // نقاط XP حسب الندرة
+                // نقاط XP حسب الندرة
         rarityXP: {
             'شائع': 30, 'Common': 30,
             'نادر': 80, 'Rare': 80,
             'نادر جداً': 150, 'Very Rare': 150,
-            'أسطوري': 300, 'Legendary': 300
+            'أسطوري': 300, 'Legendary': 300,
+            'مظلمة': 500, 'Dark': 500,
+            'كونية': 1000, 'Cosmic': 1000
         },
+
 
         // مكافآت إضافية
         bonuses: {
