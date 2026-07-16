@@ -12,13 +12,15 @@ const CARDS_KEY = 'quiz_cards';
 
 // مستويات البطاقات
 const CARD_TIERS = {
-    common:  { key: 'common',  label: { ar: 'عادية', en: 'Common' },    weight: 50 },
-    silver:  { key: 'silver',  label: { ar: 'فضية', en: 'Silver' },    weight: 30 },
+    common:  { key: 'common',  label: { ar: 'عادية', en: 'Common' },    weight: 47 },
+    silver:  { key: 'silver',  label: { ar: 'فضية', en: 'Silver' },    weight: 25 },
     gold:    { key: 'gold',    label: { ar: 'ذهبية', en: 'Gold' },      weight: 15 },
-    diamond: { key: 'diamond', label: { ar: 'ماسية', en: 'Diamond' },  weight: 5 }
+    diamond: { key: 'diamond', label: { ar: 'ماسية', en: 'Diamond' },  weight: 10 },
+    dark:    { key: 'dark',    label: { ar: 'مظلمة', en: 'Dark' },      weight: 2.5 },
+    cosmic:  { key: 'cosmic',  label: { ar: 'كونية', en: 'Cosmic' },    weight: 0.5 }
 };
 
-const TIER_ORDER = ['common', 'silver', 'gold', 'diamond'];
+const TIER_ORDER = ['common', 'silver', 'gold', 'diamond', 'dark', 'cosmic'];
 
 // التكوين البصري لكل مستوى
 // ============================================================
@@ -75,7 +77,29 @@ const TIER_VISUALS = {
         isTranslucent: true,  // شفاف! سيسمح بمرور الضوء والصورة
         glassOpacity: 0.8,    // لمعة زجاجية قوية جداً (انكسار ضوئي)
         rankLabel: { ar: 'ماسي', en: 'DIAMOND' }
+    },
+
+      dark: { // حجر الأوبسيديان المظلم (يمتص الضوء)
+        baseGradient: ['#050505', '#1a0b14', '#0a0005', '#2d0a1f', '#000000'],
+        highlight: 'rgba(255, 0, 85, 0.4)', // إضاءة قرمزية خافتة
+        shadow: 'rgba(0, 0, 0, 0.95)',
+        textAccent: '#ff1a66', // أحمر نيون
+        glow: 'rgba(255, 0, 85, 0.6)',
+        isTranslucent: false,
+        glassOpacity: 0.1,
+        rankLabel: { ar: 'مظلم', en: 'DARK' }
+    },
+    cosmic: { // سديم الفضاء اللانهائي
+        baseGradient: ['#0b001a', '#1a0033', '#001133', '#330033', '#00001a'],
+        highlight: 'rgba(0, 255, 255, 0.8)', // إضاءة سماوية
+        shadow: 'rgba(0, 0, 0, 0.8)',
+        textAccent: '#e6ffff', // أبيض مزرق ساطع
+        glow: 'rgba(138, 43, 226, 0.8)', // توهج بنفسجي كوني
+        isTranslucent: true, // شفافة لتندمج مع صورة الكائن
+        glassOpacity: 0.6,
+        rankLabel: { ar: 'كوني', en: 'COSMIC' }
     }
+
 };
 
 
@@ -865,6 +889,28 @@ async function renderCollectibleCardCanvas(creature, tier) {
     ctx.fillStyle = vig;
     ctx.fillRect(0, 0, W, H);
 
+    // ==========================================
+    // 1.5. النجوم للبطاقة الكونية (Cosmic Stars)
+    // ==========================================
+    if (tier === 'cosmic') {
+        ctx.save();
+        for (let i = 0; i < 150; i++) {
+            const x = Math.random() * W;
+            const y = Math.random() * H;
+            const r = Math.random() * 2.5;
+            const opacity = Math.random();
+            ctx.beginPath();
+            ctx.arc(x, y, r, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+            // ألوان النجوم: سماوي، وردي، أو أبيض
+            ctx.shadowColor = ['#00ffff', '#ff00ff', '#ffffff'][Math.floor(Math.random() * 3)];
+            ctx.shadowBlur = Math.random() * 10;
+            ctx.fill();
+        }
+        ctx.restore();
+    }
+
+   
    // ✨ تفعيل تأثير الهولوجرام (ألوان الطيف اللامعة)
     if (tier === 'diamond') {
         drawHolographicEffect(ctx, W, H, 0.4); // هولوجرام قوي للماسية
