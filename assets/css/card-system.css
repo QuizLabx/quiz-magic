@@ -167,15 +167,26 @@ html.theme-space .btn-card:hover {
     z-index: 10; /* لضمان ظهور أيقونة التحميل فوق الـ Canvas */
 }
 
-/* 🌑 البطاقة المظلمة (Dark) */
-.tier-dark { 
+/* 🔴 البطاقة الخرافية (Mythic) */
+.tier-mythic { 
     border-color: #ff1a66; 
     box-shadow: 0 0 25px rgba(255, 26, 102, 0.4); 
 }
-.tier-dark .gallery-badge { 
+.tier-mythic .gallery-badge { 
     color: #ff1a66; 
     text-shadow: 0 0 8px #ff1a66; 
     background: rgba(10, 0, 5, 0.9); 
+}
+
+/* 🌑 البطاقة المظلمة (Dark - الثقب الأسود) */
+.tier-dark { 
+    border-color: #1a1a1a; 
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.95), inset 0 0 20px rgba(30, 0, 50, 0.8); 
+}
+.tier-dark .gallery-badge { 
+    color: #8a8a8a; 
+    text-shadow: 0 0 10px #4b0082; 
+    background: rgba(0, 0, 0, 0.95); 
 }
 
 /* 🌌 البطاقة الكونية (Cosmic) */
@@ -190,7 +201,6 @@ html.theme-space .btn-card:hover {
     background: rgba(11, 0, 26, 0.9); 
 }
 
-/* حركة نبض ألوان الطيف للبطاقة الكونية */
 @keyframes cosmic-pulse {
     0% { border-color: #00ffff; box-shadow: 0 0 30px rgba(0, 255, 255, 0.5); }
     100% { border-color: #ff00ff; box-shadow: 0 0 30px rgba(255, 0, 255, 0.5); }
