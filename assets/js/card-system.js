@@ -768,20 +768,21 @@ function drawCardRadarChart(ctx, cx, cy, radius, creature, visual, isAr) {
     ctx.strokeStyle = visual.textAccent;
     ctx.stroke();
 
-    // النصوص
+      // النصوص
     ctx.rotate(Math.PI / 2);
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.font = '700 20px Cairo, sans-serif';
+    // 🌟 تكبير خط الرادار
+    ctx.font = '800 24px Cairo, sans-serif'; 
     ctx.fillStyle = visual.textAccent;
 
     for (let i = 0; i < sides; i++) {
         const angle = (i * angleStep) - Math.PI / 2;
-        const labelRadius = radius + 35;
+        // 🌟 زيادة المسافة لكي لا يتداخل الخط الكبير مع المضلع
+        const labelRadius = radius + 45; 
         const x = Math.cos(angle) * labelRadius;
         const y = Math.sin(angle) * labelRadius;
         
-        // 🌟 ظل أسود قوي جداً لنصوص الرادار لضمان قراءتها فوق أي لون
         ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
         ctx.shadowBlur = 10;
         ctx.shadowOffsetX = 0;
@@ -791,6 +792,7 @@ function drawCardRadarChart(ctx, cx, cy, radius, creature, visual, isAr) {
     }
     ctx.restore();
 }
+
 
 
 // 3. الدالة الرئيسية (التحفة الفنية)
@@ -1008,40 +1010,27 @@ async function renderCollectibleCardCanvas(creature, tier) {
     yCursor += descH + 60;
 
     // ==========================================
-    // 8. اسم المستكشف
+    // 8. مخطط القوى (تم رفعه للأعلى بعد نقل الاسم)
     // ==========================================
-    ctx.save();
-    ctx.textAlign = 'center';
-    ctx.font = '600 24px Cairo, Tajawal, sans-serif';
-    drawEngravedText(ctx, isAr ? 'المستكشف' : 'Explorer', W / 2, yCursor, visual, false);
-    
-    yCursor += 40;
-    
-    ctx.font = '900 45px Cairo, Tajawal, sans-serif';
-    drawEngravedText(ctx, username, W / 2, yCursor, visual, true);
-    ctx.restore();
+    yCursor += 160; // مسافة مناسبة بعد صندوق الوصف
+    drawCardRadarChart(ctx, W / 2, yCursor, 140, creature, visual, isAr); // تكبير حجم الرادار قليلاً
 
-    // ==========================================
-    // 9. مخطط القوى
-    // ==========================================
-    yCursor += 180;
-    drawCardRadarChart(ctx, W / 2, yCursor, 130, creature, visual, isAr);
 
+   // ==========================================
+    // 9. التذييل (QR Code، اسم المستكشف، والختم)
     // ==========================================
-    // 10. التذييل (QR Code والختم)
-    // ==========================================
-    const footerY = H - pad - 140;
+    const footerY = H - pad - 160; // رفعنا التذييل بالكامل قليلاً
     
+    // --- 1. الـ QR Code (على اليسار) ---
     const qrSize = 130;
     const qrX = pad + 20;
-    const qrY = footerY;
+    const qrY = footerY - 20; // 🌟 رفع مربع الـ QR للأعلى
     const siteUrl = encodeURIComponent('https://quizlabx.github.io/quiz-magic/' );
     const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${qrSize}x${qrSize}&data=${siteUrl}&color=0f172a&bgcolor=ffffff`;
     
     ctx.save( );
     const qrImg = await loadImageAsDataURL(qrApiUrl);
     if (qrImg) {
-        // إطار زجاجي للـ QR
         ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
         roundRectPath(ctx, qrX - 10, qrY - 10, qrSize + 20, qrSize + 20, 16);
         ctx.fill();
@@ -1052,18 +1041,32 @@ async function renderCollectibleCardCanvas(creature, tier) {
     
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
-    ctx.font = '800 18px Cairo, Tajawal, sans-serif';
-    drawEngravedText(ctx, isAr ? 'امسح للعب' : 'SCAN TO PLAY', qrX + qrSize / 2, qrY + qrSize + 15, visual, false);
+    // 🌟 تكبير خط "امسح للعب"
+    ctx.font = '900 24px Cairo, Tajawal, sans-serif'; 
+    drawEngravedText(ctx, isAr ? 'امسح للعب' : 'SCAN TO PLAY', qrX + qrSize / 2, qrY + qrSize + 25, visual, false);
     ctx.restore();
 
-    // الرقم التسلسلي والختم
+    // --- 2. اسم المستكشف (في المنتصف بالأسفل) ---
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.font = '700 26px Cairo, Tajawal, sans-serif';
+    drawEngravedText(ctx, isAr ? 'المستكشف' : 'Explorer', W / 2, footerY + 20, visual, false);
+    
+    // 🌟 تلوين اسم المستخدم بالذهبي الساطع
+    const originalAccent = visual.textAccent;
+    visual.textAccent = '#fbbf24'; // لون ذهبي مميز
+    ctx.font = '900 50px Cairo, Tajawal, sans-serif';
+    drawEngravedText(ctx, username, W / 2, footerY + 70, visual, true);
+    visual.textAccent = originalAccent; // استرجاع اللون الأصلي لكي لا تتأثر باقي العناصر
+    ctx.restore();
+
+    // --- 3. الرقم التسلسلي والختم (على اليمين) ---
     const serialText = `SN: ${Math.random().toString(36).substr(2, 6).toUpperCase()}-${Math.floor(Math.random() * 9000) + 1000}`;
     ctx.save();
     ctx.textAlign = 'right';
     ctx.font = '800 26px Cairo, sans-serif';
     drawEngravedText(ctx, serialText, W - pad - 20, footerY + 100, visual, false);
     
-    // الختم محفور في المعدن
     ctx.translate(W - pad - 90, footerY + 30);
     ctx.rotate(-0.15);
     ctx.beginPath();
@@ -1082,8 +1085,9 @@ async function renderCollectibleCardCanvas(creature, tier) {
     drawEngravedText(ctx, 'SEAL', 0, 12, visual, true);
     ctx.restore();
 
+
     // ==========================================
-    // 11. الطبقة الزجاجية النهائية (The Pristine Glass Overlay)
+    // 10. الطبقة الزجاجية النهائية (The Pristine Glass Overlay)
     // ==========================================
     ctx.save();
     // رسم مضلع يقطع البطاقة قطرياً ليعطي لمعة الزجاج
