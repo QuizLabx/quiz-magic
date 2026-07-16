@@ -803,6 +803,34 @@ Mythical Analysis Result
 </div>
 
 
+<!-- ==================== CINEMATIC CARD PREVIEW (NEW) ==================== -->
+<div id="cinematic-card-modal" class="fixed inset-0 z-[99999] hidden flex-col items-center justify-center bg-black/95 backdrop-blur-xl transition-opacity duration-500 opacity-0">
+    <!-- خلفية الفضاء المتحركة -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div class="cinematic-stars"></div>
+    </div>
+    
+    <!-- زر الإغلاق -->
+    <button onclick="closeCinematicPreview()" class="absolute top-6 right-6 w-12 h-12 rounded-full bg-white/10 border border-white/20 text-white flex items-center justify-center text-xl hover:bg-white/20 transition-all z-50">
+        <i class="fas fa-times"></i>
+    </button>
+
+    <!-- نص إرشادي -->
+    <div class="absolute top-20 text-white/70 text-sm font-bold tracking-widest uppercase animate-pulse z-50" id="cinematic-hint">
+        اسحب لتحريك البطاقة · اضغط للقلب
+    </div>
+
+    <!-- حاوية البطاقة العائمة -->
+    <div class="cinematic-card-wrapper" id="cinematic-card-wrapper">
+        <div class="card-3d-inner" id="cinematic-card-inner" onclick="flipCinematicCard()">
+            <!-- سيتم نسخ وجه وظهر البطاقة هنا برمجياً -->
+            <div class="card-face card-front" id="cinematic-card-front"></div>
+            <div class="card-face card-back" id="cinematic-card-back"></div>
+        </div>
+    </div>
+</div>
+
+	
 <!-- Main Content -->
 <main id="main-content" class="flex-grow container mx-auto px-4 py-8" tabindex="-1">
 <!-- Hero Section -->
