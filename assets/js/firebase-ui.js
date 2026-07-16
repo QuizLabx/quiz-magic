@@ -946,9 +946,15 @@ async function applyCloudDataToLocal(cloudData) {
             localStorage.setItem('quiz_username', cloudData.display_name);
         }
 
-        // 🔄 إعادة تحميل البيانات في الذاكرة (مهم جداً للإنجازات والموسوعة)
+        // 🔄 إعادة تحميل البيانات في الذاكرة
         if (typeof loadAchievements === 'function') loadAchievements();
         if (typeof loadUserStats === 'function') loadUserStats();
+
+        // 🔄 تحديث الواجهة (بما فيها الستريك!)
+        if (typeof recordVisitDay === 'function') recordVisitDay(); // تسجيل اليوم في السجل السحابي
+        if (typeof calculateCurrentStreak === 'function' && typeof updateStreakDisplay === 'function') {
+            updateStreakDisplay(calculateCurrentStreak());
+        }
 
         if (typeof renderXPBar === 'function') renderXPBar();
         if (typeof updateDrawerContent === 'function') updateDrawerContent();
