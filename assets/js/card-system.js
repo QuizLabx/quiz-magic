@@ -10,18 +10,18 @@
 // مفاتيح التخزين المحلي
 const CARDS_KEY = 'quiz_cards';
 
-// مستويات البطاقات
+/// مستويات البطاقات
 const CARD_TIERS = {
     common:  { key: 'common',  label: { ar: 'عادية', en: 'Common' },    weight: 47 },
     silver:  { key: 'silver',  label: { ar: 'فضية', en: 'Silver' },    weight: 25 },
     gold:    { key: 'gold',    label: { ar: 'ذهبية', en: 'Gold' },      weight: 15 },
     diamond: { key: 'diamond', label: { ar: 'ماسية', en: 'Diamond' },  weight: 10 },
-    mythic:  { key: 'mythic',  label: { ar: 'خرافية', en: 'Mythic' },   weight: 2 },
-    dark:    { key: 'dark',    label: { ar: 'مظلمة', en: 'Dark' },      weight: 0.8 },
-    cosmic:  { key: 'cosmic',  label: { ar: 'كونية', en: 'Cosmic' },    weight: 0.2 }
+    mythic:  { key: 'mythic',  label: { ar: 'خرافية', en: 'Mythic' },   weight: 2.5 },
+    cosmic:  { key: 'cosmic',  label: { ar: 'كونية', en: 'Cosmic' },    weight: 0.5 }
 };
 
-const TIER_ORDER = ['common', 'silver', 'gold', 'diamond', 'mythic', 'dark', 'cosmic'];
+const TIER_ORDER = ['common', 'silver', 'gold', 'diamond', 'mythic', 'cosmic'];
+
 
 // التكوين البصري لكل مستوى
 // ============================================================
@@ -900,8 +900,8 @@ async function renderCollectibleCardCanvas(creature, tier) {
     ctx.fillStyle = vig;
     ctx.fillRect(0, 0, W, H);
 
-    // ==========================================
-    // 1.5. التأثيرات الخاصة (الكونية والمظلمة)
+        // ==========================================
+    // 1.5. النجوم للبطاقة الكونية (Cosmic Stars)
     // ==========================================
     if (tier === 'cosmic') {
         ctx.save();
@@ -918,18 +918,8 @@ async function renderCollectibleCardCanvas(creature, tier) {
             ctx.fill();
         }
         ctx.restore();
-    } else if (tier === 'dark') {
-        // تأثير الثقب الأسود (دوامة مظلمة تمتص الضوء)
-        ctx.save();
-        const bhGradient = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, W);
-        bhGradient.addColorStop(0, 'rgba(0,0,0,1)');
-        bhGradient.addColorStop(0.4, 'rgba(20,0,40,0.9)');
-        bhGradient.addColorStop(1, 'rgba(0,0,0,0.95)');
-        ctx.fillStyle = bhGradient;
-        ctx.globalCompositeOperation = 'multiply';
-        ctx.fillRect(0, 0, W, H);
-        ctx.restore();
     }
+
 
    
    // ✨ تفعيل تأثير الهولوجرام (ألوان الطيف اللامعة)
