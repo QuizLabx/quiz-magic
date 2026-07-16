@@ -16,11 +16,12 @@ const CARD_TIERS = {
     silver:  { key: 'silver',  label: { ar: 'فضية', en: 'Silver' },    weight: 25 },
     gold:    { key: 'gold',    label: { ar: 'ذهبية', en: 'Gold' },      weight: 15 },
     diamond: { key: 'diamond', label: { ar: 'ماسية', en: 'Diamond' },  weight: 10 },
-    dark:    { key: 'dark',    label: { ar: 'مظلمة', en: 'Dark' },      weight: 2.5 },
-    cosmic:  { key: 'cosmic',  label: { ar: 'كونية', en: 'Cosmic' },    weight: 0.5 }
+    mythic:  { key: 'mythic',  label: { ar: 'خرافية', en: 'Mythic' },   weight: 2 },
+    dark:    { key: 'dark',    label: { ar: 'مظلمة', en: 'Dark' },      weight: 0.8 },
+    cosmic:  { key: 'cosmic',  label: { ar: 'كونية', en: 'Cosmic' },    weight: 0.2 }
 };
 
-const TIER_ORDER = ['common', 'silver', 'gold', 'diamond', 'dark', 'cosmic'];
+const TIER_ORDER = ['common', 'silver', 'gold', 'diamond', 'mythic', 'dark', 'cosmic'];
 
 // التكوين البصري لكل مستوى
 // ============================================================
@@ -79,23 +80,33 @@ const TIER_VISUALS = {
         rankLabel: { ar: 'ماسي', en: 'DIAMOND' }
     },
 
-      dark: { // حجر الأوبسيديان المظلم (يمتص الضوء)
+      mythic: { // خرافية (أحمر وأسود)
         baseGradient: ['#050505', '#1a0b14', '#0a0005', '#2d0a1f', '#000000'],
-        highlight: 'rgba(255, 0, 85, 0.4)', // إضاءة قرمزية خافتة
+        highlight: 'rgba(255, 0, 85, 0.4)',
         shadow: 'rgba(0, 0, 0, 0.95)',
-        textAccent: '#ff1a66', // أحمر نيون
+        textAccent: '#ff1a66',
         glow: 'rgba(255, 0, 85, 0.6)',
         isTranslucent: false,
         glassOpacity: 0.1,
+        rankLabel: { ar: 'خرافي', en: 'MYTHIC' }
+    },
+    dark: { // الثقب الأسود (المظلمة الحقيقية)
+        baseGradient: ['#000000', '#030303', '#000000', '#050505', '#000000'],
+        highlight: 'rgba(70, 0, 130, 0.3)', // إضاءة بنفسجية داكنة جداً (أفق الحدث)
+        shadow: 'rgba(0, 0, 0, 1)',
+        textAccent: '#8a8a8a', // رمادي فضي باهت
+        glow: 'rgba(20, 0, 40, 0.9)', // توهج الثقب الأسود
+        isTranslucent: false,
+        glassOpacity: 0.02, // شبه معدومة اللمعان (تمتص الضوء)
         rankLabel: { ar: 'مظلم', en: 'DARK' }
     },
     cosmic: { // سديم الفضاء اللانهائي
         baseGradient: ['#0b001a', '#1a0033', '#001133', '#330033', '#00001a'],
-        highlight: 'rgba(0, 255, 255, 0.8)', // إضاءة سماوية
+        highlight: 'rgba(0, 255, 255, 0.8)',
         shadow: 'rgba(0, 0, 0, 0.8)',
-        textAccent: '#e6ffff', // أبيض مزرق ساطع
-        glow: 'rgba(138, 43, 226, 0.8)', // توهج بنفسجي كوني
-        isTranslucent: true, // شفافة لتندمج مع صورة الكائن
+        textAccent: '#e6ffff',
+        glow: 'rgba(138, 43, 226, 0.8)',
+        isTranslucent: true,
         glassOpacity: 0.6,
         rankLabel: { ar: 'كوني', en: 'COSMIC' }
     }
@@ -890,7 +901,7 @@ async function renderCollectibleCardCanvas(creature, tier) {
     ctx.fillRect(0, 0, W, H);
 
     // ==========================================
-    // 1.5. النجوم للبطاقة الكونية (Cosmic Stars)
+    // 1.5. التأثيرات الخاصة (الكونية والمظلمة)
     // ==========================================
     if (tier === 'cosmic') {
         ctx.save();
@@ -902,11 +913,21 @@ async function renderCollectibleCardCanvas(creature, tier) {
             ctx.beginPath();
             ctx.arc(x, y, r, 0, Math.PI * 2);
             ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
-            // ألوان النجوم: سماوي، وردي، أو أبيض
             ctx.shadowColor = ['#00ffff', '#ff00ff', '#ffffff'][Math.floor(Math.random() * 3)];
             ctx.shadowBlur = Math.random() * 10;
             ctx.fill();
         }
+        ctx.restore();
+    } else if (tier === 'dark') {
+        // تأثير الثقب الأسود (دوامة مظلمة تمتص الضوء)
+        ctx.save();
+        const bhGradient = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, W);
+        bhGradient.addColorStop(0, 'rgba(0,0,0,1)');
+        bhGradient.addColorStop(0.4, 'rgba(20,0,40,0.9)');
+        bhGradient.addColorStop(1, 'rgba(0,0,0,0.95)');
+        ctx.fillStyle = bhGradient;
+        ctx.globalCompositeOperation = 'multiply';
+        ctx.fillRect(0, 0, W, H);
         ctx.restore();
     }
 
