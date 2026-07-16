@@ -628,6 +628,30 @@ async function deleteUserPermanent(targetUserId) {
     }
 }
 
+// ==================== ADMIN: CARDS ====================
+
+async function grantCardToUser(targetUserId, creatureId, tier) {
+    try {
+        if (!isLoggedIn()) return { success: false, error: 'not_logged_in' };
+        if (!initSupabase()) return { success: false, error: 'supabase_not_ready' };
+
+        const myId = getCurrentUserId();
+        const { data, error } = await sbClient.rpc('admin_grant_card', {
+            p_admin_id: myId,
+            p_target_id: targetUserId,
+            p_creature_id: creatureId,
+            p_tier: tier
+        });
+
+        if (error) return { success: false, error: error.message || 'rpc_failed' };
+        return data || { success: true };
+    } catch (e) {
+        console.error('grantCardToUser error:', e);
+        return { success: false, error: 'server_error' };
+    }
+}
+
+
 // ==================== ADMIN: STATS ====================
 
 async function getSiteStats() {
@@ -879,6 +903,7 @@ window.firebaseDB = {
     checkBanStatus, hasPermission, MOD_PERMISSIONS,
     fetchUserGems, isCurrentUserAdmin, syncStatsToCloud,
     syncGameData: syncStatsToCloud, // اسم مستعار للتوافق
+    grantCardToUser,
     // أحداث + رسائل
     setAllAchievements, setAllPokedex,
     sendMessageToUser, fetchMyMessages, deleteMessage
