@@ -1152,8 +1152,14 @@ function recordVisitDay() {
             userStats.visitDays.shift();
         }
         localStorage.setItem('quiz_stats', JSON.stringify(userStats));
+        
+        // ☁️ إخبار السيرفر فوراً بالزيارة الجديدة
+        if (window.firebaseDB && window.firebaseDB.isLoggedIn()) {
+            window.firebaseDB.syncGameData();
+        }
     }
 }
+
 
 function getQuizDurationSeconds() {
     if (!quizStartTime) return 0;
