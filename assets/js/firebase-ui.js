@@ -337,6 +337,7 @@ function renderAdminPanel(isAr) {
             <div class="dashboard-tabs">
                 <button onclick="switchAdminTab('gems', this)" class="dash-tab active">${isAr ? '💎 جواهر' : '💎 Gems'}</button>
                 <button onclick="switchAdminTab('xp', this)" class="dash-tab">${isAr ? '⚡ نقاط' : '⚡ XP'}</button>
+                <button onclick="switchAdminTab('cards', this)" class="dash-tab">${isAr ? '🃏 بطاقات' : '🃏 Cards'}</button>
                 <button onclick="switchAdminTab('events', this)" class="dash-tab">${isAr ? '🏆 أحداث' : '🏆 Events'}</button>
                 <button onclick="switchAdminTab('msg', this)" class="dash-tab">${isAr ? '💌 رسائل' : '💌 Messages'}</button>
                 <button onclick="switchAdminTab('users', this)" class="dash-tab">${isAr ? '👥 مستخدمون' : '👥 Users'}</button>
@@ -362,6 +363,7 @@ function switchAdminTab(tabName, btn) {
     const renderers = {
         gems: () => renderAdminGemsTab(isAr),
         xp: () => renderAdminXPTab(isAr),
+        cards: () => renderAdminCardsTab(isAr), // 👈 أضفنا هذا السطر
         events: () => renderAdminEventsTab(isAr),
         msg: () => renderAdminMessagesTab(isAr),
         users: () => { renderAdminUsersTab(isAr); return null; },
@@ -496,6 +498,50 @@ function renderAdminXPTab(isAr) {
         </div>
     `;
 }
+
+// ===== تاب البطاقات (إهداء البطاقات) =====
+function renderAdminCardsTab(isAr) {
+    // 🌟 جلب أسماء الكائنات ديناميكياً من ملف quizzes.js
+    let creatureOptions = '';
+    if (typeof quizzesData !== 'undefined' && quizzesData[currentLang]) {
+        const creatures = quizzesData[currentLang].quizzes[0].results;
+        creatures.forEach(c => {
+            creatureOptions += `<option value="${c.id}">${c.name}</option>`;
+        });
+    }
+
+    return `
+        <div class="admin-section">
+            <div class="admin-action-grid">
+                <div class="admin-action-card">
+                    <h5><i class="fas fa-gift" style="color:#a855f7"></i> ${isAr ? 'إهداء بطاقة أسطورية' : 'Grant Mythical Card'}</h5>
+                    <input type="text" id="grant-target-id" class="auth-input" placeholder="${isAr ? 'ID اللاعب المستلم' : 'Player ID'}" inputmode="numeric" maxlength="6">
+                    
+                    <select id="grant-creature-id" class="auth-input" style="margin-top: 0.4rem;">
+                        <option value="" disabled selected>${isAr ? '-- اختر الكائن --' : '-- Select Creature --'}</option>
+                        ${creatureOptions}
+                    </select>
+
+                    <select id="grant-tier" class="auth-input" style="margin-top: 0.4rem;">
+                        <option value="" disabled selected>${isAr ? '-- اختر الندرة --' : '-- Select Tier --'}</option>
+                        <option value="common">${isAr ? 'عادية (Common)' : 'Common'}</option>
+                        <option value="silver">${isAr ? 'فضية (Silver)' : 'Silver'}</option>
+                        <option value="gold">${isAr ? 'ذهبية (Gold)' : 'Gold'}</option>
+                        <option value="diamond">${isAr ? 'ماسية (Diamond)' : 'Diamond'}</option>
+                        <option value="mythic">${isAr ? 'خرافية (Mythic)' : 'Mythic'}</option>
+                        <option value="cosmic">${isAr ? 'كونية (Cosmic)' : 'Cosmic'}</option>
+                    </select>
+
+                    <button onclick="handleAdminAction('grantCard')" class="admin-action-btn primary" style="margin-top: 0.5rem;">
+                        <i class="fas fa-paper-plane"></i> ${isAr ? 'إرسال البطاقة' : 'Send Card'}
+                    </button>
+                </div>
+            </div>
+            <div id="admin-cards-result" class="auth-error hidden"></div>
+        </div>
+    `;
+}
+
 
 async function renderAdminUsersTab(isAr) {
     const content = document.getElementById('admin-tab-content');
@@ -699,6 +745,19 @@ async function handleAdminAction(action) {
             customMessage = val('xp-message') || '';
             result = await window.firebaseDB.setUserXP(targetId, parseInt(val('xp-amount'), 10) || 0);
             break;
+        case 'grantCard':
+            targetId = (val('grant-target-id') || '').replace(/\D/g, '');
+            const creatureId = val('grant-creature-id');
+            const tier = val('grant-tier');
+            
+            if (!creatureId || !tier) {
+                result = { success: false, error: isAr ? 'يجب اختيار الكائن والندرة' : 'Must select creature and tier' };
+                break;
+            }
+            
+            result = await window.firebaseDB.grantCardToUser(targetId, creatureId, tier);
+            customMessage = isAr ? `لقد تلقيت هدية من الإدارة: بطاقة ${tier} جديدة!` : `You received a gift from Admin: a new ${tier} card!`;
+            break; 
         case 'setLevel':
             targetId = (val('level-target-id') || '').replace(/\D/g, '');
             result = await window.firebaseDB.setUserLevel(targetId, parseInt(val('level-value'), 10) || 1);
@@ -780,6 +839,7 @@ async function handleAdminAction(action) {
 function getActionResultContainer(action) {
     if (['giftGems','removeGems'].includes(action)) return 'gems';
     if (['setXP','setLevel'].includes(action)) return 'xp';
+    if (['grantCard'].includes(action)) return 'cards';
     if (['unlockAch','lockAch','unlockDex','lockDex'].includes(action)) return 'events';
     if (['sendMessage'].includes(action)) return 'msg';
     if (['ban','tempBan','unban'].includes(action)) return 'ban';
