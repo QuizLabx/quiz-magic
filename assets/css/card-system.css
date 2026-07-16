@@ -178,17 +178,6 @@ html.theme-space .btn-card:hover {
     background: rgba(10, 0, 5, 0.9); 
 }
 
-/* 🌑 البطاقة المظلمة (Dark - الثقب الأسود) */
-.tier-dark { 
-    border-color: #1a1a1a; 
-    box-shadow: 0 0 40px rgba(0, 0, 0, 0.95), inset 0 0 20px rgba(30, 0, 50, 0.8); 
-}
-.tier-dark .gallery-badge { 
-    color: #8a8a8a; 
-    text-shadow: 0 0 10px #4b0082; 
-    background: rgba(0, 0, 0, 0.95); 
-}
-
 /* 🌌 البطاقة الكونية (Cosmic) */
 .tier-cosmic { 
     border-color: #00ffff; 
