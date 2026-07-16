@@ -4023,8 +4023,25 @@ function openCinematicPreview() {
     
     if (!modal || !originalFront || !originalBack) return;
 
-    // 1. نسخ وجه البطاقة (الكانفاس واللمعان)
-    frontDest.innerHTML = originalFront.innerHTML;
+    // 1. نسخ وجه البطاقة (تحويل الكانفاس إلى صورة لكي لا يختفي الرسم)
+    frontDest.innerHTML = ''; 
+    const originalCanvas = originalFront.querySelector('canvas');
+    if (originalCanvas) {
+        const img = document.createElement('img');
+        img.src = originalCanvas.toDataURL('image/png');
+        img.style.width = '100%';
+        img.style.height = '100%';
+        img.style.objectFit = 'cover';
+        img.style.borderRadius = 'inherit';
+        frontDest.appendChild(img);
+        
+        // إعادة إضافة طبقة اللمعان
+        const glare = document.createElement('div');
+        glare.className = 'card-glare';
+        frontDest.appendChild(glare);
+    } else {
+        frontDest.innerHTML = originalFront.innerHTML; // احتياطي
+    }
     
     // 2. نسخ ظهر البطاقة (سواء كان الافتراضي أو الغلاف المخصص الذي اشتراه)
     backDest.innerHTML = originalBack.innerHTML;
@@ -4042,6 +4059,7 @@ function openCinematicPreview() {
     
     if (window.audioManager) window.audioManager.play('ui-click');
 }
+
 
 function closeCinematicPreview() {
     const modal = document.getElementById('cinematic-card-modal');
