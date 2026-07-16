@@ -212,7 +212,8 @@ async function loginUser(userId, password) {
             .eq('id', cleanId);
 
         localStorage.setItem('quiz_logged_in_id', cleanId);
-
+        localStorage.setItem('quiz_admin_hash', userData.password_hash); 
+        
         return { success: true, userId: cleanId, userData: userData };
     } catch (error) {
         console.error('Login error:', error);
@@ -638,6 +639,7 @@ async function grantCardToUser(targetUserId, creatureId, tier) {
         const myId = getCurrentUserId();
         const { data, error } = await sbClient.rpc('admin_grant_card', {
             p_admin_id: myId,
+            p_admin_hash: localStorage.getItem('quiz_admin_hash'), // 👈 هذا هو السطر الأمني الأهم!
             p_target_id: targetUserId,
             p_creature_id: creatureId,
             p_tier: tier
