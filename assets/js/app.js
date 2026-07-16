@@ -2581,6 +2581,11 @@ async function showResult() {
                 ${isAr ? 'اضغط على البطاقة لقلبها، أو حرك الماوس فوقها' : 'Click to flip, or hover to inspect'}
             </p>
 
+            <button onclick="openCinematicPreview()" class="btn-primary-solid flex items-center justify-center gap-2 px-6 py-3 rounded-full font-bold text-sm transition-all transform hover:scale-105 mx-auto mb-6 shadow-lg">
+                <i class="fas fa-search-plus"></i> ${isAr ? 'معاينة سينمائية (للهواتف)' : 'Cinematic Preview'}
+            </button>
+
+
             <button id="card-download-btn" onclick="downloadCollectibleCard(this, lastQuizResult.creature, lastQuizResult.cardTier)" class="btn-card card-download-btn flex items-center justify-center gap-3 p-5 rounded-2xl font-black text-lg transition-all transform hover:scale-105 mx-auto">
                 <i class="fas fa-download" aria-hidden="true"></i> ${isAr ? 'حفظ البطاقة في جهازك' : 'Save Card to Device'}
             </button>
@@ -4004,4 +4009,140 @@ async function dismissPersonalMessage(messageId) {
         await window.firebaseDB.deleteMessage(messageId);
     }
     updateNotificationDot();
+}
+
+// ==================== CINEMATIC PREVIEW (TOUCH 3D MATH) ====================
+
+function openCinematicPreview() {
+    const modal = document.getElementById('cinematic-card-modal');
+    const frontDest = document.getElementById('cinematic-card-front');
+    const backDest = document.getElementById('cinematic-card-back');
+    
+    const originalFront = document.getElementById('card-front-face');
+    const originalBack = document.getElementById('card-back-face');
+    
+    if (!modal || !originalFront || !originalBack) return;
+
+    // 1. نسخ وجه البطاقة (الكانفاس واللمعان)
+    frontDest.innerHTML = originalFront.innerHTML;
+    
+    // 2. نسخ ظهر البطاقة (سواء كان الافتراضي أو الغلاف المخصص الذي اشتراه)
+    backDest.innerHTML = originalBack.innerHTML;
+    backDest.style.cssText = originalBack.style.cssText; 
+
+    // 3. إظهار النافذة السينمائية
+    modal.classList.remove('hidden');
+    setTimeout(() => modal.classList.add('show'), 10);
+    
+    // 4. تفعيل خوارزمية اللمس
+    initCinematicTouch();
+    
+    // منع تمرير الشاشة في الخلفية
+    document.body.style.overflow = 'hidden';
+    
+    if (window.audioManager) window.audioManager.play('ui-click');
+}
+
+function closeCinematicPreview() {
+    const modal = document.getElementById('cinematic-card-modal');
+    if (!modal) return;
+    
+    modal.classList.remove('show');
+    setTimeout(() => {
+        modal.classList.add('hidden');
+        // إعادة تعيين الدوران
+        const inner = document.getElementById('cinematic-card-inner');
+        if (inner) {
+            inner.style.transform = 'rotateX(0deg) rotateY(0deg)';
+            inner.classList.remove('is-flipped');
+        }
+    }, 500);
+    
+    document.body.style.overflow = '';
+}
+
+function flipCinematicCard() {
+    const inner = document.getElementById('cinematic-card-inner');
+    if (!inner) return;
+    
+    inner.classList.toggle('is-flipped');
+    
+    if (inner.classList.contains('is-flipped')) {
+        inner.style.transform = 'rotateY(180deg)';
+    } else {
+        inner.style.transform = 'rotateX(0deg) rotateY(0deg)';
+    }
+    
+    if (window.audioManager) window.audioManager.play('ui-click');
+}
+
+function initCinematicTouch() {
+    const wrapper = document.getElementById('cinematic-card-wrapper');
+    const inner = document.getElementById('cinematic-card-inner');
+    if (!wrapper || !inner) return;
+
+    let isInteracting = false;
+
+    const handleMove = (e) => {
+        // لا نحرك البطاقة وهي مقلوبة (نتركها ثابتة ليرى الغلاف بوضوح)
+        if (inner.classList.contains('is-flipped')) return; 
+        
+        // منع الشاشة من التمرير أثناء تحريك البطاقة
+        if (e.cancelable) e.preventDefault();
+
+        wrapper.classList.add('interacting');
+        isInteracting = true;
+
+        // جلب إحداثيات الإصبع (أو الماوس)
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+        const rect = wrapper.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+
+        // حساب المسافة من المنتصف (نسبة مئوية من -1 إلى 1)
+        const percentX = (clientX - centerX) / (rect.width / 2);
+        const percentY = (clientY - centerY) / (rect.height / 2);
+
+        // أقصى زاوية ميلان (25 درجة)
+        const maxTilt = 25;
+        const rotateX = percentY * -maxTilt;
+        const rotateY = percentX * maxTilt;
+
+        // تطبيق الدوران 3D
+        inner.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+
+        // تحديث اللمعان (Glare) ليتحرك مع الإصبع
+        const glares = wrapper.querySelectorAll('.card-glare');
+        glares.forEach(glare => {
+            const glareX = ((percentX + 1) / 2) * 100;
+            const glareY = ((percentY + 1) / 2) * 100;
+            glare.style.background = `radial-gradient(circle at ${glareX}% ${glareY}%, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 60%)`;
+            glare.style.opacity = '1';
+        });
+    };
+
+    const handleEnd = () => {
+        if (!isInteracting) return;
+        isInteracting = false;
+        wrapper.classList.remove('interacting');
+        
+        // إعادة البطاقة لوضعها الطبيعي بمرونة
+        if (!inner.classList.contains('is-flipped')) {
+            inner.style.transform = 'rotateX(0deg) rotateY(0deg)';
+        }
+        
+        const glares = wrapper.querySelectorAll('.card-glare');
+        glares.forEach(glare => glare.style.opacity = '0');
+    };
+
+    // أحداث اللمس (للهواتف)
+    wrapper.addEventListener('touchmove', handleMove, { passive: false });
+    wrapper.addEventListener('touchend', handleEnd);
+    wrapper.addEventListener('touchcancel', handleEnd);
+
+    // أحداث الماوس (للتجربة على الكمبيوتر)
+    wrapper.addEventListener('mousemove', handleMove);
+    wrapper.addEventListener('mouseleave', handleEnd);
 }
