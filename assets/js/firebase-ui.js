@@ -287,7 +287,7 @@ async function renderAccountInfo(container) {
                 <div class="account-stat"><div class="account-stat-icon">⚡</div><div class="account-stat-value">${xp}</div><div class="account-stat-label">XP</div></div>
             </div>
 
-            ${(isAdmin || isMod) ? renderAdminPanel(isAr) : ''}
+            ${(isAdmin || isMod) ? renderAdminPanel(isAr, isAdmin, data.mod_permissions || {}) : ''}
 
             <button onclick="handleLogout()" class="account-choice-btn danger auth-submit-btn">
                 <i class="fas fa-sign-out-alt"></i>
@@ -319,16 +319,28 @@ function handleLogout() {
 
 // ==================== ADMIN PANEL (Dashboard مسطح جديد) ====================
 
-function renderAdminPanel(isAr) {
+function renderAdminPanel(isAr, isAdmin, perms) {
     const t = isAr ? {
         title: 'لوحة التحكم',
-        gems: 'الجواهر', xp: 'النقاط والمستوى', users: 'المستخدمون',
+        gems: 'الجواهر', xp: 'النقاط والمستوى', cards: 'البطاقات', users: 'المستخدمون',
         ban: 'الحظر', events: 'الأحداث', msg: 'الرسائل', staff: 'الإدارة', stats: 'الإحصائيات'
     } : {
         title: 'Control Panel',
-        gems: 'Gems', xp: 'XP & Level', users: 'Users',
+        gems: 'Gems', xp: 'XP & Level', cards: 'Cards', users: 'Users',
         ban: 'Bans', events: 'Events', msg: 'Messages', staff: 'Staff', stats: 'Stats'
     };
+
+    // فلترة التابات بناءً على الصلاحيات
+    let tabsHtml = '';
+    if (isAdmin || perms.giftGems || perms.removeGems) tabsHtml += `<button onclick="switchAdminTab('gems', this)" class="dash-tab active">${isAr ? '💎 جواهر' : '💎 Gems'}</button>`;
+    if (isAdmin || perms.editXP || perms.editLevel) tabsHtml += `<button onclick="switchAdminTab('xp', this)" class="dash-tab">${isAr ? '⚡ نقاط' : '⚡ XP'}</button>`;
+    if (isAdmin) tabsHtml += `<button onclick="switchAdminTab('cards', this)" class="dash-tab">${isAr ? '🃏 بطاقات' : '🃏 Cards'}</button>`;
+    if (isAdmin) tabsHtml += `<button onclick="switchAdminTab('events', this)" class="dash-tab">${isAr ? '🏆 أحداث' : '🏆 Events'}</button>`;
+    if (isAdmin) tabsHtml += `<button onclick="switchAdminTab('msg', this)" class="dash-tab">${isAr ? '💌 رسائل' : '💌 Messages'}</button>`;
+    if (isAdmin || perms.listUsers || perms.searchUser) tabsHtml += `<button onclick="switchAdminTab('users', this)" class="dash-tab">${isAr ? '👥 مستخدمون' : '👥 Users'}</button>`;
+    if (isAdmin || perms.banUser || perms.unbanUser) tabsHtml += `<button onclick="switchAdminTab('ban', this)" class="dash-tab">${isAr ? '🚫 حظر' : '🚫 Bans'}</button>`;
+    if (isAdmin) tabsHtml += `<button onclick="switchAdminTab('staff', this)" class="dash-tab">${isAr ? '👑 إدارة' : '👑 Staff'}</button>`;
+    if (isAdmin) tabsHtml += `<button onclick="switchAdminTab('stats', this)" class="dash-tab">${isAr ? '📊 إحصائيات' : '📊 Stats'}</button>`;
 
     return `
         <div class="admin-panel admin-dashboard">
@@ -336,18 +348,12 @@ function renderAdminPanel(isAr) {
                 <h4 class="dashboard-title"><i class="fas fa-crown"></i> ${t.title}</h4>
             </div>
             <div class="dashboard-tabs">
-                <button onclick="switchAdminTab('gems', this)" class="dash-tab active">${isAr ? '💎 جواهر' : '💎 Gems'}</button>
-                <button onclick="switchAdminTab('xp', this)" class="dash-tab">${isAr ? '⚡ نقاط' : '⚡ XP'}</button>
-                <button onclick="switchAdminTab('cards', this)" class="dash-tab">${isAr ? '🃏 بطاقات' : '🃏 Cards'}</button>
-                <button onclick="switchAdminTab('events', this)" class="dash-tab">${isAr ? '🏆 أحداث' : '🏆 Events'}</button>
-                <button onclick="switchAdminTab('msg', this)" class="dash-tab">${isAr ? '💌 رسائل' : '💌 Messages'}</button>
-                <button onclick="switchAdminTab('users', this)" class="dash-tab">${isAr ? '👥 مستخدمون' : '👥 Users'}</button>
-                <button onclick="switchAdminTab('ban', this)" class="dash-tab">${isAr ? '🚫 حظر' : '🚫 Bans'}</button>
-                <button onclick="switchAdminTab('staff', this)" class="dash-tab">${isAr ? '👑 إدارة' : '👑 Staff'}</button>
-                <button onclick="switchAdminTab('stats', this)" class="dash-tab">${isAr ? '📊 إحصائيات' : '📊 Stats'}</button>
+                ${tabsHtml}
             </div>
             <div id="admin-tab-content" class="dashboard-content">
-                <div class="account-info-loading"><i class="fas fa-spinner fa-spin"></i></div>
+                <p style="text-align:center; padding: 20px; color: var(--text-muted);">
+                    ${isAr ? 'اختر قسماً من الأعلى' : 'Select a tab above'}
+                </p>
             </div>
         </div>
     `;
