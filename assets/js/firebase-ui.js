@@ -309,6 +309,7 @@ function handleLogout() {
     localStorage.removeItem('quiz_xp');
     localStorage.removeItem('quiz_gems');
     localStorage.removeItem('quiz_level');
+    localStorage.removeItem('quiz_admin_hash'); 
 
     if (typeof showProfileNotification === 'function') {
         showProfileNotification(isAr ? '👋 تم تسجيل الخروج' : '👋 Logged out', 'success');
