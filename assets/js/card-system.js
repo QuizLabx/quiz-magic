@@ -1050,15 +1050,19 @@ async function renderCollectibleCardCanvas(creature, tier) {
     ctx.save();
     ctx.textAlign = 'center';
     ctx.font = '700 26px Cairo, Tajawal, sans-serif';
-    drawEngravedText(ctx, isAr ? 'المستكشف' : 'Explorer', W / 2, footerY + 20, visual, false);
+    // 🌟 إنزال كلمة "المستكشف" قليلاً للأسفل
+    drawEngravedText(ctx, isAr ? 'المستكشف' : 'Explorer', W / 2, footerY + 40, visual, false);
     
-    // 🌟 تلوين اسم المستخدم بالذهبي الساطع
+    // 🌟 تلوين اسم المستخدم بالذهبي الساطع وتكبيره
     const originalAccent = visual.textAccent;
     visual.textAccent = '#fbbf24'; // لون ذهبي مميز
-    ctx.font = '900 50px Cairo, Tajawal, sans-serif';
-    drawEngravedText(ctx, username, W / 2, footerY + 70, visual, true);
+    // 🌟 تكبير الخط من 50 إلى 60
+    ctx.font = '900 60px Cairo, Tajawal, sans-serif';
+    // 🌟 إنزال الاسم لزيادة الفراغ بينه وبين كلمة المستكشف
+    drawEngravedText(ctx, username, W / 2, footerY + 100, visual, true);
     visual.textAccent = originalAccent; // استرجاع اللون الأصلي لكي لا تتأثر باقي العناصر
     ctx.restore();
+
 
     // --- 3. الرقم التسلسلي والختم (على اليمين) ---
     const serialText = `SN: ${Math.random().toString(36).substr(2, 6).toUpperCase()}-${Math.floor(Math.random() * 9000) + 1000}`;
