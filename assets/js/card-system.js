@@ -685,24 +685,32 @@ function drawQRCode(ctx, x, y, size) {
 
 // ==================== MAIN CARD RENDERER (المرحلة 2 و 3: النقاء والمادة) ====================
 
-// 1. دالة النحت المحدثة (تستخدم إضاءة وظلال المادة بدلاً من الألوان المسطحة)
+// 1. دالة النحت المحدثة (تستخدم إضاءة وظلال قوية لضمان القراءة)
 function drawEngravedText(ctx, text, x, y, visual, isEmbossed = false) {
     ctx.save();
-    const offset = 2; // عمق نحت ناعم وأنيق
+    const offset = 1.5; 
     
-    // رسم الإضاءة (Highlight)
-    ctx.fillStyle = visual.highlight;
-    ctx.fillText(text, x + (isEmbossed ? -offset : offset), y + (isEmbossed ? -offset : offset));
+    // 🌟 السحر هنا: ظل أسود قوي جداً خلف النص ليفصله عن أي خلفية مضيئة
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
+    ctx.shadowBlur = 8;
+    ctx.shadowOffsetX = 2;
+    ctx.shadowOffsetY = 2;
     
-    // رسم الظل (Shadow)
-    ctx.fillStyle = visual.shadow;
-    ctx.fillText(text, x + (isEmbossed ? offset : -offset), y + (isEmbossed ? offset : -offset));
-    
-    // رسم اللون الأساسي
+    // رسم اللون الأساسي للنص
     ctx.fillStyle = visual.textAccent;
     ctx.fillText(text, x, y);
+    
+    // إيقاف الظل القوي لكي لا يتكرر في اللمعة
+    ctx.shadowColor = 'transparent';
+    
+    // رسم الإضاءة (Highlight) لإعطاء تأثير الحفر/البروز
+    ctx.fillStyle = visual.highlight;
+    ctx.globalAlpha = 0.6;
+    ctx.fillText(text, x + (isEmbossed ? -offset : offset), y + (isEmbossed ? -offset : offset));
+    
     ctx.restore();
 }
+
 
 // 2. تحديث مخطط القوى ليتناسب مع النقاء الجديد
 function drawCardRadarChart(ctx, cx, cy, radius, creature, visual, isAr) {
@@ -773,12 +781,17 @@ function drawCardRadarChart(ctx, cx, cy, radius, creature, visual, isAr) {
         const x = Math.cos(angle) * labelRadius;
         const y = Math.sin(angle) * labelRadius;
         
-        ctx.shadowColor = visual.shadow;
-        ctx.shadowBlur = 6;
+        // 🌟 ظل أسود قوي جداً لنصوص الرادار لضمان قراءتها فوق أي لون
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+        ctx.shadowBlur = 10;
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 2;
+        
         ctx.fillText(labels[i], x, y);
     }
     ctx.restore();
 }
+
 
 // 3. الدالة الرئيسية (التحفة الفنية)
 async function renderCollectibleCardCanvas(creature, tier) {
@@ -964,30 +977,30 @@ async function renderCollectibleCardCanvas(creature, tier) {
     yCursor += 100;
 
     // ==========================================
-    // 7. صندوق الوصف (زجاج نقي - Glassmorphism)
+    // 7. صندوق الوصف (زجاج داكن لضمان القراءة)
     // ==========================================
     const descH = 220;
     ctx.save();
-    // خلفية زجاجية نقية جداً
-    ctx.fillStyle = visual.isTranslucent ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.2)';
+    // 🌟 جعلنا الزجاج داكناً بنسبة 45% لكي يبرز النص الأبيض فوقه
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
     roundRectPath(ctx, pad + 20, yCursor, innerW - 40, descH, 20);
     ctx.fill();
     
     // لمعة الزجاج على الحواف
     ctx.strokeStyle = visual.highlight;
-    ctx.lineWidth = 1;
-    ctx.globalAlpha = 0.5;
+    ctx.lineWidth = 1.5;
+    ctx.globalAlpha = 0.4;
     ctx.stroke();
     ctx.globalAlpha = 1.0;
 
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.font = '500 28px Cairo, Tajawal, sans-serif';
+    // 🌟 زيادة سماكة الخط إلى 700 (Bold) ليكون أوضح
+    ctx.font = '700 28px Cairo, Tajawal, sans-serif'; 
     
     const description = creature ? (creature.description || '') : '';
     const descLines = wrapText(ctx, description, innerW - 100, 4);
     descLines.forEach((line, i) => {
-        // نصوص الوصف محفورة بنعومة
         drawEngravedText(ctx, line, W / 2, yCursor + descH / 2 + (i - descLines.length / 2 + 0.5) * 38, visual, false);
     });
     ctx.restore();
