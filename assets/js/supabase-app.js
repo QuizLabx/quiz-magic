@@ -479,62 +479,44 @@ async function banUser(targetUserId, reason) {
     try {
         if (!isLoggedIn()) return { success: false, error: 'not_logged_in' };
         if (!initSupabase()) return { success: false, error: 'supabase_not_ready' };
-
         const myId = getCurrentUserId();
         const { data, error } = await sbClient.rpc('admin_ban_user', {
-            p_admin_id: myId,
-            p_target_id: targetUserId,
-            p_reason: reason || '',
-            p_duration_ms: null
+            p_admin_id: myId, p_admin_hash: localStorage.getItem('quiz_admin_hash'),
+            p_target_id: targetUserId, p_reason: reason || '', p_duration_ms: null
         });
-
         if (error) return { success: false, error: error.message || 'rpc_failed' };
         return data || { success: true };
-    } catch (e) {
-        console.error('banUser error:', e);
-        return { success: false, error: 'server_error' };
-    }
+    } catch (e) { return { success: false, error: 'server_error' }; }
 }
 
 async function tempBanUser(targetUserId, durationMs, reason) {
     try {
         if (!isLoggedIn()) return { success: false, error: 'not_logged_in' };
         if (!initSupabase()) return { success: false, error: 'supabase_not_ready' };
-
         const myId = getCurrentUserId();
         const { data, error } = await sbClient.rpc('admin_ban_user', {
-            p_admin_id: myId,
-            p_target_id: targetUserId,
-            p_reason: reason || '',
-            p_duration_ms: durationMs
+            p_admin_id: myId, p_admin_hash: localStorage.getItem('quiz_admin_hash'),
+            p_target_id: targetUserId, p_reason: reason || '', p_duration_ms: durationMs
         });
-
         if (error) return { success: false, error: error.message || 'rpc_failed' };
         return data || { success: true };
-    } catch (e) {
-        console.error('tempBanUser error:', e);
-        return { success: false, error: 'server_error' };
-    }
+    } catch (e) { return { success: false, error: 'server_error' }; }
 }
 
 async function unbanUser(targetUserId) {
     try {
         if (!isLoggedIn()) return { success: false, error: 'not_logged_in' };
         if (!initSupabase()) return { success: false, error: 'supabase_not_ready' };
-
         const myId = getCurrentUserId();
         const { data, error } = await sbClient.rpc('admin_unban_user', {
-            p_admin_id: myId,
+            p_admin_id: myId, p_admin_hash: localStorage.getItem('quiz_admin_hash'),
             p_target_id: targetUserId
         });
-
         if (error) return { success: false, error: error.message || 'rpc_failed' };
         return data || { success: true };
-    } catch (e) {
-        console.error('unbanUser error:', e);
-        return { success: false, error: 'server_error' };
-    }
+    } catch (e) { return { success: false, error: 'server_error' }; }
 }
+
 
 // ==================== ADMIN: MODERATORS ====================
 
@@ -542,93 +524,63 @@ async function setModerator(targetUserId, permissions) {
     try {
         if (!isLoggedIn()) return { success: false, error: 'not_logged_in' };
         if (!initSupabase()) return { success: false, error: 'supabase_not_ready' };
-
         const myId = getCurrentUserId();
         const { data, error } = await sbClient.rpc('admin_set_moderator', {
-            p_admin_id: myId,
-            p_target_id: targetUserId,
-            p_permissions: permissions
+            p_admin_id: myId, p_admin_hash: localStorage.getItem('quiz_admin_hash'),
+            p_target_id: targetUserId, p_permissions: permissions
         });
-
         if (error) return { success: false, error: error.message || 'rpc_failed' };
         return data || { success: true };
-    } catch (e) {
-        console.error('setModerator error:', e);
-        return { success: false, error: 'server_error' };
-    }
+    } catch (e) { return { success: false, error: 'server_error' }; }
 }
 
 async function setAdmin(targetUserId, makeAdmin) {
     try {
         if (!isLoggedIn()) return { success: false, error: 'not_logged_in' };
         if (!initSupabase()) return { success: false, error: 'supabase_not_ready' };
-
         const myId = getCurrentUserId();
         const { data, error } = await sbClient.rpc('admin_set_admin', {
-            p_admin_id: myId,
-            p_target_id: targetUserId,
-            p_make_admin: makeAdmin
+            p_admin_id: myId, p_admin_hash: localStorage.getItem('quiz_admin_hash'),
+            p_target_id: targetUserId, p_make_admin: makeAdmin
         });
-
         if (error) return { success: false, error: error.message || 'rpc_failed' };
         return data || { success: true };
-    } catch (e) {
-        console.error('setAdmin error:', e);
-        return { success: false, error: 'server_error' };
-    }
+    } catch (e) { return { success: false, error: 'server_error' }; }
 }
 
-// ==================== ADMIN: PASSWORD RESET ====================
+// ==================== ADMIN: PASSWORD RESET ==================== و DELETE USER)
 
 async function resetUserPassword(targetUserId, newPassword) {
     try {
         if (!isLoggedIn()) return { success: false, error: 'not_logged_in' };
         if (!initSupabase()) return { success: false, error: 'supabase_not_ready' };
-
-        if (!newPassword || newPassword.length < 4) {
-            return { success: false, error: 'password_short' };
-        }
-
-        // حساب hash في المتصفح (مثل نظام التسجيل)
+        if (!newPassword || newPassword.length < 4) return { success: false, error: 'password_short' };
         const salt = generateSalt();
         const hashedPassword = await hashPassword(newPassword, salt);
-
         const myId = getCurrentUserId();
         const { data, error } = await sbClient.rpc('admin_reset_password_hash', {
-            p_admin_id: myId,
-            p_target_id: targetUserId,
-            p_password_hash: hashedPassword,
-            p_salt: salt
+            p_admin_id: myId, p_admin_hash: localStorage.getItem('quiz_admin_hash'),
+            p_target_id: targetUserId, p_password_hash: hashedPassword, p_salt: salt
         });
-
         if (error) return { success: false, error: error.message || 'rpc_failed' };
         return data || { success: true };
-    } catch (e) {
-        console.error('resetUserPassword error:', e);
-        return { success: false, error: 'server_error' };
-    }
+    } catch (e) { return { success: false, error: 'server_error' }; }
 }
-
-// ==================== ADMIN: DELETE USER ====================
 
 async function deleteUserPermanent(targetUserId) {
     try {
         if (!isLoggedIn()) return { success: false, error: 'not_logged_in' };
         if (!initSupabase()) return { success: false, error: 'supabase_not_ready' };
-
         const myId = getCurrentUserId();
         const { data, error } = await sbClient.rpc('admin_delete_user', {
-            p_admin_id: myId,
+            p_admin_id: myId, p_admin_hash: localStorage.getItem('quiz_admin_hash'),
             p_target_id: targetUserId
         });
-
         if (error) return { success: false, error: error.message || 'rpc_failed' };
         return data || { success: true };
-    } catch (e) {
-        console.error('deleteUserPermanent error:', e);
-        return { success: false, error: 'server_error' };
-    }
+    } catch (e) { return { success: false, error: 'server_error' }; }
 }
+
 
 // ==================== ADMIN: CARDS ====================
 
@@ -737,72 +689,52 @@ async function setAllAchievements(targetUserId, unlock) {
     try {
         if (!isLoggedIn()) return { success: false, error: 'not_logged_in' };
         if (!initSupabase()) return { success: false, error: 'supabase_not_ready' };
-
         const myId = getCurrentUserId();
         const { data, error } = await sbClient.rpc('admin_set_all_achievements', {
-            p_admin_id: myId,
-            p_target_id: targetUserId,
-            p_unlock: unlock
+            p_admin_id: myId, p_admin_hash: localStorage.getItem('quiz_admin_hash'),
+            p_target_id: targetUserId, p_unlock: unlock
         });
-
         if (error) return { success: false, error: error.message || 'rpc_failed' };
-
-        // مزامنة محلية لو كان الهدف هو نفسي
-        if (targetUserId === myId && data && data.success) {
-            // تحديث الإنجازات محلياً (سيُجلب تلقائياً عند فتح صفحة الإنجازات)
-        }
         return data || { success: true };
-    } catch (e) {
-        console.error('setAllAchievements error:', e);
-        return { success: false, error: 'server_error' };
-    }
+    } catch (e) { return { success: false, error: 'server_error' }; }
 }
-
 // فتح/إغلاق كل الموسوعة لمستخدم
 async function setAllPokedex(targetUserId, unlock) {
     try {
         if (!isLoggedIn()) return { success: false, error: 'not_logged_in' };
         if (!initSupabase()) return { success: false, error: 'supabase_not_ready' };
-
         const myId = getCurrentUserId();
         const { data, error } = await sbClient.rpc('admin_set_all_pokedex', {
-            p_admin_id: myId,
-            p_target_id: targetUserId,
+            p_admin_id: myId, 
+            p_admin_hash: localStorage.getItem('quiz_admin_hash'), // 👈 الدرع الأمني
+            p_target_id: targetUserId, 
             p_unlock: unlock
         });
-
         if (error) return { success: false, error: error.message || 'rpc_failed' };
         return data || { success: true };
-    } catch (e) {
-        console.error('setAllPokedex error:', e);
-        return { success: false, error: 'server_error' };
-    }
+    } catch (e) { return { success: false, error: 'server_error' }; }
 }
 
 // ==================== PERSONAL MESSAGES (الرسائل المخصصة) ====================
 
-// إرسال رسالة لمستخدم
 async function sendMessageToUser(targetUserId, title, message, icon) {
     try {
         if (!isLoggedIn()) return { success: false, error: 'not_logged_in' };
         if (!initSupabase()) return { success: false, error: 'supabase_not_ready' };
-
         const myId = getCurrentUserId();
         const { data, error } = await sbClient.rpc('admin_send_message', {
-            p_admin_id: myId,
-            p_target_id: targetUserId,
-            p_title: title,
-            p_message: message,
+            p_admin_id: myId, 
+            p_admin_hash: localStorage.getItem('quiz_admin_hash'), // 👈 الدرع الأمني
+            p_target_id: targetUserId, 
+            p_title: title, 
+            p_message: message, 
             p_icon: icon || '💌'
         });
-
         if (error) return { success: false, error: error.message || 'rpc_failed' };
         return data || { success: true };
-    } catch (e) {
-        console.error('sendMessageToUser error:', e);
-        return { success: false, error: 'server_error' };
-    }
+    } catch (e) { return { success: false, error: 'server_error' }; }
 }
+
 
 // جلب رسائل المستخدم الحالي
 async function fetchMyMessages() {
