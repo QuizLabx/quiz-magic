@@ -432,20 +432,31 @@ async function fetchAndDisplayOffers() {
     `;
 
     try {
-        // البحث عن اتصال Supabase تلقائياً
-        const supabaseObj = window.supabaseClient || window.supabase || (typeof supabase !== 'undefined' ? supabase : null);
-        
-        if (!supabaseObj) {
-            throw new Error("لم يتم العثور على اتصال بقاعدة البيانات.");
+        // 1. البحث عن ID اللاعب بجميع الطرق الممكنة
+        let userId = null;
+
+        if (typeof getCurrentUserId === 'function') {
+            userId = getCurrentUserId();
+        } else if (window.firebaseDB && typeof window.firebaseDB.getCurrentUserId === 'function') {
+            userId = window.firebaseDB.getCurrentUserId();
+        } else if (typeof supabaseClient !== 'undefined' && supabaseClient.auth) {
+            const { data } = await supabaseClient.auth.getSession();
+            userId = data?.session?.user?.id;
+        } else if (window.supabaseClient && window.supabaseClient.auth) {
+            const { data } = await window.supabaseClient.auth.getSession();
+            userId = data?.session?.user?.id;
+        } else {
+            // الطريقة الأقوى: البحث في LocalStorage مباشرة عن جلسة Supabase
+            const sbTokenKey = Object.keys(localStorage).find(k => k.includes('auth-token'));
+            if (sbTokenKey) {
+                const sessionData = JSON.parse(localStorage.getItem(sbTokenKey));
+                userId = sessionData?.user?.id;
+            }
         }
 
-        // 1. الحصول على ID اللاعب الحالي
-        const { data: { session } } = await supabaseObj.auth.getSession();
-        const userId = session?.user?.id;
-
+        // إذا لم نجد الحساب بعد كل هذه المحاولات
         if (!userId) {
-            container.innerHTML = `<p class="text-center text-red-500 col-span-full font-bold">يجب تسجيل الدخول أولاً لرؤية العروض.</p>`;
-            return;
+            throw new Error("لم نتمكن من العثور على حسابك. يرجى تسجيل الدخول أولاً.");
         }
 
         // 2. الاتصال بالدالة الآمنة (Edge Function) لجلب العروض
@@ -460,7 +471,7 @@ async function fetchAndDisplayOffers() {
         const data = await response.json();
 
         if (!data.success) {
-            throw new Error(data.error || 'حدث خطأ أثناء جلب العروض');
+            throw new Error(data.error || 'حدث خطأ أثناء جلب العروض من OGAds');
         }
 
         const offers = data.offers;
@@ -502,8 +513,7 @@ async function fetchAndDisplayOffers() {
         container.innerHTML = `
             <div class="text-center py-10 col-span-full">
                 <i class="fas fa-exclamation-triangle text-red-500 text-3xl mb-2"></i>
-                <p class="text-red-500 font-bold">حدث خطأ في الاتصال بالسيرفر.  
-يرجى المحاولة لاحقاً.</p>
+                <p class="text-red-500 font-bold">${error.message}</p>
             </div>
         `;
     }
