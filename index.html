@@ -106,34 +106,6 @@ z-index: -100;
     <div class="splash-loader"></div>
 </div>
 
-<!-- ==================== OGADS OFFERS MODAL ==================== -->
-<div id="offers-modal" class="achievements-modal hidden">
-    <div class="modal-overlay" onclick="closeOffersModal()"></div>
-    <div class="modal-content" style="max-width: 800px;">
-        <div class="modal-header">
-            <h2 class="modal-title">
-                <i class="fas fa-gem text-accent"></i>
-                <span>جواهر مجانية 💎</span>
-            </h2>
-            <button onclick="closeOffersModal()" class="modal-close" aria-label="إغلاق">
-                <i class="fas fa-times" aria-hidden="true"></i>
-            </button>
-        </div>
-        <div class="modal-body">
-            <p class="text-center theme-text-muted mb-4">أكمل العروض التالية للحصول على جواهر مجانية فوراً!</p>
-            
-            <!-- مكان عرض العروض -->
-            <div id="offers-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="text-center py-10 col-span-full">
-                    <i class="fas fa-spinner fa-spin text-3xl text-accent"></i>
-                    <p class="mt-2">جاري جلب العروض...</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-	
 <!-- ==================== USERNAME MODAL (NEW) ==================== -->
 <div id="username-modal" class="achievements-modal username-modal">
     <div class="modal-overlay"></div>
@@ -787,10 +759,6 @@ Mythical Analysis Result
                     <span class="gems-header-icon">💎</span>
                     <span id="store-gems-count" class="gems-header-count">0</span>
                 </div>
-				<button onclick="openOffersModal()" class="w-full py-3 mt-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold rounded-xl shadow-lg hover:scale-105 transition-transform flex items-center justify-center gap-2">
-    				<i class="fas fa-gift"></i>
-					احصل على جواهر مجانية 💎	
-				</button>
                 <button onclick="closeStoreModal()" class="modal-close"><i class="fas fa-times"></i></button>
             </div>
         </div>
