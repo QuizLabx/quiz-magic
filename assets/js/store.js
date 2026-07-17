@@ -402,3 +402,117 @@ async function sellDuplicateCard(creatureId, tier, reward) {
         console.error("Sell error:", err);
     }
 }
+
+// ==================== OGADS OFFERS SYSTEM ====================
+
+function openOffersModal() {
+    const modal = document.getElementById('offers-modal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        fetchAndDisplayOffers(); // جلب العروض فور فتح النافذة
+    }
+}
+
+function closeOffersModal() {
+    const modal = document.getElementById('offers-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+}
+
+async function fetchAndDisplayOffers() {
+    const container = document.getElementById('offers-container');
+    
+    // إظهار علامة التحميل
+    container.innerHTML = `
+        <div class="text-center py-10 col-span-full">
+            <i class="fas fa-spinner fa-spin text-3xl text-accent"></i>
+            <p class="mt-2 theme-text-muted">جاري البحث عن أفضل العروض لك...</p>
+        </div>
+    `;
+
+    try {
+        // البحث عن اتصال Supabase تلقائياً
+        const supabaseObj = window.supabaseClient || window.supabase || (typeof supabase !== 'undefined' ? supabase : null);
+        
+        if (!supabaseObj) {
+            throw new Error("لم يتم العثور على اتصال بقاعدة البيانات.");
+        }
+
+        // 1. الحصول على ID اللاعب الحالي
+        const { data: { session } } = await supabaseObj.auth.getSession();
+        const userId = session?.user?.id;
+
+        if (!userId) {
+            container.innerHTML = `<p class="text-center text-red-500 col-span-full font-bold">يجب تسجيل الدخول أولاً لرؤية العروض.</p>`;
+            return;
+        }
+
+        // 2. الاتصال بالدالة الآمنة (Edge Function) لجلب العروض
+        const response = await fetch('https://vjjdwsocdstdszjmbxvm.supabase.co/functions/v1/get-offers', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ userId: userId } )
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+            throw new Error(data.error || 'حدث خطأ أثناء جلب العروض');
+        }
+
+        const offers = data.offers;
+
+        // 3. إذا لم تكن هناك عروض متاحة في بلد اللاعب
+        if (!offers || offers.length === 0) {
+            container.innerHTML = `
+                <div class="text-center py-10 col-span-full">
+                    <i class="fas fa-box-open text-4xl theme-text-muted mb-3"></i>
+                    <p class="theme-text-muted font-bold">لا توجد عروض متاحة في بلدك حالياً.  
+يرجى المحاولة لاحقاً!</p>
+                </div>
+            `;
+            return;
+        }
+
+        // 4. رسم العروض في الواجهة
+        container.innerHTML = ''; // مسح علامة التحميل
+
+        offers.forEach(offer => {
+            const offerCard = document.createElement('div');
+            offerCard.className = 'bg-black/20 border theme-border rounded-xl p-4 flex flex-col items-center text-center hover:border-accent transition-colors shadow-md';
+            
+            offerCard.innerHTML = `
+                <img src="${offer.picture}" alt="${offer.name}" class="w-20 h-20 rounded-xl mb-3 object-cover shadow-lg">
+                <h3 class="font-bold text-lg mb-1">${offer.name}</h3>
+                <p class="text-sm theme-text-muted mb-4 line-clamp-2">${offer.description}</p>
+                <div class="mt-auto w-full">
+                    <a href="${offer.link}" target="_blank" onclick="handleOfferClick()" class="w-full block py-2 bg-accent text-white font-bold rounded-lg hover:bg-accent/80 transition-colors">
+                        احصل على ${offer.gems} 💎
+                    </a>
+                </div>
+            `;
+            container.appendChild(offerCard);
+        });
+
+    } catch (error) {
+        console.error('Error fetching offers:', error);
+        container.innerHTML = `
+            <div class="text-center py-10 col-span-full">
+                <i class="fas fa-exclamation-triangle text-red-500 text-3xl mb-2"></i>
+                <p class="text-red-500 font-bold">حدث خطأ في الاتصال بالسيرفر.  
+يرجى المحاولة لاحقاً.</p>
+            </div>
+        `;
+    }
+}
+
+function handleOfferClick() {
+    // رسالة تشجيعية تظهر للاعب عند الضغط على العرض
+    setTimeout(() => {
+        alert("تم تحويلك للعرض! 🚀\nأكمل الشروط المطلوبة وسوف تصلك الجواهر تلقائياً إلى حسابك 💎.");
+    }, 500);
+}
+
