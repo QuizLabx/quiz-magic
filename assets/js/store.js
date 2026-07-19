@@ -110,12 +110,7 @@ function changeStoreTab(tab) {
     tabs.forEach(t => t.classList.remove('active'));
     event.currentTarget.classList.add('active');
     
-    // إذا اختار المستخدم قسم العروض، نشغل دالة جلب العروض
-    if (tab === 'offers') {
-        renderOffersTab();
-    } else {
-        renderStoreGrid();
-    }
+    renderStoreGrid();
 }
 
 function renderStoreGrid() {
@@ -405,90 +400,5 @@ async function sellDuplicateCard(creatureId, tier, reward) {
         }
     } catch (err) {
         console.error("Sell error:", err);
-    }
-}
-
-// ==================== OGADS OFFERS (EDGE FUNCTION) ====================
-
-async function renderOffersTab() {
-    const grid = document.getElementById('store-grid');
-    const isAr = currentLang === 'ar';
-    
-    // إظهار شاشة تحميل أنيقة
-    grid.innerHTML = `
-        <div class="col-span-full text-center py-10">
-            <i class="fas fa-spinner fa-spin text-4xl text-accent mb-4"></i>
-            <p class="theme-text-secondary">${isAr ? 'جاري البحث عن كنوز وعروض متاحة لك...' : 'Searching for available offers...'}</p>
-        </div>
-    `;
-
-    // التحقق من تسجيل الدخول
-    if (!window.firebaseDB || !window.firebaseDB.isLoggedIn()) {
-        grid.innerHTML = `
-            <div class="col-span-full text-center py-10 text-red-400">
-                <i class="fas fa-lock text-4xl mb-4"></i>
-                <p>${isAr ? 'يجب تسجيل الدخول لرؤية العروض وربح الجواهر.' : 'Must be logged in to see offers.'}</p>
-            </div>
-        `;
-        return;
-    }
-
-    try {
-        // 🚀 استدعاء دالة الحافة (Edge Function) من Supabase
-        const { data, error } = await window.sbClient.functions.invoke('ogads-offers');
-
-        if (error) throw error;
-
-        const offers = data.offers || [];
-
-        // إذا لم تكن هناك عروض متاحة في دولة المستخدم
-        if (offers.length === 0) {
-            grid.innerHTML = `
-                <div class="col-span-full text-center py-10 text-slate-400">
-                    <i class="fas fa-box-open text-4xl mb-4"></i>
-                    <p>${isAr ? 'لا توجد عروض متاحة في منطقتك حالياً. عد لاحقاً!' : 'No offers available in your region right now.'}</p>
-                </div>
-            `;
-            return;
-        }
-
-        grid.innerHTML = '';
-        const userId = window.firebaseDB.getCurrentUserId();
-
-        // رسم العروض
-        offers.forEach(offer => {
-            // حساب الجواهر (الأرباح بالدولار × 1000)
-            const gemsReward = Math.floor(offer.payout * 1000);
-            
-            // دمج ID المستخدم في رابط العرض لكي يعرف السيرفر لمن يعطي الجواهر
-            const offerLink = offer.link + (offer.link.includes('?') ? '&' : '?') + 'aff_sub=' + encodeURIComponent(userId);
-
-            const card = document.createElement('div');
-            card.className = 'store-item-card';
-            card.style.padding = '1rem';
-            card.innerHTML = `
-                <div class="store-item-image-wrapper" style="height: 120px; border-radius: 1rem; overflow: hidden; margin-bottom: 1rem; background: #fff;">
-                    <img src="${offer.picture}" alt="${offer.name_short}" style="width: 100%; height: 100%; object-fit: contain;">
-                </div>
-                <div class="store-item-info" style="padding: 0; width: 100%; text-align: center;">
-                    <div class="store-item-name" style="font-size: 1.1rem; margin-bottom: 0.5rem;">${offer.name_short}</div>
-                    <p style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 1rem; height: 40px; overflow: hidden; text-overflow: ellipsis;">${offer.adcopy}</p>
-                    <button class="store-btn store-btn-buy" style="background: linear-gradient(135deg, #8b5cf6, #d946ef); width: 100%; border: none;"
-                        onclick="window.open('${offerLink}', '_blank')">
-                        ${isAr ? 'أكمل واربح' : 'Complete & Earn'} <i class="fas fa-gem"></i> ${gemsReward}
-                    </button>
-                </div>
-            `;
-            grid.appendChild(card);
-        });
-
-    } catch (err) {
-        console.error("Error fetching offers:", err);
-        grid.innerHTML = `
-            <div class="col-span-full text-center py-10 text-red-400">
-                <i class="fas fa-exclamation-triangle text-4xl mb-4"></i>
-                <p>${isAr ? 'حدث خطأ أثناء جلب العروض. يرجى المحاولة لاحقاً.' : 'Error loading offers.'}</p>
-            </div>
-        `;
     }
 }
