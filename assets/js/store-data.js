@@ -7,9 +7,8 @@ const STORE_ITEMS = {
     // 🖼️ 1. صور الملف الشخصي المربعة (PFPs)
     pfp: [
         { id: 'pfp_dragon_neon', price: 300, name: { ar: 'تنين النيون', en: 'Neon Dragon' }, image: 'assets/images/store/pfp/dragon_neon.jpg' },
-        { id: 'pfp_mystic_owl', price: 300, name: { ar: 'البومة الغامضة', en: 'Mystic Owl' }, image: 'assets/images/store/pfp/mystic_owl.jpg' },
-        { id: 'pfp_cyber_wolf', price: 500, name: { ar: 'ذئب السايبر', en: 'Cyber Wolf' }, image: 'assets/images/store/pfp/cyber_wolf.jpg' },
-        { id: 'pfp_golden_crown', price: 1000, name: { ar: 'التاج الذهبي', en: 'Golden Crown' }, image: 'assets/images/store/pfp/golden_crown.jpg' }
+        { id: 'pfp_frozen_griffin', price: 500, name: { ar: 'الغريفين الجليدي', en: 'Frozen Griffin' }, image: 'assets/images/store/pfp/frozen_griffin.jpg' }
+        
     ],
 
     // 👑 2. الألقاب الفخرية (Titles)
