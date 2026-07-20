@@ -1601,6 +1601,21 @@ function setLanguage(lang) {
     }
     // 🌟 --- نهاية الأكواد الجديدة --- 🌟
 
+    // 🌟 --- ترجمة روابط الفوتر --- 🌟
+    if (document.getElementById('footer-about-link')) {
+        document.getElementById('footer-about-link').innerText = lang === 'ar' ? 'من نحن' : 'About Us';
+    }
+    if (document.getElementById('footer-contact-link')) {
+        document.getElementById('footer-contact-link').innerText = lang === 'ar' ? 'اتصل بنا' : 'Contact Us';
+    }
+    if (document.getElementById('footer-privacy-link')) {
+        document.getElementById('footer-privacy-link').innerText = lang === 'ar' ? 'سياسة الخصوصية' : 'Privacy Policy';
+    }
+    if (document.getElementById('footer-terms-link')) {
+        document.getElementById('footer-terms-link').innerText = lang === 'ar' ? 'شروط الاستخدام' : 'Terms of Use';
+    }
+    // 🌟 --- نهاية ترجمة روابط الفوتر --- 🌟
+
     renderQuizGrid();
     document.getElementById('language-screen').classList.add('opacity-0', 'pointer-events-none');
 
