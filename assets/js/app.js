@@ -997,7 +997,7 @@ function showPokedexList() {
 
     const isAr = currentLang === 'ar';
     // تحديث العنوان
-    if (titleEl) titleEl.textContent = isAr ? 'موسوعة المخلوقات' : 'Pokédex';
+    if (titleEl) titleEl.textContent = isAr ? 'موسوعة المخلوقات' : 'Creatures Guide';
 
     // ✨ إظهار شريط التقدم مرة أخرى
     if (progressWrapper) progressWrapper.style.display = 'block';
@@ -3196,7 +3196,14 @@ function updateDrawerContent() {
     if (achievementsText) achievementsText.textContent = isAr ? 'إنجازاتي' : 'Achievements';
 
     const pokedexText = document.getElementById('drawer-pokedex-text');
-    if (pokedexText) pokedexText.textContent = isAr ? 'موسوعة المخلوقات' : 'Pokédex';
+    if (pokedexText) pokedexText.textContent = isAr ? 'موسوعة المخلوقات' : 'Creatures Guide';
+
+    // 🌟 إضافة ترجمة المتجر والخزنة 🌟
+    const storeText = document.getElementById('drawer-store-text');
+    if (storeText) storeText.textContent = isAr ? 'متجر الأساطير' : 'Mythical Store';
+
+    const inventoryText = document.getElementById('drawer-inventory-text');
+    if (inventoryText) inventoryText.textContent = isAr ? 'الخزنة' : 'My Vault';
 
     const themesText = document.getElementById('drawer-themes-text');
     if (themesText) themesText.textContent = isAr ? 'السمات' : 'Themes';
