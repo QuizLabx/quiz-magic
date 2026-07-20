@@ -4051,6 +4051,62 @@ async function dismissPersonalMessage(messageId) {
     updateNotificationDot();
 }
 
+// ==================== GAME MENU LOGIC ====================
+
+// 1. دالة بدء الاستدعاء (إخفاء القائمة الرئيسية وإظهار الاختبارات)
+function startSummoning() {
+    // تشغيل صوت النقر
+    if (typeof audioManager !== 'undefined') audioManager.playSfx('click');
+    
+    // إخفاء القائمة الرئيسية
+    document.getElementById('game-main-menu').classList.add('hidden-game');
+    
+    // إظهار الهيدر والمحتوى القديم
+    document.body.classList.remove('in-game-menu');
+    
+    // التمرير إلى شبكة الاختبارات
+    document.getElementById('quiz-grid').scrollIntoView({ behavior: 'smooth' });
+}
+
+// 2. دالة رسالة ساحة المعركة (التشويق)
+function showArenaTeaser() {
+    if (typeof audioManager !== 'undefined') audioManager.playSfx('click');
+    
+    // استخدام المودال الاحترافي الخاص بك لإظهار الرسالة
+    if (typeof showConfirmDialog === 'function') {
+        showConfirmDialog(
+            "ساحة المعركة مقفلة 🔒", 
+            "جاري تجهيز ساحة المعركة... اجمع بطاقاتك الأسطورية من بوابة الاستدعاء واستعد للقتال في التحديث القادم!", 
+            false, 
+            null, 
+            "حسناً"
+        );
+    } else {
+        alert("جاري تجهيز ساحة المعركة... اجمع بطاقاتك واستعد للتحديث القادم!");
+    }
+}
+
+// 3. تحديث بيانات اللاعب في القائمة الرئيسية (تُستدعى عند تسجيل الدخول)
+function updateGameMenuStats() {
+    // جلب البيانات من localStorage أو المتغيرات العامة
+    const username = localStorage.getItem('quiz_username') || 'زائر';
+    const gems = localStorage.getItem('quiz_gems') || '0';
+    const energy = localStorage.getItem('quiz_energy') || '5';
+    const level = localStorage.getItem('quiz_level') || '1';
+    
+    if(document.getElementById('game-username')) document.getElementById('game-username').innerText = username;
+    if(document.getElementById('game-gems-count')) document.getElementById('game-gems-count').innerText = gems;
+    if(document.getElementById('game-energy-count')) document.getElementById('game-energy-count').innerText = energy + '/5';
+    if(document.getElementById('game-level')) document.getElementById('game-level').innerText = 'المستوى ' + level;
+}
+
+// تشغيل الواجهة عند تحميل الصفحة
+document.addEventListener('DOMContentLoaded', () => {
+    document.body.classList.add('in-game-menu');
+    updateGameMenuStats();
+});
+
+
 // ==================== CINEMATIC PREVIEW (TOUCH 3D MATH) ====================
 
 function openCinematicPreview() {
