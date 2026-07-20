@@ -40,23 +40,39 @@ async function initStoreData() {
     }
 }
 
-// تطبيق العناصر الملبوسة على الواجهة (القائمة الجانبية)
+// تطبيق العناصر الملبوسة على الواجهة (القائمة الجانبية والقائمة الرئيسية للعبة)
 function applyEquippedItems() {
     const isAr = currentLang === 'ar';
-    
+
     // 1. تطبيق الصورة المربعة (PFP)
     const pfpImg = document.getElementById('drawer-pfp-img');
     const pfpIcon = document.getElementById('drawer-pfp-icon');
+    // 🌟 المتغيرات الجديدة الخاصة بالقائمة الرئيسية للعبة
+    const gamePfpImg = document.getElementById('game-pfp-img');
+    const gamePfpIcon = document.getElementById('game-pfp-icon');
+
     if (equippedItems.pfp !== 'default') {
         const item = STORE_ITEMS.pfp.find(i => i.id === equippedItems.pfp);
-        if (item && pfpImg && pfpIcon) {
-            pfpImg.src = item.image;
-            pfpImg.style.display = 'block';
-            pfpIcon.style.display = 'none';
+        if (item) {
+            // تحديث القائمة الجانبية
+            if (pfpImg && pfpIcon) {
+                pfpImg.src = item.image;
+                pfpImg.style.display = 'block';
+                pfpIcon.style.display = 'none';
+            }
+            // 🌟 تحديث القائمة الرئيسية للعبة
+            if (gamePfpImg && gamePfpIcon) {
+                gamePfpImg.src = item.image;
+                gamePfpImg.style.display = 'block';
+                gamePfpIcon.style.display = 'none';
+            }
         }
     } else {
+        // العودة للحالة الافتراضية (بدون صورة)
         if (pfpImg) pfpImg.style.display = 'none';
         if (pfpIcon) pfpIcon.style.display = 'block';
+        if (gamePfpImg) gamePfpImg.style.display = 'none';
+        if (gamePfpIcon) gamePfpIcon.style.display = 'block';
     }
 
     // 2. تطبيق البانر (Banner)
