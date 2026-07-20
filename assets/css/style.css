@@ -5303,3 +5303,29 @@ html:not([dir="rtl"]) .drawer-user-content {
     }
 }
 
+/* ========================================================================
+   📱 تحسينات نوافذ (Modals) المتجر والخزانة للهواتف
+   ======================================================================== */
+@media (max-width: 640px) {
+    /* 1. تصغير عنوان المتجر (متجر الأساطير) لكي لا يزاحم الأزرار */
+    .modal-title {
+        font-size: 1.25rem !important;
+    }
+    
+    /* 2. تقليل المسافات الداخلية (Padding) لرأس النافذة لتوفير مساحة */
+    .modal-header {
+        padding: 1rem !important;
+    }
+    
+    /* 3. تقليل المسافة بين عداد الجواهر وزر الإغلاق (X) */
+    .modal-header .flex.items-center.gap-4 {
+        gap: 0.5rem !important;
+    }
+    
+    /* 4. تصغير زر الإغلاق (X) قليلاً ليتناسب مع شاشة الهاتف */
+    .modal-close {
+        width: 2rem !important;
+        height: 2rem !important;
+        font-size: 0.9rem !important;
+    }
+}
