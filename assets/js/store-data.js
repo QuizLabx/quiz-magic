@@ -7,6 +7,7 @@ const STORE_ITEMS = {
     // 🖼️ 1. صور الملف الشخصي المربعة (PFPs)
     pfp: [
         { id: 'pfp_dragon_neon', price: 300, name: { ar: 'تنين النيون', en: 'Neon Dragon' }, image: 'assets/images/store/pfp/dragon_neon.jpg' },
+        { id: 'pfp_phantom_spirit', price: 500, name: { ar: 'الروح الطيفية', en: 'Phantom Spirit' }, image: 'assets/images/store/pfp/phantom_spirit.jpg' },
         { id: 'pfp_frozen_griffin', price: 500, name: { ar: 'الغريفين الجليدي', en: 'Frozen Griffin' }, image: 'assets/images/store/pfp/frozen_griffin.jpg' }
         
     ],
@@ -21,8 +22,7 @@ const STORE_ITEMS = {
 
     // 🌌 3. خلفيات الملف الشخصي (Banners)
     banners: [
-        { id: 'banner_forest', price: 400, name: { ar: 'الغابة المسحورة', en: 'Enchanted Forest' }, image: 'assets/images/store/banners/forest.jpg' },
-        { id: 'banner_space', price: 600, name: { ar: 'سديم الفضاء', en: 'Space Nebula' }, image: 'assets/images/store/banners/space.jpg' },
+        { id: 'banner_sunken_abyss_lighthouse', price: 700, name: { ar: 'منارة الهاوية الغارقة', en: 'Sunken Abyss Lighthouse' }, image: 'assets/images/store/banners/sunken_abyss_lighthouse.jpg' },        { id: 'banner_dark_royal_sword', price: 700, name: { ar: 'السيف الملكي المظلم', en: 'Dark Royal Sword' }, image: 'assets/images/store/banners/dark_royal_sword.jpg' },
         { id: 'banner_hellfire', price: 800, name: { ar: 'نيران الجحيم', en: 'Hellfire' }, image: 'assets/images/store/banners/hellfire.jpg' }
     ],
 
