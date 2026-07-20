@@ -5048,6 +5048,8 @@ html.theme-space .fab-main { box-shadow: 0 0 18px rgba(168, 85, 247, 0.5); }
     overflow: hidden;
     padding: 0 !important; /* إزالة البادينج القديم */
     border: 2px solid var(--border-color);
+    display: block; /* 🌟 إصلاح: إلغاء flex القديم الذي يسبب تداخل */
+    width: 100%;
 }
 
 .drawer-user-banner {
@@ -5059,12 +5061,12 @@ html.theme-space .fab-main { box-shadow: 0 0 18px rgba(168, 85, 247, 0.5); }
     background-size: cover;
     background-position: center;
     z-index: 0;
-    opacity: 0.4; /* شفافية لكي يظهر النص بوضوح */
+    opacity: 0.5; /* 🌟 تحسين: زيادة الشفافية قليلاً لجمالية أفضل */
     transition: opacity 0.3s ease;
 }
 
 .drawer-user-card:hover .drawer-user-banner {
-    opacity: 0.6;
+    opacity: 0.7;
 }
 
 .drawer-user-content {
@@ -5074,15 +5076,26 @@ html.theme-space .fab-main { box-shadow: 0 0 18px rgba(168, 85, 247, 0.5); }
     align-items: center;
     gap: 0.875rem;
     padding: 1rem 1.25rem;
-    background: linear-gradient(to right, var(--bg-secondary) 40%, transparent);
+    width: 100%; /* 🌟 إصلاح: لكي يمتد المحتوى بالكامل ويدفع السهم لليسار */
+    /* 🌟 إصلاح: تعديل اتجاه التدرج ليتوافق مع اللغة العربية (RTL) بحيث تكون الخلفية الداكنة خلف النص */
+    background: linear-gradient(to left, var(--bg-secondary) 55%, transparent);
+}
+
+/* 🌟 إضافة: دعم اللغتين (RTL و LTR) للتدرج اللوني في حال قام المستخدم بتغيير اللغة */
+html:not([dir="rtl"]) .drawer-user-content {
+    background: linear-gradient(to right, var(--bg-secondary) 55%, transparent);
 }
 
 /* جعل صورة الأفاتار مربعة بحواف ناعمة */
 .drawer-user-avatar {
-    border-radius: 0.75rem !important; /* حواف مربعة ناعمة بدلاً من 50% */
+    border-radius: 0.75rem !important;
     border: 2px solid var(--c-accent);
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     overflow: hidden;
+    /* 🌟 إصلاح: التأكد من أن الأبعاد ثابتة ولا تنضغط */
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
 }
 
 .drawer-user-title {
@@ -5093,7 +5106,9 @@ html.theme-space .fab-main { box-shadow: 0 0 18px rgba(168, 85, 247, 0.5); }
     letter-spacing: 1px;
     margin-top: 2px;
     text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+    display: block; /* 🌟 إصلاح: لضمان نزوله في سطر جديد بشكل صحيح */
 }
+
 
 /* شبكة المتجر والممتلكات */
 .store-grid {
