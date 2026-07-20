@@ -142,6 +142,69 @@ const config = {
         }
     },
 
+    // ==================== MAIN SECTIONS ====================
+    mainSections: {
+        enabled: true,
+        
+        // الأقسام الرئيسية
+        sections: {
+            mainGame: {
+                id: 'main-game',
+                icon: '🎮',
+                title: {
+                    ar: 'اللعبة الرئيسية',
+                    en: 'Main Game'
+                },
+                subtitle: {
+                    ar: 'ابدأ المغامرة الأسطورية',
+                    en: 'Start the Legendary Adventure'
+                },
+                description: {
+                    ar: 'انطلق في رحلة ملحمية عبر عوالم الأساطير والتحديات',
+                    en: 'Embark on an epic journey through mythical worlds and challenges'
+                },
+                color: 'from-purple-500 to-pink-500',
+                comingSoon: true
+            },
+            quizzes: {
+                id: 'quizzes',
+                icon: '🧬',
+                title: {
+                    ar: 'الاختبارات الفرعية',
+                    en: 'Personality Quizzes'
+                },
+                subtitle: {
+                    ar: 'اكتشف شخصيتك',
+                    en: 'Discover Your Personality'
+                },
+                description: {
+                    ar: 'اختبارات نفسية عميقة تكشف جوانب خفية من شخصيتك',
+                    en: 'Deep psychological quizzes that reveal hidden aspects of your personality'
+                },
+                color: 'from-blue-500 to-cyan-500',
+                comingSoon: false
+            },
+            encyclopedia: {
+                id: 'encyclopedia',
+                icon: '🏆',
+                title: {
+                    ar: 'الموسوعة والإنجازات',
+                    en: 'Encyclopedia & Achievements'
+                },
+                subtitle: {
+                    ar: 'استكشف المخلوقات',
+                    en: 'Explore Mythical Creatures'
+                },
+                description: {
+                    ar: 'موسوعة شاملة للكائنات الأسطورية وإنجازاتك',
+                    en: 'Comprehensive encyclopedia of mythical creatures and your achievements'
+                },
+                color: 'from-amber-500 to-orange-500',
+                comingSoon: false
+            }
+        }
+    },
+
     // ==================== XP & LEVELS SYSTEM ====================
     xpSystem: {
         enabled: true,
