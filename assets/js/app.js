@@ -225,7 +225,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedTheme = localStorage.getItem('quiz_theme') || 'auto';
     initializeTheme(savedTheme);
     setLanguage(savedLang);
-    renderMainSections();
 
     if (localStorage.getItem('quiz_lang')) {
         document.getElementById('language-screen').classList.add('opacity-0', 'pointer-events-none');
@@ -1582,16 +1581,13 @@ function setLanguage(lang) {
     localStorage.setItem('quiz_lang', lang);
     const data = quizzesData[lang];
     document.getElementById('site-title').innerText = data.title;
-    document.getElementById('hero-title').innerText = lang === 'ar' ? 'اكتشف عالم QuizMagic السحري' : 'Discover the Magical World of QuizMagic';
-    document.getElementById('hero-subtitle').innerText = lang === 'ar' ? 'رحلة في عوالم الأساطير والاختبارات التفاعلية' : 'A journey through mythical worlds and interactive quizzes';
+    document.getElementById('hero-title').innerText = data.heroTitle;
+    document.getElementById('hero-subtitle').innerText = data.heroSubtitle;
     document.getElementById('footer-desc').innerText = data.footerDesc;
     document.getElementById('lang-btn-text').innerText = lang === 'ar' ? 'العربية' : 'English';
 
     document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
     document.documentElement.lang = lang;
-
-    // 🌟 --- تحديث بطاقات الأقسام الرئيسية --- 🌟
-    renderMainSections();
 
     // 🌟 --- بداية الأكواد الجديدة لترجمة القائمة الجانبية --- 🌟
     if (document.getElementById('drawer-pokedex-text')) {
@@ -1620,7 +1616,6 @@ function setLanguage(lang) {
     }
     // 🌟 --- نهاية ترجمة روابط الفوتر --- 🌟
 
-    renderMainSections();
     renderQuizGrid();
     document.getElementById('language-screen').classList.add('opacity-0', 'pointer-events-none');
 
@@ -1688,69 +1683,6 @@ async function loadQuestionBank() {
     }
 }
 
-
-// ==================== MAIN SECTIONS ====================
-function renderMainSections() {
-    if (!config.mainSections || !config.mainSections.enabled) return;
-    
-    const grid = document.getElementById('main-sections-grid');
-    if (!grid) return;
-    
-    const sections = config.mainSections.sections;
-    const lang = currentLang;
-    
-    let html = '';
-    
-    for (const [key, section] of Object.entries(sections)) {
-        const title = section.title[lang];
-        const subtitle = section.subtitle[lang];
-        const description = section.description[lang];
-        const comingSoonBadge = section.comingSoon ? '<span class="main-section-coming-soon">قريباً</span>' : '';
-        
-        html += `
-            <div class="main-section-card" onclick="handleSectionClick('${section.id}', ${section.comingSoon})">
-                ${comingSoonBadge}
-                <span class="main-section-icon">${section.icon}</span>
-                <h3 class="main-section-title">${title}</h3>
-                <p class="main-section-subtitle">${subtitle}</p>
-                <p class="main-section-description">${description}</p>
-            </div>
-        `;
-    }
-    
-    grid.innerHTML = html;
-}
-
-function handleSectionClick(sectionId, isComingSoon) {
-    if (isComingSoon) {
-        showConfirmDialog({
-            title: currentLang === 'ar' ? 'قريباً' : 'Coming Soon',
-            message: currentLang === 'ar' ? 'هذا القسم قيد التطوير وسيكون متاحاً قريباً!' : 'This section is under development and will be available soon!',
-            okText: currentLang === 'ar' ? 'حسناً' : 'OK',
-            okType: 'primary'
-        });
-        return;
-    }
-    
-    switch(sectionId) {
-        case 'quizzes':
-            document.getElementById('main-sections-grid').classList.add('hidden');
-            document.getElementById('quiz-grid').classList.remove('hidden');
-            renderQuizGrid();
-            break;
-        case 'encyclopedia':
-            showPokedexModal();
-            break;
-        case 'main-game':
-            showConfirmDialog({
-                title: currentLang === 'ar' ? 'قريباً' : 'Coming Soon',
-                message: currentLang === 'ar' ? 'اللعبة الرئيسية قيد التطوير وستكون متاحة قريباً!' : 'The main game is under development and will be available soon!',
-                okText: currentLang === 'ar' ? 'حسناً' : 'OK',
-                okType: 'primary'
-            });
-            break;
-    }
-}
 
 // ==================== QUIZ GRID ====================
 function renderQuizGrid() {
