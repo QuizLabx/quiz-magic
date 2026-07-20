@@ -5283,3 +5283,23 @@ html:not([dir="rtl"]) .drawer-user-content {
     animation: none;
 }
 
+/* ========================================================================
+   📱 تحسينات الهيدر للهواتف (إخفاء المظهر والنص لتوفير مساحة للستريك)
+   ======================================================================== */
+@media (max-width: 640px) {
+    /* 1. إخفاء كلمة QuizMagic والاكتفاء بأيقونة العصا السحرية */
+    header a.text-2xl span#site-title {
+        display: none !important;
+    }
+    
+    /* 2. إخفاء زر المظهر (النهاري/الليلي) من الهيدر */
+    header button#theme-toggle {
+        display: none !important;
+    }
+    
+    /* 3. إعطاء مساحة إضافية للعصا السحرية لتبدو متمركزة بشكل أفضل */
+    header a.text-2xl {
+        max-width: max-content !important;
+    }
+}
+
