@@ -1589,6 +1589,18 @@ function setLanguage(lang) {
     document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
     document.documentElement.lang = lang;
 
+    // 🌟 --- بداية الأكواد الجديدة لترجمة القائمة الجانبية --- 🌟
+    if (document.getElementById('drawer-pokedex-text')) {
+        document.getElementById('drawer-pokedex-text').innerText = lang === 'ar' ? 'موسوعة المخلوقات' : 'Creatures Guide';
+    }
+    if (document.getElementById('drawer-store-text')) {
+        document.getElementById('drawer-store-text').innerText = lang === 'ar' ? 'متجر الأساطير' : 'Mythical Store';
+    }
+    if (document.getElementById('drawer-inventory-text')) {
+        document.getElementById('drawer-inventory-text').innerText = lang === 'ar' ? 'الخزنة' : 'My Vault';
+    }
+    // 🌟 --- نهاية الأكواد الجديدة --- 🌟
+
     renderQuizGrid();
     document.getElementById('language-screen').classList.add('opacity-0', 'pointer-events-none');
 
