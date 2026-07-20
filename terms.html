@@ -45,16 +45,21 @@
         <div class="flex justify-between items-center mb-12">
             <a href="index.html" class="flex items-center gap-2 text-accent-strong font-bold hover:text-accent transition-all transform hover:-translate-x-1">
                 <i class="fas fa-arrow-right rtl:rotate-0 ltr:rotate-180"></i>
-                <span>العودة للرئيسية</span>
+                <span id="back-to-home">العودة للرئيسية</span>
             </a>
-            <button onclick="toggleTheme()" id="theme-toggle" class="w-10 h-10 rounded-full flex items-center justify-center theme-bg-tertiary theme-text-primary hover:bg-accent hover:text-white transition-all">
-                <i class="fas fa-moon"></i>
-            </button>
+            <div class="flex gap-2">
+                <button onclick="toggleLanguage()" id="lang-toggle" class="w-10 h-10 rounded-full flex items-center justify-center theme-bg-tertiary theme-text-primary hover:bg-accent hover:text-white transition-all">
+                    <i class="fas fa-globe"></i>
+                </button>
+                <button onclick="toggleTheme()" id="theme-toggle" class="w-10 h-10 rounded-full flex items-center justify-center theme-bg-tertiary theme-text-primary hover:bg-accent hover:text-white transition-all">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
         </div>
 
         <div class="glass-panel animate-fade-in mb-12">
-            <h1 class="text-4xl font-black mb-8 gradient-title">شروط الاستخدام</h1>
-            <div class="prose prose-invert theme-text-secondary leading-relaxed space-y-6">
+            <h1 id="page-title" class="text-4xl font-black mb-8 gradient-title">شروط الاستخدام</h1>
+            <div id="content-ar" class="prose prose-invert theme-text-secondary leading-relaxed space-y-6">
                 <p class="text-sm italic">تاريخ السريان: 26 يونيو 2026</p>
                 
                 <h2 class="text-2xl font-bold text-accent mt-8 mb-4">1. طبيعة الخدمة</h2>
@@ -66,11 +71,45 @@
                 <h2 class="text-2xl font-bold text-accent mt-8 mb-4">3. سلوك المستخدم</h2>
                 <p>يجب عدم استخدام الموقع لأي غرض غير قانوني أو محاولة تعطيل عمل الموقع بأي شكل من الأشكال.</p>
             </div>
+            <div id="content-en" class="prose prose-invert theme-text-secondary leading-relaxed space-y-6 hidden">
+                <p class="text-sm italic">Effective Date: June 26, 2026</p>
+                
+                <h2 class="text-2xl font-bold text-accent mt-8 mb-4">1. Nature of Service</h2>
+                <p>QuizMagic provides personality quizzes and entertainment content. All results are for purely entertainment purposes and should not be considered medical or professional diagnoses.</p>
+
+                <h2 class="text-2xl font-bold text-accent mt-8 mb-4">2. Intellectual Property Rights</h2>
+                <p>All content, including texts and designs, is owned by QuizMagic. Copying or distribution without permission is prohibited.</p>
+
+                <h2 class="text-2xl font-bold text-accent mt-8 mb-4">3. User Conduct</h2>
+                <p>The website must not be used for any illegal purpose or attempt to disrupt the website's operation in any way.</p>
+            </div>
         </div>
     </div>
 
     <script src="assets/js/app.js"></script>
     <script>
+        let currentPageLang = localStorage.getItem('quiz_lang') || 'ar';
+
+        function toggleLanguage() {
+            currentPageLang = currentPageLang === 'ar' ? 'en' : 'ar';
+            localStorage.setItem('quiz_lang', currentPageLang);
+            updatePageLanguage();
+        }
+
+        function updatePageLanguage() {
+            const isAr = currentPageLang === 'ar';
+            document.documentElement.dir = isAr ? 'rtl' : 'ltr';
+            document.documentElement.lang = currentPageLang;
+            
+            // Update page title
+            document.getElementById('page-title').textContent = isAr ? 'شروط الاستخدام' : 'Terms of Use';
+            document.getElementById('back-to-home').textContent = isAr ? 'العودة للرئيسية' : 'Back to Home';
+            
+            // Toggle content
+            document.getElementById('content-ar').classList.toggle('hidden', !isAr);
+            document.getElementById('content-en').classList.toggle('hidden', isAr);
+        }
+
         const originalApplyTheme = applyTheme;
         applyTheme = function(theme) {
             originalApplyTheme(theme);
@@ -79,6 +118,11 @@
                 toggleBtn.innerHTML = theme === 'dark' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
             }
         };
+
+        // Initialize language on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updatePageLanguage();
+        });
     </script>
 </body>
 </html>

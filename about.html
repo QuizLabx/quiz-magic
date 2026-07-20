@@ -44,17 +44,22 @@
     <div class="max-w-4xl mx-auto px-4 py-12">
         <div class="flex justify-between items-center mb-12">
             <a href="index.html" class="flex items-center gap-2 text-accent-strong font-bold hover:text-accent transition-all transform hover:-translate-x-1">
-                <i class="fas fa-arrow-right rtl:rotate-0 ltr:rotate-180"></i>
-                <span>العودة للرئيسية</span>
+                <i class="fas fa-arrow-right rtl:rotate-0 ltr:rotate-180"></i><!-->
+                <span id="back-to-home">العودة للرئيسية</span>
             </a>
-            <button onclick="toggleTheme()" id="theme-toggle" class="w-10 h-10 rounded-full flex items-center justify-center theme-bg-tertiary theme-text-primary hover:bg-accent hover:text-white transition-all">
-                <i class="fas fa-moon"></i>
-            </button>
+            <div class="flex gap-2">
+                <button onclick="toggleLanguage()" id="lang-toggle" class="w-10 h-10 rounded-full flex items-center justify-center theme-bg-tertiary theme-text-primary hover:bg-accent hover:text-white transition-all">
+                    <i class="fas fa-globe"></i>
+                </button>
+                <button onclick="toggleTheme()" id="theme-toggle" class="w-10 h-10 rounded-full flex items-center justify-center theme-bg-tertiary theme-text-primary hover:bg-accent hover:text-white transition-all">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
         </div>
 
         <div class="glass-panel animate-fade-in mb-12">
-            <h1 class="text-4xl md:text-5xl font-black mb-8 gradient-title">من نحن</h1>
-            <div class="prose prose-invert lg:prose-xl theme-text-secondary leading-relaxed space-y-6">
+            <h1 id="page-title" class="text-4xl md:text-5xl font-black mb-8 gradient-title">من نحن</h1>
+            <div id="content-ar" class="prose prose-invert lg:prose-xl theme-text-secondary leading-relaxed space-y-6">
                 <p class="text-xl">مرحباً بك في <span class="text-accent font-bold">QuizMagic</span>، بوابتك لاكتشاف الجانب الأسطوري من شخصيتك! نحن منصة ترفيهية متخصصة في تقديم اختبارات شخصية فريدة وممتعة، تجمع بين عمق التحليل النفسي وسحر الميثولوجيا العالمية.</p>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-10">
@@ -70,19 +75,49 @@
 
                 <p>نحن نجمع بين الترفيه والمعرفة، لنقدم لك تجربة لا تُنسى. سواء كنت تبحث عن فهم أعمق لذاتك، أو ترغب في مشاركة نتائج ممتعة مع أصدقائك، فإن QuizMagic هو المكان المثالي لك.</p>
             </div>
-        </div>
+            <div id="content-en" class="prose prose-invert lg:prose-xl theme-text-secondary leading-relaxed space-y-6 hidden">
+                <p class="text-xl">Welcome to <span class="text-accent font-bold">QuizMagic</span>, your gateway to discovering the mythical side of your personality! We are an entertainment platform specializing in unique and engaging personality quizzes, blending the depth of psychological analysis with the enchantment of global mythology.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-10">
+                    <div class="p-6 rounded-2xl bg-accent-soft border border-accent-soft">
+                        <h3 class="text-xl font-bold text-accent mb-3"><i class="fas fa-eye mr-2"></i> Our Vision</h3>
+                        <p class="text-sm">We believe that every individual carries a unique essence within, much like the mythical creatures that have inspired humanity throughout the ages. Our goal is to help you explore this essence.</p>
+                    </div>
+                    <div class="p-6 rounded-2xl bg-accent-soft border border-accent-soft">
+                        <h3 class="text-xl font-bold text-accent-secondary mb-3"><i class="fas fa-star mr-2"></i> What We Offer</h3>
+                        <p class="text-sm">Deep personality quizzes, unique mythical results, and extensive psychological and mythological analyses with an enchanting interactive experience.</p>
+                    </div>
+                </div>
 
-        <div class="glass-panel animate-fade-in" dir="ltr">
-            <h2 class="text-3xl font-bold mb-6 text-accent">About Us</h2>
-            <div class="theme-text-secondary leading-relaxed space-y-4">
-                <p>Welcome to QuizMagic, your gateway to discovering the mythical side of your personality! We are an entertainment platform specializing in unique and engaging personality quizzes.</p>
-                <p>Join us on this magical journey, and discover which mythical creature's spirit resides within you!</p>
+                <p>We combine entertainment with knowledge to offer you an unforgettable experience. Whether you're seeking a deeper understanding of yourself or wish to share fun results with friends, QuizMagic is the perfect place for you.</p>
             </div>
         </div>
     </div>
 
     <script src="assets/js/app.js"></script>
     <script>
+        let currentPageLang = localStorage.getItem('quiz_lang') || 'ar';
+
+        function toggleLanguage() {
+            currentPageLang = currentPageLang === 'ar' ? 'en' : 'ar';
+            localStorage.setItem('quiz_lang', currentPageLang);
+            updatePageLanguage();
+        }
+
+        function updatePageLanguage() {
+            const isAr = currentPageLang === 'ar';
+            document.documentElement.dir = isAr ? 'rtl' : 'ltr';
+            document.documentElement.lang = currentPageLang;
+            
+            // Update page title
+            document.getElementById('page-title').textContent = isAr ? 'من نحن' : 'About Us';
+            document.getElementById('back-to-home').textContent = isAr ? 'العودة للرئيسية' : 'Back to Home';
+            
+            // Toggle content
+            document.getElementById('content-ar').classList.toggle('hidden', !isAr);
+            document.getElementById('content-en').classList.toggle('hidden', isAr);
+        }
+
         // Override applyTheme to work on this page
         const originalApplyTheme = applyTheme;
         applyTheme = function(theme) {
@@ -92,6 +127,11 @@
                 toggleBtn.innerHTML = theme === 'dark' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
             }
         };
+
+        // Initialize language on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updatePageLanguage();
+        });
     </script>
 </body>
 </html>

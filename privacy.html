@@ -45,18 +45,23 @@
         <div class="flex justify-between items-center mb-12">
             <a href="index.html" class="flex items-center gap-2 text-accent-strong font-bold hover:text-accent transition-all transform hover:-translate-x-1">
                 <i class="fas fa-arrow-right rtl:rotate-0 ltr:rotate-180"></i>
-                <span>العودة للرئيسية</span>
+                <span id="back-to-home">العودة للرئيسية</span>
             </a>
-            <button onclick="toggleTheme()" id="theme-toggle" class="w-10 h-10 rounded-full flex items-center justify-center theme-bg-tertiary theme-text-primary hover:bg-accent hover:text-white transition-all">
-                <i class="fas fa-moon"></i>
-            </button>
+            <div class="flex gap-2">
+                <button onclick="toggleLanguage()" id="lang-toggle" class="w-10 h-10 rounded-full flex items-center justify-center theme-bg-tertiary theme-text-primary hover:bg-accent hover:text-white transition-all">
+                    <i class="fas fa-globe"></i>
+                </button>
+                <button onclick="toggleTheme()" id="theme-toggle" class="w-10 h-10 rounded-full flex items-center justify-center theme-bg-tertiary theme-text-primary hover:bg-accent hover:text-white transition-all">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
         </div>
 
         <div class="glass-panel animate-fade-in mb-12">
-            <h1 class="text-4xl font-black mb-8 gradient-title">سياسة الخصوصية</h1>
-            <div class="prose prose-invert theme-text-secondary leading-relaxed space-y-6">
+            <h1 id="page-title" class="text-4xl font-black mb-8 gradient-title">سياسة الخصوصية</h1>
+            <div id="content-ar" class="prose prose-invert theme-text-secondary leading-relaxed space-y-6">
                 <p class="text-sm italic">تاريخ السريان: 26 يونيو 2026</p>
-                <p>نحن في QuizMagic نولي أهمية قصوى لخصوصية زوارنا ومستخدمينا. توضح سياسة الخصوصية هذه كيفية جمعنا، استخدامنا، وحمايتنا للمعلومات التي قد نحصل عليها من خلال موقعنا الإلكتروني.</p>
+                <p>نحن في QuizMagic نولي أهمية قصوى لخصوصية زوارنا ومستخدمينا. توضح سياسة الخصوصية هذه كيفية جمعنا، استخدامنا، وحمايتها للمعلومات التي قد نحصل عليها من خلال موقعنا الإلكتروني.</p>
                 
                 <h2 class="text-2xl font-bold text-accent mt-8 mb-4">1. المعلومات التي نجمعها</h2>
                 <ul class="list-disc pr-6 space-y-2">
@@ -71,11 +76,50 @@
                 <h2 class="text-2xl font-bold text-accent mt-8 mb-4">3. مشاركة المعلومات</h2>
                 <p>نحن لا نبيع أو نتاجر بمعلوماتك الشخصية. قد نشارك إحصائيات عامة مجمعة غير شخصية مع شركائنا.</p>
             </div>
+            <div id="content-en" class="prose prose-invert theme-text-secondary leading-relaxed space-y-6 hidden">
+                <p class="text-sm italic">Effective Date: June 26, 2026</p>
+                <p>At QuizMagic, we prioritize the privacy of our visitors and users. This Privacy Policy explains how we collect, use, and protect information we may obtain through our website.</p>
+                
+                <h2 class="text-2xl font-bold text-accent mt-8 mb-4">1. Information We Collect</h2>
+                <ul class="list-disc pr-6 space-y-2">
+                    <li><strong>Non-Personal Information:</strong> We collect information related to your use of the website anonymously.</li>
+                    <li><strong>Cookies:</strong> We use them to improve your experience and remember your preferences.</li>
+                    <li><strong>Voluntarily Provided Data:</strong> Such as name and email when using the contact form.</li>
+                </ul>
+
+                <h2 class="text-2xl font-bold text-accent mt-8 mb-4">2. How We Use Information</h2>
+                <p>We use the information to improve website content, understand user interactions, and respond to inquiries and provide technical support.</p>
+
+                <h2 class="text-2xl font-bold text-accent mt-8 mb-4">3. Information Sharing</h2>
+                <p>We do not sell or trade your personal information. We may share aggregated non-personal statistics with our partners.</p>
+            </div>
         </div>
     </div>
 
     <script src="assets/js/app.js"></script>
     <script>
+        let currentPageLang = localStorage.getItem('quiz_lang') || 'ar';
+
+        function toggleLanguage() {
+            currentPageLang = currentPageLang === 'ar' ? 'en' : 'ar';
+            localStorage.setItem('quiz_lang', currentPageLang);
+            updatePageLanguage();
+        }
+
+        function updatePageLanguage() {
+            const isAr = currentPageLang === 'ar';
+            document.documentElement.dir = isAr ? 'rtl' : 'ltr';
+            document.documentElement.lang = currentPageLang;
+            
+            // Update page title
+            document.getElementById('page-title').textContent = isAr ? 'سياسة الخصوصية' : 'Privacy Policy';
+            document.getElementById('back-to-home').textContent = isAr ? 'العودة للرئيسية' : 'Back to Home';
+            
+            // Toggle content
+            document.getElementById('content-ar').classList.toggle('hidden', !isAr);
+            document.getElementById('content-en').classList.toggle('hidden', isAr);
+        }
+
         const originalApplyTheme = applyTheme;
         applyTheme = function(theme) {
             originalApplyTheme(theme);
@@ -84,6 +128,11 @@
                 toggleBtn.innerHTML = theme === 'dark' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
             }
         };
+
+        // Initialize language on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updatePageLanguage();
+        });
     </script>
 </body>
 </html>

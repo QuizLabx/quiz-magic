@@ -45,16 +45,21 @@
         <div class="flex justify-between items-center mb-12">
             <a href="index.html" class="flex items-center gap-2 text-accent-strong font-bold hover:text-accent transition-all transform hover:-translate-x-1">
                 <i class="fas fa-arrow-right rtl:rotate-0 ltr:rotate-180"></i>
-                <span>العودة للرئيسية</span>
+                <span id="back-to-home">العودة للرئيسية</span>
             </a>
-            <button onclick="toggleTheme()" id="theme-toggle" class="w-10 h-10 rounded-full flex items-center justify-center theme-bg-tertiary theme-text-primary hover:bg-accent hover:text-white transition-all">
-                <i class="fas fa-moon"></i>
-            </button>
+            <div class="flex gap-2">
+                <button onclick="toggleLanguage()" id="lang-toggle" class="w-10 h-10 rounded-full flex items-center justify-center theme-bg-tertiary theme-text-primary hover:bg-accent hover:text-white transition-all">
+                    <i class="fas fa-globe"></i>
+                </button>
+                <button onclick="toggleTheme()" id="theme-toggle" class="w-10 h-10 rounded-full flex items-center justify-center theme-bg-tertiary theme-text-primary hover:bg-accent hover:text-white transition-all">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
         </div>
 
         <div class="text-center mb-16 animate-fade-in">
-            <h1 class="text-5xl font-black mb-6 gradient-title">اتصل بنا</h1>
-            <p class="theme-text-secondary text-xl max-w-2xl mx-auto leading-relaxed">
+            <h1 id="page-title" class="text-5xl font-black mb-6 gradient-title">اتصل بنا</h1>
+            <p id="page-subtitle" class="theme-text-secondary text-xl max-w-2xl mx-auto leading-relaxed">
                 لديك سؤال؟ أو ترغب في إضافة اختبار جديد؟ نحن هنا للاستماع إليك.
             </p>
         </div>
@@ -63,15 +68,15 @@
             <form action="https://formspree.io/f/xykqwpjz" method="POST" class="space-y-8">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div>
-                        <label class="block text-sm font-bold theme-text-muted mb-3 uppercase tracking-wider">الاسم الكامل</label>
+                        <label class="block text-sm font-bold theme-text-muted mb-3 uppercase tracking-wider" id="name-label">الاسم الكامل</label>
                         <div class="relative">
                             <i class="fas fa-user absolute left-4 top-1/2 -translate-y-1/2 theme-text-muted"></i>
-                            <input type="text" name="name" required placeholder="الاسم هنا..." 
+                            <input type="text" name="name" required id="name-placeholder" placeholder="الاسم هنا..." 
                                 class="w-full theme-bg-tertiary/20 border theme-border rounded-2xl py-4 pl-12 pr-4 theme-text-primary focus:outline-none focus:border-accent transition-all">
                         </div>
                     </div>
                     <div>
-                        <label class="block text-sm font-bold theme-text-muted mb-3 uppercase tracking-wider">البريد الإلكتروني</label>
+                        <label class="block text-sm font-bold theme-text-muted mb-3 uppercase tracking-wider" id="email-label">البريد الإلكتروني</label>
                         <div class="relative">
                             <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 theme-text-muted"></i>
                             <input type="email" name="email" required placeholder="example@mail.com" 
@@ -81,19 +86,19 @@
                 </div>
                 
                 <div>
-                    <label class="block text-sm font-bold theme-text-muted mb-3 uppercase tracking-wider">الرسالة</label>
-                    <textarea name="message" rows="6" required placeholder="كيف يمكننا مساعدتك؟" 
+                    <label class="block text-sm font-bold theme-text-muted mb-3 uppercase tracking-wider" id="message-label">الرسالة</label>
+                    <textarea name="message" rows="6" required id="message-placeholder" placeholder="كيف يمكننا مساعدتك؟" 
                         class="w-full theme-bg-tertiary/20 border theme-border rounded-2xl py-4 px-6 theme-text-primary focus:outline-none focus:border-accent transition-all"></textarea>
                 </div>
 
                 <button type="submit" class="w-full btn-primary font-black py-5 rounded-2xl transition-all transform active:scale-[0.98] flex items-center justify-center gap-3 text-xl">
                     <i class="fas fa-paper-plane"></i>
-                    <span>إرسال الرسالة</span>
+                    <span id="submit-text">إرسال الرسالة</span>
                 </button>
             </form>
 
             <div class="mt-12 pt-12 border-t theme-border text-center">
-                <p class="theme-text-muted mb-4">أو راسلنا مباشرة عبر البريد الإلكتروني:</p>
+                <p class="theme-text-muted mb-4" id="or-email">أو راسلنا مباشرة عبر البريد الإلكتروني:</p>
                 <a href="mailto:quizmagicsupport@gmail.com" class="text-2xl font-bold text-accent hover:text-accent transition-colors">
                     quizmagicsupport@gmail.com
                 </a>
@@ -103,6 +108,32 @@
 
     <script src="assets/js/app.js"></script>
     <script>
+        let currentPageLang = localStorage.getItem('quiz_lang') || 'ar';
+
+        function toggleLanguage() {
+            currentPageLang = currentPageLang === 'ar' ? 'en' : 'ar';
+            localStorage.setItem('quiz_lang', currentPageLang);
+            updatePageLanguage();
+        }
+
+        function updatePageLanguage() {
+            const isAr = currentPageLang === 'ar';
+            document.documentElement.dir = isAr ? 'rtl' : 'ltr';
+            document.documentElement.lang = currentPageLang;
+            
+            // Update page elements
+            document.getElementById('page-title').textContent = isAr ? 'اتصل بنا' : 'Contact Us';
+            document.getElementById('page-subtitle').textContent = isAr ? 'لديك سؤال؟ أو ترغب في إضافة اختبار جديد؟ نحن هنا للاستماع إليك.' : 'Have a question? Or want to add a new quiz? We are here to listen.';
+            document.getElementById('back-to-home').textContent = isAr ? 'العودة للرئيسية' : 'Back to Home';
+            document.getElementById('name-label').textContent = isAr ? 'الاسم الكامل' : 'Full Name';
+            document.getElementById('name-placeholder').placeholder = isAr ? 'الاسم هنا...' : 'Your name here...';
+            document.getElementById('email-label').textContent = isAr ? 'البريد الإلكتروني' : 'Email Address';
+            document.getElementById('message-label').textContent = isAr ? 'الرسالة' : 'Message';
+            document.getElementById('message-placeholder').placeholder = isAr ? 'كيف يمكننا مساعدتك؟' : 'How can we help you?';
+            document.getElementById('submit-text').textContent = isAr ? 'إرسال الرسالة' : 'Send Message';
+            document.getElementById('or-email').textContent = isAr ? 'أو راسلنا مباشرة عبر البريد الإلكتروني:' : 'Or email us directly at:';
+        }
+
         // Override applyTheme to work on this page
         const originalApplyTheme = applyTheme;
         applyTheme = function(theme) {
@@ -112,6 +143,11 @@
                 toggleBtn.innerHTML = theme === 'dark' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
             }
         };
+
+        // Initialize language on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updatePageLanguage();
+        });
     </script>
 </body>
 </html>
