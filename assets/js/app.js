@@ -4055,9 +4055,6 @@ async function dismissPersonalMessage(messageId) {
 
 // 1. دالة بدء الاستدعاء (إخفاء القائمة الرئيسية وإظهار الاختبارات)
 function startSummoning() {
-    // تشغيل صوت النقر
-    if (typeof audioManager !== 'undefined') audioManager.playSfx('click');
-    
     // إخفاء القائمة الرئيسية
     document.getElementById('game-main-menu').classList.add('hidden-game');
     
@@ -4070,8 +4067,6 @@ function startSummoning() {
 
 // 2. دالة رسالة ساحة المعركة (التشويق)
 function showArenaTeaser() {
-    if (typeof audioManager !== 'undefined') audioManager.playSfx('click');
-    
     // استخدام المودال الاحترافي الخاص بك لإظهار الرسالة
     if (typeof showConfirmDialog === 'function') {
         showConfirmDialog(
