@@ -34,10 +34,6 @@ We will not be liable for any direct, indirect, incidental, special, or conseque
 
 We reserve the right to modify or update these Terms of Use at any time. Any changes will be posted on this page, and your continued use of the website after changes are posted constitutes your acceptance of the modified terms.
 
-## 8. Governing Law
-
-These terms are governed by and construed in accordance with the laws of [Your Country/State].
-
-## 9. Contact Us
+## 8. Contact Us
 
 If you have any questions regarding these Terms of Use, you can contact us via email: quizmagicsupport@gmail.com
