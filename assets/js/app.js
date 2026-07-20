@@ -4065,6 +4065,24 @@ function startSummoning() {
     document.getElementById('quiz-grid').scrollIntoView({ behavior: 'smooth' });
 }
 
+// 1.5. دالة العودة إلى القائمة الرئيسية للعبة
+function returnToMainMenu() {
+    // تشغيل صوت النقر
+    if (typeof audioManager !== 'undefined' && typeof audioManager.playSfx === 'function') {
+        audioManager.playSfx('click');
+    }
+    
+    // إظهار القائمة الرئيسية
+    document.getElementById('game-main-menu').classList.remove('hidden-game');
+    
+    // إخفاء الهيدر والمحتوى القديم
+    document.body.classList.add('in-game-menu');
+    
+    // تحديث بيانات اللاعب (لضمان تطابق الجواهر والطاقة إذا تغيرت)
+    if (typeof updateGameMenuStats === 'function') updateGameMenuStats();
+}
+
+
 // 2. دالة رسالة ساحة المعركة (التشويق)
 function showArenaTeaser() {
     // استخدام المودال الاحترافي الخاص بك لإظهار الرسالة
