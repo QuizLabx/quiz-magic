@@ -717,15 +717,15 @@ function getUserStats() {
         comparisons: stats.comparisons || 0,
         retakes: stats.retakes || 0,
         secretUnlocks: stats.secretUnlocks || 0,
-        // ✨ الحقول الجديدة للإنجازات الذكية
         fastestQuiz: stats.fastestQuiz || null,
         nightVisits: stats.nightVisits || 0,
         earlyVisits: stats.earlyVisits || 0,
         visitDays: stats.visitDays || [],
-        bestCompatibility: stats.bestCompatibility || null
+        bestCompatibility: stats.bestCompatibility || null,
+        // ⚔️ إحصائيات الساحة (كانت ناقصة!)
+        arena: stats.arena || {}
     };
 }
-
 function showAchievementToast(achievement) {
     // 🎵 صوت فتح الإنجاز (جاهز للمستقبل)
     if (window.audioManager) {
