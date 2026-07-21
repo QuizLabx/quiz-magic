@@ -7,7 +7,6 @@ let currentSelectingCreature = null;
 
 // 1. فتح شاشة التشكيلة
 function openDeckBuilder() {
-    if (typeof audioManager !== 'undefined') audioManager.playSfx('click');
     document.getElementById('game-main-menu').classList.add('hidden-game');
     document.getElementById('deck-builder-screen').classList.remove('hidden-game');
     renderDeckCreatures();
@@ -15,7 +14,6 @@ function openDeckBuilder() {
 }
 
 function closeDeckBuilder() {
-    if (typeof audioManager !== 'undefined') audioManager.playSfx('click');
     document.getElementById('deck-builder-screen').classList.add('hidden-game');
     document.getElementById('game-main-menu').classList.remove('hidden-game');
 }
@@ -59,7 +57,6 @@ function renderDeckCreatures() {
 
 // 3. فتح نافذة اختيار المستوى (الندرة)
 function openTierSelect(creatureId, creatureName, ownedTiers) {
-    if (typeof audioManager !== 'undefined') audioManager.playSfx('click');
     currentSelectingCreature = creatureId;
     
     const modal = document.getElementById('tier-select-modal');
