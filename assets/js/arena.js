@@ -111,7 +111,6 @@ function closeTierSelect() {
 
 // 4. إضافة البطاقة للتشكيلة
 function selectCardForDeck(creatureId, tier, borderColor) {
-    if (typeof audioManager !== 'undefined') audioManager.playSfx('click');
     
     // التحقق إذا كانت البطاقة موجودة بالفعل في التشكيلة
     const alreadyExists = selectedDeck.some(c => c.creatureId === creatureId && c.tier === tier);
@@ -144,7 +143,6 @@ function selectCardForDeck(creatureId, tier, borderColor) {
 // 5. إزالة بطاقة من التشكيلة
 function removeCardFromDeck(index) {
     if (index < selectedDeck.length) {
-        if (typeof audioManager !== 'undefined') audioManager.playSfx('click');
         selectedDeck.splice(index, 1);
         updateDeckUI();
     }
@@ -184,7 +182,6 @@ function updateDeckUI() {
 
 // 7. الدخول للساحة (الخطوة القادمة!)
 function enterArena() {
-    if (typeof audioManager !== 'undefined') audioManager.playSfx('click');
     document.getElementById('deck-builder-screen').classList.add('hidden-game');
     document.getElementById('arena-screen').classList.remove('hidden-game');
     
