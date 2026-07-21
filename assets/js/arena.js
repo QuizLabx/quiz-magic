@@ -312,6 +312,12 @@ function updateChallengeDisplay() {
 
     const names = axisNames[isAr ? 'ar' : 'en'];
     challengeEl.innerText = names[battleState.challenge] || battleState.challenge;
+
+    // إضافة تأثير التحدي النشط
+    const challengeContainer = challengeEl.parentElement;
+    if (challengeContainer) {
+        challengeContainer.classList.add('challenge-active');
+    }
 }
 
 function renderPlayerBattleCards() {
@@ -378,6 +384,7 @@ function renderEnemyCards() {
                 const creaturesData = quizzesData[isAr ? 'ar' : 'en'].quizzes[0].results;
                 const enemyCreature = creaturesData.find(c => c.id === roundResult.enemy_card.creature_id);
                 if (enemyCreature) {
+                    slotEl.classList.add('revealed');
                     slotEl.innerHTML = `
                         <img src="${enemyCreature.image}" style="width:100%;height:70%;object-fit:cover;">
                         <div style="font-size:0.55rem;font-weight:900;text-align:center;padding:2px;color:#fca5a5;">
@@ -394,7 +401,6 @@ function renderEnemyCards() {
         container.appendChild(slotEl);
     }
 }
-
 // ==================== CARD SELECTION ====================
 
 async function selectBattleCard(cardIndex) {
@@ -402,7 +408,18 @@ async function selectBattleCard(cardIndex) {
     if (battleState.usedPlayerIndexes.includes(cardIndex)) return;
 
     battleState.isProcessing = true;
-    renderPlayerBattleCards(); // تعطيل الأزرار
+
+    // 1. أنيميشن البطاقة المختارة - تطير
+    const playerCards = document.querySelectorAll('#player-arena-cards .arena-card-slot');
+    if (playerCards[cardIndex]) {
+        playerCards[cardIndex].classList.add('flying');
+    }
+
+    // 2. انتظار الأنيميشن
+    await delay(300);
+
+    // 3. تعطيل الأزرار
+    renderPlayerBattleCards();
 
     try {
         const result = await window.firebaseDB.selectArenaCard(battleState.battleId, cardIndex);
@@ -423,32 +440,31 @@ async function selectBattleCard(cardIndex) {
             battleState.enemyWins = result.enemy_wins || battleState.enemyWins;
         }
 
-        // عرض نتيجة الجولة
+        // عرض نتيجة الجولة مع الأنيميشن
         await showRoundResult(result.round_result);
 
         if (result.battle_finished) {
             // المعركة انتهت
             battleState.isActive = false;
-            battleState.isProcessing = false;
             localStorage.removeItem('quiz_arena_battle_id');
             await showBattleResult(result);
         } else {
             // الجولة التالية
             battleState.currentRound = result.current_round;
             battleState.challenge = result.next_challenge;
-            battleState.isProcessing = false;  // ✅ تفعيل الأزرار أولاً
-            renderBattleUI();                   // ✅ ثم إعادة الرسم
+            battleState.isProcessing = false;
+            renderBattleUI();
         }
 
     } catch (err) {
         console.error('selectBattleCard error:', err);
-        battleState.isProcessing = false;  // ✅ تفعيل الأزرار حتى عند الخطأ
+        battleState.isProcessing = false;
         const isAr = currentLang === 'ar';
         showProfileNotification(
             isAr ? '❌ خطأ في الاتصال' : '❌ Connection error',
             'error'
         );
-        renderPlayerBattleCards();  // ✅ إعادة رسم البطاقات قابلة للنقر
+        renderPlayerBattleCards();
     }
 }
 
@@ -462,12 +478,19 @@ async function showRoundResult(roundResult) {
 
     const clashEnemy = document.getElementById('clash-enemy');
     const clashPlayer = document.getElementById('clash-player');
+    const vsElement = document.querySelector('.text-4xl.font-black');
 
-    // عرض بطاقة اللاعب في منطقة التصادم
+    // 1. تفعيل تأثير VS
+    if (vsElement) {
+        vsElement.classList.add('vs-active');
+    }
+
+    // 2. عرض بطاقة اللاعب في منطقة التصادم مع أنيميشن
     const playerCreature = creaturesData.find(c => c.id === roundResult.player_card.creature_id);
     if (playerCreature && clashPlayer) {
+        clashPlayer.classList.add('clash-slot-active');
         clashPlayer.innerHTML = `
-            <div class="clash-card-display">
+            <div class="clash-card-display" style="animation: clash-appear 0.4s ease-out;">
                 <img src="${playerCreature.image}" style="width:100%;height:70%;object-fit:cover;border-radius:8px;">
                 <div style="font-size:0.6rem;font-weight:900;color:#93c5fd;text-align:center;">
                     ${playerCreature.name}
@@ -479,11 +502,14 @@ async function showRoundResult(roundResult) {
         `;
     }
 
-    // عرض بطاقة العدو في منطقة التصادم
+    // 3. انتظار قليل ثم كشف بطاقة العدو مع أنيميشن
+    await delay(400);
+
     const enemyCreature = creaturesData.find(c => c.id === roundResult.enemy_card.creature_id);
     if (enemyCreature && clashEnemy) {
+        clashEnemy.classList.add('clash-slot-active');
         clashEnemy.innerHTML = `
-            <div class="clash-card-display">
+            <div class="clash-card-display" style="animation: enemy-card-reveal 0.8s ease-out;">
                 <img src="${enemyCreature.image}" style="width:100%;height:70%;object-fit:cover;border-radius:8px;">
                 <div style="font-size:0.6rem;font-weight:900;color:#fca5a5;text-align:center;">
                     ${enemyCreature.name}
@@ -495,29 +521,59 @@ async function showRoundResult(roundResult) {
         `;
     }
 
-    // تحديث بطاقات العدو المكشوفة
+    // 4. تحديث بطاقات العدو المكشوفة في الأعلى
     renderEnemyCards();
 
-    // إظهار نتيجة الجولة
+    // 5. تأثير التصادم - وميض
+    await delay(300);
+    if (clashEnemy) clashEnemy.classList.add('clash-flash');
+    if (clashPlayer) clashPlayer.classList.add('clash-flash');
+
+    // 6. انتظار ثم عرض النتيجة
+    await delay(500);
+
     const winner = roundResult.winner;
-    const resultText = winner === 'player'
+    const isVictory = winner === 'player';
+
+    // 7. تأثير الفوز أو الخسارة على منطقة اللاعب
+    const playerCardsContainer = document.getElementById('player-arena-cards');
+    if (playerCardsContainer) {
+        if (isVictory) {
+            playerCardsContainer.classList.add('round-win');
+        } else {
+            playerCardsContainer.classList.add('round-lose');
+        }
+    }
+
+    // 8. عرض نتيجة الجولة كـ popup
+    const resultText = isVictory
         ? (isAr ? '✅ فزت بالجولة!' : '✅ You won the round!')
         : (isAr ? '❌ خسرت الجولة' : '❌ You lost the round');
 
-    showProfileNotification(resultText, winner === 'player' ? 'success' : 'error');
+    showProfileNotification(resultText, isVictory ? 'success' : 'error');
 
+    // 9. صوت
     if (window.audioManager) {
-        window.audioManager.play(winner === 'player' ? 'magical-reveal' : 'ui-click');
+        window.audioManager.play(isVictory ? 'magical-reveal' : 'ui-click');
     }
 
-    // انتظار قليل قبل المتابعة
+    // 10. انتظار ثم تنظيف
     await delay(1500);
 
-    // مسح منطقة التصادم
-    if (clashEnemy) clashEnemy.innerHTML = '';
-    if (clashPlayer) clashPlayer.innerHTML = '';
+    // إزالة التأثيرات
+    if (vsElement) vsElement.classList.remove('vs-active');
+    if (clashEnemy) {
+        clashEnemy.classList.remove('clash-flash', 'clash-slot-active');
+        clashEnemy.innerHTML = '';
+    }
+    if (clashPlayer) {
+        clashPlayer.classList.remove('clash-flash', 'clash-slot-active');
+        clashPlayer.innerHTML = '';
+    }
+    if (playerCardsContainer) {
+        playerCardsContainer.classList.remove('round-win', 'round-lose');
+    }
 }
-
 // ==================== BATTLE RESULT ====================
 
 async function showBattleResult(result) {
@@ -525,21 +581,22 @@ async function showBattleResult(result) {
     const finalWinner = result.final_winner;
     const isVictory = finalWinner === 'player';
 
-    // بناء محتوى النتيجة
+    // بناء محتوى النتيجة مع أنيميشن
     let rewardsHtml = '';
     if (result.rewards) {
         const gems = result.rewards.gems || 0;
         const xp = result.rewards.xp || 0;
-        if (gems > 0) rewardsHtml += `<div class="battle-reward-item">💎 +${gems} ${isAr ? 'جوهرة' : 'Gems'}</div>`;
-        if (xp > 0) rewardsHtml += `<div class="battle-reward-item">⚡ +${xp} XP</div>`;
+        if (gems > 0) rewardsHtml += `<div class="battle-reward-item" style="animation: round-result-popup 0.5s ease-out 0.3s both;">💎 +${gems} ${isAr ? 'جوهرة' : 'Gems'}</div>`;
+        if (xp > 0) rewardsHtml += `<div class="battle-reward-item" style="animation: round-result-popup 0.5s ease-out 0.5s both;">⚡ +${xp} XP</div>`;
     }
 
     const modal = document.getElementById('battle-result-modal');
     const content = document.getElementById('battle-result-content');
 
     if (modal && content) {
+        const iconClass = isVictory ? 'victory-icon' : 'defeat-icon';
         content.innerHTML = `
-            <div class="battle-result-icon">${isVictory ? '🏆' : '💀'}</div>
+            <div class="battle-result-icon ${iconClass}">${isVictory ? '🏆' : '💀'}</div>
             <h2 class="battle-result-title" style="color: ${isVictory ? '#fbbf24' : '#ef4444'}">
                 ${isVictory ? (isAr ? 'انتصار!' : 'Victory!') : (isAr ? 'هزيمة...' : 'Defeat...')}
             </h2>
@@ -547,7 +604,7 @@ async function showBattleResult(result) {
                 ${battleState.playerWins} - ${battleState.enemyWins}
             </p>
             ${rewardsHtml ? `<div class="battle-rewards-container">${rewardsHtml}</div>` : ''}
-            <button onclick="closeBattleResult()" class="battle-result-btn">
+            <button onclick="closeBattleResult()" class="battle-result-btn" style="animation: round-result-popup 0.5s ease-out 0.7s both;">
                 ${isAr ? 'العودة للقائمة' : 'Back to Menu'}
             </button>
         `;
@@ -555,13 +612,15 @@ async function showBattleResult(result) {
         modal.classList.add('flex');
     }
 
-    // ✅ تحديث البيانات من السيرفر فورًا
+    // تحديث البيانات من السيرفر
     await syncArenaData();
 
+    // صوت
     if (window.audioManager) {
         window.audioManager.play(isVictory ? 'magical-reveal' : 'ui-click');
     }
 
+    // Analytics
     if (typeof trackEvent === 'function') {
         trackEvent('arena_battle_complete', {
             result: finalWinner,
