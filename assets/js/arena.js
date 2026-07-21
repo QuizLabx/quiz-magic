@@ -586,8 +586,8 @@ async function showBattleResult(result) {
     if (result.rewards) {
         const gems = result.rewards.gems || 0;
         const xp = result.rewards.xp || 0;
-        if (gems > 0) rewardsHtml += `<div class="battle-reward-item" style="animation: round-result-popup 0.5s ease-out 0.3s both;">💎 +${gems} ${isAr ? 'جوهرة' : 'Gems'}</div>`;
-        if (xp > 0) rewardsHtml += `<div class="battle-reward-item" style="animation: round-result-popup 0.5s ease-out 0.5s both;">⚡ +${xp} XP</div>`;
+        if (gems > 0) rewardsHtml += `<div class="battle-reward-item" style="animation: battle-item-appear 0.5s ease-out 0.3s both;">💎 +${gems} ${isAr ? 'جوهرة' : 'Gems'}</div>`;
+        if (xp > 0) rewardsHtml += `<div class="battle-reward-item" style="animation: battle-item-appear 0.5s ease-out 0.5s both;">⚡ +${xp} XP</div>`;
     }
 
     const modal = document.getElementById('battle-result-modal');
@@ -604,7 +604,7 @@ async function showBattleResult(result) {
                 ${battleState.playerWins} - ${battleState.enemyWins}
             </p>
             ${rewardsHtml ? `<div class="battle-rewards-container">${rewardsHtml}</div>` : ''}
-            <button onclick="closeBattleResult()" class="battle-result-btn" style="animation: round-result-popup 0.5s ease-out 0.7s both;">
+            <button onclick="closeBattleResult()" class="battle-result-btn" style="animation: battle-item-appear 0.5s ease-out 0.7s both;">
                 ${isAr ? 'العودة للقائمة' : 'Back to Menu'}
             </button>
         `;
