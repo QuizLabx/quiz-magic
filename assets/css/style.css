@@ -5889,3 +5889,267 @@ body.in-game-menu main {
         height: 100px;
     }
 }
+
+/* ========================================================================
+⚔️ ARENA BATTLE ANIMATIONS (المرحلة 6)
+======================================================================== */
+
+/* 1. أنيميشن اختيار البطاقة - تطير لمنطقة التصادم */
+@keyframes card-fly-to-clash {
+    0% {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.2) translateY(-30px);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(0.8) translateY(-60px);
+        opacity: 0;
+    }
+}
+
+.arena-card-slot.player-slot.flying {
+    animation: card-fly-to-clash 0.6s ease-in-out forwards;
+    pointer-events: none;
+}
+
+/* 2. أنيميشن كشف بطاقة العدو - تنقلب */
+@keyframes enemy-card-reveal {
+    0% {
+        transform: rotateY(180deg) scale(0.8);
+        opacity: 0;
+    }
+    50% {
+        transform: rotateY(90deg) scale(1.1);
+        opacity: 0.5;
+    }
+    100% {
+        transform: rotateY(0deg) scale(1);
+        opacity: 1;
+    }
+}
+
+.arena-card-slot.enemy-slot.revealing {
+    animation: enemy-card-reveal 0.8s ease-out forwards;
+}
+
+/* 3. تأثير التصادم - وميض */
+@keyframes clash-flash {
+    0%, 100% {
+        box-shadow: 0 0 0 rgba(255, 255, 255, 0);
+    }
+    50% {
+        box-shadow: 0 0 40px rgba(255, 255, 255, 0.8), 0 0 80px rgba(255, 200, 0, 0.5);
+    }
+}
+
+.clash-flash {
+    animation: clash-flash 0.4s ease-in-out 2;
+}
+
+/* 4. تأثير الفوز - لمعان أخضر */
+@keyframes round-win-glow {
+    0% {
+        box-shadow: 0 0 0 rgba(34, 197, 94, 0);
+        border-color: rgba(59, 130, 246, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(34, 197, 94, 0.6), 0 0 60px rgba(34, 197, 94, 0.3);
+        border-color: #22c55e;
+    }
+    100% {
+        box-shadow: 0 0 0 rgba(34, 197, 94, 0);
+        border-color: rgba(59, 130, 246, 0.4);
+    }
+}
+
+.round-win {
+    animation: round-win-glow 1s ease-in-out;
+}
+
+/* 5. تأثير الخسارة - اهتزاز أحمر */
+@keyframes round-lose-shake {
+    0%, 100% {
+        transform: translateX(0);
+        border-color: rgba(59, 130, 246, 0.4);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-8px);
+        border-color: #ef4444;
+    }
+    20%, 40%, 60%, 80% {
+        transform: translateX(8px);
+        border-color: #ef4444;
+    }
+}
+
+.round-lose {
+    animation: round-lose-shake 0.6s ease-in-out;
+}
+
+/* 6. تأثير منطقة التصادم عند وضع بطاقة */
+@keyframes clash-slot-pulse {
+    0% {
+        transform: scale(1);
+        border-color: rgba(59, 130, 246, 0.5);
+    }
+    50% {
+        transform: scale(1.05);
+        border-color: #3b82f6;
+        box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+    }
+    100% {
+        transform: scale(1);
+        border-color: rgba(59, 130, 246, 0.5);
+    }
+}
+
+.clash-slot-active {
+    animation: clash-slot-pulse 0.5s ease-in-out;
+}
+
+/* 7. تأثير بطاقة العدو المقلوبة - تطفو */
+@keyframes enemy-card-float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+.arena-card-slot.enemy-slot:not(.revealed) {
+    animation: enemy-card-float 3s ease-in-out infinite;
+}
+
+/* 8. تأثير الفوز النهائي - احتفال */
+@keyframes victory-celebration {
+    0% {
+        transform: scale(0.5) rotate(-10deg);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.2) rotate(5deg);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+}
+
+.victory-icon {
+    animation: victory-celebration 0.8s ease-out;
+}
+
+/* 9. تأثير الهزيمة النهائية */
+@keyframes defeat-fade {
+    0% {
+        transform: scale(1.2);
+        opacity: 0;
+        filter: grayscale(0);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+        filter: grayscale(0.5);
+    }
+}
+
+.defeat-icon {
+    animation: defeat-fade 1s ease-out;
+}
+
+/* 10. تأثير شريط الجولة */
+@keyframes round-indicator-pulse {
+    0%, 100% {
+        box-shadow: 0 0 0 rgba(251, 191, 36, 0);
+    }
+    50% {
+        box-shadow: 0 0 15px rgba(251, 191, 36, 0.5);
+    }
+}
+
+.round-indicator-active {
+    animation: round-indicator-pulse 2s ease-in-out infinite;
+}
+
+/* 11. تأثير البطاقة المستخدمة - تتلاشى */
+@keyframes card-used-fade {
+    0% {
+        opacity: 1;
+        filter: grayscale(0);
+    }
+    100% {
+        opacity: 0.35;
+        filter: grayscale(80%);
+    }
+}
+
+.arena-card-slot.player-slot.just-used {
+    animation: card-used-fade 0.5s ease-out forwards;
+}
+
+/* 12. تأثير VS - ينبض */
+@keyframes vs-pulse {
+    0%, 100% {
+        transform: scale(1);
+        text-shadow: 0 0 0 rgba(255, 255, 255, 0);
+    }
+    50% {
+        transform: scale(1.1);
+        text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    }
+}
+
+.vs-active {
+    animation: vs-pulse 1s ease-in-out infinite;
+}
+
+/* 13. تأثير نتيجة الجولة - تظهر وتختفي */
+@keyframes round-result-popup {
+    0% {
+        transform: scale(0.5) translateY(20px);
+        opacity: 0;
+    }
+    20% {
+        transform: scale(1.1) translateY(0);
+        opacity: 1;
+    }
+    80% {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(0.9) translateY(-10px);
+        opacity: 0;
+    }
+}
+
+.round-result-popup {
+    animation: round-result-popup 1.5s ease-in-out forwards;
+}
+
+/* 14. تحسين بطاقات اللاعب - تأثير hover محسّن */
+.arena-card-slot.player-slot:not(.used):hover {
+    transform: translateY(-12px) scale(1.08);
+    box-shadow: 0 15px 30px rgba(59, 130, 246, 0.5);
+    border-color: #3b82f6;
+    z-index: 10;
+}
+
+/* 15. تأثير التحدي الحالي - يومض */
+@keyframes challenge-glow {
+    0%, 100% {
+        box-shadow: 0 0 10px rgba(249, 115, 22, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 25px rgba(249, 115, 22, 0.6);
+    }
+}
+
+.challenge-active {
+    animation: challenge-glow 2s ease-in-out infinite;
+}
