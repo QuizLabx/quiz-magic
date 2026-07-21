@@ -824,9 +824,97 @@ const MOD_PERMISSIONS = {
     resetPassword: { ar: '🔑 إعادة تعيين كلمة سر', en: 'Reset Password' }
 };
 
+// ==================== ARENA BATTLE API ====================
+
+/**
+ * ⚔️ بدء معركة ساحة
+ * @param {Array} deck - مصفوفة من 3 بطاقات: [{creature_id, tier}, ...]
+ * @returns {Object} نتيجة البدء (battle_id, challenge, player_deck, ...)
+ */
+async function startArenaBattle(deck) {
+    try {
+        if (!isLoggedIn()) return { success: false, code: 'not_logged_in' };
+        if (!initSupabase()) return { success: false, code: 'supabase_not_ready' };
+
+        const userId = getCurrentUserId();
+        const { data, error } = await sbClient.rpc('server_start_arena_battle', {
+            p_user_id: userId,
+            p_deck: deck
+        });
+
+        if (error) {
+            console.error('startArenaBattle RPC error:', error);
+            return { success: false, code: 'rpc_failed', details: error.message };
+        }
+
+        return data || { success: false, code: 'no_response' };
+    } catch (e) {
+        console.error('startArenaBattle error:', e);
+        return { success: false, code: 'server_error', details: e.message };
+    }
+}
+
+/**
+ * ⚔️ اختيار بطاقة في جولة
+ * @param {string} battleId - معرف المعركة (UUID)
+ * @param {number} cardIndex - فهرس البطاقة المختارة (0, 1, أو 2)
+ * @returns {Object} نتيجة الجولة (round_result, battle_finished, ...)
+ */
+async function selectArenaCard(battleId, cardIndex) {
+    try {
+        if (!isLoggedIn()) return { success: false, code: 'not_logged_in' };
+        if (!initSupabase()) return { success: false, code: 'supabase_not_ready' };
+
+        const userId = getCurrentUserId();
+        const { data, error } = await sbClient.rpc('server_arena_select_card', {
+            p_user_id: userId,
+            p_battle_id: battleId,
+            p_card_index: cardIndex
+        });
+
+        if (error) {
+            console.error('selectArenaCard RPC error:', error);
+            return { success: false, code: 'rpc_failed', details: error.message };
+        }
+
+        return data || { success: false, code: 'no_response' };
+    } catch (e) {
+        console.error('selectArenaCard error:', e);
+        return { success: false, code: 'server_error', details: e.message };
+    }
+}
+
+/**
+ * ⚔️ جلب حالة معركة (للاستئناف بعد Refresh)
+ * @param {string} battleId - معرف المعركة (UUID)
+ * @returns {Object} حالة المعركة
+ */
+async function getArenaBattle(battleId) {
+    try {
+        if (!isLoggedIn()) return { success: false, code: 'not_logged_in' };
+        if (!initSupabase()) return { success: false, code: 'supabase_not_ready' };
+
+        const userId = getCurrentUserId();
+        const { data, error } = await sbClient.rpc('server_get_arena_battle', {
+            p_user_id: userId,
+            p_battle_id: battleId
+        });
+
+        if (error) {
+            console.error('getArenaBattle RPC error:', error);
+            return { success: false, code: 'rpc_failed', details: error.message };
+        }
+
+        return data || { success: false, code: 'no_response' };
+    } catch (e) {
+        console.error('getArenaBattle error:', e);
+        return { success: false, code: 'server_error', details: e.message };
+    }
+}
+
 // تصدير على window
 window.firebaseDB = {
-    initFirebase: initSupabase, // توافق مع الكود القديم
+    initFirebase: initSupabase,
     registerUser, loginUser, logoutUser,
     getCurrentUserId, isLoggedIn, fetchUserData, subscribeToUserData,
     addXPToCloud, addGemsToUser, removeGemsFromUser,
@@ -837,10 +925,12 @@ window.firebaseDB = {
     deleteUserPermanent, getSiteStats,
     checkBanStatus, hasPermission, MOD_PERMISSIONS,
     fetchUserGems, isCurrentUserAdmin, syncStatsToCloud,
-    syncGameData: syncStatsToCloud, // اسم مستعار للتوافق
+    syncGameData: syncStatsToCloud,
     grantCardToUser,
-    // أحداث + رسائل
     setAllAchievements, setAllPokedex,
-    sendMessageToUser, fetchMyMessages, deleteMessage
+    sendMessageToUser, fetchMyMessages, deleteMessage,
+    // ⚔️ Arena Battle API
+    startArenaBattle,
+    selectArenaCard,
+    getArenaBattle
 };
-
