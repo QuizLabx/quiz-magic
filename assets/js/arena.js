@@ -615,7 +615,6 @@ function handleBattleError(code) {
     const isAr = currentLang === 'ar';
     const messages = {
         'not_logged_in': isAr ? '🔐 يجب تسجيل الدخول' : '🔐 Login required',
-        'no_energy': isAr ? '⚡ نفدت طاقتك! عد غدًا' : '⚡ Out of energy! Come back tomorrow',
         'invalid_deck': isAr ? '❌ تشكيلة غير صالحة' : '❌ Invalid deck',
         'card_not_owned': isAr ? '❌ لا تملك هذه البطاقة' : '❌ Card not owned',
         'duplicate_creature': isAr ? '❌ لا يمكن تكرار نفس الكائن' : '❌ Duplicate creature',
