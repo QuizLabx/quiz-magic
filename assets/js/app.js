@@ -620,7 +620,27 @@ const ACHIEVEMENTS = {
         description: { ar: 'استخدم الموقع في 7 أيام مختلفة', en: 'Use the site on 7 different days' },
         icon: '🔥',
         condition: (stats) => stats.visitDays && stats.visitDays.length >= 7
-    },
+	},
+
+	// ⚔️ إنجازات الساحة
+	arena_first_win: {
+    	name: { ar: 'المحارب الأول', en: 'First Warrior' },
+    	description: { ar: 'حقق أول فوز في ساحة المعركة', en: 'Win your first arena battle' },
+    	icon: '⚔️',
+    	condition: (stats) => stats.arena && stats.arena.wins >= 1
+	},
+	arena_win_streak_3: {
+    	name: { ar: 'المحارب المتقد', en: 'Blazing Warrior' },
+    	description: { ar: 'حقق 3 انتصارات متتالية في الساحة', en: 'Win 3 arena battles in a row' },
+    	icon: '🔥',
+    	condition: (stats) => stats.arena && stats.arena.best_streak >= 3
+	},
+	arena_wins_10: {
+    	name: { ar: 'بطل الساحة', en: 'Arena Champion' },
+    	description: { ar: 'حقق 10 انتصارات إجمالية في الساحة', en: 'Win 10 total arena battles' },
+    	icon: '🏆',
+    	condition: (stats) => stats.arena && stats.arena.wins >= 10
+	},
     perfect_match: {
         name: { ar: 'الرفيق المثالي', en: 'Perfect Match' },
         description: { ar: 'احصل على توافق 95% أو أكثر مع صديق', en: 'Get 95%+ compatibility with a friend' },
@@ -840,12 +860,17 @@ function calculateAchievementProgress(key, stats) {
         collector: Math.min(100, (stats.creatures ? Object.keys(stats.creatures).length / 5 : 0) * 100),
         loyal: Math.min(100, (stats.retakes / 3) * 100),
         deep_diver: Math.min(100, (stats.secretUnlocks / 5) * 100),
+		// ⚔️ إنجازات الساحة
+		arena_first_win: stats.arena ? Math.min(100, (stats.arena.wins / 1) * 100) : 0,
+		arena_win_streak_3: stats.arena ? Math.min(100, (stats.arena.best_streak / 3) * 100) : 0,
+		arena_wins_10: stats.arena ? Math.min(100, (stats.arena.wins / 10) * 100) : 0,
         // ✨ الإنجازات الجديدة
         speed_runner: stats.fastestQuiz ? Math.min(100, ((180 - stats.fastestQuiz) / 180) * 100) : 0,
         night_owl: stats.nightVisits >= 1 ? 100 : 0,
         early_bird: stats.earlyVisits >= 1 ? 100 : 0,
         veteran: stats.visitDays ? Math.min(100, (stats.visitDays.length / 7) * 100) : 0,
         perfect_match: stats.bestCompatibility ? Math.min(100, (stats.bestCompatibility / 95) * 100) : 0
+		
 };
     
     return Math.round(conditions[key] || 0);
