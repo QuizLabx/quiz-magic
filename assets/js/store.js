@@ -30,8 +30,15 @@ async function initStoreData() {
                 updateGemsHeader();
                 // ⚡ جلب الطاقة الحقيقية من السيرفر (مع التجديد اليومي)
                 const { data: energyVal } = await window.sbClient.rpc('server_get_energy', { p_user_id: userId });
+                const energyText = `${energyVal !== null ? energyVal : 5}/5`;
+
+                // تحديث الطاقة في الهيدر (صفحة الاختبارات)
                 const energyEl = document.getElementById('energy-header-count');
-                if (energyEl) energyEl.textContent = `${energyVal !== null ? energyVal : 5}/5`;
+                if (energyEl) energyEl.textContent = energyText;
+
+                // تحديث الطاقة في القائمة الرئيسية للعبة
+                const gameEnergyEl = document.getElementById('game-energy-count');
+                if (gameEnergyEl) gameEnergyEl.textContent = energyText;
                 applyEquippedItems(); // تطبيق المظهر فوراً
             }
         } catch (err) {
