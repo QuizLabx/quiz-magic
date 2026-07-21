@@ -555,13 +555,8 @@ async function showBattleResult(result) {
         modal.classList.add('flex');
     }
 
-    // تحديث الجواهر والطاقة في الواجهة
-    if (result.user) {
-        if (typeof result.user.gems === 'number') {
-            localStorage.setItem('quiz_gems', String(result.user.gems));
-            if (typeof updateGemsHeader === 'function') updateGemsHeader();
-        }
-    }
+    // ✅ تحديث البيانات من السيرفر فورًا
+    await syncArenaData();
 
     if (window.audioManager) {
         window.audioManager.play(isVictory ? 'magical-reveal' : 'ui-click');
@@ -576,12 +571,16 @@ async function showBattleResult(result) {
     }
 }
 
-function closeBattleResult() {
+async function closeBattleResult() {
     const modal = document.getElementById('battle-result-modal');
     if (modal) {
         modal.classList.add('hidden');
         modal.classList.remove('flex');
     }
+
+    // ✅ تحديث البيانات مرة أخرى قبل العودة
+    await syncArenaData();
+
     closeArena();
 }
 
@@ -650,6 +649,83 @@ function showArenaLoading(show) {
     } else {
         btn.disabled = selectedDeck.length !== 3;
         btn.innerHTML = isAr ? 'ادخل الساحة ⚔️' : 'Enter Arena ⚔️';
+    }
+}
+
+// ==================== SYNC DATA AFTER BATTLE ====================
+
+async function syncArenaData() {
+    try {
+        // 1. جلب أحدث بيانات المستخدم من السيرفر
+        if (window.firebaseDB && window.firebaseDB.isLoggedIn()) {
+            const cloudData = await window.firebaseDB.fetchUserData();
+
+            if (cloudData) {
+                // 2. تحديث الجواهر في localStorage
+                if (typeof cloudData.gems === 'number') {
+                    localStorage.setItem('quiz_gems', String(cloudData.gems));
+                }
+
+                // 3. تحديث XP والمستوى
+                if (typeof cloudData.xp === 'number') {
+                    localStorage.setItem('quiz_xp', String(cloudData.xp));
+                }
+                if (typeof cloudData.level === 'number') {
+                    localStorage.setItem('quiz_level', String(cloudData.level));
+                }
+
+                // 4. تحديث الإحصائيات (arena stats)
+                if (cloudData.stats) {
+                    localStorage.setItem('quiz_stats', JSON.stringify(cloudData.stats));
+                }
+
+                // 5. تحديث الإنجازات
+                if (cloudData.achievements) {
+                    localStorage.setItem('quiz_achievements', JSON.stringify(cloudData.achievements));
+                }
+            }
+        }
+
+        // 6. تحديث عداد الجواهر في الهيدر
+        if (typeof updateGemsHeader === 'function') {
+            updateGemsHeader();
+        }
+
+        // 7. تحديث القائمة الرئيسية للعبة (جواهر + طاقة + مستوى)
+        if (typeof updateGameMenuStats === 'function') {
+            updateGameMenuStats();
+        }
+
+        // 8. تحديث الطاقة من السيرفر
+        if (window.firebaseDB && window.firebaseDB.isLoggedIn() && window.sbClient) {
+            const userId = window.firebaseDB.getCurrentUserId();
+            const { data: energyVal } = await window.sbClient.rpc('server_get_energy', {
+                p_user_id: userId
+            });
+            const energyText = `${energyVal !== null ? energyVal : 5}/5`;
+
+            const energyEl = document.getElementById('energy-header-count');
+            if (energyEl) energyEl.textContent = energyText;
+
+            const gameEnergyEl = document.getElementById('game-energy-count');
+            if (gameEnergyEl) gameEnergyEl.textContent = energyText;
+        }
+
+        // 9. تحديث شريط XP في الملف الشخصي (إن كان مفتوحًا)
+        if (typeof renderXPBar === 'function') {
+            renderXPBar();
+        }
+
+        // 10. مزامنة البيانات المحلية مع السحابة
+        if (window.firebaseDB && window.firebaseDB.isLoggedIn()) {
+            const stats = JSON.parse(localStorage.getItem('quiz_stats') || '{}');
+            const achievements = JSON.parse(localStorage.getItem('quiz_achievements') || '{}');
+            const cards = JSON.parse(localStorage.getItem('quiz_cards') || '{}');
+            await window.firebaseDB.syncGameData(stats, achievements, cards);
+        }
+
+    } catch (err) {
+        console.error('syncArenaData error:', err);
     }
 }
 
