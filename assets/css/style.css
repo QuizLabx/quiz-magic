@@ -6153,3 +6153,19 @@ body.in-game-menu main {
 .challenge-active {
     animation: challenge-glow 2s ease-in-out infinite;
 }
+
+/* أنيميشن ظهور عناصر نافذة النتيجة النهائية (تبقى ظاهرة) */
+@keyframes battle-item-appear {
+    0% {
+        transform: scale(0.5) translateY(20px);
+        opacity: 0;
+    }
+    60% {
+        transform: scale(1.05) translateY(0);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+}
