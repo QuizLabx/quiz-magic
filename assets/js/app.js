@@ -4082,9 +4082,6 @@ function returnToMainMenu() {
 
 // 2. دالة فتح ساحة المعركة
 function showArenaTeaser() {
-    if (typeof audioManager !== 'undefined' && typeof audioManager.playSfx === 'function') {
-        audioManager.playSfx('click');
-    }
     
     // إخفاء القائمة الرئيسية
     document.getElementById('game-main-menu').classList.add('hidden-game');
@@ -4095,9 +4092,6 @@ function showArenaTeaser() {
 
 // دالة الانسحاب من الساحة والعودة للقائمة
 function closeArena() {
-    if (typeof audioManager !== 'undefined' && typeof audioManager.playSfx === 'function') {
-        audioManager.playSfx('click');
-    }
     
     // إخفاء ساحة المعركة
     document.getElementById('arena-screen').classList.add('hidden-game');
