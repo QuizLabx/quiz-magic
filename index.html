@@ -478,7 +478,58 @@ Mythical Analysis Result
     </div>
 </div>
 
+<!-- ==================== ARENA SCREEN (PvE BATTLE) ==================== -->
+<div id="arena-screen" class="game-main-menu hidden-game" style="z-index: 9996; background: #0f172a;">
     
+    <!-- 1. الشريط العلوي (معلومات الجولة) -->
+    <div class="flex justify-between items-center p-4 border-b border-slate-700 bg-slate-800/80 backdrop-blur-md">
+        <button onclick="closeArena()" class="text-slate-300 hover:text-white transition flex items-center gap-2 font-bold">
+            <i class="fas fa-arrow-right"></i> انسحاب
+        </button>
+        <h2 class="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500">تحدي الحراس</h2>
+        <div class="text-yellow-400 font-bold bg-slate-900/50 px-3 py-1 rounded-full border border-yellow-500/30">
+            <i class="fas fa-star"></i> الجولة <span id="arena-round">1</span>/3
+        </div>
+    </div>
+
+    <!-- 2. منطقة العدو (النصف العلوي الأحمر) -->
+    <div class="flex-1 flex flex-col items-center justify-center relative border-b-2 border-red-500/30 bg-gradient-to-b from-red-900/20 to-transparent">
+        <div class="absolute top-4 text-red-400 font-bold text-sm tracking-widest">بطاقات الحارس</div>
+        <div class="flex gap-3" id="enemy-cards-container">
+            <!-- بطاقات العدو المقلوبة -->
+            <div class="arena-card-slot enemy-slot"><div class="card-back-pattern"></div></div>
+            <div class="arena-card-slot enemy-slot"><div class="card-back-pattern"></div></div>
+            <div class="arena-card-slot enemy-slot"><div class="card-back-pattern"></div></div>
+        </div>
+    </div>
+
+    <!-- 3. منطقة التصادم (المنتصف) -->
+    <div class="h-40 bg-slate-900 flex flex-col items-center justify-center relative shadow-[0_0_30px_rgba(0,0,0,0.8)] z-10">
+        <!-- التحدي المطلوب -->
+        <div class="absolute -top-5 bg-slate-800 border-2 border-orange-500 text-orange-400 px-6 py-1.5 rounded-full font-black text-sm shadow-[0_0_15px_rgba(249,115,22,0.4)] flex items-center gap-2">
+            تحدي: <span id="arena-current-stat" class="text-white">الذكاء 🧠</span>
+        </div>
+        
+        <!-- ساحة وضع البطاقات -->
+        <div class="flex items-center gap-6 w-full justify-center px-4 mt-4">
+            <div id="clash-enemy" class="w-24 h-32 rounded-xl border-2 border-dashed border-red-500/50 flex items-center justify-center bg-red-500/10 relative"></div>
+            <div class="text-4xl font-black text-slate-700 italic">VS</div>
+            <div id="clash-player" class="w-24 h-32 rounded-xl border-2 border-dashed border-blue-500/50 flex items-center justify-center bg-blue-500/10 relative"></div>
+        </div>
+    </div>
+
+    <!-- 4. منطقة اللاعب (النصف السفلي الأزرق) -->
+    <div class="flex-1 flex flex-col items-center justify-center relative bg-gradient-to-t from-blue-900/20 to-transparent">
+        <div class="absolute bottom-4 text-blue-400 font-bold text-sm tracking-widest">اختر بطاقة للهجوم</div>
+        <div class="flex gap-3" id="player-arena-cards">
+            <!-- سيتم حقن بطاقات اللاعب هنا برمجياً، هذه مجرد أماكن فارغة مؤقتاً -->
+            <div class="arena-card-slot player-slot"></div>
+            <div class="arena-card-slot player-slot"></div>
+            <div class="arena-card-slot player-slot"></div>
+        </div>
+    </div>
+</div>
+
 <!-- Header -->
 <header class="p-4 border-b sticky top-0 z-40 theme-bg-secondary theme-border">
 <div class="container mx-auto flex justify-between items-center">
