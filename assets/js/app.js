@@ -4067,10 +4067,7 @@ function startSummoning() {
 
 // 1.5. دالة العودة إلى القائمة الرئيسية للعبة
 function returnToMainMenu() {
-    // تشغيل صوت النقر
-    if (typeof audioManager !== 'undefined' && typeof audioManager.playSfx === 'function') {
-        audioManager.playSfx('click');
-    }
+    
     
     // إظهار القائمة الرئيسية
     document.getElementById('game-main-menu').classList.remove('hidden-game');
