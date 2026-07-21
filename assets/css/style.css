@@ -5647,3 +5647,60 @@ body.in-game-menu main {
 .skeleton-card {
     height: 220px !important;
 }
+
+/* ========================================================================
+   ⚔️ ARENA BATTLE BOARD (ساحة المعركة)
+   ======================================================================== */
+.arena-card-slot {
+    width: 80px;
+    height: 115px;
+    border-radius: 0.75rem;
+    background: rgba(30, 41, 59, 0.8);
+    border: 2px solid var(--border-color);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.enemy-slot {
+    border-color: rgba(239, 68, 68, 0.4);
+}
+
+.player-slot {
+    border-color: rgba(59, 130, 246, 0.4);
+    cursor: pointer;
+}
+
+.player-slot:hover {
+    transform: translateY(-10px);
+    border-color: #3b82f6;
+    box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+}
+
+/* ظهر البطاقة للعدو */
+.card-back-pattern {
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        45deg,
+        #1e293b,
+        #1e293b 10px,
+        #0f172a 10px,
+        #0f172a 20px
+    );
+    border: 4px solid #334155;
+    border-radius: 0.6rem;
+}
+
+/* استجابة الشاشات الصغيرة جداً */
+@media (max-width: 380px) {
+    .arena-card-slot {
+        width: 70px;
+        height: 100px;
+    }
+    #clash-enemy, #clash-player {
+        width: 80px;
+        height: 115px;
+    }
+}
