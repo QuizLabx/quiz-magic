@@ -4083,20 +4083,30 @@ function returnToMainMenu() {
 }
 
 
-// 2. دالة رسالة ساحة المعركة (التشويق)
+// 2. دالة فتح ساحة المعركة
 function showArenaTeaser() {
-    // استخدام المودال الاحترافي الخاص بك لإظهار الرسالة
-    if (typeof showConfirmDialog === 'function') {
-        showConfirmDialog(
-            "ساحة المعركة مقفلة 🔒", 
-            "جاري تجهيز ساحة المعركة... اجمع بطاقاتك الأسطورية من بوابة الاستدعاء واستعد للقتال في التحديث القادم!", 
-            false, 
-            null, 
-            "حسناً"
-        );
-    } else {
-        alert("جاري تجهيز ساحة المعركة... اجمع بطاقاتك واستعد للتحديث القادم!");
+    if (typeof audioManager !== 'undefined' && typeof audioManager.playSfx === 'function') {
+        audioManager.playSfx('click');
     }
+    
+    // إخفاء القائمة الرئيسية
+    document.getElementById('game-main-menu').classList.add('hidden-game');
+    
+    // إظهار ساحة المعركة
+    document.getElementById('arena-screen').classList.remove('hidden-game');
+}
+
+// دالة الانسحاب من الساحة والعودة للقائمة
+function closeArena() {
+    if (typeof audioManager !== 'undefined' && typeof audioManager.playSfx === 'function') {
+        audioManager.playSfx('click');
+    }
+    
+    // إخفاء ساحة المعركة
+    document.getElementById('arena-screen').classList.add('hidden-game');
+    
+    // إظهار القائمة الرئيسية
+    document.getElementById('game-main-menu').classList.remove('hidden-game');
 }
 
 // 3. تحديث بيانات اللاعب في القائمة الرئيسية (تُستدعى عند تسجيل الدخول)
