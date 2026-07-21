@@ -429,25 +429,27 @@ async function selectBattleCard(cardIndex) {
         if (result.battle_finished) {
             // المعركة انتهت
             battleState.isActive = false;
+            battleState.isProcessing = false;
             localStorage.removeItem('quiz_arena_battle_id');
             await showBattleResult(result);
         } else {
             // الجولة التالية
             battleState.currentRound = result.current_round;
             battleState.challenge = result.next_challenge;
-            renderBattleUI();
+            battleState.isProcessing = false;  // ✅ تفعيل الأزرار أولاً
+            renderBattleUI();                   // ✅ ثم إعادة الرسم
         }
 
     } catch (err) {
         console.error('selectBattleCard error:', err);
+        battleState.isProcessing = false;  // ✅ تفعيل الأزرار حتى عند الخطأ
         const isAr = currentLang === 'ar';
         showProfileNotification(
             isAr ? '❌ خطأ في الاتصال' : '❌ Connection error',
             'error'
         );
+        renderPlayerBattleCards();  // ✅ إعادة رسم البطاقات قابلة للنقر
     }
-
-    battleState.isProcessing = false;
 }
 
 // ==================== ROUND RESULT DISPLAY ====================
