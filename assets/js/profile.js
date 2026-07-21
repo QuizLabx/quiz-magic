@@ -77,7 +77,12 @@ function renderProfileStats() {
     // 🛡️ Escape username to prevent XSS via innerHTML
     const savedUsername = (typeof escapeHtml === 'function') ? escapeHtml(rawUsername) : rawUsername;
     const totalCards = (typeof getUserCards === 'function') ? Object.keys(getUserCards()).length : 0;
-
+    // ⚔️ إحصائيات الساحة
+    const arenaStats = stats.arena || {};
+    const arenaWins = arenaStats.wins || 0;
+    const arenaLosses = arenaStats.losses || 0;
+    const arenaStreak = arenaStats.current_streak || 0;
+    const arenaBestStreak = arenaStats.best_streak || 0;
     statsContainer.innerHTML = `
         <div class="profile-stat-card profile-username-card">
             <div class="stat-icon">👤</div>
@@ -124,6 +129,26 @@ function renderProfileStats() {
             <div class="stat-icon">💎</div>
             <div class="stat-value">${getGemsCount()}</div>
             <div class="stat-label">${isAr ? 'جوهرة' : 'Gems'}</div>
+        </div>
+        <div class="profile-stat-card" style="border-color: #ef4444; background: linear-gradient(135deg, rgba(239,68,68,0.1), rgba(249,115,22,0.05));">
+            <div class="stat-icon">⚔️</div>
+            <div class="stat-value" style="color: #ef4444;">${arenaWins}</div>
+            <div class="stat-label">${isAr ? 'انتصارات الساحة' : 'Arena Wins'}</div>
+        </div>
+        <div class="profile-stat-card" style="border-color: #64748b;">
+            <div class="stat-icon">💀</div>
+            <div class="stat-value" style="color: #94a3b8;">${arenaLosses}</div>
+            <div class="stat-label">${isAr ? 'هزائم الساحة' : 'Arena Losses'}</div>
+        </div>
+        <div class="profile-stat-card" style="border-color: #f97316; background: linear-gradient(135deg, rgba(249,115,22,0.1), rgba(251,191,36,0.05));">
+            <div class="stat-icon">🔥</div>
+            <div class="stat-value" style="color: #f97316;">${arenaStreak}</div>
+            <div class="stat-label">${isAr ? 'سلسلة الفوز' : 'Win Streak'}</div>
+        </div>
+        <div class="profile-stat-card" style="border-color: #fbbf24;">
+            <div class="stat-icon">👑</div>
+            <div class="stat-value" style="color: #fbbf24;">${arenaBestStreak}</div>
+            <div class="stat-label">${isAr ? 'أفضل سلسلة' : 'Best Streak'}</div>
         </div>
         <div class="profile-stat-card profile-id-card" onclick="showAccountModal()" style="cursor:pointer">
             <div class="stat-icon">🆔</div>
