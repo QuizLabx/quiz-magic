@@ -524,6 +524,14 @@ async function renderEnemyCards() {
 // ==================== CARD SELECTION ====================
 
 async function selectBattleCard(cardIndex) {
+    console.log('🟡 [Arena] selectBattleCard clicked:', {
+        cardIndex,
+        isActive: battleState.isActive,
+        isProcessing: battleState.isProcessing,
+        usedPlayerIndexes: battleState.usedPlayerIndexes,
+        currentRound: battleState.currentRound,
+        battleId: battleState.battleId
+    });
     if (battleState.isProcessing || !battleState.isActive) return;
     if (battleState.usedPlayerIndexes.includes(cardIndex)) return;
 
@@ -582,7 +590,17 @@ async function selectBattleCard(cardIndex) {
 // ==================== ROUND RESULT DISPLAY ====================
 
 async function showRoundResult(roundResult) {
-    if (!roundResult) return;
+    console.log('🟡 [Arena] showRoundResult received:', roundResult);
+
+    if (!roundResult) {
+        console.warn('⚠️ [Arena] roundResult is empty');
+        return;
+    }
+
+    if (!roundResult.player_card || !roundResult.enemy_card) {
+        console.warn('⚠️ [Arena] roundResult missing player_card or enemy_card:', roundResult);
+        return;
+    }
 
     const isAr = currentLang === 'ar';
 
