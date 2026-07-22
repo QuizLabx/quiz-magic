@@ -6180,6 +6180,12 @@ body.in-game-menu main {
     overflow: hidden;
 }
 
+/* تكبير بطاقات اللاعب بنسبة 25% - الشاشات العادية */
+.arena-card-slot.player-slot {
+    width: 100px;
+    height: 144px;
+}
+
 .arena-real-card-img {
     width: 100%;
     height: 100%;
@@ -6238,11 +6244,19 @@ body.in-game-menu main {
     color: #fca5a5;
 }
 
-/* تحسين حجم بطاقات التصادم قليلاً */
+/* تحسين حجم بطاقات التصادم - الشاشات 380px وأكبر */
 @media (min-width: 380px) {
     #clash-enemy,
     #clash-player {
         width: 100px !important;
         height: 140px !important;
+    }
+}
+
+/* بطاقات اللاعب - الشاشات الصغيرة (380px وأصغر) */
+@media (max-width: 380px) {
+    .arena-card-slot.player-slot {
+        width: 81px;
+        height: 119px;
     }
 }
