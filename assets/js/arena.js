@@ -1,11 +1,10 @@
 // ============================================================
-// ⚔️ ARENA BATTLE SYSTEM - FULL VERSION
+// ⚔️ ARENA BATTLE SYSTEM - FULL VERSION (REAL CARDS + CLEAN)
 // ============================================================
 
 // ==================== STATE ====================
 let selectedDeck = [];
 let currentSelectingCreature = null;
-
 let battleState = {
     battleId: null,
     currentRound: 1,
@@ -26,17 +25,14 @@ let arenaCardCache = {};
 function getArenaCreatureById(creatureId) {
     const lang = typeof currentLang !== 'undefined' ? currentLang : 'ar';
     const tryLangs = [lang, 'ar', 'en'];
-
     for (const l of tryLangs) {
         const data = quizzesData[l];
         if (!data || !data.quizzes || !data.quizzes[0]) continue;
-
         const creature = data.quizzes[0].results.find(r => r.id === creatureId);
         if (creature) {
             return JSON.parse(JSON.stringify(creature));
         }
     }
-
     return null;
 }
 
@@ -65,7 +61,6 @@ async function getArenaCardDataURL(creatureId, tier = 'common') {
         arenaCardCache[cacheKey] = url;
         return url;
     } catch (error) {
-        console.error('Arena card render failed:', error);
         return null;
     }
 }
@@ -90,11 +85,7 @@ async function preloadArenaCards() {
 }
 
 function arenaCardLoadingHTML() {
-    return `
-        <div class="arena-card-loading">
-            <i class="fas fa-spinner fa-spin"></i>
-        </div>
-    `;
+    return `<div class="arena-card-loading"><i class="fas fa-spinner fa-spin"></i></div>`;
 }
 
 function arenaSimpleCardHTML(creatureId, tier = 'common') {
@@ -118,7 +109,6 @@ function arenaSimpleCardHTML(creatureId, tier = 'common') {
 }
 
 // ==================== DECK BUILDER ====================
-
 function openDeckBuilder() {
     if (!window.firebaseDB || !window.firebaseDB.isLoggedIn()) {
         const isAr = currentLang === 'ar';
@@ -132,6 +122,7 @@ function openDeckBuilder() {
 
     document.getElementById('game-main-menu').classList.add('hidden-game');
     document.getElementById('deck-builder-screen').classList.remove('hidden-game');
+
     selectedDeck = [];
     renderDeckCreatures();
     updateDeckUI();
@@ -155,7 +146,6 @@ function updateDeckBuilderTexts() {
     setText('deck-back-text', 'عودة', 'Back');
     setText('deck-hint-text', 'اختر كائناً لعرض بطاقاتك', 'Choose a creature to view your cards');
 
-    // تحديث زر الدخول للساحة إن كان موجودًا
     if (typeof updateDeckUI === 'function') {
         updateDeckUI();
     }
@@ -164,14 +154,17 @@ function updateDeckBuilderTexts() {
 function renderDeckCreatures() {
     const grid = document.getElementById('deck-creatures-grid');
     grid.innerHTML = '';
+
     const userCards = typeof getUserCards === 'function' ? getUserCards() : {};
     const isAr = currentLang === 'ar';
     const creaturesData = quizzesData[isAr ? 'ar' : 'en'].quizzes[0].results;
+
     let hasCards = false;
 
     for (const [creatureId, tiers] of Object.entries(userCards)) {
         if (!tiers || tiers.length === 0) continue;
         hasCards = true;
+
         const creatureInfo = creaturesData.find(c => c.id === creatureId);
         if (!creatureInfo) continue;
 
@@ -195,17 +188,21 @@ function renderDeckCreatures() {
 
 function openTierSelect(creatureId, creatureName, ownedTiers) {
     currentSelectingCreature = creatureId;
+
     const modal = document.getElementById('tier-select-modal');
     const sheet = document.getElementById('tier-select-sheet');
     const optionsContainer = document.getElementById('tier-select-options');
     const isAr = currentLang === 'ar';
 
     document.getElementById('tier-select-title').innerText = creatureName;
+
     optionsContainer.innerHTML = '';
 
     const reversedTiers = [...ownedTiers].reverse();
+
     reversedTiers.forEach(tier => {
         const tierLabel = CARD_TIERS[tier] ? CARD_TIERS[tier].label[isAr ? 'ar' : 'en'] : tier;
+
         let borderColor = '#334155';
         if (tier === 'silver') borderColor = '#E0E0E0';
         if (tier === 'gold') borderColor = '#D4AF37';
@@ -223,12 +220,14 @@ function openTierSelect(creatureId, creatureName, ownedTiers) {
 
     modal.classList.remove('hidden');
     modal.classList.add('flex');
+
     setTimeout(() => sheet.classList.remove('translate-y-full'), 10);
 }
 
 function closeTierSelect() {
     const sheet = document.getElementById('tier-select-sheet');
     sheet.classList.add('translate-y-full');
+
     setTimeout(() => {
         document.getElementById('tier-select-modal').classList.add('hidden');
         document.getElementById('tier-select-modal').classList.remove('flex');
@@ -239,6 +238,7 @@ function selectCardForDeck(creatureId, tier, borderColor) {
     const isAr = currentLang === 'ar';
 
     const sameCreature = selectedDeck.some(c => c.creatureId === creatureId);
+
     if (sameCreature) {
         showProfileNotification(
             isAr ? '⚠️ لا يمكن اختيار نفس الكائن مرتين' : '⚠️ Cannot select same creature twice',
@@ -282,10 +282,12 @@ function removeCardFromDeck(index) {
 
 function updateDeckUI() {
     document.getElementById('deck-count').innerText = selectedDeck.length;
+
     const isAr = currentLang === 'ar';
 
     for (let i = 0; i < 3; i++) {
         const slot = document.getElementById(`slot-${i}`);
+
         if (i < selectedDeck.length) {
             const card = selectedDeck[i];
             slot.className = 'deck-slot filled';
@@ -299,6 +301,7 @@ function updateDeckUI() {
     }
 
     const startBtn = document.getElementById('btn-start-battle');
+
     if (selectedDeck.length === 3) {
         startBtn.disabled = false;
         startBtn.className = 'w-full py-3 rounded-xl font-black text-lg text-white transition-all transform hover:scale-105';
@@ -310,11 +313,11 @@ function updateDeckUI() {
         startBtn.style.background = '';
         startBtn.style.boxShadow = 'none';
     }
+
     startBtn.innerText = isAr ? 'ادخل الساحة ⚔️' : 'Enter Arena ⚔️';
 }
 
 // ==================== BATTLE START ====================
-
 async function enterArena() {
     const isAr = currentLang === 'ar';
 
@@ -368,7 +371,6 @@ async function enterArena() {
         if (window.audioManager) window.audioManager.play('ui-click');
 
     } catch (err) {
-        console.error('Arena start error:', err);
         showProfileNotification(
             isAr ? '❌ خطأ في الاتصال بالسيرفر' : '❌ Server connection error',
             'error'
@@ -378,7 +380,6 @@ async function enterArena() {
 }
 
 // ==================== ARENA TEXTS (LANGUAGE) ====================
-
 function updateArenaTexts() {
     const isAr = currentLang === 'ar';
 
@@ -397,7 +398,6 @@ function updateArenaTexts() {
 }
 
 // ==================== BATTLE UI RENDERING ====================
-
 async function renderBattleUI() {
     document.getElementById('arena-round').innerText = battleState.currentRound;
     updateChallengeDisplay();
@@ -408,9 +408,11 @@ async function renderBattleUI() {
     document.getElementById('clash-enemy').innerHTML = '';
     document.getElementById('clash-player').innerHTML = '';
 }
+
 function updateChallengeDisplay() {
     const isAr = currentLang === 'ar';
     const challengeEl = document.getElementById('arena-current-stat');
+
     if (!challengeEl || !battleState.challenge) return;
 
     const axisNames = {
@@ -440,60 +442,48 @@ async function renderPlayerBattleCards() {
     const container = document.getElementById('player-arena-cards');
     if (!container) return;
 
-    const isAr = currentLang === 'ar';
-    const creaturesData = quizzesData[isAr ? 'ar' : 'en'].quizzes[0].results;
-
-    console.log('🟢 [Arena] renderPlayerBattleCards called:', {
-        isActive: battleState.isActive,
-        isProcessing: battleState.isProcessing,
-        usedPlayerIndexes: battleState.usedPlayerIndexes,
-        playerDeckLength: battleState.playerDeck.length
-    });
-
     container.innerHTML = '';
 
-    battleState.playerDeck.forEach((card, index) => {
-        const creatureInfo = creaturesData.find(c => c.id === card.creature_id);
-        if (!creatureInfo) return;
-
+    for (let index = 0; index < battleState.playerDeck.length; index++) {
+        const card = battleState.playerDeck[index];
         const isUsed = battleState.usedPlayerIndexes.includes(index);
-        const tierLabel = CARD_TIERS[card.tier]
-            ? CARD_TIERS[card.tier].label[isAr ? 'ar' : 'en']
-            : card.tier;
 
-        let borderColor = '#334155';
-        if (card.tier === 'silver') borderColor = '#E0E0E0';
-        if (card.tier === 'gold') borderColor = '#D4AF37';
-        if (card.tier === 'diamond') borderColor = '#00FFFF';
-        if (card.tier === 'mythic') borderColor = '#ff1a66';
-        if (card.tier === 'cosmic') borderColor = '#ff00ff';
+        const slot = document.createElement('div');
+        slot.className = `arena-card-slot player-slot ${isUsed ? 'used' : ''}`;
+        slot.innerHTML = arenaCardLoadingHTML();
 
-        const cardEl = document.createElement('div');
-        cardEl.className = `arena-card-slot player-slot ${isUsed ? 'used' : ''}`;
-        cardEl.style.borderColor = isUsed ? '#334155' : borderColor;
-        cardEl.innerHTML = `
-            <img src="${creatureInfo.image}" style="width:100%;height:70%;object-fit:cover;">
-            <div style="font-size:0.55rem;font-weight:900;text-align:center;padding:2px;color:#fff;">
-                ${creatureInfo.name}
-            </div>
-            <div style="font-size:0.5rem;text-align:center;color:${borderColor};font-weight:700;">
-                ★ ${tierLabel}
-            </div>
-        `;
-
-        // ✅ تعيين onclick دائماً للبطاقات غير المستخدمة
         if (!isUsed) {
-            cardEl.onclick = () => selectBattleCard(index);
-            cardEl.style.cursor = 'pointer';
-            console.log(`🟢 [Arena] onclick assigned to card index ${index}`);
+            slot.onclick = () => selectBattleCard(index);
+            slot.style.cursor = 'pointer';
         } else {
-            cardEl.style.cursor = 'default';
-            cardEl.style.opacity = '0.4';
+            slot.style.cursor = 'default';
+            slot.style.opacity = '0.4';
         }
 
-        container.appendChild(cardEl);
-    });
+        container.appendChild(slot);
+
+        const cardURL = await getArenaCardDataURL(
+            card.creature_id,
+            card.tier || 'common'
+        );
+
+        if (cardURL) {
+            slot.innerHTML = `
+                <img src="${cardURL}" class="arena-real-card-img" alt="">
+            `;
+        } else {
+            slot.innerHTML = arenaSimpleCardHTML(
+                card.creature_id,
+                card.tier || 'common'
+            );
+        }
+
+        if (isUsed) {
+            slot.style.opacity = '0.4';
+        }
+    }
 }
+
 async function renderEnemyCards() {
     const container = document.getElementById('enemy-cards-container');
     if (!container) return;
@@ -536,31 +526,10 @@ async function renderEnemyCards() {
 }
 
 // ==================== CARD SELECTION ====================
-
 async function selectBattleCard(cardIndex) {
-    console.log('🟡 [Arena] selectBattleCard clicked:', {
-        cardIndex,
-        isActive: battleState.isActive,
-        isProcessing: battleState.isProcessing,
-        usedPlayerIndexes: [...battleState.usedPlayerIndexes],
-        currentRound: battleState.currentRound,
-        battleId: battleState.battleId
-    });
-
-    if (battleState.isProcessing) {
-        console.warn('🟡 [Arena] Blocked: isProcessing is true');
-        return;
-    }
-
-    if (!battleState.isActive) {
-        console.warn('🟡 [Arena] Blocked: battle is not active');
-        return;
-    }
-
-    if (battleState.usedPlayerIndexes.includes(cardIndex)) {
-        console.warn('🟡 [Arena] Blocked: card already used', cardIndex);
-        return;
-    }
+    if (battleState.isProcessing) return;
+    if (!battleState.isActive) return;
+    if (battleState.usedPlayerIndexes.includes(cardIndex)) return;
 
     battleState.isProcessing = true;
 
@@ -570,17 +539,16 @@ async function selectBattleCard(cardIndex) {
     }
 
     await delay(300);
-    renderPlayerBattleCards();
+
+    await renderPlayerBattleCards();
 
     try {
         const result = await window.firebaseDB.selectArenaCard(battleState.battleId, cardIndex);
 
-        console.log('🟡 [Arena] selectArenaCard full result:', JSON.parse(JSON.stringify(result)));
-
         if (!result || !result.success) {
             handleBattleError(result?.code || 'rpc_failed');
             battleState.isProcessing = false;
-            renderPlayerBattleCards();
+            await renderPlayerBattleCards();
             return;
         }
 
@@ -590,52 +558,43 @@ async function selectBattleCard(cardIndex) {
             battleState.roundResults.push(result.round_result);
             battleState.playerWins = result.player_wins ?? battleState.playerWins;
             battleState.enemyWins = result.enemy_wins ?? battleState.enemyWins;
-            await showRoundResult(result.round_result);
-        } else {
-            console.warn('🟡 [Arena] No round_result in response');
-        }
 
-        console.log('🟡 [Arena] After round:', {
-            battle_finished: result.battle_finished,
-            current_round: result.current_round,
-            next_challenge: result.next_challenge
-        });
+            await showRoundResult(result.round_result);
+        }
 
         if (result.battle_finished) {
             battleState.isActive = false;
             localStorage.removeItem('quiz_arena_battle_id');
             await showBattleResult(result);
+            battleState.isProcessing = false;
         } else {
             battleState.currentRound = result.current_round ?? battleState.currentRound + 1;
             battleState.challenge = result.next_challenge ?? battleState.challenge;
+
+            await renderBattleUI();
+
             battleState.isProcessing = false;
-            renderBattleUI();
         }
 
     } catch (err) {
-        console.error('🟡 [Arena] selectBattleCard error:', err);
         battleState.isProcessing = false;
+
         const isAr = currentLang === 'ar';
+
         showProfileNotification(
             isAr ? '❌ خطأ في تنفيذ الجولة' : '❌ Round error',
             'error'
         );
-        renderPlayerBattleCards();
+
+        await renderPlayerBattleCards();
     }
 }
 
 // ==================== ROUND RESULT DISPLAY ====================
-
 async function showRoundResult(roundResult) {
-    console.log('🟡 [Arena] showRoundResult received:', roundResult);
-
-    if (!roundResult) {
-        console.warn('⚠️ [Arena] roundResult is empty');
-        return;
-    }
+    if (!roundResult) return;
 
     if (!roundResult.player_card || !roundResult.enemy_card) {
-        console.warn('⚠️ [Arena] roundResult missing player_card or enemy_card:', roundResult);
         return;
     }
 
@@ -703,6 +662,7 @@ async function showRoundResult(roundResult) {
     const isVictory = winner === 'player';
 
     const playerCardsContainer = document.getElementById('player-arena-cards');
+
     if (playerCardsContainer) {
         if (isVictory) {
             playerCardsContainer.classList.add('round-win');
@@ -739,16 +699,17 @@ async function showRoundResult(roundResult) {
 }
 
 // ==================== BATTLE RESULT ====================
-
 async function showBattleResult(result) {
     const isAr = currentLang === 'ar';
     const finalWinner = result.final_winner;
     const isVictory = finalWinner === 'player';
 
     let rewardsHtml = '';
+
     if (result.rewards) {
         const gems = result.rewards.gems || 0;
         const xp = result.rewards.xp || 0;
+
         if (gems > 0) rewardsHtml += `<div class="battle-reward-item" style="animation: battle-item-appear 0.5s ease-out 0.3s both;">💎 +${gems} ${isAr ? 'جوهرة' : 'Gems'}</div>`;
         if (xp > 0) rewardsHtml += `<div class="battle-reward-item" style="animation: battle-item-appear 0.5s ease-out 0.5s both;">⚡ +${xp} XP</div>`;
     }
@@ -758,6 +719,7 @@ async function showBattleResult(result) {
 
     if (modal && content) {
         const iconClass = isVictory ? 'victory-icon' : 'defeat-icon';
+
         content.innerHTML = `
             <div class="battle-result-icon ${iconClass}">${isVictory ? '🏆' : '💀'}</div>
             <h2 class="battle-result-title" style="color: ${isVictory ? '#fbbf24' : '#ef4444'}">
@@ -771,6 +733,7 @@ async function showBattleResult(result) {
                 ${isAr ? 'العودة للقائمة' : 'Back to Menu'}
             </button>
         `;
+
         modal.classList.remove('hidden');
         modal.classList.add('flex');
     }
@@ -792,16 +755,17 @@ async function showBattleResult(result) {
 
 async function closeBattleResult() {
     const modal = document.getElementById('battle-result-modal');
+
     if (modal) {
         modal.classList.add('hidden');
         modal.classList.remove('flex');
     }
+
     await syncArenaData();
     closeArena();
 }
 
 // ==================== ARENA NAVIGATION ====================
-
 function closeArena() {
     document.getElementById('arena-screen').classList.add('hidden-game');
     document.getElementById('game-main-menu').classList.remove('hidden-game');
@@ -824,9 +788,9 @@ function closeArena() {
 }
 
 // ==================== ERROR HANDLING ====================
-
 function handleBattleError(code) {
     const isAr = currentLang === 'ar';
+
     const messages = {
         'not_logged_in': isAr ? '🔐 يجب تسجيل الدخول' : '🔐 Login required',
         'invalid_deck': isAr ? '❌ تشكيلة غير صالحة' : '❌ Invalid deck',
@@ -843,6 +807,7 @@ function handleBattleError(code) {
     };
 
     const msg = messages[code] || (isAr ? '❌ حدث خطأ: ' + code : '❌ Error: ' + code);
+
     showProfileNotification(msg, 'error');
 
     if (code === 'not_logged_in' || code === 'banned') {
@@ -851,12 +816,12 @@ function handleBattleError(code) {
 }
 
 // ==================== LOADING STATE ====================
-
 function showArenaLoading(show) {
     const btn = document.getElementById('btn-start-battle');
     if (!btn) return;
 
     const isAr = currentLang === 'ar';
+
     if (show) {
         btn.disabled = true;
         btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${isAr ? 'جاري الدخول...' : 'Entering...'}`;
@@ -867,7 +832,6 @@ function showArenaLoading(show) {
 }
 
 // ==================== SYNC DATA AFTER BATTLE ====================
-
 async function syncArenaData() {
     try {
         if (window.firebaseDB && window.firebaseDB.isLoggedIn()) {
@@ -902,9 +866,11 @@ async function syncArenaData() {
 
         if (window.firebaseDB && window.firebaseDB.isLoggedIn() && window.sbClient) {
             const userId = window.firebaseDB.getCurrentUserId();
+
             const { data: energyVal } = await window.sbClient.rpc('server_get_energy', {
                 p_user_id: userId
             });
+
             const energyText = `${energyVal !== null ? energyVal : 5}/5`;
 
             const energyEl = document.getElementById('energy-header-count');
@@ -922,28 +888,29 @@ async function syncArenaData() {
             const stats = JSON.parse(localStorage.getItem('quiz_stats') || '{}');
             const achievements = JSON.parse(localStorage.getItem('quiz_achievements') || '{}');
             const cards = JSON.parse(localStorage.getItem('quiz_cards') || '{}');
+
             await window.firebaseDB.syncGameData(stats, achievements, cards);
         }
 
     } catch (err) {
-        console.error('syncArenaData error:', err);
+        // Silent fail for sync
     }
 }
 
 // ==================== HELPERS ====================
-
 function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 // ==================== BATTLE RESUME ====================
-
 async function tryResumeBattle() {
     const savedBattleId = localStorage.getItem('quiz_arena_battle_id');
+
     if (!savedBattleId) return;
 
     try {
         const result = await window.firebaseDB.getArenaBattle(savedBattleId);
+
         if (!result.success || result.status !== 'active') {
             localStorage.removeItem('quiz_arena_battle_id');
             return;
