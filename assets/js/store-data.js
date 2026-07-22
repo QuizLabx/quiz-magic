@@ -53,11 +53,25 @@ const STORE_ITEMS = {
     { id: 'sleeve_cosmic', price: 800, name: { ar: 'الغلاف الكوني', en: 'Cosmic Sleeve' }, image: 'assets/images/store/sleeves/cosmic.jpg' },
     { id: 'sleeve_royal_gold', price: 1500, name: { ar: 'الغلاف الملكي الذهبي', en: 'Royal Gold Sleeve' }, image: 'assets/images/store/sleeves/royal_gold.jpg' }
   ],
-  // 🎭 5. الشخصيات (Characters) — قابلة للشراء، تظهر في مشهد نهاية المعركة
-  //     (الفارغ هنا مقصود: أضف شخصياتك لاحقاً. الشخصية الافتراضية مدمجة أعلاه في DEFAULT_CHARACTER)
+    // 🎭 5. الشخصيات (Characters) — قابلة للشراء، تظهر في مشهد نهاية المعركة
+  //     (الشخصية الافتراضية "مهرج البطاقات" مدمجة أعلاه في DEFAULT_CHARACTER وليست هنا)
   characters: [
-    // مثال لشكل الإضافة لاحقاً:
-    // { id: 'character_phoenix_lord', price: 1200, name: { ar: 'سيد العنقاء', en: 'Phoenix Lord' }, image: 'assets/images/store/characters/phoenix_lord.png' }
+    // 🌟 الشخصية الأولى القابلة للشراء
+    //    ✏️ غيّر الاسم/السعر/المسار كما تشاء، ثم ارفع الصورة في نفس المسار بدقة 1080×1440 ونسبة 3:4 وخلفية شفافة
+    {
+      id: 'character_phoenix_lord',
+      price: 1200,
+      name: { ar: 'سيد العنقاء', en: 'Phoenix Lord' },
+      image: 'assets/images/store/characters/phoenix_lord.png'
+    },
+    {
+      id: 'character_eternal_sage',
+      price: 1200,
+      name: { ar: 'الحكيم الأبدي', en: 'Eternal Sage' },
+      image: 'assets/images/store/characters/eternal_sage.png'
+    }
+    // ➕ لإضافة شخصية ثانية لاحقاً، انسخ الكتلة أعلاه وأضف فاصلة ثم كتلة جديدة بنفس الشكل:
+    // ,{ id: 'character_shadow_knight', price: 1500, name: { ar: 'فارس الظلال', en: 'Shadow Knight' }, image: 'assets/images/store/characters/shadow_knight.png' }
   ]
 };
 
