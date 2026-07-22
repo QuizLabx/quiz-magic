@@ -1,4 +1,4 @@
-﻿/*
+/*
 Custom Styles for QuizMagic - Full Professional Version (Phase 4 + Achievements System)
 Includes: Dark/Light Mode, Glassmorphism, Advanced Animations, Skeleton Loaders, Fixed Dragon Progress,
 Confetti, Splash Screen, Enhanced Card Effects, Smooth Question Transitions, and Achievements System.
@@ -6259,4 +6259,168 @@ body.in-game-menu main {
         width: 81px;
         height: 119px;
     }
+}
+
+/* ========================================================================
+🎬 BATTLE CINEMATIC OVERLAY (مشهد التتويج السينمائي)
+======================================================================== */
+.battle-cinematic-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99997;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2rem 1rem;
+  background: radial-gradient(circle at 50% 38%, rgba(15,23,42,0.82), rgba(2,6,23,0.97));
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+}
+.battle-cinematic-overlay.cinematic-active {
+  opacity: 1;
+  pointer-events: auto;
+}
+/* اللافتة العلوية */
+.cinematic-banner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: center;
+  z-index: 4;
+  transform: translateY(-24px);
+  opacity: 0;
+  transition: all 0.7s ease 0.2s;
+}
+.cinematic-active .cinematic-banner { transform: translateY(0); opacity: 1; }
+.cinematic-status {
+  font-size: clamp(1.9rem, 8vw, 3.4rem);
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+.cinematic-status-win {
+  background: linear-gradient(135deg, #fde68a, #fbbf24, #f59e0b);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent;
+  filter: drop-shadow(0 0 22px rgba(251,191,36,0.35));
+}
+.cinematic-status-lose {
+  background: linear-gradient(135deg, #fca5a5, #ef4444, #b91c1c);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent;
+  filter: drop-shadow(0 0 18px rgba(239,68,68,0.3));
+}
+.cinematic-winner-line {
+  font-size: clamp(0.95rem, 3.6vw, 1.35rem);
+  font-weight: 700;
+  color: #e2e8f0;
+  letter-spacing: 0.03em;
+}
+.cinematic-rewards {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 0.35rem;
+}
+.cinematic-reward-item {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(251,191,36,0.35);
+  border-radius: 999px;
+  padding: 0.35rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #fbbf24;
+}
+/* المسرح */
+.cinematic-stage {
+  position: relative;
+  width: min(86vw, 380px);
+  height: min(58vh, 460px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+/* الشخصية */
+.cinematic-character {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: scale(0.82);
+  opacity: 0;
+  transition: all 0.85s cubic-bezier(0.34,1.56,0.64,1) 0.3s;
+  filter: drop-shadow(0 14px 34px rgba(0,0,0,0.65));
+}
+.cinematic-active .cinematic-character { transform: scale(1); opacity: 1; }
+.cinematic-character img {
+  max-height: min(54vh, 420px);
+  max-width: 82%;
+  object-fit: contain;
+}
+/* حلقة البطاقات الدوارة */
+.cinematic-cards-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  z-index: 1;
+  animation: cinematic-orbit-spin 22s linear infinite;
+}
+.cinematic-card-orbit {
+  --orbit-radius: 135px;
+  position: absolute;
+  top: 0; left: 0;
+  width: 72px; height: 102px;
+  margin-left: -36px; margin-top: -51px;
+  transform: rotate(var(--orbit-angle)) translateY(calc(var(--orbit-radius) * -1)) rotate(calc(var(--orbit-angle) * -1));
+}
+.cinematic-card-orbit-inner {
+  width: 100%; height: 100%;
+  border-radius: 0.6rem;
+  overflow: hidden;
+  border: 2px solid rgba(255,255,255,0.28);
+  box-shadow: 0 8px 22px rgba(0,0,0,0.6);
+  background: #020617;
+  animation: cinematic-orbit-counter 22s linear infinite;
+}
+.cinematic-orbit-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+@keyframes cinematic-orbit-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes cinematic-orbit-counter { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
+/* زر العودة */
+.cinematic-close-btn {
+  z-index: 4;
+  padding: 0.8rem 2.2rem;
+  border-radius: 999px;
+  border: none;
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: #fff;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  box-shadow: 0 8px 22px rgba(99,102,241,0.4);
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.6s ease 0.6s;
+}
+.cinematic-active .cinematic-close-btn { opacity: 1; transform: translateY(0); }
+.cinematic-close-btn:hover { filter: brightness(1.1); transform: scale(1.04); }
+/* نسبة عرض صور الشخصيات في المتجر/الخزنة (طولية) */
+.store-item-card.type-characters .store-item-image-wrapper { aspect-ratio: 3 / 4; }
+/* استجابة الشاشات الصغيرة */
+@media (max-width: 480px) {
+  .cinematic-card-orbit { --orbit-radius: 98px; width: 60px; height: 86px; margin-left: -30px; margin-top: -43px; }
+}
+/* احترام تقليل الحركة */
+@media (prefers-reduced-motion: reduce) {
+  .cinematic-cards-ring, .cinematic-card-orbit-inner { animation: none; }
 }
