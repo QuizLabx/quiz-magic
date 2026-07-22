@@ -48,14 +48,20 @@ function closeDeckBuilder() {
 
 function updateDeckBuilderTexts() {
     const isAr = currentLang === 'ar';
-    const title = document.getElementById('deck-builder-title');
-    if (title) title.innerText = isAr ? 'تجهيز التشكيلة' : 'Prepare Deck';
 
-    const backText = document.getElementById('deck-back-text');
-    if (backText) backText.innerText = isAr ? 'عودة' : 'Back';
+    const setText = (id, arText, enText) => {
+        const el = document.getElementById(id);
+        if (el) el.innerText = isAr ? arText : enText;
+    };
 
-    const hint = document.getElementById('deck-hint-text');
-    if (hint) hint.innerText = isAr ? 'اختر كائناً لعرض بطاقاتك' : 'Choose a creature to view your cards';
+    setText('deck-builder-title', 'تجهيز التشكيلة', 'Prepare Deck');
+    setText('deck-back-text', 'عودة', 'Back');
+    setText('deck-hint-text', 'اختر كائناً لعرض بطاقاتك', 'Choose a creature to view your cards');
+
+    // تحديث زر الدخول للساحة إن كان موجودًا
+    if (typeof updateDeckUI === 'function') {
+        updateDeckUI();
+    }
 }
 
 function renderDeckCreatures() {
@@ -276,23 +282,18 @@ async function enterArena() {
 function updateArenaTexts() {
     const isAr = currentLang === 'ar';
 
-    const retreat = document.getElementById('arena-retreat-text');
-    if (retreat) retreat.innerText = isAr ? 'انسحاب' : 'Retreat';
+    const setText = (id, arText, enText) => {
+        const el = document.getElementById(id);
+        if (el) el.innerText = isAr ? arText : enText;
+    };
 
-    const title = document.getElementById('arena-title-text');
-    if (title) title.innerText = isAr ? 'تحدي الحراس' : 'Guardian Challenge';
-
-    const roundLabel = document.getElementById('arena-round-label');
-    if (roundLabel) roundLabel.innerText = isAr ? 'الجولة' : 'Round';
-
-    const enemyLabel = document.getElementById('arena-enemy-label');
-    if (enemyLabel) enemyLabel.innerText = isAr ? 'بطاقات الحارس' : 'Guardian Cards';
-
-    const challengeLabel = document.getElementById('arena-challenge-label');
-    if (challengeLabel) challengeLabel.innerText = isAr ? 'تحدي:' : 'Challenge:';
-
-    const attackLabel = document.getElementById('arena-attack-label');
-    if (attackLabel) attackLabel.innerText = isAr ? 'اختر بطاقة للهجوم' : 'Select a card to attack';
+    setText('arena-retreat-text', 'انسحاب', 'Retreat');
+    setText('arena-title-text', 'تحدي الحراس', 'Guardian Challenge');
+    setText('arena-round-label', 'الجولة', 'Round');
+    setText('arena-enemy-label', 'بطاقات الحارس', 'Guardian Cards');
+    setText('arena-challenge-label', 'تحدي:', 'Challenge:');
+    setText('arena-attack-label', 'اختر بطاقة للهجوم', 'Select a card to attack');
+    setText('arena-vs-text', 'VS', 'VS');
 }
 
 // ==================== BATTLE UI RENDERING ====================
