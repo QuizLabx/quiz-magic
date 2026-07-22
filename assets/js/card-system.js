@@ -755,8 +755,24 @@ function drawCardRadarChart(ctx, cx, cy, radius, creature, visual, isAr) {
         ['Willpower', 'Intelligence', 'Energy', 'Empathy', 'Strategy', 'Mystery'];
 
     const stats = axes.map(axis => {
-        if (creature && creature.axes && creature.axes[axis]) return creature.axes[axis];
-        if (creature && creature.fingerprint && creature.fingerprint[axis]) return creature.fingerprint[axis];
+        if (creature && creature.fingerprint && typeof creature.fingerprint[axis] === 'number') {
+            return creature.fingerprint[axis];
+        }
+
+        if (
+            typeof CREATURE_FINGERPRINTS !== 'undefined' &&
+            creature &&
+            creature.id &&
+            CREATURE_FINGERPRINTS[creature.id] &&
+            typeof CREATURE_FINGERPRINTS[creature.id][axis] === 'number'
+        ) {
+            return CREATURE_FINGERPRINTS[creature.id][axis];
+        }
+
+        if (creature && creature.axes && typeof creature.axes[axis] === 'number') {
+            return creature.axes[axis];
+        }
+
         return 60 + (Math.random() * 35);
     });
 

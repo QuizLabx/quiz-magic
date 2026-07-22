@@ -20,6 +20,103 @@ let battleState = {
     isProcessing: false
 };
 
+// ==================== REAL CARD RENDERING FOR ARENA ====================
+let arenaCardCache = {};
+
+function getArenaCreatureById(creatureId) {
+    const lang = typeof currentLang !== 'undefined' ? currentLang : 'ar';
+    const tryLangs = [lang, 'ar', 'en'];
+
+    for (const l of tryLangs) {
+        const data = quizzesData[l];
+        if (!data || !data.quizzes || !data.quizzes[0]) continue;
+
+        const creature = data.quizzes[0].results.find(r => r.id === creatureId);
+        if (creature) {
+            return JSON.parse(JSON.stringify(creature));
+        }
+    }
+
+    return null;
+}
+
+async function getArenaCardDataURL(creatureId, tier = 'common') {
+    if (!creatureId) return null;
+    if (typeof renderCollectibleCardCanvas !== 'function') return null;
+
+    const username = typeof getUsername === 'function' ? getUsername() : '';
+    const lang = typeof currentLang !== 'undefined' ? currentLang : 'ar';
+    const cacheKey = `${lang}:${username}:${creatureId}:${tier}`;
+
+    if (arenaCardCache[cacheKey]) {
+        return arenaCardCache[cacheKey];
+    }
+
+    const creature = getArenaCreatureById(creatureId);
+    if (!creature) return null;
+
+    if (typeof CREATURE_FINGERPRINTS !== 'undefined' && CREATURE_FINGERPRINTS[creatureId]) {
+        creature.fingerprint = CREATURE_FINGERPRINTS[creatureId];
+    }
+
+    try {
+        const canvas = await renderCollectibleCardCanvas(creature, tier);
+        const url = canvas.toDataURL('image/png');
+        arenaCardCache[cacheKey] = url;
+        return url;
+    } catch (error) {
+        console.error('Arena card render failed:', error);
+        return null;
+    }
+}
+
+async function preloadArenaCards() {
+    const promises = [];
+
+    (battleState.playerDeck || []).forEach(card => {
+        promises.push(getArenaCardDataURL(card.creature_id, card.tier || 'common'));
+    });
+
+    (battleState.roundResults || []).forEach(roundResult => {
+        if (roundResult.enemy_card) {
+            promises.push(getArenaCardDataURL(roundResult.enemy_card.creature_id, roundResult.enemy_card.tier || 'common'));
+        }
+        if (roundResult.player_card) {
+            promises.push(getArenaCardDataURL(roundResult.player_card.creature_id, roundResult.player_card.tier || 'common'));
+        }
+    });
+
+    await Promise.all(promises);
+}
+
+function arenaCardLoadingHTML() {
+    return `
+        <div class="arena-card-loading">
+            <i class="fas fa-spinner fa-spin"></i>
+        </div>
+    `;
+}
+
+function arenaSimpleCardHTML(creatureId, tier = 'common') {
+    const isAr = currentLang === 'ar';
+    const creature = getArenaCreatureById(creatureId);
+    if (!creature) return '';
+
+    const tierLabel = (typeof CARD_TIERS !== 'undefined' && CARD_TIERS[tier])
+        ? CARD_TIERS[tier].label[isAr ? 'ar' : 'en']
+        : tier;
+
+    return `
+        <img src="${creature.image}" style="width:100%;height:70%;object-fit:cover;">
+        <div style="font-size:0.55rem;font-weight:900;text-align:center;padding:2px;color:#fff;">
+            ${creature.name}
+        </div>
+        <div style="font-size:0.5rem;text-align:center;color:#cbd5e1;font-weight:700;">
+            ★ ${tierLabel}
+        </div>
+    `;
+}
+
 // ==================== DECK BUILDER ====================
 
 function openDeckBuilder() {
@@ -262,7 +359,10 @@ async function enterArena() {
         document.getElementById('arena-screen').classList.remove('hidden-game');
 
         updateArenaTexts();
-        renderBattleUI();
+
+        await preloadArenaCards();
+        await renderBattleUI();
+
         showArenaLoading(false);
 
         if (window.audioManager) window.audioManager.play('ui-click');
@@ -298,15 +398,16 @@ function updateArenaTexts() {
 
 // ==================== BATTLE UI RENDERING ====================
 
-function renderBattleUI() {
+async function renderBattleUI() {
     document.getElementById('arena-round').innerText = battleState.currentRound;
     updateChallengeDisplay();
-    renderPlayerBattleCards();
-    renderEnemyCards();
+
+    await renderPlayerBattleCards();
+    await renderEnemyCards();
+
     document.getElementById('clash-enemy').innerHTML = '';
     document.getElementById('clash-player').innerHTML = '';
 }
-
 function updateChallengeDisplay() {
     const isAr = currentLang === 'ar';
     const challengeEl = document.getElementById('arena-current-stat');
@@ -335,85 +436,88 @@ function updateChallengeDisplay() {
     challengeEl.innerText = names[battleState.challenge] || battleState.challenge;
 }
 
-function renderPlayerBattleCards() {
+async function renderPlayerBattleCards() {
     const container = document.getElementById('player-arena-cards');
     if (!container) return;
 
-    const isAr = currentLang === 'ar';
-    const creaturesData = quizzesData[isAr ? 'ar' : 'en'].quizzes[0].results;
     container.innerHTML = '';
 
-    battleState.playerDeck.forEach((card, index) => {
-        const creatureInfo = creaturesData.find(c => c.id === card.creature_id);
-        if (!creatureInfo) return;
-
+    for (let index = 0; index < battleState.playerDeck.length; index++) {
+        const card = battleState.playerDeck[index];
         const isUsed = battleState.usedPlayerIndexes.includes(index);
-        const tierLabel = CARD_TIERS[card.tier] ? CARD_TIERS[card.tier].label[isAr ? 'ar' : 'en'] : card.tier;
 
-        let borderColor = '#334155';
-        if (card.tier === 'silver') borderColor = '#E0E0E0';
-        if (card.tier === 'gold') borderColor = '#D4AF37';
-        if (card.tier === 'diamond') borderColor = '#00FFFF';
-        if (card.tier === 'mythic') borderColor = '#ff1a66';
-        if (card.tier === 'cosmic') borderColor = '#ff00ff';
-
-        const cardEl = document.createElement('div');
-        cardEl.className = `arena-card-slot player-slot ${isUsed ? 'used' : ''}`;
-        cardEl.style.borderColor = isUsed ? '#334155' : borderColor;
-        cardEl.innerHTML = `
-            <img src="${creatureInfo.image}" style="width:100%;height:70%;object-fit:cover;">
-            <div style="font-size:0.55rem;font-weight:900;text-align:center;padding:2px;color:#fff;">
-                ${creatureInfo.name}
-            </div>
-            <div style="font-size:0.5rem;text-align:center;color:${borderColor};font-weight:700;">
-                ★ ${tierLabel}
-            </div>
-        `;
+        const slot = document.createElement('div');
+        slot.className = `arena-card-slot player-slot ${isUsed ? 'used' : ''}`;
+        slot.dataset.cardIndex = index;
+        slot.innerHTML = arenaCardLoadingHTML();
 
         if (!isUsed && battleState.isActive && !battleState.isProcessing) {
-            cardEl.onclick = () => selectBattleCard(index);
-            cardEl.style.cursor = 'pointer';
+            slot.onclick = () => selectBattleCard(index);
+            slot.style.cursor = 'pointer';
         } else {
-            cardEl.style.cursor = 'default';
-            cardEl.style.opacity = isUsed ? '0.4' : '1';
+            slot.style.cursor = 'default';
         }
 
-        container.appendChild(cardEl);
-    });
+        if (isUsed) {
+            slot.style.opacity = '0.4';
+        }
+
+        container.appendChild(slot);
+
+        const cardURL = await getArenaCardDataURL(card.creature_id, card.tier || 'common');
+
+        if (cardURL) {
+            slot.innerHTML = `
+                <img src="${cardURL}" class="arena-real-card-img" alt="">
+            `;
+        } else {
+            slot.innerHTML = arenaSimpleCardHTML(card.creature_id, card.tier || 'common');
+        }
+
+        if (isUsed) {
+            slot.style.opacity = '0.4';
+        }
+    }
 }
 
-function renderEnemyCards() {
+async function renderEnemyCards() {
     const container = document.getElementById('enemy-cards-container');
     if (!container) return;
 
     container.innerHTML = '';
+
     for (let i = 0; i < 3; i++) {
-        const isRevealed = battleState.roundResults.some(r => r.round === i + 1);
-        const slotEl = document.createElement('div');
-        slotEl.className = 'arena-card-slot enemy-slot';
+        const roundResult = battleState.roundResults.find(r => r.round === i + 1);
 
-        if (isRevealed) {
-            const roundResult = battleState.roundResults.find(r => r.round === i + 1);
-            if (roundResult && roundResult.enemy_card) {
-                const isAr = currentLang === 'ar';
-                const creaturesData = quizzesData[isAr ? 'ar' : 'en'].quizzes[0].results;
-                const enemyCreature = creaturesData.find(c => c.id === roundResult.enemy_card.creature_id);
-                if (enemyCreature) {
-                    slotEl.classList.add('revealed');
-                    slotEl.innerHTML = `
-                        <img src="${enemyCreature.image}" style="width:100%;height:70%;object-fit:cover;">
-                        <div style="font-size:0.55rem;font-weight:900;text-align:center;padding:2px;color:#fca5a5;">
-                            ${enemyCreature.name}
-                        </div>
-                    `;
-                    slotEl.style.borderColor = '#ef4444';
-                }
+        const slot = document.createElement('div');
+        slot.className = 'arena-card-slot enemy-slot';
+
+        if (roundResult && roundResult.enemy_card) {
+            slot.classList.add('revealed');
+            slot.innerHTML = arenaCardLoadingHTML();
+            container.appendChild(slot);
+
+            const enemyCardURL = await getArenaCardDataURL(
+                roundResult.enemy_card.creature_id,
+                roundResult.enemy_card.tier || 'common'
+            );
+
+            if (enemyCardURL) {
+                slot.innerHTML = `
+                    <img src="${enemyCardURL}" class="arena-real-card-img" alt="">
+                `;
+            } else {
+                slot.innerHTML = arenaSimpleCardHTML(
+                    roundResult.enemy_card.creature_id,
+                    roundResult.enemy_card.tier || 'common'
+                );
             }
-        } else {
-            slotEl.innerHTML = '<div class="card-back-pattern"></div>';
-        }
 
-        container.appendChild(slotEl);
+            slot.style.borderColor = '#ef4444';
+        } else {
+            slot.innerHTML = '<div class="card-back-pattern"></div>';
+            container.appendChild(slot);
+        }
     }
 }
 
@@ -460,10 +564,9 @@ async function selectBattleCard(cardIndex) {
         } else {
             battleState.currentRound = result.current_round;
             battleState.challenge = result.next_challenge;
+            await renderBattleUI();
             battleState.isProcessing = false;
-            renderBattleUI();
         }
-
     } catch (err) {
         console.error('selectBattleCard error:', err);
         battleState.isProcessing = false;
@@ -482,48 +585,60 @@ async function showRoundResult(roundResult) {
     if (!roundResult) return;
 
     const isAr = currentLang === 'ar';
-    const creaturesData = quizzesData[isAr ? 'ar' : 'en'].quizzes[0].results;
 
     const clashEnemy = document.getElementById('clash-enemy');
     const clashPlayer = document.getElementById('clash-player');
 
-    const playerCreature = creaturesData.find(c => c.id === roundResult.player_card.creature_id);
-    if (playerCreature && clashPlayer) {
+    const playerCard = roundResult.player_card || {};
+    const enemyCard = roundResult.enemy_card || {};
+
+    if (clashPlayer) {
         clashPlayer.classList.add('clash-slot-active');
-        clashPlayer.innerHTML = `
-            <div class="clash-card-display" style="animation: clash-appear 0.4s ease-out;">
-                <img src="${playerCreature.image}" style="width:100%;height:70%;object-fit:cover;border-radius:8px;">
-                <div style="font-size:0.6rem;font-weight:900;color:#93c5fd;text-align:center;">
-                    ${playerCreature.name}
-                </div>
-                <div style="font-size:0.7rem;font-weight:900;color:#fff;text-align:center;">
-                    ${roundResult.player_power}
-                </div>
-            </div>
-        `;
+        clashPlayer.innerHTML = arenaCardLoadingHTML();
     }
 
-    await delay(400);
-
-    const enemyCreature = creaturesData.find(c => c.id === roundResult.enemy_card.creature_id);
-    if (enemyCreature && clashEnemy) {
+    if (clashEnemy) {
         clashEnemy.classList.add('clash-slot-active');
-        clashEnemy.innerHTML = `
-            <div class="clash-card-display" style="animation: enemy-card-reveal 0.8s ease-out;">
-                <img src="${enemyCreature.image}" style="width:100%;height:70%;object-fit:cover;border-radius:8px;">
-                <div style="font-size:0.6rem;font-weight:900;color:#fca5a5;text-align:center;">
-                    ${enemyCreature.name}
-                </div>
-                <div style="font-size:0.7rem;font-weight:900;color:#fff;text-align:center;">
-                    ${roundResult.enemy_power}
-                </div>
-            </div>
-        `;
+        clashEnemy.innerHTML = arenaCardLoadingHTML();
     }
 
-    renderEnemyCards();
+    const [playerCardURL, enemyCardURL] = await Promise.all([
+        getArenaCardDataURL(playerCard.creature_id, playerCard.tier || 'common'),
+        getArenaCardDataURL(enemyCard.creature_id, enemyCard.tier || 'common')
+    ]);
+
+    if (clashPlayer) {
+        clashPlayer.innerHTML = playerCardURL
+            ? `
+                <div class="clash-card-display">
+                    <img src="${playerCardURL}" class="arena-real-card-img" alt="">
+                    <div class="clash-power-badge player-power">
+                        ${roundResult.player_power !== undefined ? roundResult.player_power : ''}
+                    </div>
+                </div>
+            `
+            : '';
+    }
+
+    await delay(350);
+
+    if (clashEnemy) {
+        clashEnemy.innerHTML = enemyCardURL
+            ? `
+                <div class="clash-card-display">
+                    <img src="${enemyCardURL}" class="arena-real-card-img" alt="">
+                    <div class="clash-power-badge enemy-power">
+                        ${roundResult.enemy_power !== undefined ? roundResult.enemy_power : ''}
+                    </div>
+                </div>
+            `
+            : '';
+    }
+
+    await renderEnemyCards();
 
     await delay(300);
+
     if (clashEnemy) clashEnemy.classList.add('clash-flash');
     if (clashPlayer) clashPlayer.classList.add('clash-flash');
 
@@ -557,10 +672,12 @@ async function showRoundResult(roundResult) {
         clashEnemy.classList.remove('clash-flash', 'clash-slot-active');
         clashEnemy.innerHTML = '';
     }
+
     if (clashPlayer) {
         clashPlayer.classList.remove('clash-flash', 'clash-slot-active');
         clashPlayer.innerHTML = '';
     }
+
     if (playerCardsContainer) {
         playerCardsContainer.classList.remove('round-win', 'round-lose');
     }
@@ -793,8 +910,11 @@ async function tryResumeBattle() {
 
         document.getElementById('game-main-menu').classList.add('hidden-game');
         document.getElementById('arena-screen').classList.remove('hidden-game');
+
         updateArenaTexts();
-        renderBattleUI();
+
+        await preloadArenaCards();
+        await renderBattleUI();
 
     } catch (err) {
         localStorage.removeItem('quiz_arena_battle_id');
