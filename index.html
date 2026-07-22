@@ -437,7 +437,7 @@ Mythical Analysis Result
         <button onclick="showCardGalleryModal()" class="game-hero-card floating-hero">
             <div class="game-hero-inner">
                 <i class="fas fa-dragon game-hero-icon"></i>
-                <span class="game-hero-name">تنين الظلام</span>
+                <span class="game-hero-name" id="game-hero-name">تنين الظلام</span>
             </div>
         </button>
     </div>
@@ -448,24 +448,24 @@ Mythical Analysis Result
         <!-- زر ساحة المعركة (مفتوح الآن!) -->
         <button class="btn-game" onclick="openDeckBuilder()" style="background: linear-gradient(135deg, #ef4444, #f97316); box-shadow: 0 6px 0 #b91c1c, 0 15px 20px rgba(239,68,68,0.4); padding: 1.25rem; font-size: 1.25rem;">
             <i class="fas fa-swords text-yellow-200"></i>
-            <span>ساحة المعركة</span>
+            <span id="game-arena-text">ساحة المعركة</span>
         </button>
 
         <!-- زر بوابة الاستدعاء (الاختبارات الحالية) -->
         <button class="btn-game btn-summon pulse-button" onclick="startSummoning()">
             <i class="fas fa-magic text-pink-200"></i>
-            <span>بوابة الاستدعاء</span>
+            <span id="game-summon-text">بوابة الاستدعاء</span>
         </button>
 
         <!-- أزرار فرعية (التشكيلة والمتجر) -->
         <div class="game-action-row">
             <button class="btn-game btn-secondary" onclick="showInventoryModal()">
                 <i class="fas fa-layer-group text-purple-400"></i>
-                <span>تشكيلتي</span>
+                <span id="game-deck-text">تشكيلتي</span>
             </button>
             <button class="btn-game btn-secondary" onclick="showStoreModal()">
                 <i class="fas fa-store text-yellow-400"></i>
-                <span>المتجر</span>
+                <span id="game-store-text">المتجر</span>
             </button>
         </div>
 
