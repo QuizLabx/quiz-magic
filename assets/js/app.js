@@ -1641,6 +1641,30 @@ function setLanguage(lang) {
     }
     // 🌟 --- نهاية ترجمة روابط الفوتر --- 🌟
 
+    // 🎮 ترجمة القائمة الرئيسية للعبة
+    const gameTexts = {
+        'game-arena-text': { ar: 'ساحة المعركة', en: 'Arena' },
+        'game-summon-text': { ar: 'بوابة الاستدعاء', en: 'Summoning Gate' },
+        'game-deck-text': { ar: 'تشكيلتي', en: 'My Deck' },
+        'game-store-text': { ar: 'المتجر', en: 'Store' },
+        'game-hero-name': { ar: 'تنين الظلام', en: 'Dark Dragon' }
+    };
+    for (const [id, texts] of Object.entries(gameTexts)) {
+        const el = document.getElementById(id);
+        if (el) el.innerText = lang === 'ar' ? texts.ar : texts.en;
+    }
+
+    // 🎮 ترجمة أزرار القائمة الرئيسية للعبة
+    const gameBtnTexts = {
+        'game-arena-text': { ar: 'ساحة المعركة', en: 'Arena' },
+        'game-summon-text': { ar: 'بوابة الاستدعاء', en: 'Summoning Gate' },
+        'game-deck-text': { ar: 'تشكيلتي', en: 'My Deck' },
+        'game-store-text': { ar: 'المتجر', en: 'Store' }
+    };
+
+    // تحديث المستوى
+    if (typeof updateGameMenuStats === 'function') updateGameMenuStats();
+	
     renderQuizGrid();
     document.getElementById('language-screen').classList.add('opacity-0', 'pointer-events-none');
 
@@ -4127,18 +4151,17 @@ function closeArena() {
 
 // 3. تحديث بيانات اللاعب في القائمة الرئيسية (تُستدعى عند تسجيل الدخول)
 function updateGameMenuStats() {
-    // جلب البيانات من localStorage أو المتغيرات العامة
-    const username = localStorage.getItem('quiz_username') || 'زائر';
+    const isAr = currentLang === 'ar';
+    const username = localStorage.getItem('quiz_username') || (isAr ? 'زائر' : 'Guest');
     const gems = localStorage.getItem('quiz_gems') || '0';
     const energy = localStorage.getItem('quiz_energy') || '5';
     const level = localStorage.getItem('quiz_level') || '1';
-    
+
     if(document.getElementById('game-username')) document.getElementById('game-username').innerText = username;
     if(document.getElementById('game-gems-count')) document.getElementById('game-gems-count').innerText = gems;
     if(document.getElementById('game-energy-count')) document.getElementById('game-energy-count').innerText = energy + '/5';
-    if(document.getElementById('game-level')) document.getElementById('game-level').innerText = 'المستوى ' + level;
+    if(document.getElementById('game-level')) document.getElementById('game-level').innerText = (isAr ? 'المستوى ' : 'Level ') + level;
 }
-
 // تشغيل الواجهة عند تحميل الصفحة
 document.addEventListener('DOMContentLoaded', () => {
     document.body.classList.add('in-game-menu');
