@@ -1,6 +1,5 @@
 // ============================================================
 // ⚔️ ARENA BATTLE SYSTEM - FULL VERSION
-// ساحة المعركة الكاملة مع ربط Supabase
 // ============================================================
 
 // ==================== STATE ====================
@@ -24,7 +23,6 @@ let battleState = {
 // ==================== DECK BUILDER ====================
 
 function openDeckBuilder() {
-    // التحقق من تسجيل الدخول
     if (!window.firebaseDB || !window.firebaseDB.isLoggedIn()) {
         const isAr = currentLang === 'ar';
         showProfileNotification(
@@ -40,11 +38,24 @@ function openDeckBuilder() {
     selectedDeck = [];
     renderDeckCreatures();
     updateDeckUI();
+    updateDeckBuilderTexts();
 }
 
 function closeDeckBuilder() {
     document.getElementById('deck-builder-screen').classList.add('hidden-game');
     document.getElementById('game-main-menu').classList.remove('hidden-game');
+}
+
+function updateDeckBuilderTexts() {
+    const isAr = currentLang === 'ar';
+    const title = document.getElementById('deck-builder-title');
+    if (title) title.innerText = isAr ? 'تجهيز التشكيلة' : 'Prepare Deck';
+
+    const backText = document.getElementById('deck-back-text');
+    if (backText) backText.innerText = isAr ? 'عودة' : 'Back';
+
+    const hint = document.getElementById('deck-hint-text');
+    if (hint) hint.innerText = isAr ? 'اختر كائناً لعرض بطاقاتك' : 'Choose a creature to view your cards';
 }
 
 function renderDeckCreatures() {
@@ -124,7 +135,6 @@ function closeTierSelect() {
 function selectCardForDeck(creatureId, tier, borderColor) {
     const isAr = currentLang === 'ar';
 
-    // منع تكرار نفس الكائن
     const sameCreature = selectedDeck.some(c => c.creatureId === creatureId);
     if (sameCreature) {
         showProfileNotification(
@@ -169,6 +179,7 @@ function removeCardFromDeck(index) {
 
 function updateDeckUI() {
     document.getElementById('deck-count').innerText = selectedDeck.length;
+    const isAr = currentLang === 'ar';
 
     for (let i = 0; i < 3; i++) {
         const slot = document.getElementById(`slot-${i}`);
@@ -196,6 +207,7 @@ function updateDeckUI() {
         startBtn.style.background = '';
         startBtn.style.boxShadow = 'none';
     }
+    startBtn.innerText = isAr ? 'ادخل الساحة ⚔️' : 'Enter Arena ⚔️';
 }
 
 // ==================== BATTLE START ====================
@@ -208,13 +220,11 @@ async function enterArena() {
         return;
     }
 
-    // تجهيز التشكيلة بصيغة السيرفر
     const deckForServer = selectedDeck.map(c => ({
         creature_id: c.creatureId,
         tier: c.tier
     }));
 
-    // إظهار حالة التحميل
     showArenaLoading(true);
 
     try {
@@ -226,7 +236,6 @@ async function enterArena() {
             return;
         }
 
-        // حفظ حالة المعركة
         battleState = {
             battleId: result.battle_id,
             currentRound: result.current_round,
@@ -241,14 +250,12 @@ async function enterArena() {
             isProcessing: false
         };
 
-        // حفظ battle_id للاستئناف
         localStorage.setItem('quiz_arena_battle_id', result.battle_id);
 
-        // الانتقال لشاشة المعركة
         document.getElementById('deck-builder-screen').classList.add('hidden-game');
         document.getElementById('arena-screen').classList.remove('hidden-game');
 
-        // رسم واجهة المعركة
+        updateArenaTexts();
         renderBattleUI();
         showArenaLoading(false);
 
@@ -264,24 +271,37 @@ async function enterArena() {
     }
 }
 
+// ==================== ARENA TEXTS (LANGUAGE) ====================
+
+function updateArenaTexts() {
+    const isAr = currentLang === 'ar';
+
+    const retreat = document.getElementById('arena-retreat-text');
+    if (retreat) retreat.innerText = isAr ? 'انسحاب' : 'Retreat';
+
+    const title = document.getElementById('arena-title-text');
+    if (title) title.innerText = isAr ? 'تحدي الحراس' : 'Guardian Challenge';
+
+    const roundLabel = document.getElementById('arena-round-label');
+    if (roundLabel) roundLabel.innerText = isAr ? 'الجولة' : 'Round';
+
+    const enemyLabel = document.getElementById('arena-enemy-label');
+    if (enemyLabel) enemyLabel.innerText = isAr ? 'بطاقات الحارس' : 'Guardian Cards';
+
+    const challengeLabel = document.getElementById('arena-challenge-label');
+    if (challengeLabel) challengeLabel.innerText = isAr ? 'تحدي:' : 'Challenge:';
+
+    const attackLabel = document.getElementById('arena-attack-label');
+    if (attackLabel) attackLabel.innerText = isAr ? 'اختر بطاقة للهجوم' : 'Select a card to attack';
+}
+
 // ==================== BATTLE UI RENDERING ====================
 
 function renderBattleUI() {
-    const isAr = currentLang === 'ar';
-
-    // تحديث رقم الجولة
     document.getElementById('arena-round').innerText = battleState.currentRound;
-
-    // تحديث التحدي الحالي
     updateChallengeDisplay();
-
-    // رسم بطاقات اللاعب
     renderPlayerBattleCards();
-
-    // رسم بطاقات العدو (مقلوبة)
     renderEnemyCards();
-
-    // مسح منطقة التصادم
     document.getElementById('clash-enemy').innerHTML = '';
     document.getElementById('clash-player').innerHTML = '';
 }
@@ -312,12 +332,6 @@ function updateChallengeDisplay() {
 
     const names = axisNames[isAr ? 'ar' : 'en'];
     challengeEl.innerText = names[battleState.challenge] || battleState.challenge;
-
-    // إضافة تأثير التحدي النشط
-    const challengeContainer = challengeEl.parentElement;
-    if (challengeContainer) {
-        challengeContainer.classList.add('challenge-active');
-    }
 }
 
 function renderPlayerBattleCards() {
@@ -401,6 +415,7 @@ function renderEnemyCards() {
         container.appendChild(slotEl);
     }
 }
+
 // ==================== CARD SELECTION ====================
 
 async function selectBattleCard(cardIndex) {
@@ -409,16 +424,12 @@ async function selectBattleCard(cardIndex) {
 
     battleState.isProcessing = true;
 
-    // 1. أنيميشن البطاقة المختارة - تطير
     const playerCards = document.querySelectorAll('#player-arena-cards .arena-card-slot');
     if (playerCards[cardIndex]) {
         playerCards[cardIndex].classList.add('flying');
     }
 
-    // 2. انتظار الأنيميشن
     await delay(300);
-
-    // 3. تعطيل الأزرار
     renderPlayerBattleCards();
 
     try {
@@ -431,7 +442,6 @@ async function selectBattleCard(cardIndex) {
             return;
         }
 
-        // تحديث الحالة
         battleState.usedPlayerIndexes.push(cardIndex);
 
         if (result.round_result) {
@@ -440,16 +450,13 @@ async function selectBattleCard(cardIndex) {
             battleState.enemyWins = result.enemy_wins || battleState.enemyWins;
         }
 
-        // عرض نتيجة الجولة مع الأنيميشن
         await showRoundResult(result.round_result);
 
         if (result.battle_finished) {
-            // المعركة انتهت
             battleState.isActive = false;
             localStorage.removeItem('quiz_arena_battle_id');
             await showBattleResult(result);
         } else {
-            // الجولة التالية
             battleState.currentRound = result.current_round;
             battleState.challenge = result.next_challenge;
             battleState.isProcessing = false;
@@ -478,14 +485,7 @@ async function showRoundResult(roundResult) {
 
     const clashEnemy = document.getElementById('clash-enemy');
     const clashPlayer = document.getElementById('clash-player');
-    const vsElement = document.querySelector('.text-4xl.font-black');
 
-    // 1. تفعيل تأثير VS
-    if (vsElement) {
-        vsElement.classList.add('vs-active');
-    }
-
-    // 2. عرض بطاقة اللاعب في منطقة التصادم مع أنيميشن
     const playerCreature = creaturesData.find(c => c.id === roundResult.player_card.creature_id);
     if (playerCreature && clashPlayer) {
         clashPlayer.classList.add('clash-slot-active');
@@ -502,7 +502,6 @@ async function showRoundResult(roundResult) {
         `;
     }
 
-    // 3. انتظار قليل ثم كشف بطاقة العدو مع أنيميشن
     await delay(400);
 
     const enemyCreature = creaturesData.find(c => c.id === roundResult.enemy_card.creature_id);
@@ -521,21 +520,17 @@ async function showRoundResult(roundResult) {
         `;
     }
 
-    // 4. تحديث بطاقات العدو المكشوفة في الأعلى
     renderEnemyCards();
 
-    // 5. تأثير التصادم - وميض
     await delay(300);
     if (clashEnemy) clashEnemy.classList.add('clash-flash');
     if (clashPlayer) clashPlayer.classList.add('clash-flash');
 
-    // 6. انتظار ثم عرض النتيجة
     await delay(500);
 
     const winner = roundResult.winner;
     const isVictory = winner === 'player';
 
-    // 7. تأثير الفوز أو الخسارة على منطقة اللاعب
     const playerCardsContainer = document.getElementById('player-arena-cards');
     if (playerCardsContainer) {
         if (isVictory) {
@@ -545,23 +540,18 @@ async function showRoundResult(roundResult) {
         }
     }
 
-    // 8. عرض نتيجة الجولة كـ popup
     const resultText = isVictory
         ? (isAr ? '✅ فزت بالجولة!' : '✅ You won the round!')
         : (isAr ? '❌ خسرت الجولة' : '❌ You lost the round');
 
     showProfileNotification(resultText, isVictory ? 'success' : 'error');
 
-    // 9. صوت
     if (window.audioManager) {
         window.audioManager.play(isVictory ? 'magical-reveal' : 'ui-click');
     }
 
-    // 10. انتظار ثم تنظيف
     await delay(1500);
 
-    // إزالة التأثيرات
-    if (vsElement) vsElement.classList.remove('vs-active');
     if (clashEnemy) {
         clashEnemy.classList.remove('clash-flash', 'clash-slot-active');
         clashEnemy.innerHTML = '';
@@ -574,6 +564,7 @@ async function showRoundResult(roundResult) {
         playerCardsContainer.classList.remove('round-win', 'round-lose');
     }
 }
+
 // ==================== BATTLE RESULT ====================
 
 async function showBattleResult(result) {
@@ -581,7 +572,6 @@ async function showBattleResult(result) {
     const finalWinner = result.final_winner;
     const isVictory = finalWinner === 'player';
 
-    // بناء محتوى النتيجة مع أنيميشن
     let rewardsHtml = '';
     if (result.rewards) {
         const gems = result.rewards.gems || 0;
@@ -612,15 +602,12 @@ async function showBattleResult(result) {
         modal.classList.add('flex');
     }
 
-    // تحديث البيانات من السيرفر
     await syncArenaData();
 
-    // صوت
     if (window.audioManager) {
         window.audioManager.play(isVictory ? 'magical-reveal' : 'ui-click');
     }
 
-    // Analytics
     if (typeof trackEvent === 'function') {
         trackEvent('arena_battle_complete', {
             result: finalWinner,
@@ -636,10 +623,7 @@ async function closeBattleResult() {
         modal.classList.add('hidden');
         modal.classList.remove('flex');
     }
-
-    // ✅ تحديث البيانات مرة أخرى قبل العودة
     await syncArenaData();
-
     closeArena();
 }
 
@@ -649,7 +633,6 @@ function closeArena() {
     document.getElementById('arena-screen').classList.add('hidden-game');
     document.getElementById('game-main-menu').classList.remove('hidden-game');
 
-    // إعادة تعيين حالة المعركة
     battleState = {
         battleId: null,
         currentRound: 1,
@@ -689,8 +672,7 @@ function handleBattleError(code) {
     const msg = messages[code] || (isAr ? '❌ حدث خطأ: ' + code : '❌ Error: ' + code);
     showProfileNotification(msg, 'error');
 
-    // إذا كان خطأ طاقة، العودة للقائمة
-    if (code === 'no_energy' || code === 'not_logged_in' || code === 'banned') {
+    if (code === 'not_logged_in' || code === 'banned') {
         closeDeckBuilder();
     }
 }
@@ -707,7 +689,7 @@ function showArenaLoading(show) {
         btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${isAr ? 'جاري الدخول...' : 'Entering...'}`;
     } else {
         btn.disabled = selectedDeck.length !== 3;
-        btn.innerHTML = isAr ? 'ادخل الساحة ⚔️' : 'Enter Arena ⚔️';
+        btn.innerText = isAr ? 'ادخل الساحة ⚔️' : 'Enter Arena ⚔️';
     }
 }
 
@@ -715,47 +697,36 @@ function showArenaLoading(show) {
 
 async function syncArenaData() {
     try {
-        // 1. جلب أحدث بيانات المستخدم من السيرفر
         if (window.firebaseDB && window.firebaseDB.isLoggedIn()) {
             const cloudData = await window.firebaseDB.fetchUserData();
 
             if (cloudData) {
-                // 2. تحديث الجواهر في localStorage
                 if (typeof cloudData.gems === 'number') {
                     localStorage.setItem('quiz_gems', String(cloudData.gems));
                 }
-
-                // 3. تحديث XP والمستوى
                 if (typeof cloudData.xp === 'number') {
                     localStorage.setItem('quiz_xp', String(cloudData.xp));
                 }
                 if (typeof cloudData.level === 'number') {
                     localStorage.setItem('quiz_level', String(cloudData.level));
                 }
-
-                // 4. تحديث الإحصائيات (arena stats)
                 if (cloudData.stats) {
                     localStorage.setItem('quiz_stats', JSON.stringify(cloudData.stats));
                 }
-
-                // 5. تحديث الإنجازات
                 if (cloudData.achievements) {
                     localStorage.setItem('quiz_achievements', JSON.stringify(cloudData.achievements));
                 }
             }
         }
 
-        // 6. تحديث عداد الجواهر في الهيدر
         if (typeof updateGemsHeader === 'function') {
             updateGemsHeader();
         }
 
-        // 7. تحديث القائمة الرئيسية للعبة (جواهر + طاقة + مستوى)
         if (typeof updateGameMenuStats === 'function') {
             updateGameMenuStats();
         }
 
-        // 8. تحديث الطاقة من السيرفر
         if (window.firebaseDB && window.firebaseDB.isLoggedIn() && window.sbClient) {
             const userId = window.firebaseDB.getCurrentUserId();
             const { data: energyVal } = await window.sbClient.rpc('server_get_energy', {
@@ -770,12 +741,10 @@ async function syncArenaData() {
             if (gameEnergyEl) gameEnergyEl.textContent = energyText;
         }
 
-        // 9. تحديث شريط XP في الملف الشخصي (إن كان مفتوحًا)
         if (typeof renderXPBar === 'function') {
             renderXPBar();
         }
 
-        // 10. مزامنة البيانات المحلية مع السحابة
         if (window.firebaseDB && window.firebaseDB.isLoggedIn()) {
             const stats = JSON.parse(localStorage.getItem('quiz_stats') || '{}');
             const achievements = JSON.parse(localStorage.getItem('quiz_achievements') || '{}');
@@ -794,7 +763,7 @@ function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-// ==================== BATTLE RESUME (اختياري) ====================
+// ==================== BATTLE RESUME ====================
 
 async function tryResumeBattle() {
     const savedBattleId = localStorage.getItem('quiz_arena_battle_id');
@@ -807,7 +776,6 @@ async function tryResumeBattle() {
             return;
         }
 
-        // استئناف المعركة
         battleState = {
             battleId: savedBattleId,
             currentRound: result.current_round,
@@ -824,6 +792,7 @@ async function tryResumeBattle() {
 
         document.getElementById('game-main-menu').classList.add('hidden-game');
         document.getElementById('arena-screen').classList.remove('hidden-game');
+        updateArenaTexts();
         renderBattleUI();
 
     } catch (err) {
