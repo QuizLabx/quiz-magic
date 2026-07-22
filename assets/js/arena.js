@@ -698,61 +698,127 @@ async function showRoundResult(roundResult) {
     }
 }
 
-// ==================== BATTLE RESULT ====================
-async function showBattleResult(result) {
-    const isAr = currentLang === 'ar';
-    const finalWinner = result.final_winner;
-    const isVictory = finalWinner === 'player';
+// ==================== BATTLE CINEMATIC (مشهد التتويج السينمائي) ====================
+async function showBattleCinematic(result) {
+  const overlay = document.getElementById('battle-cinematic-overlay');
+  if (!overlay) return;
+  const isAr = currentLang === 'ar';
+  const isVictory = result.final_winner === 'player';
 
-    let rewardsHtml = '';
+  // 1) اسم الفائز + صورة شخصيته + تشكيلته الفائزة
+  let winnerName, characterImage, winnerDeck = [];
+  if (isVictory) {
+    winnerName = (typeof getUsername === 'function' && getUsername()) ? getUsername() : (isAr ? 'أنت' : 'You');
+    characterImage = (typeof getEquippedCharacterImage === 'function') ? getEquippedCharacterImage() : DEFAULT_CHARACTER.image;
+    winnerDeck = (battleState.playerDeck || []).map(c => ({ creature_id: c.creature_id, tier: c.tier || 'common' }));
+  } else {
+    winnerName = isAr ? ARENA_GUARDIAN_NAME.ar : ARENA_GUARDIAN_NAME.en;
+    characterImage = (typeof DEFAULT_CHARACTER !== 'undefined') ? DEFAULT_CHARACTER.image : '';
+    winnerDeck = (battleState.roundResults || [])
+      .map(r => r.enemy_card).filter(Boolean)
+      .map(c => ({ creature_id: c.creature_id, tier: c.tier || 'common' }));
+  }
 
-    if (result.rewards) {
-        const gems = result.rewards.gems || 0;
-        const xp = result.rewards.xp || 0;
+  // 2) شارة الحالة من وجهة نظر المشاهد (أنا)
+  const statusEl = document.getElementById('cinematic-status');
+  if (statusEl) {
+    statusEl.textContent = isVictory ? (isAr ? 'فائز' : 'VICTOR') : (isAr ? 'خاسر' : 'DEFEATED');
+    statusEl.classList.toggle('cinematic-status-win', isVictory);
+    statusEl.classList.toggle('cinematic-status-lose', !isVictory);
+  }
 
-        if (gems > 0) rewardsHtml += `<div class="battle-reward-item" style="animation: battle-item-appear 0.5s ease-out 0.3s both;">💎 +${gems} ${isAr ? 'جوهرة' : 'Gems'}</div>`;
-        if (xp > 0) rewardsHtml += `<div class="battle-reward-item" style="animation: battle-item-appear 0.5s ease-out 0.5s both;">⚡ +${xp} XP</div>`;
-    }
+  // 3) سطر "الفائز هو ..."
+  const winnerLineEl = document.getElementById('cinematic-winner-line');
+  if (winnerLineEl) {
+    const safeName = (typeof escapeHtml === 'function') ? escapeHtml(winnerName) : winnerName;
+    winnerLineEl.textContent = isAr ? `الفائز هو ${safeName}` : `Winner: ${safeName}`;
+  }
 
-    const modal = document.getElementById('battle-result-modal');
-    const content = document.getElementById('battle-result-content');
+  // 4) المكافآت (بدون إيموجي)
+  const rewardsEl = document.getElementById('cinematic-rewards');
+  if (rewardsEl) {
+    const gems = (result.rewards && result.rewards.gems) || 0;
+    const xp = (result.rewards && result.rewards.xp) || 0;
+    let html = '';
+    if (gems > 0) html += `<span class="cinematic-reward-item">${gems} ${isAr ? 'جوهرة' : 'Gems'}</span>`;
+    if (xp > 0) html += `<span class="cinematic-reward-item">${xp} XP</span>`;
+    if (!html) html = `<span class="cinematic-reward-item">${isAr ? 'لا مكافآت' : 'No rewards'}</span>`;
+    rewardsEl.innerHTML = html;
+  }
 
-    if (modal && content) {
-        const iconClass = isVictory ? 'victory-icon' : 'defeat-icon';
+  // 5) صورة الشخصية
+  const charImg = document.getElementById('cinematic-character-img');
+  if (charImg) {
+    charImg.style.display = '';
+    charImg.src = characterImage || '';
+    charImg.onerror = () => { charImg.style.display = 'none'; };
+  }
 
-        content.innerHTML = `
-            <div class="battle-result-icon ${iconClass}">${isVictory ? '🏆' : '💀'}</div>
-            <h2 class="battle-result-title" style="color: ${isVictory ? '#fbbf24' : '#ef4444'}">
-                ${isVictory ? (isAr ? 'انتصار!' : 'Victory!') : (isAr ? 'هزيمة...' : 'Defeat...')}
-            </h2>
-            <p class="battle-result-score">
-                ${battleState.playerWins} - ${battleState.enemyWins}
-            </p>
-            ${rewardsHtml ? `<div class="battle-rewards-container">${rewardsHtml}</div>` : ''}
-            <button onclick="closeBattleResult()" class="battle-result-btn" style="animation: battle-item-appear 0.5s ease-out 0.7s both;">
-                ${isAr ? 'العودة للقائمة' : 'Back to Menu'}
-            </button>
-        `;
+  // 6) نص زر الإغلاق
+  const closeText = document.getElementById('cinematic-close-text');
+  if (closeText) closeText.textContent = isAr ? 'العودة للقائمة' : 'Back to Menu';
 
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-    }
+  // 7) بناء حلقة البطاقات الدوارة من تشكيلة الفائز
+  const ring = document.getElementById('cinematic-cards-ring');
+  if (ring) {
+    ring.innerHTML = '';
+    const cards = winnerDeck.length > 0 ? winnerDeck : [];
+    const total = Math.max(cards.length, 1);
+    const rendered = await Promise.all(cards.map(c => getArenaCardDataURL(c.creature_id, c.tier)));
+    cards.forEach((c, i) => {
+      const angle = (360 / total) * i;
+      const orbit = document.createElement('div');
+      orbit.className = 'cinematic-card-orbit';
+      orbit.style.setProperty('--orbit-angle', angle + 'deg');
+      const inner = document.createElement('div');
+      inner.className = 'cinematic-card-orbit-inner';
+      const url = rendered[i];
+      inner.innerHTML = url
+        ? `<img src="${url}" alt="" class="cinematic-orbit-img">`
+        : arenaSimpleCardHTML(c.creature_id, c.tier);
+      orbit.appendChild(inner);
+      ring.appendChild(orbit);
+    });
+  }
 
-    await syncArenaData();
-
-    if (window.audioManager) {
-        window.audioManager.play(isVictory ? 'magical-reveal' : 'ui-click');
-    }
-
-    if (typeof trackEvent === 'function') {
-        trackEvent('arena_battle_complete', {
-            result: finalWinner,
-            player_wins: battleState.playerWins,
-            enemy_wins: battleState.enemyWins
-        });
-    }
+  // 8) إظهار المشهد
+  overlay.classList.add('cinematic-active');
 }
 
+function closeBattleCinematic() {
+  const overlay = document.getElementById('battle-cinematic-overlay');
+  if (overlay) overlay.classList.remove('cinematic-active');
+  // تصفير حالة المعركة يدوياً (closeArena الفعّالة لا تصفّرها)
+  battleState = {
+    battleId: null, currentRound: 1, totalRounds: 3, challenge: null,
+    playerDeck: [], usedPlayerIndexes: [], playerWins: 0, enemyWins: 0,
+    roundResults: [], isActive: false, isProcessing: false
+  };
+  localStorage.removeItem('quiz_arena_battle_id');
+  syncArenaData();
+  closeArena();
+}
+
+// ==================== BATTLE RESULT ====================
+
+async function showBattleResult(result) {
+  // 🎬 عرض المشهد السينمائي الجديد بدلاً من النافذة القديمة
+  await showBattleCinematic(result);
+
+  // مزامنة البيانات + الصوت + التتبع (كما كان سابقاً)
+  await syncArenaData();
+  const isVictory = result.final_winner === 'player';
+  if (window.audioManager) {
+    window.audioManager.play(isVictory ? 'magical-reveal' : 'ui-click');
+  }
+  if (typeof trackEvent === 'function') {
+    trackEvent('arena_battle_complete', {
+      result: result.final_winner,
+      player_wins: battleState.playerWins,
+      enemy_wins: battleState.enemyWins
+    });
+  }
+}
 async function closeBattleResult() {
     const modal = document.getElementById('battle-result-modal');
 

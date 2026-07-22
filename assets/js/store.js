@@ -6,7 +6,7 @@
 let currentStoreTab = 'pfp';
 let currentInventoryTab = 'pfp';
 let userInventory = {};
-let equippedItems = { pfp: 'default', title: 'default', banner: 'default', sleeve: 'default' };
+let equippedItems = { pfp: 'default', title: 'default', banner: 'default', sleeve: 'default', character: 'default' };
 let userCardInventory = {};
 
 // ==================== INITIALIZATION ====================
@@ -24,7 +24,7 @@ async function initStoreData() {
 
             if (!error && data) {
                 userInventory = data.inventory || {};
-                equippedItems = data.equipped_items || { pfp: 'default', title: 'default', banner: 'default', sleeve: 'default' };
+                equippedItems = { character: 'default', ...(data.equipped_items || {}) };
                 userCardInventory = data.card_inventory || {};
                 localStorage.setItem('quiz_gems', data.gems || 0);
                 updateGemsHeader();
@@ -146,6 +146,12 @@ function renderStoreGrid() {
         return;
     }
 
+    // 🎭 تبويب الشخصيات فارغ حالياً → رسالة لطيفة
+    if (currentStoreTab === 'characters' && (STORE_ITEMS.characters || []).length === 0) {
+        grid.innerHTML = `<div class="col-span-full text-center py-10 text-slate-400"><i class="fas fa-hat-wizard text-4xl mb-4"></i><p>${isAr ? 'شخصيات أسطورية جديدة في الطريق...' : 'New legendary characters coming soon...'}</p></div>`;
+        return;
+    }
+
     const items = STORE_ITEMS[currentStoreTab] || [];
     
     items.forEach(item => {
@@ -214,7 +220,7 @@ function renderInventoryGrid() {
     const items = STORE_ITEMS[currentInventoryTab] || [];
     
     // 🛠️ تصحيح: تحويل اسم القسم (الجمع) إلى مفتاح قاعدة البيانات (المفرد)
-    const categoryMap = { 'pfp': 'pfp', 'titles': 'title', 'banners': 'banner', 'sleeves': 'sleeve' };
+    const categoryMap = { 'pfp': 'pfp', 'titles': 'title', 'banners': 'banner', 'sleeves': 'sleeve', 'characters': 'character' };
     const categoryKey = categoryMap[currentInventoryTab];
     
     // إضافة العنصر الافتراضي (المجاني)
@@ -424,4 +430,11 @@ async function sellDuplicateCard(creatureId, tier, reward) {
     } catch (err) {
         console.error("Sell error:", err);
     }
+}
+
+// 🎭 إرجاع مسار صورة الشخصية المجهّزة (تُستخدم في مشهد نهاية المعركة)
+function getEquippedCharacterImage() {
+  const charId = (equippedItems && equippedItems.character) ? equippedItems.character : 'default';
+  const charData = (typeof getCharacterById === 'function') ? getCharacterById(charId) : DEFAULT_CHARACTER;
+  return charData ? charData.image : DEFAULT_CHARACTER.image;
 }
