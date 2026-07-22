@@ -1662,9 +1662,40 @@ function setLanguage(lang) {
         'game-store-text': { ar: 'المتجر', en: 'Store' }
     };
 
-    // تحديث المستوى
+     // تحديث المستوى
     if (typeof updateGameMenuStats === 'function') updateGameMenuStats();
-	
+
+    // 🔄 ترجمة نصوص الساحة وتجهيز التشكيلة عند تغيير اللغة
+    if (typeof updateArenaTexts === 'function') {
+        updateArenaTexts();
+    }
+
+    if (typeof updateDeckBuilderTexts === 'function') {
+        updateDeckBuilderTexts();
+    }
+
+    // إذا كانت شاشة تجهيز التشكيلة مفتوحة، أعد تحديثها باللغة الجديدة
+    const deckBuilderScreen = document.getElementById('deck-builder-screen');
+    if (deckBuilderScreen && !deckBuilderScreen.classList.contains('hidden-game')) {
+        if (typeof renderDeckCreatures === 'function') {
+            renderDeckCreatures();
+        }
+        if (typeof updateDeckUI === 'function') {
+            updateDeckUI();
+        }
+    }
+
+    // إذا كانت ساحة المعركة مفتوحة، حدّث النصوص والتحدي الحالي
+    const arenaScreen = document.getElementById('arena-screen');
+    if (arenaScreen && !arenaScreen.classList.contains('hidden-game')) {
+        if (typeof updateArenaTexts === 'function') {
+            updateArenaTexts();
+        }
+        if (typeof updateChallengeDisplay === 'function' && typeof battleState !== 'undefined' && battleState.challenge) {
+            updateChallengeDisplay();
+        }
+    }
+
     renderQuizGrid();
     document.getElementById('language-screen').classList.add('opacity-0', 'pointer-events-none');
 
