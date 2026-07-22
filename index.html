@@ -583,6 +583,27 @@ Mythical Analysis Result
     </div>
 </div>
 
+<!-- ==================== BATTLE CINEMATIC OVERLAY (مشهد التتويج السينمائي) ==================== -->
+<div id="battle-cinematic-overlay" class="battle-cinematic-overlay">
+  <!-- اللافتة العلوية (صفر إيموجي) -->
+  <div class="cinematic-banner">
+    <div class="cinematic-status" id="cinematic-status">فائز</div>
+    <div class="cinematic-winner-line" id="cinematic-winner-line">الفائز هو ...</div>
+    <div class="cinematic-rewards" id="cinematic-rewards"></div>
+  </div>
+  <!-- المسرح: الشخصية + حلقة البطاقات الدوارة -->
+  <div class="cinematic-stage">
+    <div class="cinematic-cards-ring" id="cinematic-cards-ring"></div>
+    <div class="cinematic-character">
+      <img id="cinematic-character-img" src="" alt="">
+    </div>
+  </div>
+  <!-- زر العودة -->
+  <button class="cinematic-close-btn" onclick="closeBattleCinematic()">
+    <span id="cinematic-close-text">العودة للقائمة</span>
+  </button>
+</div>
+
 <!-- Header -->
 <header class="p-4 border-b sticky top-0 z-40 theme-bg-secondary theme-border">
 <div class="container mx-auto flex justify-between items-center">
@@ -898,6 +919,7 @@ Mythical Analysis Result
     		<button class="admin-tab" onclick="changeStoreTab('titles')">الألقاب</button>
     		<button class="admin-tab" onclick="changeStoreTab('banners')">الخلفيات</button>
     		<button class="admin-tab" onclick="changeStoreTab('sleeves')">الأغلفة</button>
+            <button class="admin-tab" onclick="changeStoreTab('characters')">الشخصيات</button>
     		<button class="admin-tab" onclick="changeStoreTab('sell')" style="border-color: #ef4444; color: #ef4444;">بيع البطاقات</button>
 		</div>
 
@@ -925,6 +947,7 @@ Mythical Analysis Result
     		<button class="admin-tab" onclick="changeInventoryTab('titles')">الألقاب</button>
     		<button class="admin-tab" onclick="changeInventoryTab('banners')">الخلفيات</button>
     		<button class="admin-tab" onclick="changeInventoryTab('sleeves')">الأغلفة</button>
+            <button class="admin-tab" onclick="changeInventoryTab('characters')">الشخصيات</button>
 		</div>
 
         <div class="modal-body" style="flex: 1; overflow-y: auto; padding: 1.5rem;">
