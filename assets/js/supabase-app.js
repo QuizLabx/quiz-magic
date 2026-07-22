@@ -866,24 +866,45 @@ async function selectArenaCard(battleId, cardIndex) {
         if (!initSupabase()) return { success: false, code: 'supabase_not_ready' };
 
         const userId = getCurrentUserId();
-        const { data, error } = await sbClient.rpc('server_arena_select_card', {
+
+        const payload = {
             p_user_id: userId,
             p_battle_id: battleId,
             p_card_index: cardIndex
+        };
+
+        console.log('🔵 [Supabase] selectArenaCard request:', payload);
+
+        const { data, error } = await sbClient.rpc('server_arena_select_card', payload);
+
+        console.log('🔵 [Supabase] selectArenaCard response:', {
+            data,
+            error
         });
 
         if (error) {
             console.error('selectArenaCard RPC error:', error);
-            return { success: false, code: 'rpc_failed', details: error.message };
+            return {
+                success: false,
+                code: 'rpc_failed',
+                details: error.message
+            };
         }
 
-        return data || { success: false, code: 'no_response' };
+        // بعض دوال Supabase ترجع مصفوفة بدلاً من كائن
+        const result = Array.isArray(data) ? data[0] : data;
+
+        return result || { success: false, code: 'no_response' };
+
     } catch (e) {
         console.error('selectArenaCard error:', e);
-        return { success: false, code: 'server_error', details: e.message };
+        return {
+            success: false,
+            code: 'server_error',
+            details: e.message
+        };
     }
 }
-
 /**
  * ⚔️ جلب حالة معركة (للاستئناف بعد Refresh)
  * @param {string} battleId - معرف المعركة (UUID)
