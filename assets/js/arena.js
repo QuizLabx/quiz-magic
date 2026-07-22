@@ -440,46 +440,60 @@ async function renderPlayerBattleCards() {
     const container = document.getElementById('player-arena-cards');
     if (!container) return;
 
+    const isAr = currentLang === 'ar';
+    const creaturesData = quizzesData[isAr ? 'ar' : 'en'].quizzes[0].results;
+
+    console.log('🟢 [Arena] renderPlayerBattleCards called:', {
+        isActive: battleState.isActive,
+        isProcessing: battleState.isProcessing,
+        usedPlayerIndexes: battleState.usedPlayerIndexes,
+        playerDeckLength: battleState.playerDeck.length
+    });
+
     container.innerHTML = '';
 
-    for (let index = 0; index < battleState.playerDeck.length; index++) {
-        const card = battleState.playerDeck[index];
+    battleState.playerDeck.forEach((card, index) => {
+        const creatureInfo = creaturesData.find(c => c.id === card.creature_id);
+        if (!creatureInfo) return;
+
         const isUsed = battleState.usedPlayerIndexes.includes(index);
+        const tierLabel = CARD_TIERS[card.tier]
+            ? CARD_TIERS[card.tier].label[isAr ? 'ar' : 'en']
+            : card.tier;
 
-        const slot = document.createElement('div');
-        slot.className = `arena-card-slot player-slot ${isUsed ? 'used' : ''}`;
-        slot.dataset.cardIndex = index;
-        slot.innerHTML = arenaCardLoadingHTML();
+        let borderColor = '#334155';
+        if (card.tier === 'silver') borderColor = '#E0E0E0';
+        if (card.tier === 'gold') borderColor = '#D4AF37';
+        if (card.tier === 'diamond') borderColor = '#00FFFF';
+        if (card.tier === 'mythic') borderColor = '#ff1a66';
+        if (card.tier === 'cosmic') borderColor = '#ff00ff';
 
-        if (!isUsed && battleState.isActive && !battleState.isProcessing) {
-            slot.onclick = () => selectBattleCard(index);
-            slot.style.cursor = 'pointer';
+        const cardEl = document.createElement('div');
+        cardEl.className = `arena-card-slot player-slot ${isUsed ? 'used' : ''}`;
+        cardEl.style.borderColor = isUsed ? '#334155' : borderColor;
+        cardEl.innerHTML = `
+            <img src="${creatureInfo.image}" style="width:100%;height:70%;object-fit:cover;">
+            <div style="font-size:0.55rem;font-weight:900;text-align:center;padding:2px;color:#fff;">
+                ${creatureInfo.name}
+            </div>
+            <div style="font-size:0.5rem;text-align:center;color:${borderColor};font-weight:700;">
+                ★ ${tierLabel}
+            </div>
+        `;
+
+        // ✅ تعيين onclick دائماً للبطاقات غير المستخدمة
+        if (!isUsed) {
+            cardEl.onclick = () => selectBattleCard(index);
+            cardEl.style.cursor = 'pointer';
+            console.log(`🟢 [Arena] onclick assigned to card index ${index}`);
         } else {
-            slot.style.cursor = 'default';
+            cardEl.style.cursor = 'default';
+            cardEl.style.opacity = '0.4';
         }
 
-        if (isUsed) {
-            slot.style.opacity = '0.4';
-        }
-
-        container.appendChild(slot);
-
-        const cardURL = await getArenaCardDataURL(card.creature_id, card.tier || 'common');
-
-        if (cardURL) {
-            slot.innerHTML = `
-                <img src="${cardURL}" class="arena-real-card-img" alt="">
-            `;
-        } else {
-            slot.innerHTML = arenaSimpleCardHTML(card.creature_id, card.tier || 'common');
-        }
-
-        if (isUsed) {
-            slot.style.opacity = '0.4';
-        }
-    }
+        container.appendChild(cardEl);
+    });
 }
-
 async function renderEnemyCards() {
     const container = document.getElementById('enemy-cards-container');
     if (!container) return;
@@ -528,12 +542,25 @@ async function selectBattleCard(cardIndex) {
         cardIndex,
         isActive: battleState.isActive,
         isProcessing: battleState.isProcessing,
-        usedPlayerIndexes: battleState.usedPlayerIndexes,
+        usedPlayerIndexes: [...battleState.usedPlayerIndexes],
         currentRound: battleState.currentRound,
         battleId: battleState.battleId
     });
-    if (battleState.isProcessing || !battleState.isActive) return;
-    if (battleState.usedPlayerIndexes.includes(cardIndex)) return;
+
+    if (battleState.isProcessing) {
+        console.warn('🟡 [Arena] Blocked: isProcessing is true');
+        return;
+    }
+
+    if (!battleState.isActive) {
+        console.warn('🟡 [Arena] Blocked: battle is not active');
+        return;
+    }
+
+    if (battleState.usedPlayerIndexes.includes(cardIndex)) {
+        console.warn('🟡 [Arena] Blocked: card already used', cardIndex);
+        return;
+    }
 
     battleState.isProcessing = true;
 
@@ -548,8 +575,10 @@ async function selectBattleCard(cardIndex) {
     try {
         const result = await window.firebaseDB.selectArenaCard(battleState.battleId, cardIndex);
 
-        if (!result.success) {
-            handleBattleError(result.code);
+        console.log('🟡 [Arena] selectArenaCard full result:', JSON.parse(JSON.stringify(result)));
+
+        if (!result || !result.success) {
+            handleBattleError(result?.code || 'rpc_failed');
             battleState.isProcessing = false;
             renderPlayerBattleCards();
             return;
@@ -559,28 +588,36 @@ async function selectBattleCard(cardIndex) {
 
         if (result.round_result) {
             battleState.roundResults.push(result.round_result);
-            battleState.playerWins = result.player_wins || battleState.playerWins;
-            battleState.enemyWins = result.enemy_wins || battleState.enemyWins;
+            battleState.playerWins = result.player_wins ?? battleState.playerWins;
+            battleState.enemyWins = result.enemy_wins ?? battleState.enemyWins;
+            await showRoundResult(result.round_result);
+        } else {
+            console.warn('🟡 [Arena] No round_result in response');
         }
 
-        await showRoundResult(result.round_result);
+        console.log('🟡 [Arena] After round:', {
+            battle_finished: result.battle_finished,
+            current_round: result.current_round,
+            next_challenge: result.next_challenge
+        });
 
         if (result.battle_finished) {
             battleState.isActive = false;
             localStorage.removeItem('quiz_arena_battle_id');
             await showBattleResult(result);
         } else {
-            battleState.currentRound = result.current_round;
-            battleState.challenge = result.next_challenge;
-            await renderBattleUI();
+            battleState.currentRound = result.current_round ?? battleState.currentRound + 1;
+            battleState.challenge = result.next_challenge ?? battleState.challenge;
             battleState.isProcessing = false;
+            renderBattleUI();
         }
+
     } catch (err) {
-        console.error('selectBattleCard error:', err);
+        console.error('🟡 [Arena] selectBattleCard error:', err);
         battleState.isProcessing = false;
         const isAr = currentLang === 'ar';
         showProfileNotification(
-            isAr ? '❌ خطأ في الاتصال' : '❌ Connection error',
+            isAr ? '❌ خطأ في تنفيذ الجولة' : '❌ Round error',
             'error'
         );
         renderPlayerBattleCards();
