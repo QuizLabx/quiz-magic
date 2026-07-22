@@ -56,7 +56,7 @@ async function getArenaCardDataURL(creatureId, tier = 'common') {
     }
 
     try {
-        const canvas = await renderCollectibleCardCanvas(creature, tier, { hideQR: true });
+        const canvas = await renderCollectibleCardCanvas(creature, tier);
         const url = canvas.toDataURL('image/png');
         arenaCardCache[cacheKey] = url;
         return url;
