@@ -847,7 +847,8 @@ function drawCardRadarChart(ctx, cx, cy, radius, creature, visual, isAr) {
 
 
 // 3. الدالة الرئيسية (التحفة الفنية)
-async function renderCollectibleCardCanvas(creature, tier) {
+async function renderCollectibleCardCanvas(creature, tier, options = {}) {
+    const { hideQR = false } = options;   
     const isAr = typeof currentLang !== 'undefined' ? currentLang === 'ar' : false;
     const username = typeof getUsername === 'function' ? getUsername() : (isAr ? 'مجهول' : 'Unknown');
     const tierLabel = CARD_TIERS[tier] ? CARD_TIERS[tier].label[isAr ? 'ar' : 'en'] : tier;
@@ -1100,7 +1101,6 @@ async function renderCollectibleCardCanvas(creature, tier) {
     const qrY = footerY - 20; // 🌟 رفع مربع الـ QR للأعلى
     const siteUrl = encodeURIComponent('https://quizlabx.github.io/quiz-magic/' );
     const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${qrSize}x${qrSize}&data=${siteUrl}&color=0f172a&bgcolor=ffffff`;
-    
     ctx.save( );
     const qrImg = await loadImageAsDataURL(qrApiUrl);
     if (qrImg) {
@@ -1111,7 +1111,6 @@ async function renderCollectibleCardCanvas(creature, tier) {
     } else {
         drawQRCode(ctx, qrX, qrY, qrSize);
     }
-    
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
     // 🌟 تكبير خط "امسح للعب"
