@@ -558,6 +558,11 @@ Mythical Analysis Result
     <!-- 2. منطقة العدو -->
     <div class="flex-1 flex flex-col items-center justify-center relative border-b-2 border-red-500/30 bg-gradient-to-b from-red-900/20 to-transparent">
         <div id="arena-enemy-label" class="absolute top-4 text-red-400 font-bold text-sm tracking-widest" data-ar="بطاقات الحارس" data-en="Guardian Cards">بطاقات الحارس</div>
+         <!-- ❤️ 3A: شريط HP للحارس -->
+        <div class="hp-bar hp-bar-enemy" id="hp-bar-enemy">
+            <div class="hp-bar-label"><span id="hp-label-enemy">الحارس</span><span class="hp-value" id="hp-value-enemy">100</span></div>
+            <div class="hp-track"><div class="hp-fill hp-fill-enemy" id="hp-fill-enemy" style="width:100%"></div></div>
+        </div>
         <div class="flex gap-3" id="enemy-cards-container">
             <div class="arena-card-slot enemy-slot"><div class="card-back-pattern"></div></div>
             <div class="arena-card-slot enemy-slot"><div class="card-back-pattern"></div></div>
@@ -587,6 +592,11 @@ Mythical Analysis Result
             <div class="arena-card-slot player-slot"></div>
             <div class="arena-card-slot player-slot"></div>
         </div>
+    </div>
+    <!-- ❤️ 3A: شريط HP للاعب -->
+    <div class="hp-bar hp-bar-player" id="hp-bar-player">
+        <div class="hp-bar-label"><span id="hp-label-player">أنت</span><span class="hp-value" id="hp-value-player">100</span></div>
+        <div class="hp-track"><div class="hp-fill hp-fill-player" id="hp-fill-player" style="width:100%"></div></div>
     </div>
 </div>
 
