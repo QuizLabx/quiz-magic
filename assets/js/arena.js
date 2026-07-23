@@ -17,10 +17,10 @@ let battleState = {
     roundResults: [],
     playerHp: 100,
     enemyHp: 100,
+    revealedEnemyCards: {},
     isActive: false,
     isProcessing: false
-};
-
+    };
 // ==================== REAL CARD RENDERING FOR ARENA ====================
 let arenaCardCache = {};
 
@@ -363,7 +363,11 @@ async function enterArena() {
         battleState.playerHp = 100;
         battleState.enemyHp = 100;
         if (typeof updateHpBars === 'function') updateHpBars();
+        // 🦅🗿 3B-3: تهيئة الكشف + كشف الجولة 1 إن وُجدت قدرة الكشف
+        battleState.revealedEnemyCards = {};
+        if (result.revealed_enemy_card) battleState.revealedEnemyCards[0] = result.revealed_enemy_card;
         document.getElementById('deck-builder-screen').classList.add('hidden-game');
+
         document.getElementById('arena-screen').classList.remove('hidden-game');
 
         updateArenaTexts();
@@ -489,45 +493,52 @@ async function renderPlayerBattleCards() {
     }
 }
 
+
 async function renderEnemyCards() {
-    const container = document.getElementById('enemy-cards-container');
-    if (!container) return;
-
-    container.innerHTML = '';
-
-    for (let i = 0; i < 3; i++) {
-        const roundResult = battleState.roundResults.find(r => r.round === i + 1);
-
-        const slot = document.createElement('div');
-        slot.className = 'arena-card-slot enemy-slot';
-
-        if (roundResult && roundResult.enemy_card) {
-            slot.classList.add('revealed');
-            slot.innerHTML = arenaCardLoadingHTML();
-            container.appendChild(slot);
-
-            const enemyCardURL = await getArenaCardDataURL(
-                roundResult.enemy_card.creature_id,
-                roundResult.enemy_card.tier || 'common'
-            );
-
-            if (enemyCardURL) {
-                slot.innerHTML = `
-                    <img src="${enemyCardURL}" class="arena-real-card-img" alt="">
-                `;
-            } else {
-                slot.innerHTML = arenaSimpleCardHTML(
-                    roundResult.enemy_card.creature_id,
-                    roundResult.enemy_card.tier || 'common'
-                );
-            }
-
-            slot.style.borderColor = '#ef4444';
+  const container = document.getElementById('enemy-cards-container');
+  if (!container) return;
+  container.innerHTML = '';
+  for (let i = 0; i < 3; i++) {
+    const roundResult = battleState.roundResults.find(r => r.round === i + 1);
+    const slot = document.createElement('div');
+    slot.className = 'arena-card-slot enemy-slot';
+    if (roundResult && roundResult.enemy_card) {
+      slot.classList.add('revealed');
+      slot.innerHTML = arenaCardLoadingHTML();
+      container.appendChild(slot);
+      const enemyCardURL = await getArenaCardDataURL(
+        roundResult.enemy_card.creature_id,
+        roundResult.enemy_card.tier || 'common'
+      );
+      if (enemyCardURL) {
+        slot.innerHTML = `<img src="${enemyCardURL}" class="arena-real-card-img" alt="">`;
+      } else {
+        slot.innerHTML = arenaSimpleCardHTML(
+          roundResult.enemy_card.creature_id,
+          roundResult.enemy_card.tier || 'common'
+        );
+      }
+      slot.style.borderColor = '#ef4444';
+    } else {
+      // 🗿 3B-3: بطاقة مكشوفة بالبصيرة (أبو الهول في التشكيلة)
+      const _revealed = (battleState.revealedEnemyCards || {})[i];
+      if (_revealed) {
+        slot.classList.add('revealed', 'revealed-sight');
+        slot.innerHTML = arenaCardLoadingHTML();
+        container.appendChild(slot);
+        const _revURL = await getArenaCardDataURL(_revealed.creature_id, _revealed.tier || 'common');
+        if (_revURL) {
+          slot.innerHTML = `<img src="${_revURL}" class="arena-real-card-img" alt="">`;
         } else {
-            slot.innerHTML = '<div class="card-back-pattern"></div>';
-            container.appendChild(slot);
+          slot.innerHTML = arenaSimpleCardHTML(_revealed.creature_id, _revealed.tier || 'common');
         }
+        slot.style.borderColor = '#a855f7';
+      } else {
+        slot.innerHTML = '<div class="card-back-pattern"></div>';
+        container.appendChild(slot);
+      }
     }
+  }
 }
 
 // ==================== CARD SELECTION ====================
@@ -573,12 +584,15 @@ async function selectBattleCard(cardIndex) {
             await showBattleResult(result);
             battleState.isProcessing = false;
         } else {
-            battleState.currentRound = result.current_round ?? battleState.currentRound + 1;
-            battleState.challenge = result.next_challenge ?? battleState.challenge;
-
-            await renderBattleUI();
-
-            battleState.isProcessing = false;
+        battleState.currentRound = result.current_round ?? battleState.currentRound + 1;
+        battleState.challenge = result.next_challenge ?? battleState.challenge;
+        // 🗿 3B-3: خزّن بطاقة الحارس المكشوفة للجولة التالية
+        if (result.revealed_enemy_card) {
+          if (!battleState.revealedEnemyCards) battleState.revealedEnemyCards = {};
+          battleState.revealedEnemyCards[result.current_round - 1] = result.revealed_enemy_card;
+        }
+        await renderBattleUI();
+        battleState.isProcessing = false;
         }
 
     } catch (err) {
@@ -656,6 +670,9 @@ async function showRoundResult(roundResult) {
   if ((_toP <= 0 || _toE <= 0) && typeof triggerKO === 'function') {
     triggerKO(winner);
   }
+  // 🦅 3B-3: ومضة الإحياء (إن حدثت هذه الجولة)
+  if (roundResult.player_revived && typeof showReviveFlash === 'function') showReviveFlash('player');
+  if (roundResult.enemy_revived && typeof showReviveFlash === 'function') showReviveFlash('enemy');
 
   // ✨ 2A-5: توهج/تصدّع (لا شيء عند التعادل)
   if (winner === 'player') {
@@ -1017,6 +1034,8 @@ async function tryResumeBattle() {
             battleState.playerHp = _rhp.playerHp;
             battleState.enemyHp = _rhp.enemyHp;
             if (typeof updateHpBars === 'function') updateHpBars();
+            // 🗿 3B-3: الكشف لا يُستأنف (تقييد معروف — يعود بعد لعب جولة)
+            battleState.revealedEnemyCards = {};
             document.getElementById('game-main-menu').classList.add('hidden-game');
 
         
@@ -1262,4 +1281,17 @@ function escapeHtmlSafe(t) {
   const d = document.createElement('div');
   d.textContent = String(t == null ? '' : t);
   return d.innerHTML;
+}
+
+// ==================== 3B-3: REVIVE FLASH (ومضة الإحياء السينمائية) ====================
+function showReviveFlash(side) {
+  const layer = document.getElementById('clash-fx-layer');
+  if (!layer) return;
+  const isAr = (typeof currentLang !== 'undefined' && currentLang === 'ar');
+  const flash = document.createElement('div');
+  flash.className = 'revive-flash ' + (side === 'player' ? 'revive-flash-player' : 'revive-flash-enemy');
+  flash.innerHTML = `<i class="fas fa-fire revive-flash-icon"></i>`
+    + `<span class="revive-flash-text">${isAr ? 'انبعاث!' : 'REBIRTH!'}</span>`;
+  layer.appendChild(flash);
+  setTimeout(() => flash.remove(), 1500);
 }
