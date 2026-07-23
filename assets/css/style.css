@@ -6897,3 +6897,53 @@ body.in-game-menu main {
 @media (prefers-reduced-motion: reduce) {
   .element-flash-line { animation: none; opacity: 1; }
 }
+/* ========================================================================
+🧩 3D: DECK SYNERGY (تآزر التشكيلة)
+======================================================================== */
+/* شارة التآزر الدائمة (داخل شريط HP اللاعب) */
+.synergy-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin: 4px auto 0;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 0.6rem;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  color: #fff;
+  background: rgba(2,6,23,0.72);
+  border: 1px solid var(--syn-color, rgba(255,255,255,0.3));
+  box-shadow: 0 0 8px var(--syn-color, rgba(0,0,0,0.4));
+  width: max-content;
+}
+.synergy-badge-icon { font-size: 0.7rem; line-height: 1; }
+.synergy-badge-text { white-space: nowrap; }
+/* ومضة التآزر السينمائية فوق التصادم */
+.synergy-flash-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 900;
+  white-space: nowrap;
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.55);
+  opacity: 0;
+  background: rgba(2,6,23,0.82);
+  border: 1px solid var(--syn-color, rgba(255,255,255,0.4));
+  color: #fff;
+  animation: ability-flash-pop 2.2s ease-out forwards;
+}
+.synergy-flash-line .synergy-flash-mult {
+  color: var(--syn-color, #fbbf24);
+  font-weight: 900;
+  padding-inline-start: 4px;
+  border-inline-start: 1px solid rgba(255,255,255,0.25);
+}
+@media (prefers-reduced-motion: reduce) {
+  .synergy-flash-line { animation: none; opacity: 1; }
+}
