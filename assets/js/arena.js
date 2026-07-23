@@ -718,14 +718,23 @@ async function showBattleCinematic(result) {
     winnerLineEl.textContent = isAr ? `الفائز هو ${safeName}` : `Winner: ${safeName}`;
   }
 
-  // 4) المكافآت (بدون إيموجي)
+  // 4) المكافآت (بدون إيموجي) + شارة سلسلة الانتصارات + شارة الفوز النظيف
   const rewardsEl = document.getElementById('cinematic-rewards');
   if (rewardsEl) {
-    const gems = (result.rewards && result.rewards.gems) || 0;
-    const xp = (result.rewards && result.rewards.xp) || 0;
+    const totalGems   = (result.rewards && result.rewards.gems) || 0;
+    const totalXp     = (result.rewards && result.rewards.xp) || 0;
+    const streak      = (result.rewards && result.rewards.streak) || 0;
+    const streakBonus = (result.rewards && result.rewards.streak_bonus_gems) || 0;
+    const perfectBonus= (result.rewards && result.rewards.perfect_bonus_xp) || 0;
+    // القيم الأساسية = الكلي − المكافآت الإضافية (لتجنّب الإرباك البصري عند الجمع)
+    const baseGems = Math.max(0, totalGems - streakBonus);
+    const baseXp   = Math.max(0, totalXp - perfectBonus);
     let html = '';
-    if (gems > 0) html += `<span class="cinematic-reward-item">${gems} ${isAr ? 'جوهرة' : 'Gems'}</span>`;
-    if (xp > 0) html += `<span class="cinematic-reward-item">${xp} XP</span>`;
+    if (baseGems > 0)      html += `<span class="cinematic-reward-item">${baseGems} ${isAr ? 'جوهرة' : 'Gems'}</span>`;
+    if (streakBonus > 0)   html += `<span class="cinematic-reward-item cinematic-reward-streak">+${streakBonus} ${isAr ? 'مكافأة سلسلة' : 'Streak Bonus'}</span>`;
+    if (baseXp > 0)        html += `<span class="cinematic-reward-item">${baseXp} XP</span>`;
+    if (perfectBonus > 0)  html += `<span class="cinematic-reward-item cinematic-reward-perfect">+${perfectBonus} ${isAr ? 'فوز نظيف' : 'Flawless'}</span>`;
+    if (isVictory && streak >= 2) html += `<span class="cinematic-reward-item cinematic-streak-badge">${isAr ? 'سلسلة' : 'Streak'} ×${streak}</span>`;
     if (!html) html = `<span class="cinematic-reward-item">${isAr ? 'لا مكافآت' : 'No rewards'}</span>`;
     rewardsEl.innerHTML = html;
   }
