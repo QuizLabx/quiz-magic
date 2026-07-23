@@ -528,6 +528,18 @@ Mythical Analysis Result
 	
 <!-- ==================== ARENA SCREEN (PvE BATTLE) ==================== -->
 <div id="arena-screen" class="game-main-menu hidden-game" style="z-index: 9996; background: #0f172a;">
+<!-- 🌌 2A-3: خلفية الساحة الديناميكية -->
+<div class="arena-bg-layers" aria-hidden="true">
+  <div class="arena-bg-base"></div>
+  <div class="arena-bg-stars"></div>
+  <div class="arena-bg-fog"></div>
+</div>
+<!-- 🎬 2A-1: شاشة VS السينمائية -->
+<div id="arena-vs-overlay" class="arena-vs-overlay" aria-hidden="true">
+  <div class="vs-side vs-side-player" id="vs-player-card"></div>
+  <div class="vs-emblem"><span class="vs-text">VS</span></div>
+  <div class="vs-side vs-side-enemy" id="vs-enemy-card"></div>
+</div>
     <!-- 1. الشريط العلوي -->
     <div class="flex justify-between items-center p-4 border-b border-slate-700 bg-slate-800/80 backdrop-blur-md">
         <button onclick="closeArena()" class="text-slate-300 hover:text-white transition flex items-center gap-2 font-bold">
@@ -539,6 +551,7 @@ Mythical Analysis Result
         <div class="text-yellow-400 font-bold bg-slate-900/50 px-3 py-1 rounded-full border border-yellow-500/30">
         <i class="fas fa-star"></i>
         <span id="arena-round-label" data-ar="الجولة" data-en="Round">الجولة</span> <span id="arena-round">1</span>/3
+        <span id="arena-rounds-track" class="arena-rounds-track" aria-label="rounds"></span>
         </div>
     </div>
 
@@ -554,7 +567,8 @@ Mythical Analysis Result
 
     <!-- 3. منطقة التصادم -->
     <div class="h-44 bg-slate-900 flex flex-col items-center justify-center relative shadow-[0_0_30px_rgba(0,0,0,0.8)] z-10">
-        <div class="absolute -top-5 bg-slate-800 border-2 border-orange-500 text-orange-400 px-6 py-1.5 rounded-full font-black text-sm shadow-[0_0_15px_rgba(249,115,22,0.4)] flex items-center gap-2">
+    <!-- 💥 2A-2: طبقة مؤثرات التصادم (جزيئات + موجة صدمة) -->
+    <div id="clash-fx-layer" aria-hidden="true"></div>        <div class="absolute -top-5 bg-slate-800 border-2 border-orange-500 text-orange-400 px-6 py-1.5 rounded-full font-black text-sm shadow-[0_0_15px_rgba(249,115,22,0.4)] flex items-center gap-2">
             <span id="arena-challenge-label" data-ar="تحدي:" data-en="Challenge:">تحدي:</span>
             <span id="arena-current-stat" class="text-white">---</span>
         </div>
