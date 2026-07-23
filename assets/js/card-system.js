@@ -1070,16 +1070,40 @@ async function renderCollectibleCardCanvas(creature, tier) {
 
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    // 🌟 زيادة سماكة الخط إلى 700 (Bold) ليكون أوضح
-    ctx.font = '700 28px Cairo, Tajawal, sans-serif'; 
-    
-    const description = creature ? (creature.description || '') : '';
-    const descLines = wrapText(ctx, description, innerW - 100, 4);
-    descLines.forEach((line, i) => {
-        drawEngravedText(ctx, line, W / 2, yCursor + descH / 2 + (i - descLines.length / 2 + 0.5) * 38, visual, false);
+    // 🎯 3B-1: رسم القدرة الخاصة بالكائن بدل الوصف السردي (استبدال شامل)
+    const _ability = (typeof getCreatureAbility === 'function' && creature && creature.id)
+      ? getCreatureAbility(creature.id, tier, isAr)
+      : null;
+    if (_ability) {
+      const _origAccent = visual.textAccent;
+      // عنوان القدرة (ذهبي ساطع)
+      ctx.font = '900 38px Cairo, Tajawal, sans-serif';
+      visual.textAccent = '#fbbf24';
+      drawEngravedText(ctx, _ability.name, W / 2, yCursor + 48, visual, true);
+      // قيمة القدرة المتدرّجة (ملوّنة حسب اتجاه التأثير)
+      if (_ability.valueText) {
+        ctx.font = '900 44px Cairo, Tajawal, sans-serif';
+        visual.textAccent = _ability.valueColor || '#fde68a';
+        drawEngravedText(ctx, _ability.valueText, W / 2, yCursor + 104, visual, true);
+    }
+    // وصف القدرة (نص صغير ملتف، سطرين كحد أقصى)
+    ctx.font = '600 26px Cairo, Tajawal, sans-serif';
+    visual.textAccent = _origAccent;
+    const _abLines = wrapText(ctx, _ability.desc, innerW - 100, 2);
+    _abLines.forEach((line, i) => {
+      drawEngravedText(ctx, line, W / 2, yCursor + 152 + i * 34, visual, false);
     });
+    visual.textAccent = _origAccent;
+    } else {
+      // احتياطي آمن: إن لم توجد قدرة معرّفة، يُرسم الوصف السردي القديم
+      ctx.font = '700 28px Cairo, Tajawal, sans-serif';
+      const description = creature ? (creature.description || '') : '';
+      const descLines = wrapText(ctx, description, innerW - 100, 4);
+      descLines.forEach((line, i) => {
+        drawEngravedText(ctx, line, W / 2, yCursor + descH / 2 + (i - descLines.length / 2 + 0.5) * 38, visual, false);
+      });
+    }
     ctx.restore();
-
     yCursor += descH + 60;
 
     // ==========================================
@@ -1211,4 +1235,91 @@ async function downloadCollectibleCard(btn, creature, tier) {
         btn.innerHTML = originalText;
         btn.disabled = false;
     }
+}
+// ========================================================================
+// 🎯 3B-1: CREATURE ABILITIES (قدرات الكائنات + عرضها المتدرّج على البطاقة)
+// ========================================================================
+// معاملات التدرّج حسب الندرة (مطابقة لما سيُستخدم في السيرفر في 3B-2)
+const ABILITY_TIER_MULTIPLIERS = {
+  common: 1.0, silver: 1.25, gold: 1.5, diamond: 1.8, mythic: 2.2, cosmic: 2.75
+};
+// اختصارات أسماء المحاور (لقدرة passive_axis)
+const ABILITY_AXIS_SHORT = {
+  ar: { intelligence: 'ذكاء', energy: 'طاقة', empathy: 'تعاطف', strategy: 'استراتيجية', mystery: 'غموض', willpower: 'إرادة' },
+  en: { intelligence: 'INT', energy: 'ENR', empathy: 'EMP', strategy: 'STR', mystery: 'MYS', willpower: 'WIL' }
+};
+// خريطة القدرات الـ 16 (القيم الأساسية base = عند الندرة العادية)
+const CREATURE_ABILITIES = {
+  dragon:        { type: 'on_win', base: 15, name: { ar: 'نَفَس التنين', en: "Dragon's Breath" }, desc: { ar: 'عند فوزك بالجولة، يلحق التنين ضرراً إضافياً بالحارس.', en: 'On round win, the dragon deals bonus damage to the guardian.' } },
+  phoenix:       { type: 'revive', basePercent: 40, name: { ar: 'انبعاث الرماد', en: 'Ash Rebirth' }, desc: { ar: 'مرة واحدة: إن سقطتَ، ينبعث العنقاء من رماده.', en: 'Once: if you fall, the phoenix rises from its ashes.' } },
+  unicorn:       { type: 'passive_axis', axis: 'empathy', base: 10, name: { ar: 'هالة النقاء', en: 'Purity Aura' }, desc: { ar: 'قوة إضافية دائمة في محور التعاطف.', en: 'Permanent bonus power on the Empathy axis.' } },
+  sphinx:        { type: 'reveal', baseInsight: 8, name: { ar: 'كشف اللغز', en: 'Riddle Sight' }, desc: { ar: 'يكشف بطاقة الحارس، ويمنحك بصيرة إضافية.', en: 'Reveals the guardian card and grants bonus insight.' } },
+  kraken:        { type: 'on_clash_reduce', base: 12, name: { ar: 'قبضة الأعماق', en: 'Abyssal Grip' }, desc: { ar: 'عند التصادم، تخنق قبضته قوة بطاقة الخصم.', en: 'On clash, its grip chokes the foe card power.' } },
+  owl_of_athena: { type: 'passive_axis', axis: 'intelligence', base: 10, name: { ar: 'حكمة أثينا', en: "Athena's Wisdom" }, desc: { ar: 'قوة إضافية دائمة في محور الذكاء.', en: 'Permanent bonus power on the Intelligence axis.' } },
+  centaur:       { type: 'on_win', base: 10, name: { ar: 'اندفاع السهول', en: 'Plains Charge' }, desc: { ar: 'عند فوزك بالجولة، يضيف اندفاعه ضرراً إضافياً.', en: 'On round win, its charge adds bonus damage.' } },
+  cerberus:      { type: 'passive_axis', axis: 'willpower', base: 8, name: { ar: 'حرّاس البوابة', en: 'Gate Wardens' }, desc: { ar: 'قوة إضافية دائمة في محور الإرادة.', en: 'Permanent bonus power on the Willpower axis.' } },
+  faun:          { type: 'on_win_heal', base: 12, name: { ar: 'همس الغابة', en: 'Forest Whisper' }, desc: { ar: 'عند فوزك بالجولة، يشفيك همس الغابة.', en: 'On round win, the forest whisper heals you.' } },
+  golem:         { type: 'passive_armor', base: 8, name: { ar: 'جلد الصخر', en: 'Stone Skin' }, desc: { ar: 'درع دائم يقلّل الضرر الوارد عليك.', en: 'Permanent armor that reduces incoming damage.' } },
+  hydra:         { type: 'on_win', base: 18, name: { ar: 'رؤوس متجددة', en: 'Regrowing Heads' }, desc: { ar: 'عند فوزك بالجولة، تضرب رؤوسها بضرر إضافي.', en: 'On round win, its heads strike for bonus damage.' } },
+  kitsune:       { type: 'on_clash_illusion', base: 10, name: { ar: 'خداع الأرواح', en: 'Spirit Illusion' }, desc: { ar: 'عند التصادم، يرفع وهمٌ قوتك لحظياً.', en: 'On clash, an illusion boosts your power.' } },
+  pegasus:       { type: 'passive_axis', axis: 'energy', base: 10, name: { ar: 'رياح السماء', en: 'Sky Winds' }, desc: { ar: 'قوة إضافية دائمة في محور الطاقة.', en: 'Permanent bonus power on the Energy axis.' } },
+  simurgh:       { type: 'on_win_heal', base: 18, name: { ar: 'ريش الشفاء', en: 'Healing Plumes' }, desc: { ar: 'عند فوزك بالجولة، يغطّيك ريشه بالشفاء.', en: 'On round win, its plumes shower you with healing.' } },
+  siren:         { type: 'on_clash_reduce', base: 10, name: { ar: 'أغنية الأعماق', en: "Siren's Song" }, desc: { ar: 'عند التصادم، تُضعف أغنيتها قوة الخصم.', en: 'On clash, her song weakens the foe power.' } },
+  valkyrie:      { type: 'on_win_combo', baseDmg: 12, baseHeal: 8, name: { ar: 'بركة المعركة', en: 'Battle Blessing' }, desc: { ar: 'عند فوزك بالجولة، بركة تجمع الضرر والشفاء.', en: 'On round win, a blessing grants damage and healing.' } }
+};
+/**
+ * 🎯 إرجاع بيانات القدرة جاهزة للرسم، مع قيمة متدرّجة حسب الندرة.
+ * القيمة المحسوبة هنا للعرض فقط؛ السيرفر يحسب نفس القيمة بنفس المعاملات في 3B-2.
+ */
+function getCreatureAbility(creatureId, tier, isAr) {
+  const def = (typeof CREATURE_ABILITIES !== 'undefined') ? CREATURE_ABILITIES[creatureId] : null;
+  if (!def) return null;
+  const mult = ABILITY_TIER_MULTIPLIERS[tier] || 1.0;
+  const name = def.name ? (isAr ? def.name.ar : def.name.en) : '';
+  const desc = def.desc ? (isAr ? def.desc.ar : def.desc.en) : '';
+  const r = (n) => Math.round(n);
+  let valueText = '', valueColor = '#fde68a';
+  switch (def.type) {
+    case 'on_win': {
+      const v = r((def.base || 0) * mult);
+      valueText = isAr ? `+${v} ضرر` : `+${v} DMG`; valueColor = '#fca5a5'; break;
+    }
+    case 'on_win_heal': {
+      const v = r((def.base || 0) * mult);
+      valueText = isAr ? `+${v} شفاء` : `+${v} HEAL`; valueColor = '#86efac'; break;
+    }
+    case 'on_win_combo': {
+      const d = r((def.baseDmg || 0) * mult), h = r((def.baseHeal || 0) * mult);
+      valueText = isAr ? `+${d} ضرر / +${h} شفاء` : `+${d} DMG / +${h} HEAL`; valueColor = '#fde68a'; break;
+    }
+    case 'passive_axis': {
+      const v = r((def.base || 0) * mult);
+      const ax = (ABILITY_AXIS_SHORT[isAr ? 'ar' : 'en'] || {})[def.axis] || '';
+      valueText = `+${v} ${ax}`; valueColor = '#93c5fd'; break;
+    }
+    case 'passive_armor': {
+      const v = r((def.base || 0) * mult);
+      valueText = isAr ? `−${v} ضرر وارد` : `−${v} incoming`; valueColor = '#86efac'; break;
+    }
+    case 'on_clash_reduce': {
+      const v = r((def.base || 0) * mult);
+      valueText = isAr ? `−${v} قوة الخصم` : `−${v} foe POW`; valueColor = '#fdba74'; break;
+    }
+    case 'on_clash_illusion': {
+      const v = r((def.base || 0) * mult);
+      valueText = isAr ? `+${v} قوة وهمية` : `+${v} illusion`; valueColor = '#93c5fd'; break;
+    }
+    case 'revive': {
+      let v = r((def.basePercent || 0) * mult); if (v > 100) v = 100;
+      valueText = isAr ? `إحياء ${v}%` : `Revive ${v}%`; valueColor = '#c4b5fd'; break;
+    }
+    case 'reveal': {
+      const v = r((def.baseInsight || 0) * mult);
+      valueText = v > 0
+        ? (isAr ? `يكشف +${v} بصيرة` : `Reveal +${v} sight`)
+        : (isAr ? `يكشف بطاقة الخصم` : `Reveals foe card`);
+      valueColor = '#c4b5fd'; break;
+    }
+  }
+  return { id: creatureId, type: def.type, name, desc, valueText, valueColor };
 }
