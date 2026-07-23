@@ -374,9 +374,16 @@ async function enterArena() {
 
         await preloadArenaCards();
         await renderBattleUI();
-
+        // 🧩 3D: شارة + ومضة تآزر التشكيلة (محسوبة محلياً للعرض؛ الحكم في السيرفر)
+        if (typeof computeDeckSynergyClient === 'function') {
+          const _syn = computeDeckSynergyClient(battleState.playerDeck);
+          if (typeof renderSynergyBadge === 'function') renderSynergyBadge(_syn);
+          if (_syn && _syn.type !== 'none' && typeof showSynergyFlash === 'function') showSynergyFlash(_syn);
+        }
         showArenaLoading(false);
-
+        if (window.audioManager) window.audioManager.play('ui-click');
+        await renderBattleUI();
+        showArenaLoading(false);
         if (window.audioManager) window.audioManager.play('ui-click');
 
     } catch (err) {
@@ -1055,8 +1062,12 @@ async function tryResumeBattle() {
 
         await preloadArenaCards();
         await renderBattleUI();
+        // 🧩 3D: شارة التآزر عند الاستئناف (محسوبة محلياً للعرض)
+        if (typeof renderSynergyBadge === 'function' && typeof computeDeckSynergyClient === 'function') {
+          renderSynergyBadge(computeDeckSynergyClient(battleState.playerDeck));
+        }
+        } catch (err) {
 
-    } catch (err) {
         localStorage.removeItem('quiz_arena_battle_id');
     }
 }
@@ -1360,4 +1371,69 @@ function showElementFlashes(rr) {
   stack.appendChild(line);
   setTimeout(() => line.remove(), 1700);
   setTimeout(() => { if (stack && stack.parentNode) stack.remove(); }, 1850);
+}
+
+// ==================== 3D: DECK SYNERGY (تآزر التشكيلة) ====================
+// قيم التآزر (مطابقة لـ arena_get_deck_synergy في السيرفر — غيّرها في الطرفين معاً)
+const SYNERGY_MULT = { harmony: 1.18, trinity: 1.10, pair: 1.05 };
+const SYNERGY_META = {
+  harmony: { icon: '🔥', color: '#f59e0b', name: { ar: 'تآزر عنصري', en: 'Elemental Harmony' }, desc: { ar: 'تآزر كامل — قوة التشكيلة في ذروتها', en: 'Full synergy — deck at peak power' } },
+  trinity: { icon: '🌈', color: '#a855f7', name: { ar: 'تآزر التنوع', en: 'Trinity' }, desc: { ar: 'ثلاثة عناصر متوازنة', en: 'Three balanced elements' } },
+  pair:    { icon: '🔗', color: '#38bdf8', name: { ar: 'رابطة ثنائية', en: 'Pair Bond' }, desc: { ar: 'بطاقتان متناغمتان', en: 'Two harmonized cards' } }
+};
+// 🧩 حساب التآزر محلياً (للعرض فقط — الحكم في السيرفر)
+function computeDeckSynergyClient(deck) {
+  const els = (deck || []).map(c => (typeof CREATURE_ELEMENTS !== 'undefined') ? CREATURE_ELEMENTS[c.creature_id] : null).filter(Boolean);
+  if (els.length < 3) return { type: 'none', mult: 1.0, element: null };
+  if (els[0] === els[1] && els[1] === els[2]) return { type: 'harmony', mult: SYNERGY_MULT.harmony, element: els[0] };
+  if (els[0] !== els[1] && els[1] !== els[2] && els[0] !== els[2]) return { type: 'trinity', mult: SYNERGY_MULT.trinity, element: null };
+  const pair = (els[0] === els[1] || els[0] === els[2]) ? els[0] : els[1];
+  return { type: 'pair', mult: SYNERGY_MULT.pair, element: pair };
+}
+// 🧩 شارة التآزر الدائمة (تُحقن داخل شريط HP اللاعب)
+function renderSynergyBadge(synergy) {
+  const bar = document.getElementById('hp-bar-player');
+  if (!bar) return;
+  let badge = bar.querySelector('.synergy-badge');
+  if (!synergy || !synergy.type || synergy.type === 'none') {
+    if (badge) badge.remove();
+    return;
+  }
+  const meta = SYNERGY_META[synergy.type];
+  if (!meta) return;
+  const isAr = (typeof currentLang !== 'undefined' && currentLang === 'ar');
+  let icon = meta.icon;
+  if (synergy.type === 'harmony' && synergy.element && typeof getElementMeta === 'function') {
+    const em = getElementMeta(synergy.element);
+    if (em) icon = em.icon;
+  }
+  if (!badge) {
+    badge = document.createElement('div');
+    badge.className = 'synergy-badge';
+    bar.appendChild(badge);
+  }
+  badge.style.setProperty('--syn-color', meta.color);
+  badge.innerHTML = `<span class="synergy-badge-icon">${icon}</span><span class="synergy-badge-text">${isAr ? meta.name.ar : meta.name.en}</span>`;
+  badge.title = (isAr ? meta.desc.ar : meta.desc.en);
+}
+// 🧩 ومضة التآزر السينمائية عند بدء المعركة
+function showSynergyFlash(synergy) {
+  const layer = document.getElementById('clash-fx-layer');
+  if (!layer || !synergy || !synergy.type || synergy.type === 'none') return;
+  const meta = SYNERGY_META[synergy.type];
+  if (!meta) return;
+  const isAr = (typeof currentLang !== 'undefined' && currentLang === 'ar');
+  let icon = meta.icon;
+  if (synergy.type === 'harmony' && synergy.element && typeof getElementMeta === 'function') {
+    const em = getElementMeta(synergy.element);
+    if (em) icon = em.icon;
+  }
+  const multPct = Math.round(((synergy.mult || 1) - 1) * 100);
+  const line = document.createElement('div');
+  line.className = 'synergy-flash-line';
+  line.style.setProperty('--syn-color', meta.color);
+  line.innerHTML = `<span>${icon}</span><span>${isAr ? meta.name.ar : meta.name.en}</span>`
+    + (multPct > 0 ? `<span class="synergy-flash-mult">+${multPct}%</span>` : '');
+  layer.appendChild(line);
+  setTimeout(() => line.remove(), 2300);
 }
