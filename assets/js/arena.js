@@ -478,15 +478,16 @@ async function renderPlayerBattleCards() {
 
         if (cardURL) {
             slot.innerHTML = `
-                <img src="${cardURL}" class="arena-real-card-img" alt="">
-            `;
+              <img src="${cardURL}" class="arena-real-card-img" alt="">
+          `;
         } else {
             slot.innerHTML = arenaSimpleCardHTML(
-                card.creature_id,
-                card.tier || 'common'
+              card.creature_id,
+              card.tier || 'common'
             );
         }
-
+        // 🔥 3C: أيقونة العنصر على بطاقة اللاعب
+        if (typeof elementBadgeHTML === 'function') slot.insertAdjacentHTML('beforeend', elementBadgeHTML(card.creature_id));
         if (isUsed) {
             slot.style.opacity = '0.4';
         }
@@ -518,6 +519,8 @@ async function renderEnemyCards() {
           roundResult.enemy_card.tier || 'common'
         );
       }
+      // 🔥 3C: أيقونة العنصر على بطاقة الحارس المكشوفة
+      if (typeof elementBadgeHTML === 'function') slot.insertAdjacentHTML('beforeend', elementBadgeHTML(roundResult.enemy_card.creature_id));
       slot.style.borderColor = '#ef4444';
     } else {
       // 🗿 3B-3: بطاقة مكشوفة بالبصيرة (أبو الهول في التشكيلة)
@@ -532,6 +535,8 @@ async function renderEnemyCards() {
         } else {
           slot.innerHTML = arenaSimpleCardHTML(_revealed.creature_id, _revealed.tier || 'common');
         }
+        // 🔥 3C: أيقونة العنصر على بطاقة الحارس المكشوفة بالبصيرة
+        if (typeof elementBadgeHTML === 'function') slot.insertAdjacentHTML('beforeend', elementBadgeHTML(_revealed.creature_id));
         slot.style.borderColor = '#a855f7';
       } else {
         slot.innerHTML = '<div class="card-back-pattern"></div>';
@@ -635,14 +640,17 @@ async function showRoundResult(roundResult) {
   ]);
 
   if (clashPlayer) {
+    const _pElBadge = (typeof elementBadgeHTML === 'function') ? elementBadgeHTML(playerCard.creature_id) : '';
     clashPlayer.innerHTML = playerCardURL
-      ? `<div class="clash-card-display"><img src="${playerCardURL}" class="arena-real-card-img" alt=""><div class="clash-power-badge player-power power-pop">${roundResult.player_power !== undefined ? roundResult.player_power : ''}</div></div>`
+      ? `<div class="clash-card-display"><img src="${playerCardURL}" class="arena-real-card-img" alt="">${_pElBadge}<div class="clash-power-badge player-power power-pop">${roundResult.player_power !== undefined ? roundResult.player_power : ''}</div></div>`
       : '';
   }
+
   await delay(350);
   if (clashEnemy) {
+    const _eElBadge = (typeof elementBadgeHTML === 'function') ? elementBadgeHTML(enemyCard.creature_id) : '';
     clashEnemy.innerHTML = enemyCardURL
-      ? `<div class="clash-card-display"><img src="${enemyCardURL}" class="arena-real-card-img" alt=""><div class="clash-power-badge enemy-power power-pop">${roundResult.enemy_power !== undefined ? roundResult.enemy_power : ''}</div></div>`
+      ? `<div class="clash-card-display"><img src="${enemyCardURL}" class="arena-real-card-img" alt="">${_eElBadge}<div class="clash-power-badge enemy-power power-pop">${roundResult.enemy_power !== undefined ? roundResult.enemy_power : ''}</div></div>`
       : '';
   }
   await renderEnemyCards();
@@ -656,6 +664,8 @@ async function showRoundResult(roundResult) {
   triggerScreenShake();
   spawnClashShockwave();
   spawnClashParticles(winner);
+    // 🔥 3C: ومضة التوافق العنصري (تظهر قبل ومضات القدرات)
+  if (typeof showElementFlashes === 'function') showElementFlashes(roundResult);
   // ⚡ 3B-2: ومضات القدرات الخاصة (تظهر فوق التصادم)
   if (typeof showAbilityFlashes === 'function') showAbilityFlashes(roundResult);
 
@@ -1294,4 +1304,60 @@ function showReviveFlash(side) {
     + `<span class="revive-flash-text">${isAr ? 'انبعاث!' : 'REBIRTH!'}</span>`;
   layer.appendChild(flash);
   setTimeout(() => flash.remove(), 1500);
+}
+
+// ==================== 3C: ELEMENTAL SYSTEM (نظام العناصر/التوافق) ====================
+// خريطة عنصر كل كائن (مطابقة لـ arena_get_element في السيرفر)
+const CREATURE_ELEMENTS = {
+  dragon: 'fire', phoenix: 'fire', kitsune: 'fire', cerberus: 'fire',
+  kraken: 'water', siren: 'water', hydra: 'water',
+  faun: 'nature', centaur: 'nature', unicorn: 'nature', golem: 'nature',
+  owl_of_athena: 'spirit', pegasus: 'spirit', simurgh: 'spirit', valkyrie: 'spirit', sphinx: 'spirit'
+};
+const ELEMENT_META = {
+  fire:   { icon: '🔥', color: '#ef4444', name: { ar: 'نار', en: 'Fire' } },
+  water:  { icon: '💧', color: '#38bdf8', name: { ar: 'ماء', en: 'Water' } },
+  nature: { icon: '🌿', color: '#22c55e', name: { ar: 'طبيعة', en: 'Nature' } },
+  spirit: { icon: '✨', color: '#c084fc', name: { ar: 'روح', en: 'Spirit' } }
+};
+const ELEMENT_FLASH_TEXT = {
+  ar: { strong: 'تفوّق عنصري', weak: 'ضعف عنصري' },
+  en: { strong: 'Type Advantage', weak: 'Type Weakness' }
+};
+function getElementMeta(elementKey) {
+  return (elementKey && ELEMENT_META[elementKey]) ? ELEMENT_META[elementKey] : null;
+}
+// 🔥 شارة العنصر الصغيرة (تُحقن فوق بطاقة الساحة/التصادم)
+function elementBadgeHTML(creatureId) {
+  const key = CREATURE_ELEMENTS[creatureId];
+  const m = getElementMeta(key);
+  if (!m) return '';
+  const label = (typeof currentLang !== 'undefined' && currentLang === 'en') ? m.name.en : m.name.ar;
+  return `<span class="element-badge" title="${label}" style="--el-color:${m.color}">${m.icon}</span>`;
+}
+// 🔥 ومضة التوافق العنصري فوق التصادم (ومضة واحدة من وجهة اللاعب)
+function showElementFlashes(rr) {
+  const layer = document.getElementById('clash-fx-layer');
+  if (!layer) return;
+  const adv = rr && rr.element_advantage; // 'strong' | 'weak' | 'neutral'
+  if (!adv || adv === 'neutral') return;
+  const mp = getElementMeta(rr.player_element);
+  const me = getElementMeta(rr.enemy_element);
+  if (!mp || !me) return;
+  const isAr = (typeof currentLang !== 'undefined' && currentLang === 'ar');
+  const t = ELEMENT_FLASH_TEXT[isAr ? 'ar' : 'en'];
+  let stack = layer.querySelector('.element-flashes-stack');
+  if (!stack) {
+    stack = document.createElement('div');
+    stack.className = 'element-flashes-stack';
+    layer.appendChild(stack);
+  }
+  const line = document.createElement('div');
+  line.className = 'element-flash-line ' + (adv === 'strong' ? 'element-flash-strong' : 'element-flash-weak');
+  const arrow = adv === 'strong' ? '›' : '‹';
+  line.innerHTML = `<span class="element-flash-icons">${mp.icon} ${arrow} ${me.icon}</span>`
+    + `<span class="element-flash-text">${adv === 'strong' ? t.strong : t.weak}</span>`;
+  stack.appendChild(line);
+  setTimeout(() => line.remove(), 1700);
+  setTimeout(() => { if (stack && stack.parentNode) stack.remove(); }, 1850);
 }
