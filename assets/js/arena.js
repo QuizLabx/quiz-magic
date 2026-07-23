@@ -399,14 +399,14 @@ function updateArenaTexts() {
 
 // ==================== BATTLE UI RENDERING ====================
 async function renderBattleUI() {
-    document.getElementById('arena-round').innerText = battleState.currentRound;
-    updateChallengeDisplay();
-
-    await renderPlayerBattleCards();
-    await renderEnemyCards();
-
-    document.getElementById('clash-enemy').innerHTML = '';
-    document.getElementById('clash-player').innerHTML = '';
+  document.getElementById('arena-round').innerText = battleState.currentRound;
+  updateChallengeDisplay();
+  await renderPlayerBattleCards();
+  await renderEnemyCards();
+  document.getElementById('clash-enemy').innerHTML = '';
+  document.getElementById('clash-player').innerHTML = '';
+  // 📊 2A-4: تحديث شريط الجولات الحي
+  if (typeof updateRoundsTrack === 'function') updateRoundsTrack();
 }
 
 function updateChallengeDisplay() {
@@ -592,112 +592,96 @@ async function selectBattleCard(cardIndex) {
 
 // ==================== ROUND RESULT DISPLAY ====================
 async function showRoundResult(roundResult) {
-    if (!roundResult) return;
+  if (!roundResult) return;
+  if (!roundResult.player_card || !roundResult.enemy_card) return;
 
-    if (!roundResult.player_card || !roundResult.enemy_card) {
-        return;
-    }
+  const isAr = currentLang === 'ar';
+  const clashEnemy = document.getElementById('clash-enemy');
+  const clashPlayer = document.getElementById('clash-player');
+  const playerCard = roundResult.player_card || {};
+  const enemyCard = roundResult.enemy_card || {};
 
-    const isAr = currentLang === 'ar';
+  // 🎬 2A-1: شاشة VS السينمائية قبل كشف بطاقة الخصم (تحافظ على المفاجأة)
+  const prePlayerURL = await getArenaCardDataURL(playerCard.creature_id, playerCard.tier || 'common');
+  showArenaVS(prePlayerURL);
+  await delay(1150);
+  hideArenaVS();
 
-    const clashEnemy = document.getElementById('clash-enemy');
-    const clashPlayer = document.getElementById('clash-player');
+  if (clashPlayer) {
+    clashPlayer.classList.add('clash-slot-active');
+    clashPlayer.innerHTML = arenaCardLoadingHTML();
+  }
+  if (clashEnemy) {
+    clashEnemy.classList.add('clash-slot-active');
+    clashEnemy.innerHTML = arenaCardLoadingHTML();
+  }
 
-    const playerCard = roundResult.player_card || {};
-    const enemyCard = roundResult.enemy_card || {};
+  const [playerCardURL, enemyCardURL] = await Promise.all([
+    getArenaCardDataURL(playerCard.creature_id, playerCard.tier || 'common'),
+    getArenaCardDataURL(enemyCard.creature_id, enemyCard.tier || 'common')
+  ]);
 
-    if (clashPlayer) {
-        clashPlayer.classList.add('clash-slot-active');
-        clashPlayer.innerHTML = arenaCardLoadingHTML();
-    }
+  if (clashPlayer) {
+    clashPlayer.innerHTML = playerCardURL
+      ? `<div class="clash-card-display"><img src="${playerCardURL}" class="arena-real-card-img" alt=""><div class="clash-power-badge player-power power-pop">${roundResult.player_power !== undefined ? roundResult.player_power : ''}</div></div>`
+      : '';
+  }
+  await delay(350);
+  if (clashEnemy) {
+    clashEnemy.innerHTML = enemyCardURL
+      ? `<div class="clash-card-display"><img src="${enemyCardURL}" class="arena-real-card-img" alt=""><div class="clash-power-badge enemy-power power-pop">${roundResult.enemy_power !== undefined ? roundResult.enemy_power : ''}</div></div>`
+      : '';
+  }
+  await renderEnemyCards();
+  await delay(300);
 
-    if (clashEnemy) {
-        clashEnemy.classList.add('clash-slot-active');
-        clashEnemy.innerHTML = arenaCardLoadingHTML();
-    }
+  // 💥 2A-2: التصادم المحسّن (وميض + اهتزاز + موجة صدمة + جزيئات ملوّنة)
+  const winner = roundResult.winner;
+  const isVictory = winner === 'player';
+  if (clashEnemy) clashEnemy.classList.add('clash-flash');
+  if (clashPlayer) clashPlayer.classList.add('clash-flash');
+  triggerScreenShake();
+  spawnClashShockwave();
+  spawnClashParticles(winner);
 
-    const [playerCardURL, enemyCardURL] = await Promise.all([
-        getArenaCardDataURL(playerCard.creature_id, playerCard.tier || 'common'),
-        getArenaCardDataURL(enemyCard.creature_id, enemyCard.tier || 'common')
-    ]);
+  // ✨ 2A-5: توهج البطاقة الفائزة وتصدّع الخاسرة
+  if (clashPlayer) clashPlayer.classList.add(isVictory ? 'clash-card-win' : 'clash-card-lose');
+  if (clashEnemy) clashEnemy.classList.add(isVictory ? 'clash-card-lose' : 'clash-card-win');
 
-    if (clashPlayer) {
-        clashPlayer.innerHTML = playerCardURL
-            ? `
-                <div class="clash-card-display">
-                    <img src="${playerCardURL}" class="arena-real-card-img" alt="">
-                    <div class="clash-power-badge player-power">
-                        ${roundResult.player_power !== undefined ? roundResult.player_power : ''}
-                    </div>
-                </div>
-            `
-            : '';
-    }
+  await delay(500);
 
-    await delay(350);
+  // 📊 2A-4: تحديث شريط الجولات الحي
+  if (typeof updateRoundsTrack === 'function') updateRoundsTrack();
 
-    if (clashEnemy) {
-        clashEnemy.innerHTML = enemyCardURL
-            ? `
-                <div class="clash-card-display">
-                    <img src="${enemyCardURL}" class="arena-real-card-img" alt="">
-                    <div class="clash-power-badge enemy-power">
-                        ${roundResult.enemy_power !== undefined ? roundResult.enemy_power : ''}
-                    </div>
-                </div>
-            `
-            : '';
-    }
+  const playerCardsContainer = document.getElementById('player-arena-cards');
+  if (playerCardsContainer) {
+    if (isVictory) playerCardsContainer.classList.add('round-win');
+    else playerCardsContainer.classList.add('round-lose');
+  }
 
-    await renderEnemyCards();
+  const resultText = isVictory
+    ? (isAr ? '✅ فزت بالجولة!' : '✅ You won the round!')
+    : (isAr ? '❌ خسرت الجولة' : '❌ You lost the round');
+  showProfileNotification(resultText, isVictory ? 'success' : 'error');
+  if (window.audioManager) {
+    window.audioManager.play(isVictory ? 'magical-reveal' : 'ui-click');
+  }
 
-    await delay(300);
+  await delay(1500);
 
-    if (clashEnemy) clashEnemy.classList.add('clash-flash');
-    if (clashPlayer) clashPlayer.classList.add('clash-flash');
-
-    await delay(500);
-
-    const winner = roundResult.winner;
-    const isVictory = winner === 'player';
-
-    const playerCardsContainer = document.getElementById('player-arena-cards');
-
-    if (playerCardsContainer) {
-        if (isVictory) {
-            playerCardsContainer.classList.add('round-win');
-        } else {
-            playerCardsContainer.classList.add('round-lose');
-        }
-    }
-
-    const resultText = isVictory
-        ? (isAr ? '✅ فزت بالجولة!' : '✅ You won the round!')
-        : (isAr ? '❌ خسرت الجولة' : '❌ You lost the round');
-
-    showProfileNotification(resultText, isVictory ? 'success' : 'error');
-
-    if (window.audioManager) {
-        window.audioManager.play(isVictory ? 'magical-reveal' : 'ui-click');
-    }
-
-    await delay(1500);
-
-    if (clashEnemy) {
-        clashEnemy.classList.remove('clash-flash', 'clash-slot-active');
-        clashEnemy.innerHTML = '';
-    }
-
-    if (clashPlayer) {
-        clashPlayer.classList.remove('clash-flash', 'clash-slot-active');
-        clashPlayer.innerHTML = '';
-    }
-
-    if (playerCardsContainer) {
-        playerCardsContainer.classList.remove('round-win', 'round-lose');
-    }
+  // تنظيف
+  if (clashEnemy) {
+    clashEnemy.classList.remove('clash-flash', 'clash-slot-active', 'clash-card-win', 'clash-card-lose');
+    clashEnemy.innerHTML = '';
+  }
+  if (clashPlayer) {
+    clashPlayer.classList.remove('clash-flash', 'clash-slot-active', 'clash-card-win', 'clash-card-lose');
+    clashPlayer.innerHTML = '';
+  }
+  if (playerCardsContainer) {
+    playerCardsContainer.classList.remove('round-win', 'round-lose');
+  }
 }
-
 // ==================== BATTLE CINEMATIC (مشهد التتويج السينمائي) ====================
 async function showBattleCinematic(result) {
   const overlay = document.getElementById('battle-cinematic-overlay');
@@ -1007,4 +991,92 @@ async function tryResumeBattle() {
     } catch (err) {
         localStorage.removeItem('quiz_arena_battle_id');
     }
+}
+
+// ==================== 2A: CINEMATIC BATTLE FX ====================
+// 🎬 شاشة VS
+function showArenaVS(playerCardURL) {
+  const ov = document.getElementById('arena-vs-overlay');
+  if (!ov) return;
+  const playerSide = document.getElementById('vs-player-card');
+  const enemySide = document.getElementById('vs-enemy-card');
+  if (playerSide) {
+    playerSide.innerHTML = playerCardURL
+      ? `<img src="${playerCardURL}" class="vs-card-img" alt="">`
+      : `<div class="vs-card-placeholder"><i class="fas fa-shield-halved"></i></div>`;
+  }
+  if (enemySide) {
+    // بطاقة الخصم مخفية (ظهر البطاقة) لإبقاء عنصر المفاجأة
+    enemySide.innerHTML = `<div class="card-back-pattern vs-enemy-back"></div>`;
+  }
+  ov.classList.remove('vs-active-overlay');
+  void ov.offsetWidth; // إعادة تشغيل الأنيميشن
+  ov.classList.add('vs-active-overlay');
+}
+function hideArenaVS() {
+  const ov = document.getElementById('arena-vs-overlay');
+  if (ov) ov.classList.remove('vs-active-overlay');
+}
+// 💥 اهتزاز الشاشة
+function triggerScreenShake() {
+  const screen = document.getElementById('arena-screen');
+  if (!screen) return;
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  screen.classList.remove('arena-shake');
+  void screen.offsetWidth;
+  screen.classList.add('arena-shake');
+  setTimeout(() => screen.classList.remove('arena-shake'), 450);
+}
+// 💥 موجة الصدمة
+function spawnClashShockwave() {
+  const layer = document.getElementById('clash-fx-layer');
+  if (!layer) return;
+  const wave = document.createElement('div');
+  wave.className = 'clash-shockwave';
+  layer.appendChild(wave);
+  setTimeout(() => wave.remove(), 650);
+}
+// 💥 الجزيئات المتطايرة (ملوّنة حسب الفائز)
+function spawnClashParticles(winner) {
+  const layer = document.getElementById('clash-fx-layer');
+  if (!layer) return;
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const palette = winner === 'player'
+    ? ['#60a5fa', '#93c5fd', '#ffffff', '#3b82f6']
+    : (winner === 'enemy' ? ['#f87171', '#fca5a5', '#ffffff', '#ef4444'] : ['#cbd5e1', '#ffffff', '#94a3b8']);
+  const count = 16;
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('span');
+    p.className = 'clash-particle';
+    const angle = (Math.PI * 2 * i) / count + (Math.random() * 0.5 - 0.25);
+    const dist = 50 + Math.random() * 70;
+    p.style.setProperty('--tx', Math.cos(angle) * dist + 'px');
+    p.style.setProperty('--ty', Math.sin(angle) * dist + 'px');
+    p.style.background = palette[Math.floor(Math.random() * palette.length)];
+    const size = 4 + Math.random() * 6;
+    p.style.width = size + 'px';
+    p.style.height = size + 'px';
+    layer.appendChild(p);
+    setTimeout(() => p.remove(), 750);
+  }
+}
+// 📊 شريط الجولات الحي (3 نقاط: فوز/خسارة/حالية/قادمة)
+function updateRoundsTrack() {
+  const track = document.getElementById('arena-rounds-track');
+  if (!track) return;
+  const total = battleState.totalRounds || 3;
+  track.innerHTML = '';
+  for (let i = 1; i <= total; i++) {
+    const r = (battleState.roundResults || []).find(x => x.round === i);
+    const pip = document.createElement('span');
+    pip.className = 'round-pip';
+    if (r) {
+      pip.classList.add(r.winner === 'player' ? 'pip-win' : 'pip-lose');
+    } else if (i === battleState.currentRound && battleState.isActive) {
+      pip.classList.add('pip-current');
+    } else {
+      pip.classList.add('pip-idle');
+    }
+    track.appendChild(pip);
+  }
 }
