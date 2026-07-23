@@ -800,7 +800,10 @@ async function showBattleResult(result) {
 
   // مزامنة البيانات + الصوت + التتبع (كما كان سابقاً)
   await syncArenaData();
-  const isVictory = result.final_winner === 'player';
+  // 🏅 فحص الإنجازات بعد تحديث إحصائيات الساحة (لإتمام فتح إنجازات الساحة)
+  if (typeof checkAchievements === 'function') {
+    await checkAchievements();
+  }  const isVictory = result.final_winner === 'player';
   if (window.audioManager) {
     window.audioManager.play(isVictory ? 'magical-reveal' : 'ui-click');
   }

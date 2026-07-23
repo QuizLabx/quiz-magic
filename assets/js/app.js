@@ -787,6 +787,10 @@ function showAchievementsModal() {
     renderAchievementsGrid();
     modal.classList.add('show');
     trapFocus(modal);
+    // 🏅 فحص لحظي: افتح أي إنجاز مكتمل لم يُسجَّل بعد، ثم أعد الرسم
+    if (typeof checkAchievements === 'function') {
+      checkAchievements().then(() => renderAchievementsGrid()).catch(() => {});
+    }
 
     // 🔄 جلب أحدث الإنجازات من السحابة (إن كان مسجّل دخول)
     if (window.firebaseDB && window.firebaseDB.isLoggedIn()) {
@@ -823,7 +827,15 @@ function renderAchievementsGrid() {
     grid.innerHTML = '';
     
     for (const [key, achievement] of Object.entries(ACHIEVEMENTS)) {
-        const isUnlocked = userAchievements[key] && userAchievements[key].unlocked;
+        // 🏅 قراءة متسامحة: نعترف بالفتح مهما كانت صيغة السيرفر (كائن/ختم زمني/قيمة منطقية)
+        const _ua = userAchievements[key];
+        const isUnlocked = !!_ua && (
+        _ua === true ||
+        _ua.unlocked === true ||
+        _ua.unlocked === 'true' ||
+        typeof _ua === 'number' ||
+        !!_ua.unlockedAt
+        );
         const progress = calculateAchievementProgress(key, stats);
         
         const card = document.createElement('div');
