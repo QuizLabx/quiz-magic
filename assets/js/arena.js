@@ -642,6 +642,8 @@ async function showRoundResult(roundResult) {
   triggerScreenShake();
   spawnClashShockwave();
   spawnClashParticles(winner);
+  // ⚡ 3B-2: ومضات القدرات الخاصة (تظهر فوق التصادم)
+  if (typeof showAbilityFlashes === 'function') showAbilityFlashes(roundResult);
 
   // ❤️ 3A: أنيميشن تناقص HP + ضربة قاضية
   const _toP = (roundResult.player_hp != null) ? roundResult.player_hp : battleState.playerHp;
@@ -1201,4 +1203,63 @@ function triggerKO(winner) {
     layer.appendChild(ko);
     setTimeout(() => ko.remove(), 1150);
   }
+}
+// ==================== 3B-2: ABILITY FLASHES (ومضات القدرات في الساحة) ====================
+// ترجمة نوع الحدث → نص تأثير قصير (بدون إيموجي)
+const ABILITY_EVENT_TEXT = {
+  ar: { on_win: 'ضرر إضافي', heal: 'شفاء', armor: 'درع', illusion: 'وهم', grip: 'إضعاف' },
+  en: { on_win: 'Bonus DMG', heal: 'Heal', armor: 'Armor', illusion: 'Illusion', grip: 'Weaken' }
+};
+// تحليل رمز الحدث (مثل "player_on_win") → { side, kind }
+function parseAbilityEvent(ev) {
+  const s = String(ev || '');
+  const side = s.startsWith('player_') ? 'player' : (s.startsWith('enemy_') ? 'enemy' : null);
+  if (!side) return null;
+  const kind = s.slice(side.length + 1); // on_win | heal | armor | illusion | grip
+  return { side, kind };
+}
+function showAbilityFlashes(roundResult) {
+  const layer = document.getElementById('clash-fx-layer');
+  if (!layer) return;
+  const events = (roundResult && Array.isArray(roundResult.ability_events)) ? roundResult.ability_events : [];
+  if (events.length === 0) return;
+  const isAr = (typeof currentLang !== 'undefined' && currentLang === 'ar');
+  const pCreature = (roundResult.player_card && roundResult.player_card.creature_id) || null;
+  const eCreature = (roundResult.enemy_card && roundResult.enemy_card.creature_id) || null;
+  const nameOf = (cid) => {
+    const def = (typeof CREATURE_ABILITIES !== 'undefined') ? CREATURE_ABILITIES[cid] : null;
+    if (!def || !def.name) return '';
+    return isAr ? def.name.ar : def.name.en;
+  };
+  const dict = ABILITY_EVENT_TEXT[isAr ? 'ar' : 'en'];
+  // حاوية الومضات (تُبنى مرة واحدة لكل جولة)
+  let stack = layer.querySelector('.ability-flashes-stack');
+  if (!stack) {
+    stack = document.createElement('div');
+    stack.className = 'ability-flashes-stack';
+    layer.appendChild(stack);
+  }
+  events.forEach((ev, i) => {
+    const parsed = parseAbilityEvent(ev);
+    if (!parsed) return;
+    const cid = parsed.side === 'player' ? pCreature : eCreature;
+    const abilityName = nameOf(cid);
+    if (!abilityName) return; // قدرة غير معرّفة (مثل none) → لا ومضة
+    const effectText = dict[parsed.kind] || '';
+    const line = document.createElement('div');
+    line.className = 'ability-flash-line ' + (parsed.side === 'player' ? 'flash-player' : 'flash-enemy');
+    line.style.animationDelay = (0.15 * i) + 's';
+    line.innerHTML = `<i class="fas fa-bolt ability-flash-bolt"></i>`
+      + `<span class="ability-flash-name">${escapeHtmlSafe(abilityName)}</span>`
+      + (effectText ? `<span class="ability-flash-effect">${escapeHtmlSafe(effectText)}</span>` : '');
+    stack.appendChild(line);
+    setTimeout(() => line.remove(), 1700 + i * 150);
+  });
+  // تنظيف الحاوية بعد انتهاء كل الومضات
+  setTimeout(() => { if (stack && stack.parentNode) stack.remove(); }, 1700 + events.length * 150 + 100);
+}
+function escapeHtmlSafe(t) {
+  const d = document.createElement('div');
+  d.textContent = String(t == null ? '' : t);
+  return d.innerHTML;
 }
