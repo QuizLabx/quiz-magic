@@ -6424,3 +6424,172 @@ body.in-game-menu main {
 @media (prefers-reduced-motion: reduce) {
   .cinematic-cards-ring, .cinematic-card-orbit-inner { animation: none; }
 }
+
+
+/* ========================================================================
+⚔️ ARENA 2A — CINEMATIC BATTLE POLISH
+(شاشة VS + تصادم محسّن + خلفية ديناميكية + شريط جولات + تصدّع)
+======================================================================== */
+
+/* ---------- 2A-3: خلفية الساحة الديناميكية ---------- */
+.arena-bg-layers {
+  position: absolute;
+  inset: 0;
+  z-index: -1;            /* خلف كل المحتوى بدون لمس z-index أي عنصر */
+  pointer-events: none;
+  overflow: hidden;
+}
+.arena-bg-base {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(239,68,68,0.10), transparent 45%),
+    radial-gradient(circle at 50% 100%, rgba(59,130,246,0.10), transparent 45%),
+    linear-gradient(180deg, #0b1220 0%, #0f172a 50%, #0b1220 100%);
+}
+.arena-bg-stars {
+  position: absolute; inset: 0;
+  background-image:
+    radial-gradient(1.5px 1.5px at 20% 30%, rgba(255,255,255,0.7), transparent),
+    radial-gradient(1.5px 1.5px at 70% 60%, rgba(255,255,255,0.5), transparent),
+    radial-gradient(1px 1px at 40% 80%, rgba(255,255,255,0.6), transparent),
+    radial-gradient(1px 1px at 85% 20%, rgba(255,255,255,0.5), transparent),
+    radial-gradient(1.5px 1.5px at 55% 45%, rgba(255,255,255,0.4), transparent);
+  background-size: 220px 220px;
+  opacity: 0.5;
+  animation: arena-stars-drift 90s linear infinite;
+}
+.arena-bg-fog {
+  position: absolute; inset: -20%;
+  background:
+    radial-gradient(circle at 30% 40%, rgba(168,85,247,0.10), transparent 40%),
+    radial-gradient(circle at 70% 60%, rgba(236,72,153,0.08), transparent 40%);
+  filter: blur(20px);
+  animation: arena-fog-drift 24s ease-in-out infinite alternate;
+}
+@keyframes arena-stars-drift { from { background-position: 0 0; } to { background-position: 220px 440px; } }
+@keyframes arena-fog-drift { from { transform: translate(0,0) scale(1); } to { transform: translate(4%, -3%) scale(1.1); } }
+
+/* ---------- 2A-4: شريط الجولات الحي ---------- */
+.arena-rounds-track {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-inline-start: 8px;
+  padding-inline-start: 8px;
+  border-inline-start: 1px solid rgba(255,255,255,0.15);
+}
+.round-pip {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: rgba(148,163,184,0.35);
+  transition: all 0.3s ease;
+}
+.round-pip.pip-idle { background: rgba(148,163,184,0.3); }
+.round-pip.pip-current {
+  background: #fbbf24;
+  box-shadow: 0 0 8px rgba(251,191,36,0.8);
+  animation: pip-pulse 1.2s ease-in-out infinite;
+}
+.round-pip.pip-win { background: #22c55e; box-shadow: 0 0 8px rgba(34,197,94,0.7); }
+.round-pip.pip-lose { background: #ef4444; box-shadow: 0 0 8px rgba(239,68,68,0.7); }
+@keyframes pip-pulse { 0%,100% { transform: scale(1); opacity:1; } 50% { transform: scale(1.35); opacity:0.7; } }
+
+/* ---------- 2A-1: شاشة VS السينمائية ---------- */
+.arena-vs-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.5rem, 6vw, 3rem);
+  background: radial-gradient(circle at 50% 50%, rgba(2,6,23,0.55), rgba(2,6,23,0.92));
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.arena-vs-overlay.vs-active-overlay { opacity: 1; pointer-events: auto; }
+.vs-side {
+  width: clamp(96px, 30vw, 150px);
+  aspect-ratio: 1 / 1.4;
+  border-radius: 0.9rem;
+  overflow: hidden;
+  border: 2px solid rgba(255,255,255,0.25);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+  background: #020617;
+  opacity: 0;
+}
+.vs-card-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.vs-card-placeholder { width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:#64748b; font-size:2rem; }
+.vs-side-player { border-color: rgba(59,130,246,0.7); box-shadow: 0 0 26px rgba(59,130,246,0.45), 0 12px 30px rgba(0,0,0,0.6); }
+.vs-side-enemy  { border-color: rgba(239,68,68,0.7);  box-shadow: 0 0 26px rgba(239,68,68,0.45), 0 12px 30px rgba(0,0,0,0.6); }
+.vs-enemy-back { width:100%; height:100%; border:none; border-radius:0; }
+.vs-emblem { display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.vs-text {
+  font-size: clamp(2rem, 11vw, 4rem);
+  font-weight: 900; font-style: italic; letter-spacing: 0.05em; color: #fff;
+  text-shadow: 0 0 18px rgba(251,191,36,0.8), 0 0 40px rgba(239,68,68,0.5);
+}
+.vs-active-overlay .vs-side-player { animation: vs-slide-in-player 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+.vs-active-overlay .vs-side-enemy  { animation: vs-slide-in-enemy 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+.vs-active-overlay .vs-emblem      { animation: vs-emblem-pop 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.15s both; }
+@keyframes vs-slide-in-player { from { opacity:0; transform: translateX(60px) rotate(8deg) scale(0.7); } to { opacity:1; transform: translateX(0) rotate(0) scale(1); } }
+@keyframes vs-slide-in-enemy  { from { opacity:0; transform: translateX(-60px) rotate(-8deg) scale(0.7); } to { opacity:1; transform: translateX(0) rotate(0) scale(1); } }
+@keyframes vs-emblem-pop { 0% { opacity:0; transform: scale(0.2) rotate(-25deg); } 60% { opacity:1; transform: scale(1.25) rotate(6deg); } 100% { opacity:1; transform: scale(1) rotate(0); } }
+/* RTL: عكس اتجاه الانزلاق ليبقى كل لاعب من جهته */
+[dir="rtl"] .vs-active-overlay .vs-side-player { animation-name: vs-slide-in-enemy; }
+[dir="rtl"] .vs-active-overlay .vs-side-enemy  { animation-name: vs-slide-in-player; }
+
+/* ---------- 2A-2: طبقة مؤثرات التصادم ---------- */
+#clash-fx-layer {
+  position: absolute; inset: 0; z-index: 30;
+  pointer-events: none; overflow: visible;
+  display: flex; align-items: center; justify-content: center;
+}
+.clash-shockwave {
+  position: absolute; width: 20px; height: 20px; border-radius: 50%;
+  border: 3px solid rgba(255,255,255,0.85);
+  box-shadow: 0 0 20px rgba(255,255,255,0.6);
+  animation: clash-shockwave 0.6s ease-out forwards;
+}
+@keyframes clash-shockwave { 0% { transform: scale(0.2); opacity: 0.9; } 100% { transform: scale(7); opacity: 0; } }
+.clash-particle {
+  position: absolute; border-radius: 50%;
+  box-shadow: 0 0 8px currentColor;
+  animation: clash-particle-fly 0.7s ease-out forwards;
+}
+@keyframes clash-particle-fly { 0% { transform: translate(0,0) scale(1); opacity: 1; } 100% { transform: translate(var(--tx), var(--ty)) scale(0.2); opacity: 0; } }
+/* pop لأرقام القوة (نحافظ على translateX(-50%) حتى لا ينكسر التمركز) */
+.power-pop { animation: power-pop 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.2s both; }
+@keyframes power-pop { 0% { transform: translateX(-50%) scale(0); } 60% { transform: translateX(-50%) scale(1.4); } 100% { transform: translateX(-50%) scale(1); } }
+/* اهتزاز الشاشة عند التصادم */
+.arena-shake { animation: arena-screen-shake 0.42s ease-in-out; }
+@keyframes arena-screen-shake {
+  0%,100% { transform: translate(0,0); }
+  15% { transform: translate(-5px, 3px); }
+  30% { transform: translate(5px, -3px); }
+  45% { transform: translate(-4px, -2px); }
+  60% { transform: translate(4px, 2px); }
+  75% { transform: translate(-2px, 1px); }
+}
+
+/* ---------- 2A-5: تصدّع الخاسرة وتوهج الفائزة ---------- */
+.clash-card-win { animation: clash-win-glow 0.6s ease-out; }
+.clash-card-lose { animation: clash-lose-crack 0.6s ease-out forwards; }
+@keyframes clash-win-glow { 0% { filter: brightness(1); } 40% { filter: brightness(1.6) drop-shadow(0 0 14px rgba(34,197,94,0.9)); transform: scale(1.06); } 100% { filter: brightness(1); transform: scale(1); } }
+@keyframes clash-lose-crack { 0% { filter: none; transform: scale(1); opacity:1; } 30% { filter: grayscale(0.4) brightness(0.8); transform: scale(0.96) rotate(-2deg); } 100% { filter: grayscale(0.85) brightness(0.55); transform: scale(0.92) rotate(-3deg); opacity:0.65; } }
+
+/* ---------- استجابة + تقليل حركة ---------- */
+@media (max-width: 380px) {
+  .arena-rounds-track { margin-inline-start: 5px; padding-inline-start: 5px; gap: 4px; }
+  .round-pip { width: 7px; height: 7px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .arena-bg-stars, .arena-bg-fog { animation: none; }
+  .arena-shake { animation: none; }
+  .vs-active-overlay .vs-side-player,
+  .vs-active-overlay .vs-side-enemy,
+  .vs-active-overlay .vs-emblem { animation: none; opacity: 1; }
+}
