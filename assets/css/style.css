@@ -6829,3 +6829,71 @@ body.in-game-menu main {
 @media (prefers-reduced-motion: reduce) {
   .revive-flash { animation: none; opacity: 1; }
 }
+/* ========================================================================
+🔥💧✨ 3C: ELEMENTAL SYSTEM (نظام العناصر/التوافق)
+======================================================================== */
+/* شارة العنصر الصغيرة على بطاقات الساحة والتصادم */
+.element-badge {
+  position: absolute;
+  top: 3px;
+  inset-inline-start: 3px;
+  z-index: 6;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.62rem;
+  line-height: 1;
+  background: rgba(2,6,23,0.78);
+  border: 1px solid var(--el-color, rgba(255,255,255,0.4));
+  box-shadow: 0 0 6px var(--el-color, rgba(0,0,0,0.5));
+  pointer-events: none;
+}
+/* ومضة التوافق العنصري فوق التصادم */
+.element-flashes-stack {
+  position: absolute;
+  top: 34px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 44;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  pointer-events: none;
+  width: max-content;
+  max-width: 92%;
+}
+.element-flash-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  opacity: 0;
+  animation: ability-flash-pop 1.6s ease-out forwards;
+}
+.element-flash-strong {
+  background: rgba(20,83,45,0.82);
+  border: 1px solid rgba(74,222,128,0.7);
+  color: #bbf7d0;
+}
+.element-flash-weak {
+  background: rgba(124,45,18,0.82);
+  border: 1px solid rgba(251,146,60,0.7);
+  color: #fed7aa;
+}
+.element-flash-icons { font-size: 0.72rem; }
+.element-flash-text { color: #fff; }
+@media (prefers-reduced-motion: reduce) {
+  .element-flash-line { animation: none; opacity: 1; }
+}
