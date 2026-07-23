@@ -6593,3 +6593,25 @@ body.in-game-menu main {
   .vs-active-overlay .vs-side-enemy,
   .vs-active-overlay .vs-emblem { animation: none; opacity: 1; }
 }
+
+/* ========================================================================
+🎯 2C: شارات سلسلة الانتصارات والفوز النظيف (مشهد التتويج)
+======================================================================== */
+.cinematic-reward-item.cinematic-reward-streak {
+  border-color: rgba(249,115,22,0.55);
+  color: #fb923c;
+  background: rgba(249,115,22,0.10);
+}
+.cinematic-reward-item.cinematic-reward-perfect {
+  border-color: rgba(34,197,94,0.55);
+  color: #86efac;
+  background: rgba(34,197,94,0.10);
+}
+.cinematic-reward-item.cinematic-streak-badge {
+  border-color: rgba(251,191,36,0.6);
+  color: #fde68a;
+  background: linear-gradient(135deg, rgba(251,191,36,0.18), rgba(249,115,22,0.18));
+  box-shadow: 0 0 12px rgba(251,191,36,0.25);
+  font-weight: 900;
+  letter-spacing: 0.04em;
+}
