@@ -873,14 +873,10 @@ async function selectArenaCard(battleId, cardIndex) {
             p_card_index: cardIndex
         };
 
-        console.log('🔵 [Supabase] selectArenaCard request:', payload);
-
+          // 🛡️ S1-a/H9: أُزيل log الطلب الكاشف (كان يطبع payload كاملاً في Console)
         const { data, error } = await sbClient.rpc('server_arena_select_card', payload);
 
-        console.log('🔵 [Supabase] selectArenaCard response:', {
-            data,
-            error
-        });
+        // 🛡️ S1-a/H9: أُزيل log الاستجابة الكاشف لبنية البيانات (data/error) في Console
 
         if (error) {
             console.error('selectArenaCard RPC error:', error);
