@@ -78,7 +78,7 @@ function renderRegisterForm() {
             <div class="auth-field">
                 <label>${isAr ? 'كلمة السر' : 'Password'}</label>
                 <div class="auth-input-wrapper">
-                    <input type="password" id="reg-password" class="auth-input" placeholder="${isAr ? '4 أحرف على الأقل' : 'At least 4 characters'}" autocomplete="new-password">
+                    <input type="password" id="reg-password" class="auth-input" placeholder="${isAr ? '6 أحرف على الأقل' : 'At least 6 characters'}" autocomplete="new-password">
                     <button type="button" onclick="togglePasswordField('reg-password', this)" class="auth-toggle-pass" aria-label="إظهار/إخفاء"><i class="fas fa-eye"></i></button>
                 </div>
             </div>
@@ -110,8 +110,8 @@ async function handleRegister() {
         showAuthError(errorEl, isAr ? '⚠️ كلمتا السر غير متطابقتين' : '⚠️ Passwords do not match');
         return;
     }
-    if (pwd.length < 4) {
-        showAuthError(errorEl, isAr ? '⚠️ كلمة السر قصيرة جداً (4 أحرف على الأقل)' : '⚠️ Password too short (min 4 chars)');
+    if (pwd.length < 6) {
+        showAuthError(errorEl, isAr ? '⚠️ كلمة السر قصيرة جداً (6 أحرف على الأقل)' : '⚠️ Password too short (min 6 chars)');
         return;
     }
 

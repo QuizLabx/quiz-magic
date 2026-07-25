@@ -83,87 +83,72 @@ function generateSalt() {
  * حالياً نستخدم سياسة "allow insert" لأن التسجيل متاح للجميع.
  */
 async function registerUser(password) {
-    try {
-        if (!initSupabase()) return { success: false, error: 'supabase_not_ready' };
-
-        if (!password || password.length < 4) {
-            return { success: false, error: 'password_short' };
-        }
-        if (password.length > 100) {
-            return { success: false, error: 'password_long' };
-        }
-
-        // توليد ID فريد
-        const userId = await generateUniqueUserId();
-        if (!userId) {
-            return { success: false, error: 'id_generation_failed' };
-        }
-
-        // تشفير كلمة السر
-        const salt = generateSalt();
-        const hashedPassword = await hashPassword(password, salt);
-        const fakeEmail = userId + '@quizmagic.local';
-        const now = new Date().toISOString();
-
-        // محاولة الإدراج عبر Supabase Auth أولاً (للمصادقة الحقيقية)
-        let authUser = null;
-        try {
-            const { data: authData, error: authError } = await sbClient.auth.signUp({
-                email: fakeEmail,
-                password: password
-            });
-            if (!authError && authData.user) {
-                authUser = authData.user;
-            }
-        } catch (e) {
-            // تجاهل — سنستخدم النظام المخصص
-        }
-
-        // الإدراج في جدول users
-        // ملاحظة: هذا يعمل لأن قاعدة RLS تسمح بالإدراج (أنشأناها كاستثناء للتسجيل)
-        const { error: insertError } = await sbClient.from('users').insert({
-            id: userId,
-            email: fakeEmail,
-            password_hash: hashedPassword,
-            salt: salt,
-            created_at: now,
-            last_login: now,
-            xp: 0,
-            gems: 0,
-            level: 1,
-            is_admin: false,
-            banned: false,
-            mod_permissions: {},
-            stats: {},
-            achievements: {},
-            cards: {}
-        });
-
-        if (insertError) {
-            console.error('Register insert error:', insertError);
-            // إن فشل الإدراج (RLS)، نحاول عبر RPC
-            const { error: rpcError } = await sbClient.rpc('register_user', {
-                p_id: userId,
-                p_email: fakeEmail,
-                p_password_hash: hashedPassword,
-                p_salt: salt
-            });
-            if (rpcError) {
-                console.error('Register RPC error:', rpcError);
-                return { success: false, error: 'insert_failed', details: rpcError.message };
-            }
-        }
-
-        // حفظ حالة الدخول
-        localStorage.setItem('quiz_logged_in_id', userId);
-
-        return { success: true, userId: userId };
-    } catch (error) {
-        console.error('Register error:', error);
-        return { success: false, error: 'server_error', details: error.message };
+  try {
+    if (!initSupabase()) return { success: false, error: 'supabase_not_ready' };
+    // 🅰️ S2.2: كلمة السر 6 أحرف على الأقل (لتتوافق مع Supabase Auth)
+    if (!password || password.length < 6) {
+      return { success: false, error: 'password_short' };
     }
-}
+    if (password.length > 100) {
+      return { success: false, error: 'password_long' };
+    }
+    // توليد ID فريد
+    const userId = await generateUniqueUserId();
+    if (!userId) {
+      return { success: false, error: 'id_generation_failed' };
+    }
+    // تشفير كلمة السر (نحتفظ بـ hash+salt مؤقتاً للتوافق — سيُزال لاحقاً)
+    const salt = generateSalt();
+    const hashedPassword = await hashPassword(password, salt);
+    const fakeEmail = userId + '@quizmagic.local';
 
+    // 🅰️ S2.2: إنشاء حساب Auth (يجب أن ينجح — public sign-ups مفعلة)
+    let authUid = null;
+    try {
+      const { data: authData, error: authError } = await sbClient.auth.signUp({
+        email: fakeEmail,
+        password: password
+      });
+      if (authError) {
+        console.error('signUp error:', authError);
+        return { success: false, error: 'auth_signup_failed', details: authError.message };
+      }
+      if (authData && authData.user) {
+        authUid = authData.user.id;   // UUID من Supabase Auth
+      }
+    } catch (e) {
+      console.error('signUp exception:', e);
+      return { success: false, error: 'auth_signup_failed', details: e.message };
+    }
+    if (!authUid) {
+      return { success: false, error: 'auth_signup_failed', details: 'No auth user returned' };
+    }
+
+    // 🅰️ S2.2: الإدراج في users عبر RPC (مع auth_uid) — RPC مباشرة لأن الإدراج المباشر ممنوع بـ RLS
+    const { error: rpcError } = await sbClient.rpc('register_user', {
+      p_id: userId,
+      p_email: fakeEmail,
+      p_password_hash: hashedPassword,
+      p_salt: salt,
+      p_auth_uid: authUid
+    });
+    if (rpcError) {
+      console.error('Register RPC error:', rpcError);
+      return { success: false, error: 'insert_failed', details: rpcError.message };
+    }
+
+    // حفظ حالة الدخول (الجلسة نشطة تلقائياً من signUp)
+    localStorage.setItem('quiz_logged_in_id', userId);
+    localStorage.setItem('quiz_auth_login', '1');
+    // 🔖 نحتفظ بـ quiz_admin_hash مؤقتاً (للتوافق — سيُزال في S2.7)
+    localStorage.setItem('quiz_admin_hash', hashedPassword);
+
+    return { success: true, userId: userId };
+  } catch (error) {
+    console.error('Register error:', error);
+    return { success: false, error: 'server_error', details: error.message };
+  }
+}
 // ==================== LOGIN ====================
 
 async function loginUser(userId, password) {
