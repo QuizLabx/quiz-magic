@@ -161,8 +161,7 @@ async function loginUser(userId, password) {
     const fakeEmail = cleanId + '@quizmagic.local';
     let authSession = null;
 
-    // 🅰️ S2-A.3: محاولة الدخول عبر Supabase Auth أولاً (لحسابات Auth مثل الأدمن)
-    //    إن نجح → جلسة موثوقة (auth.uid() متاح). إن فشل (لا حساب Auth) → النظام القديم.
+    // 🅰️ S2.3: محاولة الدخول عبر Supabase Auth أولاً
     try {
       const { data: authData, error: authError } = await sbClient.auth.signInWithPassword({
         email: fakeEmail,
@@ -171,33 +170,24 @@ async function loginUser(userId, password) {
       if (!authError && authData && authData.session) {
         authSession = authData.session;
       }
-    } catch (e) {
-      // تجاهل — سنحاول النظام القديم
-    }
+    } catch (e) { /* تجاهل — سنحاول النظام القديم */ }
 
-    // جلب بيانات المستخدم (الاسم، الحظر، إلخ)
+    // جلب بيانات المستخدم
     const { data: userData, error } = await sbClient
-      .from('users')
-      .select('*')
-      .eq('id', cleanId)
-      .maybeSingle();
-    if (error || !userData) {
-      return { success: false, error: 'user_not_found' };
-    }
+      .from('users').select('*').eq('id', cleanId).maybeSingle();
+    if (error || !userData) return { success: false, error: 'user_not_found' };
 
-    // إذا لم ينجح Auth (التجريبيون)، نتحقق من كلمة السر بالطريقة القديمة
+    // إذا لم ينجح Auth (مستخدمون قدامى بدون حساب Auth)، نتحقق بالطريقة القديمة
     if (!authSession) {
       const hashedPassword = await hashPassword(password, userData.salt);
       if (hashedPassword !== userData.password_hash) {
         return { success: false, error: 'wrong_password' };
       }
     }
-    // إن نجح Auth، فقد تحقق Supabase من كلمة السر بالفعل — لا حاجة للتحقق القديم
 
     // التحقق من الحظر
     const banStatus = await checkBanStatus(cleanId);
     if (banStatus.banned) {
-      // إن نجح Auth لكن المستخدم محظور، نسجّل خروجه من Auth
       if (authSession) { try { await sbClient.auth.signOut(); } catch (e) {} }
       return {
         success: false,
@@ -206,20 +196,14 @@ async function loginUser(userId, password) {
       };
     }
 
-    // ✅ نجح الدخول — تحديث آخر دخول
+    // ✅ نجح الدخول
     await sbClient.from('users')
-      .update({ last_login: new Date().toISOString() })
-      .eq('id', cleanId);
+      .update({ last_login: new Date().toISOString() }).eq('id', cleanId);
 
     localStorage.setItem('quiz_logged_in_id', cleanId);
-    // 🔖 نحتفظ بـ quiz_admin_hash مؤقتاً (للتوافق مع الدوال الأدمنية القديمة حتى S2-A.4)
-    localStorage.setItem('quiz_admin_hash', userData.password_hash);
-    // 🔖 ن标记 أن الدخول تم عبر Auth (للاستخدام في S2-A.4)
-    if (authSession) {
-      localStorage.setItem('quiz_auth_login', '1');
-    } else {
-      localStorage.removeItem('quiz_auth_login');
-    }
+    localStorage.setItem('quiz_admin_hash', userData.password_hash); // 🔖 مؤقت (يُزال في S2.7)
+    if (authSession) localStorage.setItem('quiz_auth_login', '1');
+    else localStorage.removeItem('quiz_auth_login');
 
     return { success: true, userId: cleanId, userData: userData, viaAuth: !!authSession };
   } catch (error) {
@@ -238,7 +222,8 @@ function getCurrentUserId() {
 function logoutUser() {
   localStorage.removeItem('quiz_logged_in_id');
   localStorage.removeItem('quiz_auth_login');
-  // 🅰️ S2-A.3: تسجيل الخروج من Supabase Auth أيضاً (لمسح الجلسة الموثوقة)
+  localStorage.removeItem('quiz_admin_hash');
+  // 🅰️ S2.3: مسح جلسة Auth أيضاً
   try {
     if (sbClient && sbClient.auth) sbClient.auth.signOut().catch(() => {});
   } catch (e) {}
