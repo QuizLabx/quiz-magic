@@ -167,58 +167,80 @@ async function registerUser(password) {
 // ==================== LOGIN ====================
 
 async function loginUser(userId, password) {
+  try {
+    if (!initSupabase()) return { success: false, error: 'supabase_not_ready' };
+    if (!userId || !password) return { success: false, error: 'missing_fields' };
+    const cleanId = userId.replace(/\D/g, '');
+    if (cleanId.length !== 6) return { success: false, error: 'invalid_id_format' };
+
+    const fakeEmail = cleanId + '@quizmagic.local';
+    let authSession = null;
+
+    // 🅰️ S2-A.3: محاولة الدخول عبر Supabase Auth أولاً (لحسابات Auth مثل الأدمن)
+    //    إن نجح → جلسة موثوقة (auth.uid() متاح). إن فشل (لا حساب Auth) → النظام القديم.
     try {
-        if (!initSupabase()) return { success: false, error: 'supabase_not_ready' };
-
-        if (!userId || !password) {
-            return { success: false, error: 'missing_fields' };
-        }
-
-        const cleanId = userId.replace(/\D/g, '');
-        if (cleanId.length !== 6) {
-            return { success: false, error: 'invalid_id_format' };
-        }
-
-        // جلب بيانات المستخدم
-        const { data: userData, error } = await sbClient
-            .from('users')
-            .select('*')
-            .eq('id', cleanId)
-            .maybeSingle();
-
-        if (error || !userData) {
-            return { success: false, error: 'user_not_found' };
-        }
-
-        // التحقق من كلمة السر
-        const hashedPassword = await hashPassword(password, userData.salt);
-        if (hashedPassword !== userData.password_hash) {
-            return { success: false, error: 'wrong_password' };
-        }
-
-        // التحقق من الحظر
-        const banStatus = await checkBanStatus(cleanId);
-        if (banStatus.banned) {
-            return {
-                success: false,
-                error: banStatus.type === 'permanent' ? 'banned_permanent' : 'banned_temporary',
-                banInfo: banStatus
-            };
-        }
-
-        // ✅ نجح الدخول — تحديث آخر دخول
-        await sbClient.from('users')
-            .update({ last_login: new Date().toISOString() })
-            .eq('id', cleanId);
-
-        localStorage.setItem('quiz_logged_in_id', cleanId);
-        localStorage.setItem('quiz_admin_hash', userData.password_hash); 
-        
-        return { success: true, userId: cleanId, userData: userData };
-    } catch (error) {
-        console.error('Login error:', error);
-        return { success: false, error: 'server_error', details: error.message };
+      const { data: authData, error: authError } = await sbClient.auth.signInWithPassword({
+        email: fakeEmail,
+        password: password
+      });
+      if (!authError && authData && authData.session) {
+        authSession = authData.session;
+      }
+    } catch (e) {
+      // تجاهل — سنحاول النظام القديم
     }
+
+    // جلب بيانات المستخدم (الاسم، الحظر، إلخ)
+    const { data: userData, error } = await sbClient
+      .from('users')
+      .select('*')
+      .eq('id', cleanId)
+      .maybeSingle();
+    if (error || !userData) {
+      return { success: false, error: 'user_not_found' };
+    }
+
+    // إذا لم ينجح Auth (التجريبيون)، نتحقق من كلمة السر بالطريقة القديمة
+    if (!authSession) {
+      const hashedPassword = await hashPassword(password, userData.salt);
+      if (hashedPassword !== userData.password_hash) {
+        return { success: false, error: 'wrong_password' };
+      }
+    }
+    // إن نجح Auth، فقد تحقق Supabase من كلمة السر بالفعل — لا حاجة للتحقق القديم
+
+    // التحقق من الحظر
+    const banStatus = await checkBanStatus(cleanId);
+    if (banStatus.banned) {
+      // إن نجح Auth لكن المستخدم محظور، نسجّل خروجه من Auth
+      if (authSession) { try { await sbClient.auth.signOut(); } catch (e) {} }
+      return {
+        success: false,
+        error: banStatus.type === 'permanent' ? 'banned_permanent' : 'banned_temporary',
+        banInfo: banStatus
+      };
+    }
+
+    // ✅ نجح الدخول — تحديث آخر دخول
+    await sbClient.from('users')
+      .update({ last_login: new Date().toISOString() })
+      .eq('id', cleanId);
+
+    localStorage.setItem('quiz_logged_in_id', cleanId);
+    // 🔖 نحتفظ بـ quiz_admin_hash مؤقتاً (للتوافق مع الدوال الأدمنية القديمة حتى S2-A.4)
+    localStorage.setItem('quiz_admin_hash', userData.password_hash);
+    // 🔖 ن标记 أن الدخول تم عبر Auth (للاستخدام في S2-A.4)
+    if (authSession) {
+      localStorage.setItem('quiz_auth_login', '1');
+    } else {
+      localStorage.removeItem('quiz_auth_login');
+    }
+
+    return { success: true, userId: cleanId, userData: userData, viaAuth: !!authSession };
+  } catch (error) {
+    console.error('Login error:', error);
+    return { success: false, error: 'server_error', details: error.message };
+  }
 }
 
 // ==================== SESSION MANAGEMENT ====================
@@ -229,7 +251,12 @@ function getCurrentUserId() {
 }
 
 function logoutUser() {
-    localStorage.removeItem('quiz_logged_in_id');
+  localStorage.removeItem('quiz_logged_in_id');
+  localStorage.removeItem('quiz_auth_login');
+  // 🅰️ S2-A.3: تسجيل الخروج من Supabase Auth أيضاً (لمسح الجلسة الموثوقة)
+  try {
+    if (sbClient && sbClient.auth) sbClient.auth.signOut().catch(() => {});
+  } catch (e) {}
 }
 
 function isLoggedIn() {
